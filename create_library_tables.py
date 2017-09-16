@@ -60,6 +60,7 @@ CREATE TABLE items (
     item_title TEXT UNIQUE,
     year INTEGER,
     pages INTEGER,
+    description TEXT,
     languageID INTEGER REFERENCES languages(ID),
     item_typeID INTEGER REFERENCES item_type(ID),
     item_publisherID INTEGER REFERENCES publishers(ID),
