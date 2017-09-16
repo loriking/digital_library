@@ -5,10 +5,10 @@ Created on Sun Jan 1 15:38:30 2017
 author: lak
 """
 
-import sqlite3
+import sqlite3 
 
-conn = sqlite3.connect('library_data.db')
-cur = conn.cursor()
+db = sqlite3.connect('library_data.db')
+cur = db.cursor()
 
 cur.executescript('''
 PRAGMA Foreign_Keys=True;
@@ -45,7 +45,9 @@ CREATE TABLE keywords (
     
 CREATE TABLE authors (
     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-    author_name TEXT 
+    first_name TEXT,
+    middle_name TEXT,
+    last_name TEXT
     );
 
 CREATE TABLE publishers (
