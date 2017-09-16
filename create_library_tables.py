@@ -8,9 +8,9 @@ author: lak
 import sqlite3 
 
 db = sqlite3.connect('library_data.db')
-cur = db.cursor()
+c = db.cursor()
 
-cur.executescript('''
+c.executescript('''
 PRAGMA Foreign_Keys=True;
 
 DROP TABLE IF EXISTS languages;
@@ -105,4 +105,6 @@ CREATE TABLE project_references (
 
     ''')
 
+db.commit()
+db.close()
 
