@@ -170,5 +170,49 @@ def delete_author():
     print("Deleting item: ", authorID)
     db.commit()
 
+############## Publishers CRUD fuctions ##################
+
+def add_publisher():
+    ''' Adds language to SQL database'''
+    publisher = input("publisher:\t")
+    publisher = publisher.title()
+    c.execute('''INSERT INTO publishers(publisher) VALUES(?)''', (publisher,))
+    db.commit()
+    
+def list_publisher():
+    ''' Returns all the languages from database'''
+    c.execute('''SELECT * FROM publishers''')
+    results = c.fetchall()
+    for i in results:
+        print(i)
+    return results
+    
+def get_publisherID():
+    ''' Returns the ID (PK) of a given language'''
+    publisher = input("Enter publisher:\t")
+    publisher = publisher.title()
+    c.execute('''SELECT ID FROM publishers WHERE publisher = ? ''', (publisher,))
+    publisherID = c.fetchone()
+    # print(publisher, "has ID of ", publisherID)
+    return publisherID
+    
+def get_publisher():
+    ''' Returns language from ID'''
+    publisherID = get_publisherID()
+    c.execute('''SELECT publisher FROM publishers WHERE ID = ?''', (publisherID,))
+    return c.fetchall()[0]
+    
+def update_publisher():
+    publisherID = get_publisherID()
+    publisher = input("Correction:\t") 
+    # print("Updating", publisher)
+    c.execute('''UPDATE publishers SET publisher = ? WHERE ID =?''', (publisher, publisherID))
+    db.commit()
+    
+def delete_publisher():
+    publisherID = get_publisherID()
+    c.execute('''DELETE FROM publishers WHERE ID = ?''', (publisherID,))
+    # print("Deleting item: ", publisherID)
+    db.commit()
 
 
