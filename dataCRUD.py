@@ -107,7 +107,7 @@ def delete_keyword():
 ############## AUTHORS ##################
 
 def add_author():
-    ''' Adds language to SQL database'''
+    ''' Adds author to SQL database'''
     first_name = input("Author first name:\t")
     last_name = input("Author last name:\t")
     
@@ -117,7 +117,7 @@ def add_author():
     db.commit()
     
 def list_authors():
-    ''' Returns all the languages from database'''
+    ''' Returns all the arthor from database'''
     c.execute('''SELECT * FROM authors''')
     results = c.fetchall()
     for i in results:
@@ -125,7 +125,7 @@ def list_authors():
     return results
     
 def get_authorID():
-    ''' Returns the ID (PK) of a given language'''
+    ''' Returns the ID (PK) of a given author'''
     
     search_term = input("Search by first name, last name or full name? Enter: f/l/b)\n")
     if search_term.lower() == "f":
@@ -173,14 +173,14 @@ def delete_author():
 ############## Publishers CRUD fuctions ##################
 
 def add_publisher():
-    ''' Adds language to SQL database'''
+    ''' Adds publisher to SQL database'''
     publisher = input("publisher:\t")
     publisher = publisher.title()
     c.execute('''INSERT INTO publishers(publisher) VALUES(?)''', (publisher,))
     db.commit()
     
 def list_publisher():
-    ''' Returns all the languages from database'''
+    ''' Returns all the publisher from database'''
     c.execute('''SELECT * FROM publishers''')
     results = c.fetchall()
     for i in results:
@@ -188,7 +188,7 @@ def list_publisher():
     return results
     
 def get_publisherID():
-    ''' Returns the ID (PK) of a given language'''
+    ''' Returns the ID (PK) of a given publisher'''
     publisher = input("Enter publisher:\t")
     publisher = publisher.title()
     c.execute('''SELECT ID FROM publishers WHERE publisher = ? ''', (publisher,))
@@ -197,7 +197,7 @@ def get_publisherID():
     return publisherID
     
 def get_publisher():
-    ''' Returns language from ID'''
+    ''' Returns publisher from ID'''
     publisherID = get_publisherID()
     c.execute('''SELECT publisher FROM publishers WHERE ID = ?''', (publisherID,))
     return c.fetchall()[0]
