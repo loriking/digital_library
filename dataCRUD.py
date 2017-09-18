@@ -8,7 +8,7 @@ Created on Sep 15, 2017
 '''
 import sqlite3 as sql
 
-db = sql.connect('library_data.db')
+db = sql.connect('library_data2.db')
 c = db.cursor()
 
 
@@ -33,13 +33,13 @@ def get_languageID():
     language = input("Enter language:\t")
     language = language.title()
     c.execute('''SELECT ID FROM languages WHERE language = ? ''', (language,))
-    langID = c.fetchone()[0]
+    langID = c.fetchall()[0]
     print(language, "has ID of ", langID)
     return langID
     
-def get_language():
+def get_language(langID):
     ''' Returns language from ID'''
-    langID = get_languageID()
+    
     c.execute('''SELECT language FROM languages WHERE ID = ?''', (langID,))
     return c.fetchall()[0]
     
@@ -192,7 +192,7 @@ def get_publisherID():
     publisher = input("Enter publisher:\t")
     publisher = publisher.title()
     c.execute('''SELECT ID FROM publishers WHERE publisher = ? ''', (publisher,))
-    publisherID = c.fetchone()[0]
+    publisherID = c.fetchall()[0]
     # print(publisher, "has ID of ", publisherID)
     return publisherID
     
@@ -220,7 +220,7 @@ def delete_publisher():
 def add_resource():
     ''' Adds item to SQL database'''
     title = input("Title:\n")
-    pubyear = input("Year:\n")
+    year = input("Year:\n")
     pages = input("Number of pages:\n")
     languageID = get_languageID()
     resource_typeID = input("type:\n")
@@ -228,8 +228,39 @@ def add_resource():
     
     abstract = input("Description of item:\n")  
     
-    c.execute('''INSERT INTO resource(title, pubyear, pages, languageID, resource_typeID, 
+    c.execute('''INSERT INTO resource(title, year, pages, languageID, resource_typeID, 
                                    publisherID, abstract) VALUES(?,?,?,?,?,?,?)''', 
-              (title, pubyear, pages, languageID, resource_typeID, publisherID,abstract,))
+              (title, year, pages, languageID, resource_typeID, publisherID,abstract,))
     db.commit()
 
+
+def list_resources():
+    ''' Returns all the resources from database'''
+    c.execute('''SELECT * FROM resource''')
+    results = c.fetchall()
+    for i in results:
+        print(i)
+    return results
+    
+def get_resourceID():
+    ''' Returns the ID (PK) of a given resource'''
+    title = input("Enter Title:\t")
+    title = title.title()
+    c.execute('''SELECT ID FROM resource WHERE title = ? ''', (title,))
+    resourceID = c.fetchone()[0]
+    print(title, "has ID of ", resourceID)
+    return resourceID
+    
+def get_resource():
+    ''' Returns resource  details from ID'''
+    resourceID = input("Enter ID for resource desired:\t")
+    c.execute('''SELECT title, pubyear, pages, languageID, typeID, 
+              publisherID, abstract FROM resource WHERE ID = ?''', (resourceID,))
+    return c.fetchall()[0]
+
+
+def delete_resource():
+    resourceID = get_resourceID()
+    c.execute('''DELETE FROM resources WHERE ID = ?''', (resourceID,))
+    print("Deleting item: ", resourceID)
+    db.commit()
