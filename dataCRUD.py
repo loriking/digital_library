@@ -30,10 +30,14 @@ def list_languages():
     
 def get_languageID():
     ''' Returns the ID (PK) of a given language'''
+    
     language = input("Enter language:\t")
     language = language.title()
     c.execute('''SELECT ID FROM languages WHERE language = ? ''', (language,))
+    
     langID = c.fetchall()[0]
+    langID = langID[0]
+    
     print(language, "has ID of ", langID)
     return langID
     
@@ -41,7 +45,9 @@ def get_language(langID):
     ''' Returns language from ID'''
     
     c.execute('''SELECT language FROM languages WHERE ID = ?''', (langID,))
-    return c.fetchall()[0]
+    langID = c.fetchall()[0]
+    language_name = langID[0]
+    return language_name
     
 def update_language():
     langID = get_languageID()
@@ -193,6 +199,7 @@ def get_publisherID():
     publisher = publisher.title()
     c.execute('''SELECT ID FROM publishers WHERE publisher = ? ''', (publisher,))
     publisherID = c.fetchall()[0]
+    publisherID = publisherID[0]
     # print(publisher, "has ID of ", publisherID)
     return publisherID
     
