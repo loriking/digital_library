@@ -192,13 +192,13 @@ def get_publisherID():
     publisher = input("Enter publisher:\t")
     publisher = publisher.title()
     c.execute('''SELECT ID FROM publishers WHERE publisher = ? ''', (publisher,))
-    publisherID = c.fetchone()
+    publisherID = c.fetchone()[0]
     # print(publisher, "has ID of ", publisherID)
     return publisherID
     
-def get_publisher():
+def get_publisher(publisherID):
     ''' Returns publisher from ID'''
-    publisherID = get_publisherID()
+    
     c.execute('''SELECT publisher FROM publishers WHERE ID = ?''', (publisherID,))
     return c.fetchall()[0]
     
