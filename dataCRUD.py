@@ -228,7 +228,7 @@ def add_resource():
     
     abstract = input("Description of item:\n")  
     
-    c.execute('''INSERT INTO items(title, pubyear, pages, languageID, resource_typeID, 
+    c.execute('''INSERT INTO resource(title, pubyear, pages, languageID, resource_typeID, 
                                    publisherID, abstract) VALUES(?,?,?,?,?,?,?)''', 
               (title, pubyear, pages, languageID, resource_typeID, publisherID,abstract,))
     db.commit()
