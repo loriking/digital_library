@@ -25,7 +25,7 @@ DROP TABLE IF EXISTS RESOURCE_KEYWORDS;
 
 DROP TABLE IF EXISTS projects;
 DROP TABLE IF EXISTS reading_now;
-DROP TABLE IF EXISTS code_project_references;
+DROP TABLE IF EXISTS project_references;
 
 
 CREATE TABLE languages (
