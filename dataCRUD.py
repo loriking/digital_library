@@ -215,4 +215,21 @@ def delete_publisher():
     # print("Deleting item: ", publisherID)
     db.commit()
 
+############## Resource CRUD FUNCTIONS
+
+def add_resource():
+    ''' Adds item to SQL database'''
+    title = input("Title:\n")
+    pubyear = input("Year:\n")
+    pages = input("Number of pages:\n")
+    languageID = get_languageID()
+    resource_typeID = input("type:\n")
+    publisherID = get_publisherID()
+    
+    abstract = input("Description of item:\n")  
+    
+    c.execute('''INSERT INTO items(title, pubyear, pages, languageID, resource_typeID, 
+                                   publisherID, abstract) VALUES(?,?,?,?,?,?,?)''', 
+              (title, pubyear, pages, languageID, resource_typeID, publisherID,abstract,))
+    db.commit()
 
