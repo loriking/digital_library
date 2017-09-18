@@ -17,11 +17,11 @@ DROP TABLE IF EXISTS languages;
 DROP TABLE IF EXISTS keywords;
 DROP TABLE IF EXISTS authors;
 DROP TABLE IF EXISTS publishers;
-DROP TABLE IF EXISTS item_type;
-DROP TABLE IF EXISTS items;
+DROP TABLE IF EXISTS resource_type;
+DROP TABLE IF EXISTS resource;
 
-DROP TABLE IF EXISTS ITEM_AUTHOR;
-DROP TABLE IF EXISTS ITEM_KEYWORDS;
+DROP TABLE IF EXISTS RESOURCE_AUTHOR;
+DROP TABLE IF EXISTS RESOURCE_KEYWORDS;
 
 DROP TABLE IF EXISTS projects;
 DROP TABLE IF EXISTS reading_now;
@@ -33,7 +33,7 @@ CREATE TABLE languages (
     language TEXT
     );
 
-CREATE TABLE item_type (
+CREATE TABLE resource_type (
     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
     type TEXT UNIQUE
     );
@@ -55,15 +55,14 @@ CREATE TABLE publishers (
     publisher TEXT
     );
 
-CREATE TABLE items (
+CREATE TABLE resource (
     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-    item_title TEXT UNIQUE,
+    title TEXT UNIQUE,
     year INTEGER,
     pages INTEGER,
-    description TEXT,
     languageID INTEGER REFERENCES languages(ID),
-    item_typeID INTEGER REFERENCES item_type(ID),
-    item_publisherID INTEGER REFERENCES publishers(ID),
+    resource_typeID INTEGER REFERENCES resource_type(ID),
+    publisherID INTEGER REFERENCES publishers(ID),
     abstract TEXT
     );
 
@@ -71,34 +70,34 @@ CREATE TABLE projects (
     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
     project_name TEXT,
     languageID INTEGER REFERENCES languages(ID),
-    item_typeID INTEGER REFERENCES item_type(ID),
+    resource_typeID INTEGER REFERENCES resource_type(ID),
     abstract TEXT,
     date_start DATE, 
     date_end DATE 
     );
     
-CREATE TABLE ITEM_AUTHOR(  
-    itemID INTEGER,
+CREATE TABLE RESOURCE_AUTHOR(  
+    resourceID INTEGER,
     authorID INTEGER,
     primary key (itemID, authorID)
     );    
 
 
-CREATE TABLE ITEM_KEYWORDS(
-    itemID INTEGER,
+CREATE TABLE RESOURCE_KEYWORDS(
+    resourceID INTEGER,
     keywordID INTEGER,
     primary key (itemID, keywordID)
     );    
     
 CREATE TABLE reading_now(
     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-    itemID INTEGER REFERENCES items(ID),
+    resourceID INTEGER REFERENCES items(ID),
     date_start DATE, 
     date_end DATE
     );
 
 CREATE TABLE project_references (
-    itemID INTEGER,
+    resourceID INTEGER,
     projectID INTEGER,
     primary key (itemID, projectID)
     );
