@@ -7,7 +7,7 @@ author: lak
 
 import sqlite3 
 
-db = sqlite3.connect('library_data.db')
+db = sqlite3.connect('library_data2.db')
 c = db.cursor()
 
 c.executescript('''
@@ -79,19 +79,19 @@ CREATE TABLE projects (
 CREATE TABLE RESOURCE_AUTHOR(  
     resourceID INTEGER,
     authorID INTEGER,
-    primary key (itemID, authorID)
+    primary key (resourceID, authorID)
     );    
 
 
 CREATE TABLE RESOURCE_KEYWORDS(
     resourceID INTEGER,
     keywordID INTEGER,
-    primary key (itemID, keywordID)
+    primary key (resourceID, keywordID)
     );    
     
 CREATE TABLE reading_now(
     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-    resourceID INTEGER REFERENCES items(ID),
+    resourceID INTEGER REFERENCES resource(ID),
     date_start DATE, 
     date_end DATE
     );
@@ -99,7 +99,7 @@ CREATE TABLE reading_now(
 CREATE TABLE project_references (
     resourceID INTEGER,
     projectID INTEGER,
-    primary key (itemID, projectID)
+    primary key (resourceID, projectID)
     );
 
     ''')
