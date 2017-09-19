@@ -24,6 +24,7 @@ DROP TABLE IF EXISTS resource;
 
 DROP TABLE IF EXISTS RESOURCE_AUTHOR;
 DROP TABLE IF EXISTS RESOURCE_KEYWORDS;
+DROP TABLE IF EXISTS PROJECT_RESOURCES;
 
 DROP TABLE IF EXISTS projects;
 DROP TABLE IF EXISTS reading_now;
@@ -83,16 +84,21 @@ CREATE TABLE projects (
 CREATE TABLE RESOURCE_AUTHOR(  
     resourceID INTEGER,
     authorID INTEGER,
-    primary key (resourceID, authorID)
+    PRIMARY KEY (resourceID, authorID)
     );    
 
 
 CREATE TABLE RESOURCE_KEYWORDS(
     resourceID INTEGER,
     keywordID INTEGER,
-    primary key (resourceID, keywordID)
+    PRIMARY KEY(resourceID, keywordID)
     );
 
+CREATE TABLE PROJECT_RESOURCES(
+    projectID INTEGER,
+    resourceID INTEGER,
+    PRIMARY KEY (projectID, resourceID)
+    );
     
 CREATE TABLE reading_now(
     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
