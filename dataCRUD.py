@@ -127,6 +127,18 @@ def list_authors():
     for i in results:
         print(i)
     return results
+
+def find_author():
+    ''' Searches for author based on partial match'''
+    # TODO ADD Return statement
+
+    name = input("Name:")
+    search = "%" + name + "%"
+    c.execute("SELECT name FROM authors WHERE name LIKE ?", (search,))
+    matches = c.fetchall()
+
+    for i in matches:
+        print(i)
     
 def get_authorID():
     ''' Returns the ID (PK) of a given author'''
