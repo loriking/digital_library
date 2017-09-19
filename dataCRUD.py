@@ -152,16 +152,18 @@ def get_authorID():
     
     # print(name, "has ID of ", authorID)
     return authorID
-    
-    
-
 
     
 def get_author():
     ''' Returns author from ID'''
+
     authorID = input("Enter ID for author desired:\t")
-    c.execute('''SELECT first_name, last_name FROM authors WHERE ID = ?''', (authorID,))
-    return c.fetchall()[0]
+    c.execute('''SELECT name FROM authors WHERE ID = ?''', (authorID,))
+
+    author_name = c.fetchall()[0]
+    author_name = author_name[0]
+    
+    return author_name
 
 
     
