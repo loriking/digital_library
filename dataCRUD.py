@@ -283,7 +283,7 @@ def delete_resource():
 
 
 ##### PROJECT TYPE CRUD
-    def list_project_type():
+def list_project_type():
     ''' Returns all the project types from database'''
     c.execute('''SELECT * FROM project_type''')
     results = c.fetchall()
