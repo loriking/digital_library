@@ -68,14 +68,14 @@ def delete_language():
 
 
 def add_keyword():
-    ''' Adds language to SQL database'''
+    ''' Adds keyword to SQL database'''
     keyword = input("keyword:\t")
     keyword = keyword.title()
     c.execute('''INSERT INTO keywords(keyword) VALUES(?)''', (keyword,))
     db.commit()
     
 def list_keyword():
-    ''' Returns all the languages from database'''
+    ''' Returns all the keywords from database'''
     c.execute('''SELECT * FROM keywords''')
     results = c.fetchall()
     for i in results:
@@ -83,7 +83,7 @@ def list_keyword():
     return results
     
 def get_keywordID():
-    ''' Returns the ID (PK) of a given language'''
+    ''' Returns the ID (PK) of a given keyword'''
     keyword = input("Enter keyword:\t")
     keyword = keyword.title()
     c.execute('''SELECT ID FROM keywords WHERE keyword = ? ''', (keyword,))
@@ -120,7 +120,7 @@ def add_author():
     db.commit()
     
 def list_authors():
-    ''' Returns all the arthor from database'''
+    ''' Returns all the author from database'''
     c.execute('''SELECT * FROM authors''')
     results = c.fetchall()
     for i in results:
