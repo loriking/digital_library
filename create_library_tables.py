@@ -7,7 +7,7 @@ author: lak
 
 import sqlite3 
 
-db = sqlite3.connect('library_data2.db')
+db = sqlite3.connect('library_data.db')
 c = db.cursor()
 
 c.executescript('''
@@ -18,7 +18,9 @@ DROP TABLE IF EXISTS keywords;
 DROP TABLE IF EXISTS authors;
 DROP TABLE IF EXISTS publishers;
 DROP TABLE IF EXISTS resource_type;
+DROP TABLE IF EXISTS project_category;
 DROP TABLE IF EXISTS resource;
+
 
 DROP TABLE IF EXISTS RESOURCE_AUTHOR;
 DROP TABLE IF EXISTS RESOURCE_KEYWORDS;
@@ -36,6 +38,11 @@ CREATE TABLE languages (
 CREATE TABLE resource_type (
     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
     type TEXT UNIQUE
+    );
+
+CREATE TABLE project_category(
+    ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+    category TEXT UNIQUE
     );
     
 CREATE TABLE keywords (
