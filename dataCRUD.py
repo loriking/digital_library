@@ -115,7 +115,6 @@ def delete_keyword():
 def add_author():
     ''' Adds author to SQL database'''
     name = input("Author full name:\t")
-    name = name.title()
     
     c.execute('''INSERT INTO authors(name) VALUES(?)''', (name,))
     db.commit()
@@ -144,7 +143,7 @@ def get_authorID():
     ''' Returns the ID (PK) of a given author'''
        
     name = input("Enter name:\t")
-    name = name.title()
+    
     c.execute('''SELECT ID FROM authors WHERE name = ? ''', (name,))
     
     authorID = c.fetchall()[0]
@@ -170,14 +169,18 @@ def get_author():
 def update_author():
     authorID = get_authorID()
     author = input("Correction:\t") 
+
     print("Updating", author)
+
     c.execute('''UPDATE authors SET name = ? WHERE ID =?''', (author, authorID))
     db.commit()
     
 def delete_author():
     authorID = get_authorID()
+
     c.execute('''DELETE FROM authors WHERE ID = ?''', (authorID,))
     print("Deleting item: ", authorID)
+
     db.commit()
 
 ############## Publishers CRUD fuctions ##################
@@ -185,11 +188,11 @@ def delete_author():
 def add_publisher():
     ''' Adds publisher to SQL database'''
     publisher = input("publisher:\t")
-    publisher = publisher.title()
+    
     c.execute('''INSERT INTO publishers(publisher) VALUES(?)''', (publisher,))
     db.commit()
     
-def list_publisher():
+def list_publishers():
     ''' Returns all the publisher from database'''
     c.execute('''SELECT * FROM publishers''')
     results = c.fetchall()
@@ -200,11 +203,12 @@ def list_publisher():
 def get_publisherID():
     ''' Returns the ID (PK) of a given publisher'''
     publisher = input("Enter publisher:\t")
-    publisher = publisher.title()
+
     c.execute('''SELECT ID FROM publishers WHERE publisher = ? ''', (publisher,))
     publisherID = c.fetchall()[0]
     publisherID = publisherID[0]
     # print(publisher, "has ID of ", publisherID)
+
     return publisherID
     
 def get_publisher(publisherID):
@@ -216,6 +220,7 @@ def get_publisher(publisherID):
 def update_publisher():
     publisherID = get_publisherID()
     publisher = input("Correction:\t") 
+
     # print("Updating", publisher)
     c.execute('''UPDATE publishers SET publisher = ? WHERE ID =?''', (publisher, publisherID))
     db.commit()
