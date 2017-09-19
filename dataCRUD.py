@@ -142,26 +142,18 @@ def find_author():
     
 def get_authorID():
     ''' Returns the ID (PK) of a given author'''
+       
+    name = input("Enter name:\t")
+    name = name.title()
+    c.execute('''SELECT ID FROM authors WHERE name = ? ''', (name,))
     
-    search_term = input("Search by first name, last name or full name? Enter: f/l/b)\n")
-    if search_term.lower() == "f":
-        first_name = input("Enter first name:\t")
-        first_name = first_name.title()
-        c.execute('''SELECT ID FROM authors where first_name = ?''', (first_name,))
-        results =  c.fetchall()[0]
-    elif search_term.lower() == "l":
-        last_name = input("Enter last name:\t")
-        last_name = last_name.title()
-        results = c.execute('''SELECT ID FROM authors where last_name = ?''', (last_name,))
-        results =  c.fetchall()[0]
-    elif search_term.lower() == "b":
-        first_name = input("Enter first name:\t")
-        last_name = input("Enter last name:\t")
-        results = c.execute('''SELECT ID FROM authors where first_name = ? AND last_name = ?''', 
-                  (first_name, last_name,))
-        results = c.fetchall()[0]
+    authorID = c.fetchall()[0]
+    authorID = authorID[0]
     
-    return results
+    # print(name, "has ID of ", authorID)
+    return authorID
+    
+    
 
 
     
