@@ -73,7 +73,7 @@ CREATE TABLE resource (
 CREATE TABLE projects (
     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
     project_name TEXT,
-    project_type INTEGER REFERENCES project_category(ID),
+    project_category INTEGER REFERENCES project_category(ID),
     description TEXT,
     date_start DATE, 
     date_end DATE 
