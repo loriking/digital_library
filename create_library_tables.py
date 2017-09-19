@@ -45,9 +45,7 @@ CREATE TABLE keywords (
     
 CREATE TABLE authors (
     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-    first_name TEXT,
-    middle_name TEXT,
-    last_name TEXT
+    name TEXT
     );
 
 CREATE TABLE publishers (
