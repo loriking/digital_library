@@ -283,43 +283,62 @@ def delete_resource():
 
 
 ##### PROJECT TYPE CRUD
-def list_project_type():
+
+def add_project_category():
+    ''' Adds project_type to SQL database'''
+    project_category = input("Enter project type:\t")
+    
+    c.execute('''INSERT INTO project_category(category) VALUES(?)''', (project_category,))
+    db.commit()
+
+    
+def list_project_category():
     ''' Returns all the project types from database'''
-    c.execute('''SELECT * FROM project_type''')
+    
+    c.execute('''SELECT * FROM project_category''')
     results = c.fetchall()
     for i in results:
         print(i)
+
     return results
 
 
-def get_project_typeID():
-    ''' Returns the ID (PK) of a given project_type'''
-    project_type = input("Enter Project type:\t")
-    
-    c.execute('''SELECT ID FROM project_type WHERE category = ? ''', (project_type,))
-    project_typeID = c.fetchone()[0]
-    print(project_type, "has ID of ", project_typeID)
-    return project_typeID
-    
-def get_project_type():
+def get_project_categoryID():
+    ''' Returns the ID (PK) of a given project_category'''
+    project_category = input("Enter Project type:\t")
+
+    c.execute('''SELECT ID FROM project_category WHERE category = ? ''', (project_category,))
+
+    project_categoryID = c.fetchone()[0]
+
+    print(project_category, "has ID of ", project_categoryID)
+    return project_categoryID
+
+
+
+def get_project_category():
     ''' Returns project type from ID'''
-    project_typeID = input("Enter ID for project type desired:\t")
-    c.execute('''SELECT category FROM project_type WHERE ID = ?''', (project_typeID,))
+
+    project_categoryID = input("Enter ID for project type desired:\t")
+    c.execute('''SELECT category FROM project_category WHERE ID = ?''', (project_categoryID,))
 
 
     return c.fetchall()[0]
     
-def update_project_type():
-    project_typeID = get_project_typeID()
+def update_project_category():
+    project_categoryID = get_project_typeID()
+    
     project_type = input("Correction:\t") 
+
     print("Updating", project_type)
-    c.execute('''UPDATE project_type SET category = ? WHERE ID =?''', (category, project_typeID))
+
+    c.execute('''UPDATE project_type SET category = ? WHERE ID =?''', (category, project_categoryID))
     db.commit()
     
-def delete_project_type():
-    project_typeID = get_project_typeID()
-    c.execute('''DELETE FROM project_type WHERE ID = ?''', (project_typeID,))
-    print("Deleting item: ", project_typeID)
+def delete_project_category():
+    project_categoryID = get_project_categoryID()
+    c.execute('''DELETE FROM project_category WHERE ID = ?''', (project_categoryID,))
+    print("Deleting item: ", project_category)
     db.commit()
 
 # RESOURCE type CRUD
