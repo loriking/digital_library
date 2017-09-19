@@ -321,3 +321,45 @@ def delete_project_type():
     c.execute('''DELETE FROM project_type WHERE ID = ?''', (project_typeID,))
     print("Deleting item: ", project_typeID)
     db.commit()
+
+# RESOURCE type CRUD
+def list_resource_type():
+    ''' Returns all the resource types from database'''
+    c.execute('''SELECT * FROM resource_type''')
+    results = c.fetchall()
+    for i in results:
+        print(i)
+    return results
+
+
+def get_resource_typeID():
+    ''' Returns the ID (PK) of a given resource type'''
+    resource_type = input("Enter resource type:\t")
+    
+    c.execute('''SELECT ID FROM resource_type WHERE type = ? ''', (resource_type,))
+    resource_typeID = c.fetchone()[0]
+    print(resource_type, "has ID of ", resource_typeID)
+    return resource_typeID
+    
+def get_resource_type():
+    ''' Returns resource type from ID'''
+    resource_typeID = input("Enter ID for resource type desired:\t")
+    c.execute('''SELECT type FROM resource_type WHERE ID = ?''', (resource_typeID,))
+
+    resource_type = c.fetchall()[0]
+    resource_type = resource_type[0]
+    return resource_type
+
+    
+def update_resource_type():
+    resource_typeID = get_resource_typeID()
+    resource_type = input("Correction:\t") 
+    print("Updating", resource_type)
+    c.execute('''UPDATE resource_type SET type = ? WHERE ID =?''', (category, resource_typeID))
+    db.commit()
+    
+def delete_resource_type():
+    resource_typeID = get_resource_typeID()
+    c.execute('''DELETE FROM resource_type WHERE ID = ?''', (resource_typeID,))
+    print("Deleting item: ", resource_typeID)
+    db.commit()
