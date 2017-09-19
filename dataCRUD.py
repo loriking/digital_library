@@ -261,7 +261,7 @@ def list_resources():
 def get_resourceID():
     ''' Returns the ID (PK) of a given resource'''
     title = input("Enter Title:\t")
-    title = title.title()
+    
     c.execute('''SELECT ID FROM resource WHERE title = ? ''', (title,))
     resourceID = c.fetchone()[0]
     print(title, "has ID of ", resourceID)
@@ -270,13 +270,13 @@ def get_resourceID():
 def get_resource():
     ''' Returns resource  details from ID'''
     resourceID = input("Enter ID for resource desired:\t")
-    c.execute('''SELECT title, pubyear, pages, languageID, typeID, 
+    c.execute('''SELECT title, year, pages, languageID, resource_typeID, 
               publisherID, abstract FROM resource WHERE ID = ?''', (resourceID,))
     return c.fetchall()[0]
 
 
 def delete_resource():
     resourceID = get_resourceID()
-    c.execute('''DELETE FROM resources WHERE ID = ?''', (resourceID,))
+    c.execute('''DELETE FROM resource WHERE ID = ?''', (resourceID,))
     print("Deleting item: ", resourceID)
     db.commit()
