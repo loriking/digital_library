@@ -363,3 +363,21 @@ def delete_resource_type():
     c.execute('''DELETE FROM resource_type WHERE ID = ?''', (resource_typeID,))
     print("Deleting item: ", resource_typeID)
     db.commit()
+
+# Project CRUD functions
+
+def add_project():
+    ''' Adds item to SQL database'''
+    
+    project_name = input("Title:\n")
+    project_category = get_project_categoryID()
+    
+    description = input("Description of item:\n")
+
+    date_start = input("Starting date:\n")
+    date_end = input("Projected completion date:\n")
+    
+    c.execute('''INSERT INTO projects(project_name, project_category, description, date_start, date_end ) VALUES(?,?,?,?,?)''', 
+              (project_name, project_category, description, date_start, date_end))
+    db.commit()
+
