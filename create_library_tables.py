@@ -74,9 +74,8 @@ CREATE TABLE resource (
 CREATE TABLE projects (
     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
     project_name TEXT,
-    languageID INTEGER REFERENCES languages(ID),
-    resource_typeID INTEGER REFERENCES resource_type(ID),
-    abstract TEXT,
+    project_type INTEGER REFERENCES project_category(ID),
+    description TEXT,
     date_start DATE, 
     date_end DATE 
     );
@@ -92,7 +91,8 @@ CREATE TABLE RESOURCE_KEYWORDS(
     resourceID INTEGER,
     keywordID INTEGER,
     primary key (resourceID, keywordID)
-    );    
+    );
+
     
 CREATE TABLE reading_now(
     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
