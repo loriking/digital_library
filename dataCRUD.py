@@ -171,7 +171,7 @@ def update_author():
     authorID = get_authorID()
     author = input("Correction:\t") 
     print("Updating", author)
-    c.execute('''UPDATE authors SET author = ? WHERE ID =?''', (author, authorID))
+    c.execute('''UPDATE authors SET name = ? WHERE ID =?''', (author, authorID))
     db.commit()
     
 def delete_author():
