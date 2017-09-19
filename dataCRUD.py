@@ -114,12 +114,10 @@ def delete_keyword():
 
 def add_author():
     ''' Adds author to SQL database'''
-    first_name = input("Author first name:\t")
-    last_name = input("Author last name:\t")
+    name = input("Author full name:\t")
+    name = name.title()
     
-    first_name = first_name.title()
-    last_name = last_name.title()
-    c.execute('''INSERT INTO authors(first_name, last_name) VALUES(?, ?)''', (first_name, last_name))
+    c.execute('''INSERT INTO authors(name) VALUES(?)''', (name,))
     db.commit()
     
 def list_authors():
