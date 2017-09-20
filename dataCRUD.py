@@ -251,12 +251,6 @@ def add_resource():
 
 
 
-
-
-
-
-
-
 def list_resources():
     ''' Returns all the resources from database'''
     c.execute('''SELECT * FROM resource''')
@@ -273,14 +267,15 @@ def get_resourceID():
     resourceID = c.fetchone()[0]
     print(title, "has ID of ", resourceID)
     return resourceID
-    
-def get_resource():
-    ''' Returns resource  details from ID'''
-    resourceID = input("Enter ID for resource desired:\t")
-    c.execute('''SELECT title, year, pages, languageID, resource_typeID, 
-              publisherID, abstract FROM resource WHERE ID = ?''', (resourceID,))
-    return c.fetchall()[0]
 
+
+def get_resource(resourceID):
+    ''' Returns resource  details from ID'''
+
+    c.execute('''SELECT title, year, pages, languageID, resource_typeID, 
+               publisherID, abstract FROM resource WHERE ID = ?''', (resourceID,))
+
+    return c.fetchall()[0]
 
 def modify_resource(ID=None, title=None, year=None, pages=None, languageID=None,
                     resource_typeID=None, publisherID=None, abstract=None):
