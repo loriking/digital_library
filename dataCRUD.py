@@ -8,7 +8,7 @@ Created on Sep 15, 2017
 '''
 import sqlite3 as sql
 
-db = sql.connect('library_data2.db')
+db = sql.connect('library_data.db')
 c = db.cursor()
 
 
@@ -246,8 +246,15 @@ def add_resource():
     
     c.execute('''INSERT INTO resource(title, year, pages, languageID, resource_typeID, 
                                    publisherID, abstract) VALUES(?,?,?,?,?,?,?)''', 
-              (title, year, pages, languageID, resource_typeID, publisherID,abstract,))
+              (title, year, pages, languageID, resource_typeID, publisherID,abstract))
     db.commit()
+
+
+
+
+
+
+
 
 
 def list_resources():
@@ -274,6 +281,36 @@ def get_resource():
               publisherID, abstract FROM resource WHERE ID = ?''', (resourceID,))
     return c.fetchall()[0]
 
+
+def modify_resource(ID=None, title=None, year=None, pages=None, languageID=None,
+                    resource_typeID=None, publisherID=None, abstract=None):
+    ''' Modifies resource'''
+
+    ID = input("Enter resource ID number:\t")
+
+    fields = get_resource(ID)
+
+    if not title:
+        title = fields[0]
+    if not year:
+        year = fields[1]
+    if not pages:
+        pages = fields[2]
+    if not languageID:
+        languageID = fields[3]
+    if not resource_typeID:
+        resource_typeID = fields[4]
+    if not publisherID:
+        publisherID = fields[5]
+    if not abstract:
+        abstract = fields[6]
+    c.execute(''' UPDATE resource 
+        SET title = ?, year = ?, pages = ?, languageID = ?, resource_typeID = ?, 
+            publisherID = ?, abstract = ?
+        WHERE ID = ? ''', (title, year, pages, languageID, resource_typeID,
+                           publisherID, abstract, ID))
+
+    db.commit()
 
 def delete_resource():
     resourceID = get_resourceID()
