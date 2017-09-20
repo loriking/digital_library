@@ -1,8 +1,7 @@
 # digital_library
-An app to keep track of ebooks, music, videos, code projects, etc. Implemented in python.
+A small program to keep track of projects and resources (books, websites, videos, tutorials, etc.)
 
-A work in progress. 
+Implemented in python.
 
-logic level: Add CRUD functions
 
-UI: Design and code UI
+A work in progress.  Motivated by a desire to become more organized and to develop code skills.
