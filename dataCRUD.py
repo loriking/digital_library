@@ -83,10 +83,7 @@ def add_keyword():
 
 
 def list_keyword():
-    """
-
-    :return:  all the keywords from database
-    """
+    """ return:  all the keywords from database     """
 
     c.execute('''SELECT * FROM keywords''')
     results = c.fetchall()
@@ -96,10 +93,7 @@ def list_keyword():
 
 
 def get_keywordID():
-    """
-
-    :return: the ID (PK) of a given keyword
-    """
+    """ return: the ID (PK) of a given keyword    """
 
     keyword = input("Enter keyword:\t")
     keyword = keyword.title()
@@ -110,10 +104,7 @@ def get_keywordID():
 
 
 def get_keyword():
-    """
-
-    :return: keyword from ID
-    """
+    """ return: keyword from ID    """
 
     keywordID = input("Enter ID for keyword desired:\t")
     c.execute('''SELECT keyword FROM keywords WHERE ID = ?''', (keywordID,))
@@ -138,10 +129,7 @@ def delete_keyword():
 # AUTHOR CRUD
 
 def add_author():
-    """
-
-    Adds author to SQL databas3
-    """
+    """    Adds author to SQL databas3    """
 
     name = input("Author full name:\t")
 
@@ -150,10 +138,7 @@ def add_author():
 
 
 def list_authors():
-    """
-
-    :return: all the author from database
-    """
+    """    :return: all the author from database    """
 
     c.execute('''SELECT * FROM authors''')
     results = c.fetchall()
@@ -163,11 +148,8 @@ def list_authors():
 
 
 def find_author():
-    """
-
-    :return: Searches for author based on partial match
-    """
-    ""
+    """ return: Searches for author based on partial match  """
+  
     # TODO ADD Return statement
 
     name = input("Name:")
@@ -180,11 +162,7 @@ def find_author():
 
 
 def get_authorID():
-    """
-
-    :return: the ID (PK) of a given author
-    """
-
+    """     :return: the ID (PK) of a given author    """
 
     name = input("Enter name:\t")
 
@@ -198,11 +176,7 @@ def get_authorID():
 
 
 def get_author():
-    """
-
-    :return: author from ID
-    """
-
+    """ return: author from ID    """
 
     authorID = input("Enter ID for author desired:\t")
     c.execute('''SELECT name FROM authors WHERE ID = ?''', (authorID,))
@@ -236,6 +210,7 @@ def delete_author():
 
 def add_publisher():
     """ Adds publisher to SQL database"""
+    
     publisher = input("publisher:\t")
 
     c.execute('''INSERT INTO publishers(publisher) VALUES(?)''', (publisher,))
@@ -244,6 +219,7 @@ def add_publisher():
 
 def list_publishers():
     """ Returns all the publisher from database"""
+    
     c.execute('''SELECT * FROM publishers''')
     results = c.fetchall()
     for i in results:
@@ -253,6 +229,7 @@ def list_publishers():
 
 def get_publisherID():
     """ Returns the ID (PK) of a given publisher"""
+    
     publisher = input("Enter publisher:\t")
 
     c.execute('''SELECT ID FROM publishers WHERE publisher = ? ''', (publisher,))
@@ -308,6 +285,7 @@ def add_resource():
 
 def list_resources():
     """ Returns all the resources from database"""
+    
     c.execute('''SELECT * FROM resource''')
     results = c.fetchall()
     for i in results:
@@ -317,6 +295,7 @@ def list_resources():
 
 def get_resourceID():
     """ Returns the ID (PK) of a given resource"""
+    
     title = input("Enter Title:\t")
 
     c.execute('''SELECT ID FROM resource WHERE title = ? ''', (title,))
@@ -356,6 +335,7 @@ def modify_resource(ID=None, title=None, year=None, pages=None, languageID=None,
         publisherID = fields[5]
     if not abstract:
         abstract = fields[6]
+        
     c.execute(''' UPDATE resource 
         SET title = ?, year = ?, pages = ?, languageID = ?, resource_typeID = ?, 
             publisherID = ?, abstract = ?
@@ -482,6 +462,23 @@ def delete_resource_type():
     db.commit()
 
 
+# Project Category CRUD functions
+def add_project_category():
+
+    c.execute('''INSERT INTO project_category(category) VALUES(?)''', (category,))
+    db.commit()
+
+def get_project_categoryID():
+    pass
+
+def get_project_category():
+    pass
+
+def update_project_category():
+    pass
+
+def delete_project_category():
+    pass
 
 # Project CRUD functions
 
@@ -500,3 +497,11 @@ def add_project():
         '''INSERT INTO projects(project_name, project_category, description, date_start, date_end ) VALUES(?,?,?,?,?)''',
         (project_name, project_category, description, date_start, date_end))
     db.commit()
+
+def get_projectID():
+    pass
+
+def update_project():
+    pass
+
+def
