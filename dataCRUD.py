@@ -501,7 +501,15 @@ def add_project():
 def get_projectID():
     pass
 
+def list_projects():
+    pass
+
+def get_project(projectID):
+    pass
+
 def update_project():
     pass
 
-def
+def delete_project(projectID):
+    pass
+
