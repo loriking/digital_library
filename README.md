@@ -4,4 +4,6 @@ A small program to keep track of projects and resources (books, websites, videos
 Implemented in python.
 
 
-A work in progress.  Motivated by a desire to become more organized and to develop code skills.
+A work in progress.  
+
+Motivated by a desire to become better organized and to develop code skills.
