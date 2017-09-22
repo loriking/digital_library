@@ -17,7 +17,7 @@ DROP TABLE IF EXISTS languages;
 DROP TABLE IF EXISTS keywords;
 DROP TABLE IF EXISTS authors;
 DROP TABLE IF EXISTS publishers;
-DROP TABLE IF EXISTS resource_type;
+DROP TABLE IF EXISTS resource_format;
 DROP TABLE IF EXISTS project_category;
 DROP TABLE IF EXISTS resource;
 
@@ -34,9 +34,9 @@ CREATE TABLE languages (
     language TEXT
     );
 
-CREATE TABLE resource_type (
+CREATE TABLE resource_medium (
     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-    type TEXT UNIQUE
+    medium TEXT UNIQUE
     );
 
 CREATE TABLE project_category(
@@ -65,7 +65,7 @@ CREATE TABLE resource (
     year INTEGER,
     pages INTEGER,
     languageID INTEGER REFERENCES languages(ID),
-    resource_typeID INTEGER REFERENCES resource_type(ID),
+    mediaID INTEGER REFERENCES resource_medium(ID),
     publisherID INTEGER REFERENCES publishers(ID),
     abstract TEXT
     );
