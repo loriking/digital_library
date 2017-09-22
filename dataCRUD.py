@@ -502,11 +502,17 @@ def list_projects():
 
 
 def get_project(projectID):
-    pass
+    c.execute('''SELECT project_name, description, date_start, date_end 
+            FROM projects JOIN project_category 
+            ON project_category = project_category.ID 
+            WHERE projects.ID = ? ''', (projectID,))
+    return c.fetchall()
+
 
 def update_project():
     pass
 
 def delete_project(projectID):
-    pass
+    c.execute(''' DELETE from projects WHERE projects.ID = ?''', (projectID,))
+    db.commit()
 
