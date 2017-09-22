@@ -357,7 +357,7 @@ def delete_resource():
     db.commit()
 
 
-# PROJECT TYPE CRUD
+# PROJECT Category CRUD
 
 def add_project_category():
     """  Adds project_type to database    """
@@ -467,23 +467,6 @@ def delete_resource_type():
     db.commit()
 
 
-# Project Category CRUD functions
-def add_project_category():
-
-    c.execute('''INSERT INTO project_category(category) VALUES(?)''', (category,))
-    db.commit()
-
-def get_project_categoryID():
-    pass
-
-def get_project_category():
-    pass
-
-def update_project_category():
-    pass
-
-def delete_project_category():
-    pass
 
 # Project CRUD functions
 
@@ -504,10 +487,19 @@ def add_project():
     db.commit()
 
 def get_projectID():
-    pass
+    """ Returns the ID of a given project """
+    c.execute('''SELECT ID FROM project WHERE project_name = ?''', (project_name,))
+    return c.fetchall()
+
 
 def list_projects():
-    pass
+    """ :return list of projects """
+    c.execute('''SELECT project_name as Name, description as Description, date_start as Start, date_end as Finish
+            FROM projects JOIN project_category 
+            ON project_category = project_category.ID                
+            ''')
+    return c.fetchall()
+
 
 def get_project(projectID):
     pass
