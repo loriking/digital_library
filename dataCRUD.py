@@ -286,10 +286,15 @@ def add_resource():
 def list_resources():
     """ Returns all the resources from database"""
     
-    c.execute('''SELECT * FROM resource''')
+    c.execute('''SELECT resource.title, resource.year, resource.pages, publishers.publisher, 
+                    languages.language, resource_medium.medium
+                FROM resource JOIN languages JOIN publishers JOIN resource_medium
+                ON resource.languageID = languages.ID AND resource.mediaID = resource_medium.ID 
+                AND resource.publisherID = publishers.ID
+                ''')
+
+
     results = c.fetchall()
-    for i in results:
-        print(i)
     return results
 
 
