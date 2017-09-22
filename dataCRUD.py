@@ -272,14 +272,14 @@ def add_resource():
     year = input("Year:\n")
     pages = input("Number of pages:\n")
     languageID = get_languageID()
-    resource_typeID = input("type:\n")
+    mediaID = input("type:\n")
     publisherID = get_publisherID()
 
     abstract = input("Description of item:\n")
 
-    c.execute('''INSERT INTO resource(title, year, pages, languageID, resource_typeID, 
+    c.execute('''INSERT INTO resource(title, year, pages, languageID, mediaID, 
                                    publisherID, abstract) VALUES(?,?,?,?,?,?,?)''',
-              (title, year, pages, languageID, resource_typeID, publisherID, abstract))
+              (title, year, pages, languageID, mediaID, publisherID, abstract))
     db.commit()
 
 
@@ -312,14 +312,14 @@ def get_resourceID():
 def get_resource(resourceID):
     """ Returns resource  details from ID"""
 
-    c.execute('''SELECT title, year, pages, languageID, resource_typeID, 
+    c.execute('''SELECT title, year, pages, languageID, mediaID, 
                publisherID, abstract FROM resource WHERE ID = ?''', (resourceID,))
 
     return c.fetchall()[0]
 
 
 def modify_resource(ID=None, title=None, year=None, pages=None, languageID=None,
-                    resource_typeID=None, publisherID=None, abstract=None):
+                    mediaID=None, publisherID=None, abstract=None):
     """ Modifies resource"""
 
     ID = input("Enter resource ID number:\t")
@@ -334,17 +334,17 @@ def modify_resource(ID=None, title=None, year=None, pages=None, languageID=None,
         pages = fields[2]
     if not languageID:
         languageID = fields[3]
-    if not resource_typeID:
-        resource_typeID = fields[4]
+    if not mediaID:
+        mediaID = fields[4]
     if not publisherID:
         publisherID = fields[5]
     if not abstract:
         abstract = fields[6]
         
     c.execute(''' UPDATE resource 
-        SET title = ?, year = ?, pages = ?, languageID = ?, resource_typeID = ?, 
+        SET title = ?, year = ?, pages = ?, languageID = ?, mediaID = ?, 
             publisherID = ?, abstract = ?
-        WHERE ID = ? ''', (title, year, pages, languageID, resource_typeID,
+        WHERE ID = ? ''', (title, year, pages, languageID, mediaID,
                            publisherID, abstract, ID))
 
     db.commit()
