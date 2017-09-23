@@ -28,8 +28,7 @@ def list_languages():
 
     c.execute('''SELECT * FROM languages''')
     results = c.fetchall()
-    for i in results:
-        print(i)
+    
     return results
 
 
@@ -93,7 +92,7 @@ def list_keyword():
 
 
 def get_keywordID():
-    """ return: the ID (PK) of a given keyword    """
+    """ return: the ID of a given keyword    """
 
     keyword = input("Enter keyword:\t")
     keyword = keyword.title()
@@ -129,7 +128,7 @@ def delete_keyword():
 # AUTHOR CRUD
 
 def add_author():
-    """    Adds author to SQL databas3    """
+    """    Adds author to SQL database    """
 
     name = input("Author full name:\t")
 
@@ -149,8 +148,6 @@ def list_authors():
 
 def find_author():
     """ return: Searches for author based on partial match  """
-  
-    # TODO ADD Return statement
 
     name = input("Name:")
     search = "%" + name + "%"
@@ -160,9 +157,11 @@ def find_author():
     for i in matches:
         print(i)
 
+    return matches
+
 
 def get_authorID():
-    """     :return: the ID (PK) of a given author    """
+    """     :return: the ID of a given author    """
 
     name = input("Enter name:\t")
 
@@ -260,6 +259,53 @@ def delete_publisher():
     publisherID = get_publisherID()
     c.execute('''DELETE FROM publishers WHERE ID = ?''', (publisherID,))
     # print("Deleting item: ", publisherID)
+    db.commit()
+
+
+# RESOURCE medium CRUD
+def list_resource_medium():
+    """ return: all the resource types from database    """
+
+    c.execute('''SELECT * FROM resource_medium''')
+    results = c.fetchall()
+    for i in results:
+        print(i)
+    return results
+
+
+def get_resource_mediumID():
+    """ Returns the ID (PK) of a given resource medium"""
+
+    resource_medium = input("Enter resource type:\t")
+
+    c.execute('''SELECT ID FROM resource_medium WHERE medium = ? ''', (resource_medium,))
+    resource_mediumID = c.fetchone()[0]
+    print(resource_medium, "has ID of ", resource_mediumID)
+    return resource_mediumID
+
+
+def get_resource_type(resource_mediumID):
+    """ Returns resource medium from ID"""
+
+    c.execute('''SELECT medium FROM resource_medium WHERE ID = ?''', (resource_mediumID,))
+
+    medium = c.fetchall()[0]
+    medium = resource_type[0]
+    return medium
+
+
+def update_resource_medium():
+    resource_mediumID = get_resource_mediumID()
+    medium = input("Correction:\t")
+    print("Updating", medium)
+    c.execute('''UPDATE resource_medium SET medium = ? WHERE ID =?''', (medium, resource_mediumID))
+    db.commit()
+
+
+def delete_resource_medium():
+    resource_mediumID = get_resource_mediumIDID()
+    c.execute('''DELETE FROM resource_medium WHERE ID = ?''', (resource_mediumID,))
+    print("Deleting item: ", resource_mediumID)
     db.commit()
 
 
@@ -417,55 +463,6 @@ def delete_project_category():
     c.execute('''DELETE FROM project_category WHERE ID = ?''', (project_categoryID,))
     print("Deleting item: ", project_category)
     db.commit()
-
-
-# RESOURCE type CRUD
-def list_resource_type():
-    """ return: all the resource types from database    """
-
-    c.execute('''SELECT * FROM resource_type''')
-    results = c.fetchall()
-    for i in results:
-        print(i)
-    return results
-
-
-def get_resource_typeID():
-    """ Returns the ID (PK) of a given resource type"""
-
-    resource_type = input("Enter resource type:\t")
-
-    c.execute('''SELECT ID FROM resource_type WHERE type = ? ''', (resource_type,))
-    resource_typeID = c.fetchone()[0]
-    print(resource_type, "has ID of ", resource_typeID)
-    return resource_typeID
-
-
-def get_resource_type():
-    """ Returns resource type from ID"""
-
-    resource_typeID = input("Enter ID for resource type desired:\t")
-    c.execute('''SELECT type FROM resource_type WHERE ID = ?''', (resource_typeID,))
-
-    resource_type = c.fetchall()[0]
-    resource_type = resource_type[0]
-    return resource_type
-
-
-def update_resource_type():
-    resource_typeID = get_resource_typeID()
-    resource_type = input("Correction:\t")
-    print("Updating", resource_type)
-    c.execute('''UPDATE resource_type SET type = ? WHERE ID =?''', (category, resource_typeID))
-    db.commit()
-
-
-def delete_resource_type():
-    resource_typeID = get_resource_typeID()
-    c.execute('''DELETE FROM resource_type WHERE ID = ?''', (resource_typeID,))
-    print("Deleting item: ", resource_typeID)
-    db.commit()
-
 
 
 # Project CRUD functions
