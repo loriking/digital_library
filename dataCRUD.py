@@ -506,8 +506,30 @@ def get_project(projectID):
     return c.fetchall()
 
 
-def update_project():
-    pass
+def update_project(ID = None, project_name = None, project_category = None, description = None, date_start = None, date_end = None):
+
+    projectID = input("Enter Project ID number:\t")
+
+    fields = get_project(projectID)
+
+    
+    if not project_name:
+        project_name  = fields[0]
+    if not project_category:
+        project_category = fields[1]
+    if not description:
+        description = fields[2]
+    if not date_start:
+        date_start = fields[3]
+    if not date_end:
+        date_end = fields[4]
+        
+    c.execute(''' UPDATE project SET project_name = ?, project_category = ?,  description = ?, date_start = ?, date_end = ?, 
+            publisherID = ?, abstract = ?
+            WHERE ID = ? ''', (project_name, project_category, description, date_start, date_end, ID))
+
+    db.commit()
+    
 
 def delete_project(projectID):
     c.execute(''' DELETE from projects WHERE projects.ID = ?''', (projectID,))
