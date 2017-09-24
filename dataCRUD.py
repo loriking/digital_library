@@ -290,7 +290,7 @@ def get_resource_type(resource_mediumID):
     c.execute('''SELECT medium FROM resource_medium WHERE ID = ?''', (resource_mediumID,))
 
     medium = c.fetchall()[0]
-    medium = resource_type[0]
+    medium = medium[0]
     return medium
 
 
@@ -303,7 +303,7 @@ def update_resource_medium():
 
 
 def delete_resource_medium():
-    resource_mediumID = get_resource_mediumIDID()
+    resource_mediumID = get_resource_mediumID()
     c.execute('''DELETE FROM resource_medium WHERE ID = ?''', (resource_mediumID,))
     print("Deleting item: ", resource_mediumID)
     db.commit()
