@@ -500,18 +500,18 @@ def get_projectID():
 
 def list_projects():
     """ :return list of projects """
-    c.execute('''SELECT project_name as Name, description as Description, date_start as Start, date_end as Finish
+    c.execute('''SELECT project_name, category, description, date_start, date_end
             FROM projects JOIN project_category 
-            ON project_category = project_category.ID                
-            ''')
+            ON projects.project_category = project_category.ID           
+                ''')
     return c.fetchall()
 
 
 def get_project(projectID):
-    c.execute('''SELECT project_name, description, date_start, date_end 
-            FROM projects JOIN project_category 
-            ON project_category = project_category.ID 
-            WHERE projects.ID = ? ''', (projectID,))
+    c.execute('''SELECT project_name, category, description, date_start, date_end 
+                FROM projects JOIN project_category 
+                ON projects.project_category = project_category.ID 
+                WHERE projects.ID = ? ''', (projectID,))
     return c.fetchall()
 
 
