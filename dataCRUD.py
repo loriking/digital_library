@@ -260,6 +260,10 @@ def delete_publisher():
 
 
 # RESOURCE medium CRUD
+def add_resource_medium(medium):
+    c.execute("INSERT OR IGNORE INTO resource_medium(medium) VALUES = ?", (medium,))
+    db.commit()
+
 def list_resource_medium():
     """ return: all the resource types from database    """
 
@@ -321,7 +325,10 @@ def add_resource():
     c.execute("SELECT ID FROM languages WHERE language = ?", (language,))
     languageID = c.fetchone()[0]
 
-    mediaID = input("type:\n")
+    medium = input("Type of resource (medium):\t")
+    add_resource_medium(medium)
+    c.execute("SELECT ID FROM resource_medium WHERE medium = ?", (medium,))
+    mediaID = c.fetchone()[0]
 
     publisher = input("Publisher:\t")
     add_publisher(publisher)
