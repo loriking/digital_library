@@ -31,7 +31,7 @@ DROP TABLE IF EXISTS reading_now;
 
 CREATE TABLE languages (
     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-    language TEXT
+    language TEXT UNIQUE
     );
 
 CREATE TABLE resource_medium (
@@ -46,17 +46,17 @@ CREATE TABLE project_category(
     
 CREATE TABLE keywords (
     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-    keyword TEXT
+    keyword TEXT UNIQUE
     );
     
 CREATE TABLE authors (
     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-    name TEXT
+    name TEXT UNIQUE
     );
 
 CREATE TABLE publishers (
     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-    publisher TEXT
+    publisher TEXT UNIQUE
     );
 
 CREATE TABLE resource (
