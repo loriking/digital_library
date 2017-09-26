@@ -19,7 +19,7 @@ def add_language():
 
     language = input("Language:\t")
     language = language.title()
-    c.execute('''INSERT INTO languages(language) VALUES(?)''', (language,))
+    c.execute('''INSERT OR IGNORE INTO languages(language) VALUES(?)''', (language,))
     db.commit()
 
 
@@ -32,11 +32,9 @@ def list_languages():
     return results
 
 
-def get_languageID():
+def get_languageID(language):
     """ return: the ID (PK) of a given language    """
 
-    language = input("Enter language:\t")
-    language = language.title()
     c.execute('''SELECT ID FROM languages WHERE language = ? ''', (language,))
 
     langID = c.fetchall()[0]
@@ -319,7 +317,16 @@ def add_resource():
 
     year = input("Year:\n")
     pages = input("Number of pages:\n")
-    languageID = get_languageID()
+
+    try:
+        language = input("Language of resource:\t")
+        languageID = get_languageID(language)
+
+    except IndexError:
+        add_language()
+        c.execute("SELECT ID FROM languages WHERE language = ?", (language,))
+        languageID = c.fetchone()[0]
+
     mediaID = input("type:\n")
     publisherID = get_publisherID()
 
