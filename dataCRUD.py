@@ -430,9 +430,16 @@ def get_project_categoryID():
 
     project_category = input("Enter Project type:\t")
 
-    c.execute('''SELECT ID FROM project_category WHERE category = ? ''', (project_category,))
+    try:
+        c.execute('''SELECT ID FROM project_category WHERE category = ? ''', (project_category,))
+        project_categoryID = c.fetchone()[0]
 
-    project_categoryID = c.fetchone()[0]
+    except TypeError:
+        c.execute('''INSERT OR IGNORE INTO project_category(category) VALUES(?)''', (project_category,))
+        db.commit()
+
+        c.execute('''SELECT ID FROM project_category WHERE category = ? ''', (project_category,))
+        project_categoryID = c.fetchone()[0]
 
     print(project_category, "has ID of ", project_categoryID)
     return project_categoryID
