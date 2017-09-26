@@ -134,6 +134,7 @@ def add_author():
 
     c.execute("INSERT OR IGNORE INTO authors(name) VALUES(?)", (name,))
     db.commit()
+    return name
 
 
 def list_authors():
@@ -314,7 +315,8 @@ def delete_resource_medium():
 def add_resource():
     """ Adds item to SQL database"""
 
-    title = input("Title:\n")
+    resource_title = input("Title:\n")
+
     year = input("Year:\n")
     pages = input("Number of pages:\n")
     languageID = get_languageID()
@@ -324,8 +326,22 @@ def add_resource():
     abstract = input("Description of item:\n")
 
     c.execute('''INSERT INTO resource(title, year, pages, languageID, mediaID, 
-                                   publisherID, abstract) VALUES(?,?,?,?,?,?,?)''',
-              (title, year, pages, languageID, mediaID, publisherID, abstract))
+                                       publisherID, abstract) VALUES(?,?,?,?,?,?,?)''',
+              (resource_title, year, pages, languageID, mediaID, publisherID, abstract))
+    c.execute("SELECT ID FROM resource WHERE title = ?", (resource_title,))
+    resourceID = c.fetchone()[0]
+
+    number_of_authors = int(input("Number of authors:\t"))
+
+    if number_of_authors != 0:
+        while number_of_authors > 0:
+            name = add_author()
+            c.execute("SELECT ID FROM authors WHERE name = ?", (name,))
+            authorID = c.fetchone()[0]
+
+            c.execute("INSERT OR IGNORE INTO  RESOURCE_AUTHOR VALUES(?,?)", (resourceID, authorID))
+            number_of_authors -= 1
+
     db.commit()
 
 
