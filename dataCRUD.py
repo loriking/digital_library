@@ -132,14 +132,14 @@ def add_author():
 
     name = input("Author full name:\t")
 
-    c.execute('''INSERT INTO authors(name) VALUES(?)''', (name,))
+    c.execute("INSERT OR IGNORE INTO authors(name) VALUES(?)", (name,))
     db.commit()
 
 
 def list_authors():
     """    :return: all the author from database    """
 
-    c.execute('''SELECT * FROM authors''')
+    c.execute("SELECT * FROM authors")
     results = c.fetchall()
     for i in results:
         print(i)
@@ -212,7 +212,7 @@ def add_publisher():
     
     publisher = input("publisher:\t")
 
-    c.execute('''INSERT INTO publishers(publisher) VALUES(?)''', (publisher,))
+    c.execute('''INSERT OR IGNORE INTO publishers(publisher) VALUES(?)''', (publisher,))
     db.commit()
 
 
@@ -419,8 +419,10 @@ def list_project_category():
 
     c.execute('''SELECT * FROM project_category''')
     results = c.fetchall()
-    for i in results:
-        print(i)
+    for row in results:
+        ID = row[0]
+        category = row[1]
+        print(ID, category)
 
     return results
 
