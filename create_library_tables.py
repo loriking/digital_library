@@ -51,17 +51,17 @@ CREATE TABLE keywords (
     
 CREATE TABLE authors (
     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-    name TEXT UNIQUE
+    name TEXT UNIQUE NOT NULL
     );
 
 CREATE TABLE publishers (
     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-    publisher TEXT UNIQUE
+    publisher TEXT UNIQUE NOT NULL
     );
 
 CREATE TABLE resource (
     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-    title TEXT UNIQUE,
+    title TEXT UNIQUE NOT NULL,
     year INTEGER,
     pages INTEGER,
     languageID INTEGER REFERENCES languages(ID),
@@ -72,7 +72,7 @@ CREATE TABLE resource (
 
 CREATE TABLE projects (
     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-    project_name TEXT,
+    project_name TEXT NOT NULL,
     project_category INTEGER REFERENCES project_category(ID),
     description TEXT,
     date_start DATE, 
