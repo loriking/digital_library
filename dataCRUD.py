@@ -455,13 +455,15 @@ def get_project_category():
 
 
 def update_project_category():
-    project_categoryID = get_project_typeID()
+    """ Modifies project category"""
 
-    project_type = input("Correction:\t")
+    project_categoryID = get_project_categoryID()
 
-    print("Updating", project_type)
+    project_category = input("Correction:\t")
 
-    c.execute('''UPDATE project_type SET category = ? WHERE ID =?''', (category, project_categoryID))
+    print("Updating", project_category)
+
+    c.execute('''UPDATE project_category SET category = ? WHERE ID =?''', (project_category, project_categoryID))
     db.commit()
 
 
