@@ -261,7 +261,7 @@ def delete_publisher():
 
 # RESOURCE medium CRUD
 def add_resource_medium(medium):
-    c.execute("INSERT OR IGNORE INTO resource_medium(medium) VALUES = ?", (medium,))
+    c.execute("INSERT OR IGNORE INTO resource_medium(medium) VALUES(?)", (medium,))
     db.commit()
 
 def list_resource_medium():
@@ -574,3 +574,14 @@ def delete_project(projectID):
     c.execute(''' DELETE from projects WHERE projects.ID = ?''', (projectID,))
     db.commit()
 
+def get_books_by_author():
+    author_name = input("Author's name:\t")
+    c.execute("""SELECT resource.title, resource.abstract
+                    FROM RESOURCE_AUTHOR JOIN resource JOIN authors
+                    ON resourceID = resource.ID AND authorID = authors.ID
+                    WHERE authors.name = ?""", (author_name,))
+    results = c.fetchall()
+    # print("Resources by " + author_name + ":")
+    # for item in results:
+    #     print(item)
+    return results
