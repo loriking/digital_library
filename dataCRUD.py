@@ -415,7 +415,7 @@ def add_project_category():
 
 
 def list_project_category():
-    """    :return: all the project types from database    """
+    """    :return: all the project categories from database    """
 
     c.execute('''SELECT * FROM project_category''')
     results = c.fetchall()
@@ -428,7 +428,7 @@ def list_project_category():
 def get_project_categoryID():
     """    :return: the ID (PK) of a given project_category'    """
 
-    project_category = input("Enter Project type:\t")
+    project_category = input("Enter Project category:\t")
 
     try:
         c.execute('''SELECT ID FROM project_category WHERE category = ? ''', (project_category,))
@@ -448,7 +448,7 @@ def get_project_categoryID():
 def get_project_category():
     """     return: project type from ID    """
 
-    project_categoryID = input("Enter ID for project type desired:\t")
+    project_categoryID = input("Enter ID for project category desired:\t")
     c.execute('''SELECT category FROM project_category WHERE ID = ?''', (project_categoryID,))
 
     return c.fetchall()[0]
@@ -459,7 +459,7 @@ def update_project_category():
 
     project_categoryID = get_project_categoryID()
 
-    project_category = input("Correction:\t")
+    project_category = input("Enter correction to project category:\t")
 
     print("Updating", project_category)
 
