@@ -206,10 +206,8 @@ def delete_author():
 
 # Publishers CRUD functions
 
-def add_publisher():
+def add_publisher(publisher):
     """ Adds publisher to SQL database"""
-    
-    publisher = input("publisher:\t")
 
     c.execute('''INSERT OR IGNORE INTO publishers(publisher) VALUES(?)''', (publisher,))
     db.commit()
@@ -318,17 +316,17 @@ def add_resource():
     year = input("Year:\n")
     pages = input("Number of pages:\n")
 
-    try:
-        language = input("Language of resource:\t")
-        languageID = get_languageID(language)
-
-    except IndexError:
-        add_language()
-        c.execute("SELECT ID FROM languages WHERE language = ?", (language,))
-        languageID = c.fetchone()[0]
+    language = input("Language of resource:\t")
+    add_language(language)
+    c.execute("SELECT ID FROM languages WHERE language = ?", (language,))
+    languageID = c.fetchone()[0]
 
     mediaID = input("type:\n")
-    publisherID = get_publisherID()
+
+    publisher = input("Publisher:\t")
+    add_publisher(publisher)
+    c.execute("SELECT ID FROM publishers WHERE publisher = ?", (publisher,))
+    publisherID = c.fetchone()[0]
 
     abstract = input("Description of item:\n")
 
