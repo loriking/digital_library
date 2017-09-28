@@ -26,7 +26,7 @@ def add_language():
 def list_languages():
     """    return: all the languages from database     """
 
-    c.execute('''SELECT * FROM languages''')
+    c.execute('''SELECT language FROM languages''')
     results = c.fetchall()
     
     return results
@@ -40,7 +40,6 @@ def get_languageID(language):
     langID = c.fetchall()[0]
     langID = langID[0]
 
-    print(language, "has ID of ", langID)
     return langID
 
 
@@ -64,7 +63,6 @@ def update_language():
 def delete_language():
     languageID = get_languageID()
     c.execute('''DELETE FROM languages WHERE ID = ?''', (languageID,))
-    print("Deleting item: ", languageID)
     db.commit()
 
 
@@ -82,7 +80,7 @@ def add_keyword():
 def list_keyword():
     """ return:  all the keywords from database     """
 
-    c.execute('''SELECT * FROM keywords''')
+    c.execute('''SELECT keyword FROM keywords''')
     results = c.fetchall()
     for i in results:
         print(i)
@@ -138,7 +136,7 @@ def add_author():
 def list_authors():
     """    :return: all the author from database    """
 
-    c.execute("SELECT * FROM authors")
+    c.execute("SELECT name FROM authors")
     results = c.fetchall()
     for i in results:
         print(i)
@@ -216,7 +214,7 @@ def add_publisher(publisher):
 def list_publishers():
     """ Returns all the publisher from database"""
     
-    c.execute('''SELECT * FROM publishers''')
+    c.execute('''SELECT publisher FROM publishers''')
     results = c.fetchall()
     for i in results:
         print(i)
@@ -267,7 +265,7 @@ def add_resource_medium(medium):
 def list_resource_medium():
     """ return: all the resource types from database    """
 
-    c.execute('''SELECT * FROM resource_medium''')
+    c.execute('''SELECT medium FROM resource_medium''')
     results = c.fetchall()
     for i in results:
         print(i)
@@ -445,7 +443,7 @@ def add_project_category():
 def list_project_category():
     """    :return: all the project categories from database    """
 
-    c.execute('''SELECT * FROM project_category''')
+    c.execute('''SELECT category FROM project_category''')
     results = c.fetchall()
     for row in results:
         ID = row[0]
