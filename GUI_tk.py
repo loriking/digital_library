@@ -91,23 +91,23 @@ class Addresource(tk.Frame):
         abstract_label = ttk.Label(topframe, text="Abstract", font = self.labelsfont)
         abstract_label.grid(column=0, row=8, padx=5, pady=5, sticky=tk.W)
 
-        title = tk.StringVar()
-        author_name = tk.StringVar()
-        publisher = tk.StringVar()
-        year = tk.IntVar()
-        pages = tk.IntVar()
-        resource_type = tk.StringVar()
-        language = tk.StringVar()
-        abstract = tk.StringVar()
+        self.title = tk.StringVar()
+        self.author_name = tk.StringVar()
+        self.publisher = tk.StringVar()
+        self.year = tk.IntVar()
+        self.pages = tk.IntVar()
+        self.resource_type = tk.StringVar()
+        self.language = tk.StringVar()
+        self.abstract = tk.StringVar()
 
-        title_entry = ttk.Entry(topframe, width = 40, textvariable = title)
-        author_entry = ttk.Entry(topframe, width=40, textvariable=author_name)
-        publisher_entry = ttk.Entry(topframe, width = 40, textvariable = publisher)
-        year_entry = ttk.Entry(topframe, width = 15, textvariable = year)
-        pages_entry = ttk.Entry(topframe, width = 15, textvariable = pages)
-        resource_type_entry = ttk.Entry(topframe, width = 40, textvariable = resource_type)
-        language_entry = ttk.Entry(topframe, width = 25, textvariable = language)
-        abstract_entry = ttk.Entry(topframe, width=40, textvariable=abstract)
+        title_entry = ttk.Entry(topframe, width = 40, textvariable = self.title)
+        author_entry = ttk.Entry(topframe, width=40, textvariable=self.author_name)
+        publisher_entry = ttk.Entry(topframe, width = 40, textvariable = self.publisher)
+        year_entry = ttk.Entry(topframe, width = 15, textvariable = self.year)
+        pages_entry = ttk.Entry(topframe, width = 15, textvariable = self.pages)
+        resource_type_entry = ttk.Entry(topframe, width = 40, textvariable = self.resource_type)
+        language_entry = ttk.Entry(topframe, width = 25, textvariable = self.language)
+        abstract_entry = ttk.Entry(topframe, width=40, textvariable=self.abstract)
 
         title_entry.grid(column=1, row=2, columnspan = 3, sticky=tk.W)
         author_entry.grid(column = 1, row = 1, columnspan = 3, sticky=tk.W)
@@ -117,6 +117,20 @@ class Addresource(tk.Frame):
         resource_type_entry.grid(column=1, row=5, columnspan = 3, sticky=tk.W)
         language_entry.grid(column=1, row=6, columnspan= 3, sticky=tk.W)
         abstract_entry.grid(column=1, row=8, columnspan=3, sticky=tk.W + tk.E)
+
+        save_button = tk.Button(topframe, text = 'Save', command=lambda : self.addresource())
+        save_button.grid(column=0, row=10)
+
+#def add_resource(title, year, pages, langid, mediaid, pubid, abstract):
+    def addauthor(self):
+        data.add_author(name)
+        pass
+
+    def addresource(self):
+
+        #title, author, publisher, year, pages, medium, language, abstract
+        data.add_resource(self.title.get(), self.author_name.get(),  self.publisher.get(), self.year.get(),
+                          self.pages.get(), self.resource_type.get(), self.language.get(), self.abstract.get())
 
 
 class Editresource(Addresource):
