@@ -14,10 +14,10 @@ c = db.cursor()
 
 
 # Languages C.R.U.D.
-def add_language():
+def add_language(language):
     """    Adds language to SQL database    """
 
-    language = input("Language:\t")
+    #language = input("Language:\t")
     language = language.title()
     c.execute('''INSERT OR IGNORE INTO languages(language) VALUES(?)''', (language,))
     db.commit()
@@ -123,14 +123,14 @@ def delete_keyword():
 
 # AUTHOR CRUD
 
-def add_author():
+def add_author(author_name):
     """    Adds author to SQL database    """
 
-    name = input("Author full name:\t")
+    #name = input("Author full name:\t")
 
-    c.execute("INSERT OR IGNORE INTO authors(name) VALUES(?)", (name,))
+    c.execute("INSERT OR IGNORE INTO authors(name) VALUES(?)", (author_name,))
     db.commit()
-    return name
+    return author_name
 
 
 def list_authors():
@@ -310,37 +310,45 @@ def delete_resource_medium():
 
 # Resource CRUD FUNCTIONS
 
-def add_resource():
+def add_resource(title, author, publisher, year, pages, medium, language, abstract):
     """ Adds item to SQL database"""
+    #resource_title = input("Title:\n")
 
-    resource_title = input("Title:\n")
+    #year = input("Year:\n")
+    #pages = input("Number of pages:\n")
 
-    year = input("Year:\n")
-    pages = input("Number of pages:\n")
+    #language = input("Language of resource:\t")
 
-    language = input("Language of resource:\t")
     add_language(language)
     c.execute("SELECT ID FROM languages WHERE language = ?", (language,))
     languageID = c.fetchone()[0]
 
-    medium = input("Type of resource (medium):\t")
+   # medium = input("Type of resource (medium):\t")
     add_resource_medium(medium)
     c.execute("SELECT ID FROM resource_medium WHERE medium = ?", (medium,))
     mediaID = c.fetchone()[0]
 
-    publisher = input("Publisher:\t")
+    #publisher = input("Publisher:\t")
     add_publisher(publisher)
     c.execute("SELECT ID FROM publishers WHERE publisher = ?", (publisher,))
     publisherID = c.fetchone()[0]
 
-    abstract = input("Description of item:\n")
+    #abstract = input("Description of item:\n")
 
     c.execute('''INSERT INTO resource(title, year, pages, languageID, mediaID, 
                                        publisherID, abstract) VALUES(?,?,?,?,?,?,?)''',
-              (resource_title, year, pages, languageID, mediaID, publisherID, abstract))
-    c.execute("SELECT ID FROM resource WHERE title = ?", (resource_title,))
+              (title, year, pages, languageID, mediaID, publisherID, abstract))
+    c.execute("SELECT ID FROM resource WHERE title = ?", (title,))
     resourceID = c.fetchone()[0]
 
+    add_author(author)
+    c.execute("SELECT ID FROM authors WHERE name = ?", (author,))
+    authorID = c.fetchone()[0]
+
+    c.execute("INSERT OR IGNORE INTO  RESOURCE_AUTHOR VALUES(?,?)", (resourceID, authorID))
+    db.commit()
+
+"""
     number_of_authors = int(input("Number of authors:\t"))
 
     if number_of_authors != 0:
@@ -351,8 +359,8 @@ def add_resource():
 
             c.execute("INSERT OR IGNORE INTO  RESOURCE_AUTHOR VALUES(?,?)", (resourceID, authorID))
             number_of_authors -= 1
-
-    db.commit()
+"""
+    #db.commit()
 
 
 def list_resources():
@@ -412,7 +420,7 @@ def modify_resource(ID=None, title=None, year=None, pages=None, languageID=None,
         publisherID = fields[5]
     if not abstract:
         abstract = fields[6]
-        
+
     c.execute(''' UPDATE resource 
         SET title = ?, year = ?, pages = ?, languageID = ?, mediaID = ?, 
             publisherID = ?, abstract = ?
