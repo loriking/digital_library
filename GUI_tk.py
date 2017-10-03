@@ -55,6 +55,58 @@ class Addresource(tk.Frame):
         topframe = ttk.LabelFrame(self, text = "", padding='0.2i', borderwidth=0)
         topframe.grid(column = 0, row = 2)
 
+        topframe = ttk.LabelFrame(self, text="", padding='0.2i', borderwidth=0)
+        topframe.grid(column=0, row=2)
+
+        title_label = ttk.Label(topframe, text="Title:")
+        title_label.grid(column=0, row=1, padx=5, pady=5, sticky=tk.W)
+
+        author_label = ttk.Label(topframe, text="Author:")
+        author_label.grid(column=0, row=2, padx=5, pady=5, sticky=tk.W)
+
+        publisher_label = ttk.Label(topframe, text="Publisher:")
+        publisher_label.grid(column = 0, row = 3, padx = 5, pady = 5, sticky = tk.W)
+
+        year_label = ttk.Label(topframe, text="Year: ")
+        year_label.grid(column = 0, row=4, padx = 5, pady = 5, sticky=tk.W)
+
+        page_label = ttk.Label(topframe, text="Pages: ")
+        page_label.grid(column = 2, row = 4, padx = 5, pady = 5, sticky = tk.W)
+
+        resource_type_label = ttk.Label(topframe, text="Resource Type: ")
+        resource_type_label.grid(column = 0, row = 5, padx = 5, pady = 5,sticky = tk.W)
+
+        language_label = ttk.Label(topframe, text = "Language: ")
+        language_label.grid(column = 0, row = 6, padx = 5, pady = 5,sticky = tk.W)
+
+        new_language = ttk.Button(topframe, text="Add Language")
+        # command = lambda: )
+        new_language.grid(column=1, row=7, sticky=tk.W)
+
+        author_name = tk.StringVar()
+        title = tk.StringVar()
+        publisher = tk.StringVar()
+        year = tk.IntVar()
+        pages = tk.IntVar()
+        resource_type = tk.StringVar()
+        language = tk.StringVar()
+
+        author_entry = ttk.Entry(topframe, width = 40, textvariable = author_name)
+        title_entry = ttk.Entry(topframe, width = 40, textvariable = title)
+        publisher_entry = ttk.Entry(topframe, width = 40, textvariable = publisher)
+        year_entry = ttk.Entry(topframe, width = 40, textvariable = year)
+        pages_entry = ttk.Entry(topframe, width = 40, textvariable = pages)
+        resource_type_entry = ttk.Entry(topframe, width = 40, textvariable = resource_type)
+        language_entry = ttk.Entry(topframe, width = 40, textvariable = language)
+
+        author_entry.grid(column = 1, row = 1, sticky=tk.W)
+        title_entry.grid(column = 1, row = 2, sticky=tk.W)
+        publisher_entry.grid(column = 1, row = 3, sticky=tk.W)
+        year_entry.grid(column= 1, row=4, sticky=tk.W)
+        pages_entry.grid(column=3, row=4, sticky=tk.W)
+        resource_type_entry.grid(column=1, row=5, sticky=tk.W)
+        language_entry.grid(column=1, row=6, sticky=tk.W)
+
 
 
 class Addproject(tk.Frame):
