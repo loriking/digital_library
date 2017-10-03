@@ -61,7 +61,7 @@ class Addresource(tk.Frame):
         title_label = ttk.Label(topframe, text="Title:")
         title_label.grid(column=0, row=1, padx=5, pady=5, sticky=tk.W)
 
-        author_label = ttk.Label(topframe, text="Author:")
+        author_label = ttk.Label(topframe, text="Author(s):")
         author_label.grid(column=0, row=2, padx=5, pady=5, sticky=tk.W)
 
         publisher_label = ttk.Label(topframe, text="Publisher:")
@@ -82,6 +82,9 @@ class Addresource(tk.Frame):
         new_language = ttk.Button(topframe, text="Add Language")
         # command = lambda: )
         new_language.grid(column=1, row=7, sticky=tk.W)
+
+        abstract_label = ttk.Label(topframe, text="Abstract: ")
+        abstract_label.grid(column=0, row=9, padx=5, pady=5, sticky=tk.W)
 
         author_name = tk.StringVar()
         title = tk.StringVar()
