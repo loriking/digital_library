@@ -49,38 +49,42 @@ class Addresource(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
-        label = tk.Label(self, text = "Resources")
+        headlabelfont = ('times', 20, 'bold')
+        labelsfont = ('times', 12, 'bold')
+
+        label = tk.Label(self, text = "New Resource", font = headlabelfont)
         label.grid(row = 0, column = 0, columnspan = 4, pady = 10, padx  =10)
 
         topframe = ttk.LabelFrame(self, text = "", padding='0.2i', borderwidth=0)
         topframe.grid(column = 0, row = 2)
 
-        title_label = ttk.Label(topframe, text="Title:")
+        title_label = ttk.Label(topframe, text="Title", font = labelsfont)
         title_label.grid(column=0, row=1, padx=5, pady=5,  sticky=tk.W)
 
-        author_label = ttk.Label(topframe, text="Author(s):")
+        author_label = ttk.Label(topframe, text="Author(s)", font = labelsfont)
         author_label.grid(column=0, row=2, padx=5, pady=5,  sticky=tk.W)
 
-        publisher_label = ttk.Label(topframe, text="Publisher:")
+        publisher_label = ttk.Label(topframe, text="Publisher", font = labelsfont)
         publisher_label.grid(column = 0, row = 3, padx = 5, pady = 5,  sticky = tk.W)
 
-        year_label = ttk.Label(topframe, text="Year: ")
+        year_label = ttk.Label(topframe, text="Year", font = labelsfont)
         year_label.grid(column=0, row=4, padx=5, pady=5,   sticky=tk.W)
 
-        page_label = ttk.Label(topframe, text="Pages: ")
+        page_label = ttk.Label(topframe, text="Pages", font = labelsfont)
         page_label.grid(column=2, row=4, padx=5, pady=5, sticky=tk.W)
 
-        resource_type_label = ttk.Label(topframe, text="Resource Type: ")
+        resource_type_label = ttk.Label(topframe, text="Resource Type", font = labelsfont)
         resource_type_label.grid(column = 0, row = 5, padx = 5, pady = 5,sticky = tk.W)
 
-        language_label = ttk.Label(topframe, text = "Language: ")
+        language_label = ttk.Label(topframe, text = "Language", font = labelsfont)
         language_label.grid(column = 0, row = 6, padx = 5, pady = 5,sticky = tk.W)
 
-        new_language = ttk.Button(topframe, text="Add Language")
+        new_language = tk.Button(topframe, text="Add Language")
         # command = lambda: )
+        new_language.config(cursor='hand2')
         new_language.grid(column=3, row=6, sticky=tk.E)
 
-        abstract_label = ttk.Label(topframe, text="Abstract: ")
+        abstract_label = ttk.Label(topframe, text="Abstract", font = labelsfont)
         abstract_label.grid(column=0, row=8, padx=5, pady=5, sticky=tk.W)
 
         title = tk.StringVar()
