@@ -15,7 +15,7 @@ class ProjectLibrary(tk.Tk):
 
         self.frames = {}
 
-        for F in (Homepage, Addproject, Addresource):
+        for F in (Homepage, Addproject, Addresource, Editresource):
             frame = F(main, self)
             self.frames[F] = frame
             frame.grid(row=0, column=0, sticky="nsew")
@@ -37,46 +37,50 @@ class Homepage(tk.Frame):
         topframe = ttk.LabelFrame(self, text="", padding='0.2i', borderwidth=0)
         topframe.grid(column = 0, row = 0)
 
-        newproject = ttk.Button(topframe, text = "Add Project",
+        newproject = tk.Button(topframe, text = "Add Project",
                                 command=lambda: controller.show_frame(Addproject))
         newproject.grid(column = 1, row = 0)
 
-        newresource = ttk.Button(topframe, text = "Add Resource",
+        newresource = tk.Button(topframe, text = "Add Resource",
                                  command = lambda: controller.show_frame(Addresource))
         newresource.grid(column = 2, row = 0)
+
+        editresource = tk.Button(topframe, text = "Edit Resource",
+                                 command = lambda: controller.show_frame(Editresource))
+        editresource.grid(column = 3, row = 0)
 
 class Addresource(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
-        headlabelfont = ('times', 20, 'bold')
-        labelsfont = ('times', 12, 'bold')
+        self.headlabelfont = ('times', 20, 'bold')
+        self.labelsfont = ('times', 12, 'bold')
 
-        label = tk.Label(self, text = "New Resource", font = headlabelfont)
+        label = tk.Label(self, text = "New Resource", font = self.headlabelfont)
         label.grid(row = 0, column = 0, columnspan = 4, pady = 10, padx  =10)
 
         topframe = ttk.LabelFrame(self, text = "", padding='0.2i', borderwidth=0)
         topframe.grid(column = 0, row = 2)
 
-        title_label = ttk.Label(topframe, text="Title", font = labelsfont)
+        title_label = ttk.Label(topframe, text="Title", font = self.labelsfont)
         title_label.grid(column=0, row=1, padx=5, pady=5,  sticky=tk.W)
 
-        author_label = ttk.Label(topframe, text="Author(s)", font = labelsfont)
+        author_label = ttk.Label(topframe, text="Author(s)", font = self.labelsfont)
         author_label.grid(column=0, row=2, padx=5, pady=5,  sticky=tk.W)
 
-        publisher_label = ttk.Label(topframe, text="Publisher", font = labelsfont)
+        publisher_label = ttk.Label(topframe, text="Publisher", font = self.labelsfont)
         publisher_label.grid(column = 0, row = 3, padx = 5, pady = 5,  sticky = tk.W)
 
-        year_label = ttk.Label(topframe, text="Year", font = labelsfont)
+        year_label = ttk.Label(topframe, text="Year", font = self.labelsfont)
         year_label.grid(column=0, row=4, padx=5, pady=5,   sticky=tk.W)
 
-        page_label = ttk.Label(topframe, text="Pages", font = labelsfont)
+        page_label = ttk.Label(topframe, text="Pages", font = self.labelsfont)
         page_label.grid(column=2, row=4, padx=5, pady=5, sticky=tk.W)
 
-        resource_type_label = ttk.Label(topframe, text="Resource Type", font = labelsfont)
+        resource_type_label = ttk.Label(topframe, text="Resource Type", font = self.labelsfont)
         resource_type_label.grid(column = 0, row = 5, padx = 5, pady = 5,sticky = tk.W)
 
-        language_label = ttk.Label(topframe, text = "Language", font = labelsfont)
+        language_label = ttk.Label(topframe, text = "Language", font = self.labelsfont)
         language_label.grid(column = 0, row = 6, padx = 5, pady = 5,sticky = tk.W)
 
         new_language = tk.Button(topframe, text="Add Language")
@@ -84,7 +88,7 @@ class Addresource(tk.Frame):
         new_language.config(cursor='hand2')
         new_language.grid(column=3, row=6, sticky=tk.E)
 
-        abstract_label = ttk.Label(topframe, text="Abstract", font = labelsfont)
+        abstract_label = ttk.Label(topframe, text="Abstract", font = self.labelsfont)
         abstract_label.grid(column=0, row=8, padx=5, pady=5, sticky=tk.W)
 
         title = tk.StringVar()
@@ -114,6 +118,13 @@ class Addresource(tk.Frame):
         language_entry.grid(column=1, row=6, columnspan= 3, sticky=tk.W)
         abstract_entry.grid(column=1, row=8, columnspan=3, sticky=tk.W + tk.E)
 
+
+class Editresource(Addresource):
+    def __init__(self, parent, controller):
+        Addresource.__init__(self, parent, controller)
+
+        label = tk.Label(self, text="Edit Resource", font=self.headlabelfont)
+        label.grid(row=0, column=0, columnspan=4, pady=10, padx=10)
 
 
 class Addproject(tk.Frame):
