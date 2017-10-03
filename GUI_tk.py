@@ -55,25 +55,19 @@ class Addresource(tk.Frame):
         topframe = ttk.LabelFrame(self, text = "", padding='0.2i', borderwidth=0)
         topframe.grid(column = 0, row = 2)
 
-        middleframe = ttk.LabelFrame(self, text="", borderwidth=0)
-        middleframe.grid(column=0, row=3)
-
-        bottomframe = ttk.LabelFrame(self, text="", borderwidth=0)
-        bottomframe.grid(column=0, row=4, sticky=tk.W)
-
         title_label = ttk.Label(topframe, text="Title:")
-        title_label.grid(column=0, row=1, padx=5, pady=5, sticky=tk.W)
+        title_label.grid(column=0, row=1, padx=5, pady=5,  sticky=tk.W)
 
         author_label = ttk.Label(topframe, text="Author(s):")
-        author_label.grid(column=0, row=2, padx=5, pady=5, sticky=tk.W)
+        author_label.grid(column=0, row=2, padx=5, pady=5,  sticky=tk.W)
 
         publisher_label = ttk.Label(topframe, text="Publisher:")
-        publisher_label.grid(column = 0, row = 3, padx = 5, pady = 5, sticky = tk.W)
+        publisher_label.grid(column = 0, row = 3, padx = 5, pady = 5,  sticky = tk.W)
 
-        year_label = ttk.Label(middleframe, text="Year: ")
-        year_label.grid(column=0, row=4, padx=5, pady=5, sticky=tk.W)
+        year_label = ttk.Label(topframe, text="Year: ")
+        year_label.grid(column=0, row=4, padx=5, pady=5,   sticky=tk.W)
 
-        page_label = ttk.Label(middleframe, text="Pages: ")
+        page_label = ttk.Label(topframe, text="Pages: ")
         page_label.grid(column=2, row=4, padx=5, pady=5, sticky=tk.W)
 
         resource_type_label = ttk.Label(topframe, text="Resource Type: ")
@@ -86,11 +80,11 @@ class Addresource(tk.Frame):
         # command = lambda: )
         new_language.grid(column=1, row=7, sticky=tk.W)
 
-        abstract_label = ttk.Label(bottomframe, text="Abstract:    ")
-        abstract_label.grid(column=0, row=7, padx=20, pady=5, sticky=tk.E)
+        abstract_label = ttk.Label(topframe, text="Abstract:    ")
+        abstract_label.grid(column=0, row=8, padx=20, pady=5, sticky=tk.E)
 
-        author_name = tk.StringVar()
         title = tk.StringVar()
+        author_name = tk.StringVar()
         publisher = tk.StringVar()
         year = tk.IntVar()
         pages = tk.IntVar()
@@ -98,23 +92,23 @@ class Addresource(tk.Frame):
         language = tk.StringVar()
         abstract = tk.StringVar()
 
-        author_entry = ttk.Entry(topframe, width = 40, textvariable = author_name)
         title_entry = ttk.Entry(topframe, width = 40, textvariable = title)
+        author_entry = ttk.Entry(topframe, width=40, textvariable=author_name)
         publisher_entry = ttk.Entry(topframe, width = 40, textvariable = publisher)
-        year_entry = ttk.Entry(topframe, width = 6, textvariable = year)
-        pages_entry = ttk.Entry(topframe, width = 6, textvariable = pages)
+        year_entry = ttk.Entry(topframe, width = 15, textvariable = year)
+        pages_entry = ttk.Entry(topframe, width = 15, textvariable = pages)
         resource_type_entry = ttk.Entry(topframe, width = 40, textvariable = resource_type)
         language_entry = ttk.Entry(topframe, width = 40, textvariable = language)
-        abstract_entry = ttk.Entry(bottomframe, width=40, textvariable=abstract)
+        abstract_entry = ttk.Entry(topframe, width=40, textvariable=abstract)
 
-        author_entry.grid(column = 1, row = 1, sticky=tk.W)
-        title_entry.grid(column = 1, row = 2, sticky=tk.W)
-        publisher_entry.grid(column = 1, row = 3, sticky=tk.W)
-        year_entry.grid(column= 1, row=4, sticky=tk.W)
-        pages_entry.grid(column=3, row=4, sticky=tk.W)
-        resource_type_entry.grid(column=1, row=5, sticky=tk.W)
-        language_entry.grid(column=1, row=6, sticky=tk.W)
-        abstract_entry.grid(column=1, row=7, sticky=tk.W + tk.E)
+        title_entry.grid(column=1, row=2, columnspan = 3, sticky=tk.W)
+        author_entry.grid(column = 1, row = 1, columnspan = 3, sticky=tk.W)
+        publisher_entry.grid(column = 1, row = 3, columnspan = 3, sticky=tk.W)
+        year_entry.grid(column= 1, row=4, columnspan = 1, sticky=tk.W)
+        pages_entry.grid(column=3, row=4, columnspan = 1, sticky=tk.W)
+        resource_type_entry.grid(column=1, row=5, columnspan = 3, sticky=tk.W)
+        language_entry.grid(column=1, row=6, columnspan= 3, sticky=tk.W)
+        abstract_entry.grid(column=1, row=8, columnspan=3, sticky=tk.W + tk.E)
 
 
 
