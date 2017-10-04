@@ -100,8 +100,12 @@ class Addresource(tk.Frame):
         self.language = tk.StringVar()
         self.abstract = tk.StringVar()
 
+
         title_entry = ttk.Entry(topframe, width = 40, textvariable = self.title)
+
         author_entry = ttk.Entry(topframe, width=40, textvariable=self.author_name)
+        author_entry.focus_set()
+
         publisher_entry = ttk.Entry(topframe, width = 40, textvariable = self.publisher)
         year_entry = ttk.Entry(topframe, width = 15, textvariable = self.year)
         pages_entry = ttk.Entry(topframe, width = 15, textvariable = self.pages)
