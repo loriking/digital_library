@@ -69,13 +69,13 @@ class Addresource(tk.Frame):
         author_label.grid(column=0, row=2, padx=5, pady=5,  sticky=tk.W)
 
         publisher_label = ttk.Label(topframe, text="Publisher", font = self.labelsfont)
-        publisher_label.grid(column = 0, row = 3, padx = 5, pady = 5,  sticky = tk.W)
+        publisher_label.grid(column = 0, row = 4, padx = 5, pady = 5,  sticky = tk.W)
 
         year_label = ttk.Label(topframe, text="Year", font = self.labelsfont)
-        year_label.grid(column=0, row=4, padx=5, pady=5,   sticky=tk.W)
+        year_label.grid(column=0, row=3, padx=5, pady=5,   sticky=tk.W)
 
         page_label = ttk.Label(topframe, text="Pages", font = self.labelsfont)
-        page_label.grid(column=2, row=4, padx=5, pady=5, sticky=tk.W)
+        page_label.grid(column=2, row=3, padx=5, pady=5, sticky=tk.W)
 
         resource_type_label = ttk.Label(topframe, text="Resource Type", font = self.labelsfont)
         resource_type_label.grid(column = 0, row = 5, padx = 5, pady = 5,sticky = tk.W)
@@ -83,10 +83,18 @@ class Addresource(tk.Frame):
         language_label = ttk.Label(topframe, text = "Language", font = self.labelsfont)
         language_label.grid(column = 0, row = 6, padx = 5, pady = 5,sticky = tk.W)
 
-        new_language = tk.Button(topframe, text="Add Language")
-        # command = lambda: )
+        new_language = tk.Button(topframe, text="Add Language")# command = lambda: )
         new_language.config(cursor='hand2')
         new_language.grid(column=3, row=6, sticky=tk.E)
+
+        new_publisher = tk.Button(topframe, text="Add Publisher")# command = lambda: )
+        new_publisher.config(cursor='hand2')
+        new_publisher.grid(column=3, row=4, sticky=tk.E)
+
+        new_resource_type = tk.Button(topframe, text="Add Medium  ")  # command = lambda: )
+        new_resource_type.config(cursor='hand2')
+        new_resource_type.grid(column=3, row=5, sticky=tk.E)
+
 
         abstract_label = ttk.Label(topframe, text="Abstract", font = self.labelsfont)
         abstract_label.grid(column=0, row=8, padx=5, pady=5, sticky=tk.W)
@@ -105,18 +113,18 @@ class Addresource(tk.Frame):
         self.title_entry.focus()
 
         self.author_entry = ttk.Entry(topframe, width=40, textvariable=self.author_name)
-        self.publisher_entry = ttk.Entry(topframe, width = 40, textvariable = self.publisher)
+        self.publisher_entry = ttk.Entry(topframe, width = 25, textvariable = self.publisher)
         self.year_entry = ttk.Entry(topframe, width = 15, textvariable = self.year)
-        self.pages_entry = ttk.Entry(topframe, width = 15, textvariable = self.pages)
-        self.resource_type_entry = ttk.Entry(topframe, width = 40, textvariable = self.resource_type)
+        self.pages_entry = ttk.Entry(topframe, width = 13, textvariable = self.pages)
+        self.resource_type_entry = ttk.Entry(topframe, width = 25, textvariable = self.resource_type)
         self.language_entry = ttk.Entry(topframe, width = 25, textvariable = self.language)
         self.abstract_entry = ttk.Entry(topframe, width=40, textvariable=self.abstract)
 
         self.title_entry.grid(column=1, row=1, columnspan = 3, sticky=tk.W)
         self.author_entry.grid(column = 1, row = 2, columnspan = 3, sticky=tk.W)
-        self.publisher_entry.grid(column = 1, row = 3, columnspan = 3, sticky=tk.W)
-        self.year_entry.grid(column= 1, row=4, columnspan = 1, sticky=tk.W)
-        self.pages_entry.grid(column=3, row=4, columnspan = 1, sticky=tk.W)
+        self.publisher_entry.grid(column = 1, row = 4, columnspan = 3, sticky=tk.W)
+        self.year_entry.grid(column= 1, row=3, columnspan = 1, sticky=tk.W)
+        self.pages_entry.grid(column=3, row=3, columnspan = 1, sticky=tk.E)
         self.resource_type_entry.grid(column=1, row=5, columnspan = 3, sticky=tk.W)
         self.language_entry.grid(column=1, row=6, columnspan= 3, sticky=tk.W)
         self.abstract_entry.grid(column=1, row=8, columnspan=3, sticky=tk.W + tk.E)
