@@ -20,7 +20,7 @@ class ProjectLibrary(tk.Tk):
             self.frames[F] = frame
             frame.grid(row=0, column=0, sticky="nsew")
 
-        self.show_frame(Homepage)
+        self.show_frame(Addresource)
 
     def show_frame(self, cont):
         ''' raises this frame in the stacking order'''
@@ -101,29 +101,28 @@ class Addresource(tk.Frame):
         self.abstract = tk.StringVar()
 
 
-        title_entry = ttk.Entry(topframe, width = 40, textvariable = self.title)
+        self.title_entry = ttk.Entry(topframe, width = 40, textvariable = self.title)
+        self.title_entry.focus()
 
-        author_entry = ttk.Entry(topframe, width=40, textvariable=self.author_name)
-        author_entry.focus_set()
+        self.author_entry = ttk.Entry(topframe, width=40, textvariable=self.author_name)
+        self.publisher_entry = ttk.Entry(topframe, width = 40, textvariable = self.publisher)
+        self.year_entry = ttk.Entry(topframe, width = 15, textvariable = self.year)
+        self.pages_entry = ttk.Entry(topframe, width = 15, textvariable = self.pages)
+        self.resource_type_entry = ttk.Entry(topframe, width = 40, textvariable = self.resource_type)
+        self.language_entry = ttk.Entry(topframe, width = 25, textvariable = self.language)
+        self.abstract_entry = ttk.Entry(topframe, width=40, textvariable=self.abstract)
 
-        publisher_entry = ttk.Entry(topframe, width = 40, textvariable = self.publisher)
-        year_entry = ttk.Entry(topframe, width = 15, textvariable = self.year)
-        pages_entry = ttk.Entry(topframe, width = 15, textvariable = self.pages)
-        resource_type_entry = ttk.Entry(topframe, width = 40, textvariable = self.resource_type)
-        language_entry = ttk.Entry(topframe, width = 25, textvariable = self.language)
-        abstract_entry = ttk.Entry(topframe, width=40, textvariable=self.abstract)
+        self.title_entry.grid(column=1, row=1, columnspan = 3, sticky=tk.W)
+        self.author_entry.grid(column = 1, row = 2, columnspan = 3, sticky=tk.W)
+        self.publisher_entry.grid(column = 1, row = 3, columnspan = 3, sticky=tk.W)
+        self.year_entry.grid(column= 1, row=4, columnspan = 1, sticky=tk.W)
+        self.pages_entry.grid(column=3, row=4, columnspan = 1, sticky=tk.W)
+        self.resource_type_entry.grid(column=1, row=5, columnspan = 3, sticky=tk.W)
+        self.language_entry.grid(column=1, row=6, columnspan= 3, sticky=tk.W)
+        self.abstract_entry.grid(column=1, row=8, columnspan=3, sticky=tk.W + tk.E)
 
-        title_entry.grid(column=1, row=2, columnspan = 3, sticky=tk.W)
-        author_entry.grid(column = 1, row = 1, columnspan = 3, sticky=tk.W)
-        publisher_entry.grid(column = 1, row = 3, columnspan = 3, sticky=tk.W)
-        year_entry.grid(column= 1, row=4, columnspan = 1, sticky=tk.W)
-        pages_entry.grid(column=3, row=4, columnspan = 1, sticky=tk.W)
-        resource_type_entry.grid(column=1, row=5, columnspan = 3, sticky=tk.W)
-        language_entry.grid(column=1, row=6, columnspan= 3, sticky=tk.W)
-        abstract_entry.grid(column=1, row=8, columnspan=3, sticky=tk.W + tk.E)
-
-        save_button = tk.Button(topframe, text = 'Save', command=lambda : self.addresource())
-        save_button.grid(column=0, row=10)
+        self.save_button = tk.Button(topframe, text = 'Save', command=lambda : self.addresource())
+        self.save_button.grid(column=0, row=10)
 
 #def add_resource(title, year, pages, langid, mediaid, pubid, abstract):
     def addauthor(self):
