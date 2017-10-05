@@ -309,15 +309,9 @@ def delete_resource_medium():
 
 
 # Resource CRUD FUNCTIONS
-
-def add_resource(title, author, publisher, year, pages, medium, language, abstract):
+#
+def add_resource(resource_title, author, publisher, year, pages, medium, language, abstract):
     """ Adds item to SQL database"""
-    #resource_title = input("Title:\n")
-
-    #year = input("Year:\n")
-    #pages = input("Number of pages:\n")
-
-    #language = input("Language of resource:\t")
 
     add_language(language)
     c.execute("SELECT ID FROM languages WHERE language = ?", (language,))
@@ -333,12 +327,11 @@ def add_resource(title, author, publisher, year, pages, medium, language, abstra
     c.execute("SELECT ID FROM publishers WHERE publisher = ?", (publisher,))
     publisherID = c.fetchone()[0]
 
-    #abstract = input("Description of item:\n")
-
     c.execute('''INSERT INTO resource(title, year, pages, languageID, mediaID, 
                                        publisherID, abstract) VALUES(?,?,?,?,?,?,?)''',
-              (title, year, pages, languageID, mediaID, publisherID, abstract))
-    c.execute("SELECT ID FROM resource WHERE title = ?", (title,))
+              (resource_title, year, pages, languageID, mediaID, publisherID, abstract))
+
+    c.execute("SELECT ID FROM resource WHERE title = ?", (resource_title,))
     resourceID = c.fetchone()[0]
 
     add_author(author)

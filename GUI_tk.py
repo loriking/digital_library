@@ -121,19 +121,18 @@ class Addresource(tk.Frame):
         self.language_entry.grid(column=1, row=6, columnspan= 3, sticky=tk.W)
         self.abstract_entry.grid(column=1, row=8, columnspan=3, sticky=tk.W + tk.E)
 
-        self.save_button = tk.Button(topframe, text = 'Save', command=lambda : self.addresource())
-        self.save_button.grid(column=0, row=10)
+        self.save_button = tk.Button(topframe, text = 'Save',
+                                     command=lambda : self.addresource())
 
-#def add_resource(title, year, pages, langid, mediaid, pubid, abstract):
+        self.save_button.grid(column=0, row=10, columnspan = 4, sticky=tk.E)
+
     def addauthor(self):
         data.add_author(name)
         pass
 
     def addresource(self):
-
-        #title, author, publisher, year, pages, medium, language, abstract
-        data.add_resource(self.title.get(), self.author_name.get(),  self.publisher.get(), self.year.get(),
-                          self.pages.get(), self.resource_type.get(), self.language.get(), self.abstract.get())
+        data.add_resource(self.title.get(), self.author_name.get(), self.publisher.get(), self.year.get(),
+                              self.pages.get(), self.resource_type.get(), self.language.get(), self.abstract.get())
 
 
 class Editresource(Addresource):
