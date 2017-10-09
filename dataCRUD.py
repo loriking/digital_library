@@ -24,7 +24,7 @@ def add_language(language):
 def list_languages():
     """    return: all the languages from database     """
 
-    c.execute('''SELECT language FROM languages''')
+    c.execute('''SELECT language FROM languages ORDER BY language''')
     results = c.fetchall()
     
     return results
@@ -118,7 +118,7 @@ def add_author(author_name):
 def list_authors():
     """    :return: all the author from database    """
 
-    c.execute("SELECT name FROM authors")
+    c.execute("SELECT name FROM authors ORDER BY name")
     results = c.fetchall()
     return results
 
@@ -187,7 +187,7 @@ def add_publisher(publisher):
 def list_publishers():
     """ Returns all the publisher from database"""
     
-    c.execute('''SELECT publisher FROM publishers''')
+    c.execute('''SELECT publisher FROM publishers ORDER BY publisher''')
     results = c.fetchall()
     for i in results:
         print(i)
@@ -235,7 +235,7 @@ def add_resource_medium(medium):
 def list_resource_medium():
     """ return: all the resource types from database    """
 
-    c.execute('''SELECT medium FROM resource_medium''')
+    c.execute('''SELECT medium FROM resource_medium ORDER BY medium''')
     results = c.fetchall()
     for i in results:
         print(i)
