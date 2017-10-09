@@ -159,7 +159,7 @@ def get_author(authorID):
     return author_name
 
 
-def update_author(correction):
+def update_author(author, correction):
     authorID = get_authorID(author)
 
     c.execute('''UPDATE authors SET name = ? WHERE ID =?''', (correction, authorID))
