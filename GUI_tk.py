@@ -15,7 +15,7 @@ class ProjectLibrary(tk.Tk):
 
         self.frames = {}
 
-        for F in (Homepage, Addproject, Addresource, Editresource):
+        for F in (Homepage, Addproject, Addresource, Editresource, New_language):
             frame = F(main, self)
             self.frames[F] = frame
             frame.grid(row=0, column=0, sticky="nsew")
@@ -77,7 +77,7 @@ class Addresource(tk.Frame):
         year_label.grid(column=0, row=3, padx=5, pady=5,   sticky=tk.W)
 
         page_label = ttk.Label(topframe, text="Pages", font = self.labelsfont)
-        page_label.grid(column=2, row=3, padx=5, pady=5, sticky=tk.W)
+        page_label.grid(column=2, row=3, padx=5, pady=5, sticky=tk.E)
 
         resource_type_label = ttk.Label(topframe, text="Resource Type", font = self.labelsfont)
         resource_type_label.grid(column = 0, row = 5, padx = 5, pady = 5,sticky = tk.W)
@@ -85,7 +85,7 @@ class Addresource(tk.Frame):
         language_label = ttk.Label(topframe, text = "Language", font = self.labelsfont)
         language_label.grid(column = 0, row = 6, padx = 5, pady = 5,sticky = tk.W)
 
-        new_language = tk.Button(topframe, text="New Language")# command = lambda: )
+        new_language = tk.Button(topframe, text="New Language", command = lambda: controller.show_frame(New_language))
         new_language.config(cursor='hand2')
         new_language.grid(column=3, row=6, sticky=tk.E)
 
@@ -111,16 +111,16 @@ class Addresource(tk.Frame):
         self.abstract = tk.StringVar()
 
 
-        self.title_entry = ttk.Entry(topframe, width = 40, textvariable = self.title)
+        self.title_entry = ttk.Entry(topframe, width = 60, textvariable = self.title)
         self.title_entry.focus()
 
-        self.author_entry = ttk.Entry(topframe, width=40, textvariable=self.author_name)
-        self.publisher_entry =ttk.Combobox(topframe, width=20, textvariable=self.publisher, state='readonly')
-        self.year_entry = ttk.Entry(topframe, width = 15, textvariable = self.year)
+        self.author_entry = ttk.Entry(topframe, width=60, textvariable=self.author_name)
+        self.publisher_entry =ttk.Combobox(topframe, width=40, textvariable=self.publisher, state='readonly')
+        self.year_entry = ttk.Entry(topframe, width = 30, textvariable = self.year)
         self.pages_entry = ttk.Entry(topframe, width = 13, textvariable = self.pages)
-        self.resource_type_entry  =ttk.Combobox(topframe, width=20, textvariable=self.resource_type, state='readonly')
-        self.language_entry =ttk.Combobox(topframe, width=20, textvariable=self.language, state='readonly')
-        self.abstract_entry = ttk.Entry(topframe, width=40, textvariable=self.abstract)
+        self.resource_type_entry  =ttk.Combobox(topframe, width=40, textvariable=self.resource_type, state='readonly')
+        self.language_entry =ttk.Combobox(topframe, width=40, textvariable=self.language, state='readonly')
+        self.abstract_entry = tk.Text(topframe, width=40, height = 3)
 
         self.title_entry.grid(column=1, row=1, columnspan = 3, sticky=tk.W)
         self.author_entry.grid(column = 1, row = 2, columnspan = 3, sticky=tk.W)
@@ -129,19 +129,15 @@ class Addresource(tk.Frame):
         self.pages_entry.grid(column=3, row=3, columnspan = 1, sticky=tk.E)
         self.resource_type_entry.grid(column=1, row=5, columnspan = 3, sticky=tk.W)
         self.language_entry.grid(column=1, row=6, columnspan= 3, sticky=tk.W)
-        self.abstract_entry.grid(column=1, row=8, columnspan=3, sticky=tk.W + tk.E)
+        self.abstract_entry.grid(column=1, row=8, columnspan=3, pady=5, sticky=tk.W + tk.E)
 
         self.save_button = tk.Button(topframe, text = 'Save',
                                      command=lambda : self.addresource())
 
         self.save_button.grid(column=0, row=10, columnspan = 4, sticky=tk.E)
 
-    def addauthor(self):
-        data.add_author(name)
-        pass
-
     def new_language(self):
-        pass
+        data.add_language(self.language.get())
 
     def new_publisher(self):
         data.add_publisher(self.publisher.get())
@@ -150,6 +146,18 @@ class Addresource(tk.Frame):
     def addresource(self):
         data.add_resource(self.title.get(), self.author_name.get(), self.publisher.get(), self.year.get(),
                               self.pages.get(), self.resource_type.get(), self.language.get(), self.abstract.get())
+        self.title_entry.delete(0,"end")
+        self.author_entry.delete(0, "end")
+        self.publisher_entry.box.current(0)
+        self.year_entry.delete(0, "end")
+        self.pages_entry.delete(0, "end")
+        self.resource_type_entry.box.current(0)
+        self.language_entry.box.current(0)
+        self.abstract_entry.delete(0, "end")
+        
+        
+
+
 
 
 class Editresource(Addresource):
@@ -166,6 +174,32 @@ class Addproject(tk.Frame):
 
         self.label = tk.Label(self, text="Menus")
         self.label.grid(row=0, column=0, columnspan=4)
+
+
+class New_language(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+
+        self.label = tk.Label(self, text="Add Language")
+        self.label.grid(row=0, column=0, columnspan=4)
+
+        self.languages = data.list_languages()
+        self.language = tk.StringVar()
+
+        language_label = ttk.Label(self, text="Language ")
+        language_label.grid(column=0, row=0, padx=5, pady=5, sticky=tk.W)
+        language_entry = ttk.Entry(self, width=25, textvariable=self.language)
+        language_entry.grid(column=1, row=0, columnspan=3, sticky=tk.W)
+
+        newlanguage = tk.Button(self, text="Add Language", command=lambda:self.newlanguage())
+        newlanguage.grid(column=1, row=1, sticky=tk.E)
+
+    def newlanguage(self, event=None):
+        language_text = self.language.get(1.0, tk.END).strip()
+
+        if len(language_text) > 0:
+            data.add_language(language_text)
+
 
 
 
