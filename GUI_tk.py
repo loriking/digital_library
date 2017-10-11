@@ -15,7 +15,7 @@ class ProjectLibrary(tk.Tk):
 
         self.frames = {}
 
-        for F in (Homepage, Addproject, AddResource, Editresource, New_language):
+        for F in (HomePage, Addproject, AddResource, Editresource, New_language):
             frame = F(main, self)
             self.frames[F] = frame
             frame.grid(row=0, column=0, sticky="nsew")
@@ -28,7 +28,7 @@ class ProjectLibrary(tk.Tk):
         frame.tkraise()
 
 
-class Homepage(tk.Frame):
+class HomePage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
@@ -108,7 +108,7 @@ class AddResource(tk.Frame):
         self.addresource.config(cursor='hand2')
         self.addresource.grid(column=2, row=1, padx=10, sticky=tk.E)
 
-        self.home=tk.Button(bottomframe, text='Home', command=lambda: controller.show_frame(Home))
+        self.home=tk.Button(bottomframe, text='Home', command=lambda: controller.show_frame(HomePage))
         self.home.config(cursor='hand2')
         self.home.grid(column=1, row=1, padx=10, sticky=tk.W)
 
