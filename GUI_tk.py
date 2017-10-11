@@ -15,7 +15,7 @@ class ProjectLibrary(tk.Tk):
 
         self.frames = {}
 
-        for F in (Homepage, Addproject, Addresource, Editresource, New_language):
+        for F in (Homepage, Addproject, AddResource, Editresource, New_language):
             frame = F(main, self)
             self.frames[F] = frame
             frame.grid(row=0, column=0, sticky="nsew")
@@ -47,113 +47,87 @@ class Homepage(tk.Frame):
                                  command = lambda: controller.show_frame(Editresource))
         editresource.grid(column = 3, row = 0)
 
-class Addresource(tk.Frame):
+class AddResource(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-
-        self.add_publisher = data.add_publisher(publisher=None)
-        self.add_language = data.add_language(language=None)
-
-
-        self.headlabelfont = ('times', 20, 'bold')
+        
         self.labelsfont = ('times', 12, 'bold')
 
-        label = tk.Label(self, text = "New Resource", font = self.headlabelfont)
-        label.grid(row = 0, column = 0, columnspan = 4, pady = 10, padx  =10)
+        bottomframe = ttk.LabelFrame(self, text="", borderwidth=0)
+        bottomframe.grid(column=1, row=9)
 
-        topframe = ttk.LabelFrame(self, text = "", padding='0.2i', borderwidth=0)
-        topframe.grid(column = 0, row = 2)
+        self.title = tk.StringVar(parent, value="")
+        self.author = tk.StringVar(parent, value="")
+        self.year = tk.IntVar(parent, value=None)
+        self.pages = tk.IntVar(parent, value=None)
+        self.publisher = tk.StringVar(parent, value="")
+        self.language = tk.StringVar(parent, value="")
+        self.medium = tk.StringVar(parent, value="")
+        self.abstract = tk.StringVar(parent, value="")
 
-        title_label = ttk.Label(topframe, text="Title", font = self.labelsfont)
-        title_label.grid(column=0, row=1, padx=5, pady=5,  sticky=tk.W)
+        self.title_label=tk.Label(self, text='Title', font=self.labelsfont)
+        self.author_label=tk.Label(self, text ='Author', font=self.labelsfont)
+        self.year_label=tk.Label(self, text ='Year', font=self.labelsfont)
+        self.pages_label=tk.Label(self, text ='Pages', font=self.labelsfont)
+        self.publisher_label = tk.Label(self, text='Publisher', font=self.labelsfont)
+        self.lan_label=tk.Label(self, text='Language',font=self.labelsfont)
+        self.media_label=tk.Label(self, text='Medium', font=self.labelsfont)
+        self.abstract_label=tk.Label(self, text='Abstract', font=self.labelsfont)
+        
+        self.title_entry=ttk.Entry(self, width=40, textvariable =self.title)
+        self.author_entry=ttk.Entry(self, width=40, textvariable=self.author)
+        self.year_entry=ttk.Entry(self, width=40, textvariable=self.year)
+        self.pages_entry=ttk.Entry(self, width=40, textvariable=self.pages)
+        self.publisher_entry = ttk.Combobox(self, width=37, textvariable=self.publisher)
+        self.language_entry=ttk.Combobox(self, width=37, textvariable=self.language)
+        self.media_box=ttk.Combobox(self, width=37, textvariable=self.medium)
+        self.abstract_entry=ttk.Entry(self, width=40, textvariable=self.abstract)
 
-        author_label = ttk.Label(topframe, text="Author(s)", font = self.labelsfont)
-        author_label.grid(column=0, row=2, padx=5, pady=5,  sticky=tk.W)
+        self.publisher_entry['values'] = data.list_publishers()
+        self.media_box['values'] = data.list_resource_medium()
+        self.language_entry['values'] = data.list_languages()
 
-        publisher_label = ttk.Label(topframe, text="Publisher", font = self.labelsfont)
-        publisher_label.grid(column = 0, row = 4, padx = 5, pady = 5,  sticky = tk.W)
+        self.title_label.grid(column=0, row=1, sticky=tk.W)
+        self.title_entry.grid(column=1, row=1, sticky=tk.E)
+        self.author_label.grid(column=0, row=2, sticky=tk.W)
+        self.author_entry.grid(column=1, row=2, sticky=tk.E)
+        self.year_label.grid(column=0, row=3, sticky=tk.W)
+        self.year_entry.grid(column=1, row=3, sticky=tk.E)
+        self.pages_label.grid(column=0, row=4, sticky=tk.W)
+        self.pages_entry.grid(column=1, row=4, sticky=tk.E)
+        self.publisher_label.grid(column=0, row=5, sticky=tk.W)
+        self.publisher_entry.grid(column=1, row=5, sticky=tk.E)
+        self.lan_label.grid(column=0, row=6, sticky=tk.W)
+        self.language_entry.grid(column=1, row=6, sticky=tk.E)
+        self.media_label.grid(column=0, row=7, sticky=tk.W)
+        self.media_box.grid(column=1, row=7, sticky=tk.E)
+        self.abstract_label.grid(column=0, row=8, sticky=tk.W)
+        self.abstract_entry.grid(column=1, row=8, sticky=tk.E)
+        
+        self.addresource=tk.Button(bottomframe, text='Save', command=lambda:self.new_resource())
+        self.addresource.config(cursor='hand2')
+        self.addresource.grid(column=2, row=1, padx=10, sticky=tk.E)
 
-        year_label = ttk.Label(topframe, text="Year", font = self.labelsfont)
-        year_label.grid(column=0, row=3, padx=5, pady=5,   sticky=tk.W)
+        self.home=tk.Button(bottomframe, text='Home', command=lambda: controller.show_frame(Home))
+        self.home.config(cursor='hand2')
+        self.home.grid(column=1, row=1, padx=10, sticky=tk.W)
 
-        page_label = ttk.Label(topframe, text="Pages", font = self.labelsfont)
-        page_label.grid(column=2, row=3, padx=5, pady=5, sticky=tk.E)
+    def new_resource(self):
+        data.add_resource(self.title.get(), self.author.get(), self.year.get(), self.pages.get(), self.publisher.get(),
+                          self.language.get(), self.medium.get(), self.abstract.get())
 
-        resource_type_label = ttk.Label(topframe, text="Resource Type", font = self.labelsfont)
-        resource_type_label.grid(column = 0, row = 5, padx = 5, pady = 5,sticky = tk.W)
-
-        language_label = ttk.Label(topframe, text = "Language", font = self.labelsfont)
-        language_label.grid(column = 0, row = 6, padx = 5, pady = 5,sticky = tk.W)
-
-        new_language = tk.Button(topframe, text="New Language", command = lambda: controller.show_frame(New_language))
-        new_language.config(cursor='hand2')
-        new_language.grid(column=3, row=6, sticky=tk.E)
-
-        new_publisher = tk.Button(topframe, text="New Publisher", command = lambda: self.new_publisher())
-        new_publisher.config(cursor='hand2')
-        new_publisher.grid(column=3, row=4, sticky=tk.E)
-
-        new_resource_type = tk.Button(topframe, text="New Medium  ")  # command = lambda: )
-        new_resource_type.config(cursor='hand2')
-        new_resource_type.grid(column=3, row=5, sticky=tk.E)
-
-
-        abstract_label = ttk.Label(topframe, text="Abstract", font = self.labelsfont)
-        abstract_label.grid(column=0, row=8, padx=5, pady=5, sticky=tk.W)
-
-        self.title = tk.StringVar()
-        self.author_name = tk.StringVar()
-        self.publisher = tk.StringVar()
-        self.year = tk.IntVar()
-        self.pages = tk.IntVar()
-        self.resource_type = tk.StringVar()
-        self.language = tk.StringVar()
-        self.abstract = tk.StringVar()
-
-
-        self.title_entry = ttk.Entry(topframe, width = 60, textvariable = self.title)
-        self.title_entry.focus()
-
-        self.author_entry = ttk.Entry(topframe, width=60, textvariable=self.author_name)
-        self.publisher_entry =ttk.Combobox(topframe, width=40, textvariable=self.publisher, state='readonly')
-        self.year_entry = ttk.Entry(topframe, width = 30, textvariable = self.year)
-        self.pages_entry = ttk.Entry(topframe, width = 13, textvariable = self.pages)
-        self.resource_type_entry  =ttk.Combobox(topframe, width=40, textvariable=self.resource_type, state='readonly')
-        self.language_entry =ttk.Combobox(topframe, width=40, textvariable=self.language, state='readonly')
-        self.abstract_entry = tk.Text(topframe, width=40, height = 3)
-
-        self.title_entry.grid(column=1, row=1, columnspan = 3, sticky=tk.W)
-        self.author_entry.grid(column = 1, row = 2, columnspan = 3, sticky=tk.W)
-        self.publisher_entry.grid(column = 1, row = 4, columnspan = 3, sticky=tk.W)
-        self.year_entry.grid(column= 1, row=3, columnspan = 1, sticky=tk.W)
-        self.pages_entry.grid(column=3, row=3, columnspan = 1, sticky=tk.E)
-        self.resource_type_entry.grid(column=1, row=5, columnspan = 3, sticky=tk.W)
-        self.language_entry.grid(column=1, row=6, columnspan= 3, sticky=tk.W)
-        self.abstract_entry.grid(column=1, row=8, columnspan=3, pady=5, sticky=tk.W + tk.E)
-
-        self.save_button = tk.Button(topframe, text = 'Save',
-                                     command=lambda : self.addresource())
-
-        self.save_button.grid(column=0, row=10, columnspan = 4, sticky=tk.E)
-
-    def new_language(self):
-        data.add_language(self.language.get())
-
-    def new_publisher(self):
-        data.add_publisher(self.publisher.get())
-
-
-    def addresource(self):
-        data.add_resource(self.title.get(), self.author_name.get(), self.publisher.get(), self.year.get(),
-                              self.pages.get(), self.resource_type.get(), self.language.get(), self.abstract.get())
-        self.title_entry.delete(0,"end")
+        self.title_entry.delete(0, "end")
         self.author_entry.delete(0, "end")
-        self.publisher_entry.box.current(0)
         self.year_entry.delete(0, "end")
         self.pages_entry.delete(0, "end")
-        self.resource_type_entry.box.current(0)
-        self.language_entry.box.current(0)
+        self.publisher_entry.delete(0, "end")
+        self.language_entry.delete(0, "end")
+        self.media_box.delete(0, "end")
         self.abstract_entry.delete(0, "end")
+
+        self.publisher_entry['values'] = data.list_publishers()
+        self.media_box['values'] = data.list_resource_medium()
+        self.language_entry['values'] = data.list_languages()
         
         
 
