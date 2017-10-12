@@ -3,6 +3,8 @@ from tkinter.messagebox import showinfo
 from tkinter import ttk
 import dataCRUD as data
 
+labelsfont = ('times', 12, 'bold')
+headerfont = ('times', 14, 'bold')
 
 class ProjectLibrary(tk.Tk):
     def __init__(self, *args, **kwargs):
@@ -15,12 +17,12 @@ class ProjectLibrary(tk.Tk):
 
         self.frames = {}
 
-        for F in (HomePage, Addproject, AddResource, Editresource, New_language):
+        for F in (HomePage, AddProject, AddResource, EditResource):
             frame = F(main, self)
             self.frames[F] = frame
             frame.grid(row=0, column=0, sticky="nsew")
 
-        self.show_frame(Addresource)
+        self.show_frame(AddResource)
 
     def show_frame(self, cont):
         ''' raises this frame in the stacking order'''
@@ -36,15 +38,15 @@ class HomePage(tk.Frame):
         topframe.grid(column = 0, row = 0)
 
         newproject = tk.Button(topframe, text = "Add Project",
-                                command=lambda: controller.show_frame(Addproject))
+                                command=lambda: controller.show_frame(AddProject))
         newproject.grid(column = 1, row = 0)
 
         newresource = tk.Button(topframe, text = "Add Resource",
-                                 command = lambda: controller.show_frame(Addresource))
+                                 command = lambda: controller.show_frame(AddResource))
         newresource.grid(column = 2, row = 0)
 
         editresource = tk.Button(topframe, text = "Edit Resource",
-                                 command = lambda: controller.show_frame(Editresource))
+                                 command = lambda: controller.show_frame(EditResource))
         editresource.grid(column = 3, row = 0)
 
 class AddResource(tk.Frame):
@@ -129,11 +131,7 @@ class AddResource(tk.Frame):
         self.media_box['values'] = data.list_resource_medium()
         self.language_entry['values'] = data.list_languages()
         
-        
-
-
-
-
+      
 class Editresource(Addresource):
     def __init__(self, parent, controller):
         Addresource.__init__(self, parent, controller)
@@ -142,37 +140,75 @@ class Editresource(Addresource):
         label.grid(row=0, column=0, columnspan=4, pady=10, padx=10)
 
 
-class Addproject(tk.Frame):
+class AddProject(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
-        self.label = tk.Label(self, text="Menus")
-        self.label.grid(row=0, column=0, columnspan=4)
+        self.header_frame = ttk.LabelFrame(self, text='', borderwidth=0)
+        self.header_frame.grid(column=0, row=0, columnspan=20)
+
+        self.topframe = ttk.LabelFrame(self, text='', padding='0.05i', borderwidth=0)
+        self.topframe.grid(row=1, column=0)
+
+        self.bottomframe = ttk.LabelFrame(self, text='', borderwidth=0)
+        self.bottomframe.grid(row=2, column=0)
+
+        self.label = tk.Label(self.header_frame, text='New Project', font=headerfont)
+        self.label.grid(column=0, row=1)
+
+        self.project_name = tk.StringVar(self, value='')
+        self.project_type = tk.StringVar(self, value='')
+        self.description = tk.StringVar(self, value='')
+        self.start_date = tk.StringVar(self, value='')
+        self.end_date = tk.StringVar(self, value='')
+
+        self.title_label = tk.Label(self.topframe, text='Project Name', font=labelsfont)
+        self.project_type_label = tk.Label(self.topframe, text='Project Type', font=labelsfont)
+        self.description_label = tk.Label(self.topframe, text='Description', font=labelsfont)
+        self.start_label = tk.Label(self.topframe, text='Start Date', font=labelsfont)
+        self.finish_label = tk.Label(self.topframe, text='End Date', font=labelsfont)
+
+        self.title_label.grid(column=0, row=0, sticky=tk.W)
+        self.project_type_label.grid(column=0, row=1, sticky=tk.W)
+        self.description_label.grid(column=0, row=2, sticky=tk.W)
+        self.start_label.grid(column=0, row=3, sticky=tk.W)
+        self.finish_label.grid(column=0, row=4, sticky=tk.W)
+
+        self.project_name_entry = ttk.Entry(self.topframe, width=40, textvariable=self.project_name)
+        self.project_type_entry = ttk.Combobox(self.topframe, width=37, textvariable=self.project_type)
+        self.description_entry= ttk.Entry(self.topframe, width=40, textvariable=self.description)
+        self.start_entry= ttk.Entry(self.topframe, width=40, textvariable=self.start_date)
+        self.end_entry= ttk.Entry(self.topframe, width=40, textvariable=self.end_date)
+
+        self.project_type_entry['values'] = data.list_project_category()
+
+        self.project_name_entry.grid(column=1, row=0, sticky=tk.W)
+        self.project_type_entry.grid(column=1, row=1, sticky=tk.W)
+        self.description_entry.grid(column=1, row=2, sticky=tk.W)
+        self.start_entry.grid(column=1, row=3, sticky=tk.W)
+        self.end_entry.grid(column=1, row=4, sticky=tk.W)
+
+        self.home = tk.Button(self.bottomframe, text='Home', command=lambda: controller.show_frame(Home))
+        self.home.grid(column=0, row=1, padx=10, sticky=tk.W)
+
+        self.add_project = tk.Button(self.bottomframe, text = 'Save', command=lambda: self.save_project())
+        self.add_project.grid(column=1, row=1,  padx=10, sticky=tk.E)
+
+    def save_project(self):
+        """ Adds project to SQL database """
+
+        data.add_project(self.project_name.get(), self.project_type.get(), self.description.get(),
+                         self.start_date.get(),self.end_date.get())
+
+        self.project_name_entry.delete(0, "end")
+        self.project_type_entry.delete(0, "end")
+        self.description_entry.delete(0, "end")
+        self.start_entry.delete(0, "end")
+        self.end_entry.delete(0, "end")
+
+        self.project_type_entry['values'] = data.list_project_category()
 
 
-class New_language(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-
-        self.label = tk.Label(self, text="Add Language")
-        self.label.grid(row=0, column=0, columnspan=4)
-
-        self.languages = data.list_languages()
-        self.language = tk.StringVar()
-
-        language_label = ttk.Label(self, text="Language ")
-        language_label.grid(column=0, row=0, padx=5, pady=5, sticky=tk.W)
-        language_entry = ttk.Entry(self, width=25, textvariable=self.language)
-        language_entry.grid(column=1, row=0, columnspan=3, sticky=tk.W)
-
-        newlanguage = tk.Button(self, text="Add Language", command=lambda:self.newlanguage())
-        newlanguage.grid(column=1, row=1, sticky=tk.E)
-
-    def newlanguage(self, event=None):
-        language_text = self.language.get(1.0, tk.END).strip()
-
-        if len(language_text) > 0:
-            data.add_language(language_text)
 
 
 
