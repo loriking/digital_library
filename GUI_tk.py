@@ -33,21 +33,45 @@ class ProjectLibrary(tk.Tk):
 class HomePage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
+                
+        self.label = tk.Label(self, text ='Home')
+        self.label.grid(row= 0, column = 0, columnspan=4)
+          
+        self.topframe = ttk.LabelFrame(self, text='Menu', padding='0.05i', borderwidth = 0)
+        self.topframe.grid(row=1, column=0, columnspan=20)
+         
+        self.new_projects = tk.Button(self.topframe, text='Add Project', command=lambda: controller.show_frame(AddProject))
+        self.new_projects.config(height=3, width=13)
+        self.new_projects.grid(column = 0, row= 0)
 
-        topframe = ttk.LabelFrame(self, text="", padding='0.2i', borderwidth=0)
-        topframe.grid(column = 0, row = 0)
+        self.view_project = tk.Button(self.topframe, text='View Projects')
+        self.view_project.config(height=3,width=13)
+        self.view_project.grid(column=0, row=1)
 
-        newproject = tk.Button(topframe, text = "Add Project",
-                                command=lambda: controller.show_frame(AddProject))
-        newproject.grid(column = 1, row = 0)
+        self.edit_project = tk.Button(self.topframe, text='Edit Project')
+        self.edit_project.config(height=3, width=13)
+        self.edit_project.grid(column=0, row=2)
 
-        newresource = tk.Button(topframe, text = "Add Resource",
-                                 command = lambda: controller.show_frame(AddResource))
-        newresource.grid(column = 2, row = 0)
+        self.search_projects = tk.Button(self.topframe, text='Search Projects')
+        self.search_projects.config(height=3, width=13)
+        self.search_projects.grid(column=0, row=3)
 
-        editresource = tk.Button(topframe, text = "Edit Resource",
-                                 command = lambda: controller.show_frame(EditResource))
-        editresource.grid(column = 3, row = 0)
+        self.new_resources = tk.Button(self.topframe, text='Add Resource',
+                                   command=lambda: controller.show_frame(AddResource))
+        self.new_resources.config(height=3, width=13)
+        self.new_resources.grid(column=1, row=0)
+
+        self.view_resources = tk.Button(self.topframe, text='View Resources')
+        self.view_resources.config(height=3, width=13)
+        self.view_resources.grid(column=1, row=1)
+
+        self.edit_resource = tk.Button(self.topframe, text='Edit Resource')
+        self.edit_resource.config(height=3, width=13)
+        self.edit_resource.grid(column=1, row=2)
+
+        self.search_resources = tk.Button(self.topframe, text='Search Resources')
+        self.search_resources.config(height=3, width=13)
+        self.search_resources.grid(column=1,row=3)
 
 class AddResource(tk.Frame):
     def __init__(self, parent, controller):
@@ -132,7 +156,7 @@ class AddResource(tk.Frame):
         self.language_entry['values'] = data.list_languages()
         
       
-class Editresource(Addresource):
+class EditResource(AddResource):
     def __init__(self, parent, controller):
         Addresource.__init__(self, parent, controller)
 
