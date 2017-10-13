@@ -40,36 +40,43 @@ class HomePage(tk.Frame):
         self.topframe = ttk.LabelFrame(self, text='Menu', padding='0.05i', borderwidth = 0)
         self.topframe.grid(row=1, column=0, columnspan=20)
          
-        self.new_projects = tk.Button(self.topframe, text='Add Project', command=lambda: controller.show_frame(AddProject))
+        self.firstframe =ttk.LabelFrame(self.topframe, text='Project Menu', padding='0.5i', borderwidth = 0)
+        self.secondframe = ttk.LabelFrame(self.topframe, text='Resource Menu', padding='0.5i', borderwidth=0)
+        self.firstframe.grid(column= 0, row=0)
+        self.secondframe.grid(column=1, row=0)
+         
+        self.new_projects = tk.Button(self.firstframe, text='New Project', command=lambda: controller.show_frame(AddProject))
         self.new_projects.config(height=3, width=13)
         self.new_projects.grid(column = 0, row= 0)
 
-        self.view_project = tk.Button(self.topframe, text='View Projects')
+        self.view_project = tk.Button(self.firstframe, text='Find Projects',
+                                      command=lambda: controller.show_frame(SearchProjects))
         self.view_project.config(height=3,width=13)
         self.view_project.grid(column=0, row=1)
 
-        self.edit_project = tk.Button(self.topframe, text='Edit Project')
+        self.edit_project = tk.Button(self.firstframe, text='Edit Project')
         self.edit_project.config(height=3, width=13)
         self.edit_project.grid(column=0, row=2)
 
-        self.search_projects = tk.Button(self.topframe, text='Search Projects')
-        self.search_projects.config(height=3, width=13)
-        self.search_projects.grid(column=0, row=3)
+        self.link_projects = tk.Button(self.firstframe, text='View All',
+                                       command=lambda: controller.show_frame(ViewProjects))
+        self.link_projects.config(height=3, width=13)
+        self.link_projects.grid(column=0, row=3)
 
-        self.new_resources = tk.Button(self.topframe, text='Add Resource',
+        self.new_resources = tk.Button(self.secondframe, text='New Resource',
                                    command=lambda: controller.show_frame(AddResource))
         self.new_resources.config(height=3, width=13)
         self.new_resources.grid(column=1, row=0)
 
-        self.view_resources = tk.Button(self.topframe, text='View Resources')
+        self.view_resources = tk.Button(self.secondframe, text='View Resources')
         self.view_resources.config(height=3, width=13)
         self.view_resources.grid(column=1, row=1)
 
-        self.edit_resource = tk.Button(self.topframe, text='Edit Resource')
+        self.edit_resource = tk.Button(self.secondframe, text='Edit Resource')
         self.edit_resource.config(height=3, width=13)
         self.edit_resource.grid(column=1, row=2)
 
-        self.search_resources = tk.Button(self.topframe, text='Search Resources')
+        self.search_resources = tk.Button(self.secondframe, text='Search Resources')
         self.search_resources.config(height=3, width=13)
         self.search_resources.grid(column=1,row=3)
 
