@@ -17,7 +17,7 @@ class ProjectLibrary(tk.Tk):
 
         self.frames = {}
 
-        for F in (HomePage, AddProject, AddResource, EditResource):
+        for F in (HomePage, AddResource, AddProject, SearchProjects, LinkResources, ViewProjects):
             frame = F(main, self)
             self.frames[F] = frame
             frame.grid(row=0, column=0, sticky="nsew")
