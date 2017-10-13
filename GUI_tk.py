@@ -239,8 +239,59 @@ class AddProject(tk.Frame):
 
         self.project_type_entry['values'] = data.list_project_category()
 
+class SearchProjects(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
 
+        self.project_title = tk.StringVar(self, value='')
 
+        self.searchheader = ttk.Label(self, text='Search by project title', font=headerfont)
+        self.searchheader.grid(column=0, row=0)
+
+        self.searchframe = ttk.LabelFrame(self, text='')
+        self.searchframe.grid(column=0, row=1, columnspan=40, sticky=tk.W)
+
+        self.resultsframe = ttk.LabelFrame(self, text='')
+        self.resultsframe.grid(column=0, row=2, columnspan=40, sticky=tk.W)
+
+        self.choiceframe = ttk.LabelFrame(self, text='')
+        self.choiceframe.grid(column=0, row=3, columnspan=40, sticky=tk.W)
+
+        self.search_label = tk.Label(self.searchframe, text='Title: ', font=labelsfont)
+        self.search_label.grid(column=0, row=0, sticky=tk.W)
+
+        self.searchbox = tk.Entry(self.searchframe, width=60, textvariable=self.project_title)
+        self.searchbox.grid(column=1, row=0)
+
+        self.searchbutton = ttk.Button(self.searchframe, text='Search')
+        self.searchbutton.config(width=10)
+        self.searchbutton.grid(column=1, row=1, sticky=tk.E)
+
+        self.projects_box = tk.Listbox(self.resultsframe, height=5, width=68)
+        self.projects_box.grid(column=0, row=0, sticky=tk.W)
+
+        self.select_project = tk.Button(self.resultsframe, text='Select', command=lambda:self.select_project())
+        self.select_project.config(width=10)
+        self.select_project.grid(column=0, row=1,sticky=tk.E)
+
+        self.resource_selected = tk.Label(self.choiceframe, textvariable='test title')
+        self.resource_selected.config(width=46)
+        self.resource_selected.grid(column=0, row=2, padx=0.5, sticky=tk.W)
+
+        self.go_to_resources = tk.Button(self.choiceframe, text='Link resource',
+                                         command=lambda: controller.show_frame(LinkResources))
+        self.go_to_resources.config(width=10)
+        self.go_to_resources.grid(column=1, row=2,sticky=tk.E)
+
+        self.home = tk.Button(self.choiceframe, text='Home', command=lambda: controller.show_frame(HomePage))
+        self.home.config(width=10)
+        self.home.grid(column=1, row=3, sticky=tk.E)
+
+    def select_project(self):
+        """ Takes item selected from listbox and stores it as a global variable to be used in
+            Link resource window
+        """
+        pass
 
 
 
