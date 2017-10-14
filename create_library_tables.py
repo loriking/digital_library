@@ -13,6 +13,16 @@ c = db.cursor()
 c.executescript('''
 PRAGMA Foreign_Keys=True;
 
+CREATE TABLE IF NOT EXISTS  authors (
+    ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+    name TEXT UNIQUE NOT NULL
+    );
+
+CREATE TABLE IF NOT EXISTS publishers (
+    ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+    publisher TEXT UNIQUE NOT NULL
+    );
+    
 CREATE TABLE IF NOT EXISTS languages (
     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
     language TEXT UNIQUE NOT NULL
@@ -23,25 +33,11 @@ CREATE TABLE IF NOT EXISTS resource_medium (
     medium TEXT UNIQUE
     );
 
-CREATE TABLE IF NOT EXISTS project_category(
-    ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-    category TEXT UNIQUE
-    );
-    
 CREATE TABLE IF NOT EXISTS keywords (
     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
     keyword TEXT UNIQUE
     );
     
-CREATE TABLE IF NOT EXISTS  authors (
-    ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-    name TEXT UNIQUE NOT NULL
-    );
-
-CREATE TABLE IF NOT EXISTS publishers (
-    ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-    publisher TEXT UNIQUE NOT NULL
-    );
 
 CREATE TABLE IF NOT EXISTS resource (
     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
@@ -54,15 +50,6 @@ CREATE TABLE IF NOT EXISTS resource (
     abstract TEXT
     );
 
-CREATE TABLE IF NOT EXISTS projects (
-    ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-    project_name TEXT NOT NULL,
-    project_category INTEGER REFERENCES project_category(ID),
-    description TEXT,
-    date_start DATE, 
-    date_end DATE 
-    );
-    
 CREATE TABLE IF NOT EXISTS RESOURCE_AUTHOR(  
     resourceID INTEGER,
     authorID INTEGER,
@@ -75,17 +62,27 @@ CREATE TABLE IF NOT EXISTS RESOURCE_KEYWORDS(
     PRIMARY KEY(resourceID, keywordID)
     );
 
+
+CREATE TABLE IF NOT EXISTS project_category(
+    ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+    category TEXT UNIQUE
+    );
+
+
+CREATE TABLE IF NOT EXISTS projects (
+    ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+    project_name TEXT NOT NULL,
+    project_category INTEGER REFERENCES project_category(ID),
+    description TEXT,
+    date_start DATE, 
+    date_end DATE 
+    );
+    
+
 CREATE TABLE IF NOT EXISTS PROJECT_REFERENCES(
     projectID INTEGER,
     resourceID INTEGER,
     PRIMARY KEY (projectID, resourceID)
-    );
-    
-CREATE TABLE IF NOT EXISTS reading_now(
-    ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-    resourceID INTEGER REFERENCES resource(ID),
-    date_start DATE, 
-    date_end DATE
     );
 
     ''')
