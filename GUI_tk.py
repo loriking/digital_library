@@ -351,7 +351,7 @@ class Projects(tk.Frame):
         self.description_label = tk.Label(self.topframe, text='Description', font=labelsfont)
         self.start_label = tk.Label(self.topframe, text='Start Date', font=labelsfont)
         self.finish_label = tk.Label(self.topframe, text='End Date', font=labelsfont)
-        self.new_category_label = tk.Label(self.topframe, text='New Type', font=labelsfont)
+        self.new_category_label = tk.Label(self.topframe, text='New Project Type', font=labelsfont)
 
         self.project_name_entry = ttk.Entry(self.topframe, width=60, textvariable=self.project_name)
         self.project_type_entry = ttk.Combobox(self.topframe, width=57, textvariable=self.project_type, state='readonly' )
@@ -380,8 +380,8 @@ class Projects(tk.Frame):
         self.add_project = tk.Button(self.topframe, text='Add Project', command=lambda: self.save_project())
         self.add_project.grid(column=1, row=6, padx=10, sticky=tk.E)
 
-        self.new_cat_flag = tk.Checkbutton(self.topframe, text="New flag", variable=self.link)
-        self.new_cat_flag.grid(column=2, row=6)
+        self.new_cat_flag = tk.Checkbutton(self.topframe, text="Check to add new project type", variable=self.link)
+        self.new_cat_flag.grid(column=3, row=6, padx=6, sticky=tk.W)
 
         self.project_list = ttk.Treeview(self.bottomframe, columns=('Name', 'Type','Description', 'Start date', 'End date'))
         self.project_list['columns'] = ('Name', 'Type','Description', 'Start date', 'End date')
@@ -424,10 +424,10 @@ class Projects(tk.Frame):
     def save_project(self):
         """ Adds project to SQL database """
 
-        if self.link == 1:
-            self.category = self.project_type.get()
-        else:
+        if self.link.get() == 1:
             self.category = self.new_category.get()
+        else:
+            self.category = self.project_type.get()
 
         data.add_project(self.project_name.get(), self.category, self.description.get(),
                          self.start_date.get(), self.end_date.get())
@@ -439,6 +439,7 @@ class Projects(tk.Frame):
         self.start_entry.delete(0, 'end')
         self.end_entry.delete(0, 'end')
         self.new_category.delete(0, 'end')
+        self.link.set(0)
 
         self.list_projects()
 
