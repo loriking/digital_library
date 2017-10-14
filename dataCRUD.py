@@ -15,6 +15,8 @@ c = db.cursor()
 
 # Languages C.R.U.D.
 def add_language(language):
+    language = language.title()
+
     c.execute('''INSERT OR IGNORE INTO languages(language) VALUES(?)''', (language,))
     db.commit()
 
@@ -22,18 +24,18 @@ def add_language(language):
 def list_languages():
     """    return: all the languages from database     """
 
-    c.execute('SELECT language FROM languages ORDER BY language')
+    c.execute('''SELECT language FROM languages ORDER BY language''')
     languages = c.fetchall()
     results = [x for t in languages for x in t]
     results = ' '.join(results)
-    
     return results
 
 
 def get_languageID(language):
     """ return: the ID (PK) of a given language    """
+    language = language.title()
 
-    c.execute('SELECT ID FROM languages WHERE language = ?', (language,))
+    c.execute('''SELECT ID FROM languages WHERE language = ? ''', (language,))
 
     langID = c.fetchall()[0]
     langID = langID[0]
@@ -51,65 +53,22 @@ def get_language(langID):
 
 
 def update_language(language):
+    language = language.title()
     langID = get_languageID(language)
-    c.execute('UPDATE languages SET language = ? WHERE ID =?', (language, langID))
+    c.execute('''UPDATE languages SET language = ? WHERE ID =?''', (language, langID))
     db.commit()
 
 
-def delete_language(language):
-    languageID = get_languageID(language)
+def delete_language():
+    languageID = get_languageID()
     c.execute('''DELETE FROM languages WHERE ID = ?''', (languageID,))
     db.commit()
 
-
-# KEYWORDS CRUD FUNCTIONS
-
-def add_keyword(keyword):
-    """      Adds keyword to SQL database    """
-    keyword = keyword.title()
-    c.execute('''INSERT INTO keywords(keyword) VALUES(?)''', (keyword,))
-    db.commit()
-
-
-def list_keyword():
-    """ return:  all the keywords from database     """
-
-    c.execute('''SELECT keyword FROM keywords''')
-    results = c.fetchall()
-    for i in results:
-        print(i)
-    return results
-
-
-def get_keywordID(keyword):
-    """ return: the ID of a given keyword    """
-    c.execute('''SELECT ID FROM keywords WHERE keyword = ? ''', (keyword,))
-    keywordID = c.fetchone()[0]
-    print(keyword, "has ID of ", keywordID)
-    return keywordID
-
-
-def get_keyword(keywordID):
-    """ return: keyword from ID    """
-    c.execute('''SELECT keyword FROM keywords WHERE ID = ?''', (keywordID,))
-    return c.fetchall()[0]
-
-
-def update_keyword(keyword):
-    keywordID = get_keywordID(keywordID)
-    c.execute('''UPDATE keywords SET keyword = ? WHERE ID =?''', (keyword, keywordID))
-    db.commit()
-
-
-def delete_keyword(keywordID):
-    c.execute('''DELETE FROM keywords WHERE ID = ?''', (keywordID,))
-    db.commit()
-
-
-# AUTHOR CRUD
-
+# AUTHORS
+    
 def add_author(author_name):
     """    Adds author to SQL database    """
+    author_name = author_name.title()
 
     c.execute("INSERT OR IGNORE INTO authors(name) VALUES(?)", (author_name,))
     db.commit()
@@ -118,13 +77,16 @@ def add_author(author_name):
 def list_authors():
     """    :return: all the author from database    """
 
-    c.execute("SELECT name FROM authors ORDER BY name")
-    results = c.fetchall()
+    c.execute("SELECT name FROM authors")
+    names = c.fetchall()
+    results = [x for t in names for x in t]
+    results = ' '.join(results)
     return results
 
 
 def find_author(name):
     """ return: Searches for author based on partial match  """
+
     search = "%" + name + "%"
     c.execute("SELECT name FROM authors WHERE name LIKE ?", (search,))
     matches = c.fetchall()
@@ -135,16 +97,15 @@ def find_author(name):
     return matches
 
 
-def get_authorID(name):
+def get_authorID(author_name):
     """     :return: the ID of a given author    """
+    author_name = author_name.title()
 
-
-    c.execute('''SELECT ID FROM authors WHERE name = ? ''', (name,))
+    c.execute('''SELECT ID FROM authors WHERE name = ? ''', (author_name,))
 
     authorID = c.fetchall()[0]
     authorID = authorID[0]
 
-    # print(name, "has ID of ", authorID)
     return authorID
 
 
@@ -159,26 +120,29 @@ def get_author(authorID):
     return author_name
 
 
-def update_author(author, correction):
-    authorID = get_authorID(author)
+def update_author(author_correction):
+    author_correction = author_correction.title()
+    authorID = get_authorID()
 
-    c.execute('''UPDATE authors SET name = ? WHERE ID =?''', (correction, authorID))
+    c.execute('''UPDATE authors SET name = ? WHERE ID =?''', (author_correction, authorID))
     db.commit()
 
 
-def delete_author(name):
-    authorID = get_authorID(name)
+def delete_author(author_name):
+    author_name = author_name.title()
+    authorID = get_authorID(author_name)
 
     c.execute('''DELETE FROM authors WHERE ID = ?''', (authorID,))
     print("Deleting item: ", authorID)
 
     db.commit()
 
+# PUBLISHER CRUD FUNCTIONS
 
-# Publishers CRUD functions
-
-def add_publisher(publisher):
+def add_publisher(publisher_entry):
     """ Adds publisher to SQL database"""
+
+    publisher = publisher_entry.title()
 
     c.execute('''INSERT OR IGNORE INTO publishers(publisher) VALUES(?)''', (publisher,))
     db.commit()
@@ -186,16 +150,16 @@ def add_publisher(publisher):
 
 def list_publishers():
     """ Returns all the publisher from database"""
-    
+
     c.execute('''SELECT publisher FROM publishers ORDER BY publisher''')
-    results = c.fetchall()
-    for i in results:
-        print(i)
+    publishers = c.fetchall()
+    results = [x for t in publishers for x in t]
+    results = ' '.join(results)
     return results
 
-
-def get_publisherID(publisher):
+def get_publisherID(publisher_entry):
     """ Returns the ID (PK) of a given publisher"""
+    publisher = publisher_entry.title()
 
     c.execute('''SELECT ID FROM publishers WHERE publisher = ? ''', (publisher,))
     publisherID = c.fetchall()[0]
@@ -211,44 +175,48 @@ def get_publisher(publisherID):
     return c.fetchall()[0]
 
 
-def update_publisher(publisher, publisher_correction):
-    publisherID = get_publisherID(publisher)
-    publisher = input("Correction:\t")
+def update_publisher(publisher_entry, publisher_correction_entry):
+    publisher = publisher_entry.title()
+    publisher_correction = publisher_correction_entry.title()
 
-    # print("Updating", publisher)
+    publisherID = get_publisherID(publisher)
+
     c.execute('''UPDATE publishers SET publisher = ? WHERE ID =?''', (publisher_correction, publisherID))
     db.commit()
 
 
-def delete_publisher(publisher):
+def delete_publisher(publisher_entry):
+    publisher = publisher_entry.title()
     publisherID = get_publisherID(publisher)
     c.execute('''DELETE FROM publishers WHERE ID = ?''', (publisherID,))
-    # print("Deleting item: ", publisherID)
+
     db.commit()
 
 
 # RESOURCE medium CRUD
-def add_resource_medium(medium):
+def add_resource_medium(medium_entry):
+    medium = medium_entry.lower()
     c.execute("INSERT OR IGNORE INTO resource_medium(medium) VALUES(?)", (medium,))
     db.commit()
+
 
 def list_resource_medium():
     """ return: all the resource types from database    """
 
     c.execute('''SELECT medium FROM resource_medium ORDER BY medium''')
-    results = c.fetchall()
-    for i in results:
-        print(i)
+    media = c.fetchall()
+    results = [x for t in media for x in t]
+    results = ' '.join(results)
     return results
 
 
-def get_resource_mediumID(resource_medium):
+def get_resource_mediumID(medium_entry):
     """ Returns the ID (PK) of a given resource medium"""
 
-    c.execute('''SELECT ID FROM resource_medium WHERE medium = ? ''', (resource_medium,))
-    resource_mediumID = c.fetchone()[0]
-  
-    return resource_mediumID
+    medium = medium_entry.lower()
+
+    c.execute('''SELECT ID FROM resource_medium WHERE medium = ? ''', (medium,))
+    return c.fetchone()[0]
 
 
 def get_resource_type(resource_mediumID):
@@ -256,147 +224,127 @@ def get_resource_type(resource_mediumID):
 
     c.execute('''SELECT medium FROM resource_medium WHERE ID = ?''', (resource_mediumID,))
 
-    medium = c.fetchall()[0]
-    medium = medium[0]
-    return medium
+    return c.fetchall()[0]
 
+def update_resource_medium(resource_medium_entry, media_correction_entry):
+    resource_medium = resource_medium_entry.lower()
+    media_correction = media_correction_entry.lower()
 
-def update_resource_medium(resource_medium, media_correction):
     resource_mediumID = get_resource_mediumID(resource_medium)
- 
+
     c.execute('''UPDATE resource_medium SET medium = ? WHERE ID =?''', (media_correction, resource_mediumID))
     db.commit()
 
 
-def delete_resource_medium(resource_medium):
+def delete_resource_medium(resource_medium_entry):
+    resource_medium = resource_medium_entry.lower()
     resource_mediumID = get_resource_mediumID(resource_medium)
     c.execute('''DELETE FROM resource_medium WHERE ID = ?''', (resource_mediumID,))
- 
     db.commit()
 
 
-# Resource CRUD FUNCTIONS
-#
-def add_resource(resource_title, author, publisher, year, pages, medium, language, abstract):
-    """ Adds item to SQL database"""
+# subject CRUD FUNCTIONS
 
-    add_language(language)
-    c.execute("SELECT ID FROM languages WHERE language = ?", (language,))
-    languageID = c.fetchone()[0]
-
-    add_resource_medium(medium)
-    c.execute("SELECT ID FROM resource_medium WHERE medium = ?", (medium,))
-    mediaID = c.fetchone()[0]
-
-    add_publisher(publisher)
-    c.execute("SELECT ID FROM publishers WHERE publisher = ?", (publisher,))
-    publisherID = c.fetchone()[0]
-
-    c.execute('''INSERT INTO resource(title, year, pages, languageID, mediaID, 
-                                       publisherID, abstract) VALUES(?,?,?,?,?,?,?)''',
-              (resource_title, year, pages, languageID, mediaID, publisherID, abstract))
-
-    c.execute("SELECT ID FROM resource WHERE title = ?", (resource_title,))
-    resourceID = c.fetchone()[0]
-
-    add_author(author)
-    c.execute("SELECT ID FROM authors WHERE name = ?", (author,))
-    authorID = c.fetchone()[0]
-
-    c.execute("INSERT OR IGNORE INTO  RESOURCE_AUTHOR VALUES(?,?)", (resourceID, authorID))
+def add_subject(subject_entry):
+    subject = subject_entry.lower()
+    c.execute('''INSERT OR IGNORE INTO subjects(subject) VALUES(?)''', (subject,))
     db.commit()
 
-"""
-    number_of_authors = int(input("Number of authors:\t"))
 
-    if number_of_authors != 0:
-        while number_of_authors > 0:
-            name = add_author()
-            c.execute("SELECT ID FROM authors WHERE name = ?", (name,))
-            authorID = c.fetchone()[0]
+def list_subjects():
+    c.execute('''SELECT subject FROM subjects''')
 
-            c.execute("INSERT OR IGNORE INTO  RESOURCE_AUTHOR VALUES(?,?)", (resourceID, authorID))
-            number_of_authors -= 1
-"""
-    #db.commit()
+    subjects = c.fetchall()
+    results = [x for t in subjects for x in t]
+    results = ' '.join(results)
 
-
-def list_resources():
-    """ Returns all the resources from database"""
-    
-    c.execute('''SELECT resource.title, resource.year, resource.pages, publishers.publisher, 
-                    languages.language, resource_medium.medium
-                FROM resource JOIN languages JOIN publishers JOIN resource_medium
-                ON resource.languageID = languages.ID AND resource.mediaID = resource_medium.ID 
-                AND resource.publisherID = publishers.ID
-                ''')
-
-
-    results = c.fetchall()
     return results
 
 
-def get_resourceID(title):
-    """ Returns the ID (PK) of a given resource"""
-
-    c.execute('''SELECT ID FROM resource WHERE title = ? ''', (title,))
-    resourceID = c.fetchone()[0]
-
-    return resourceID
 
 
-def get_resource(resourceID):
-    """ Returns resource  details from ID"""
+def get_subjectID(subject):
+    subject = subject.lower()
+    c.execute('''SELECT ID FROM subjects WHERE subject = ? ''', (subject,))
+    return c.fetchone()[0]
 
-    c.execute('''SELECT title, year, pages, languageID, mediaID, 
-               publisherID, abstract FROM resource WHERE ID = ?''', (resourceID,))
 
+def get_subject(subjectID):
+    c.execute('''SELECT subject FROM subjects WHERE ID = ?''', (subjectID,))
     return c.fetchall()[0]
 
 
-def modify_resource(ID=None, title=None, year=None, pages=None, languageID=None,
-                    mediaID=None, publisherID=None, abstract=None):
-    """ Modifies resource"""
-
-    ID = input("Enter resource ID number:\t")
-
-    fields = get_resource(ID)
-
-    if not title:
-        title = fields[0]
-    if not year:
-        year = fields[1]
-    if not pages:
-        pages = fields[2]
-    if not languageID:
-        languageID = fields[3]
-    if not mediaID:
-        mediaID = fields[4]
-    if not publisherID:
-        publisherID = fields[5]
-    if not abstract:
-        abstract = fields[6]
-
-    c.execute(''' UPDATE resource 
-        SET title = ?, year = ?, pages = ?, languageID = ?, mediaID = ?, 
-            publisherID = ?, abstract = ?
-        WHERE ID = ? ''', (title, year, pages, languageID, mediaID,
-                           publisherID, abstract, ID))
-
+def update_subject(subject):
+    subject = subject.lower()
+    subjectID = get_subjectID(subject)
+    c.execute('''UPDATE subjects SET subject = ? WHERE ID =?''', (subject, subjectID))
     db.commit()
 
 
-def delete_resource(title):
-    resourceID = get_resourceID(title)
-    c.execute('''DELETE FROM resource WHERE ID = ?''', (resourceID,))
-   
+def delete_subject(subjectID):
+    c.execute('''DELETE FROM subjects WHERE ID = ?''', (subjectID,))
     db.commit()
+
+
+# RESOURCE
+def get_resource_id(resource_title_entry):
+    resource_title = resource_title_entry.title()
+    c.execute('''SELECT ID FROM resource WHERE title = ?''', (resource_title,))
+    return c.fetchone()[0]
+
+def add_resource(title, author, year, pages, publisher, language, medium, subject, abstract):
+    """ Adds item to SQL database"""
+
+    add_publisher(publisher)
+    publisherID = get_publisherID(publisher)
+
+    add_language(language)
+    languageID = get_languageID(language)
+
+    add_resource_medium(medium)
+    mediaID = get_resource_mediumID(medium)
+
+    title = title.title()
+
+    c.execute('''INSERT OR IGNORE INTO resource(title, year, pages, publisherID, languageID, mediaID, abstract) 
+                 VALUES(?,?,?,?,?,?,?)''',
+              (title, year, pages, publisherID, languageID, mediaID, abstract,))
+
+    resourceID = get_resource_id(title)
+
+    add_author(author)
+    authorID = get_authorID(author)
+
+    add_subject(subject)
+    subjectID = get_subjectID(subject)
+
+    c.execute("INSERT OR IGNORE INTO resource_author VALUES(?,?)", (resourceID, authorID,))
+    db.commit()
+
+    c.execute('INSERT OR IGNORE INTO resource_subject VALUES(?,?)', (subjectID, resourceID))
+    db.commit()
+
+def list_resources():
+    """ Returns all the resources from database"""
+
+    c.execute('''SELECT resource.title, authors.name, resource.year, resource.pages, 
+                publishers.publisher, languages.language, resource_medium.medium, resource.abstract
+                FROM resource JOIN languages JOIN publishers JOIN resource_medium JOIN authors
+                JOIN resource_author
+                ON resource.languageID = languages.ID AND resource.mediaID = resource_medium.ID 
+                AND resource.publisherID = publishers.ID AND authors.ID = resource_author.authorID 
+                AND resource.ID = resource_author.resourceID
+                ''')
+
+    return c.fetchall()
+
 
 
 # PROJECT Category CRUD
 
 def add_project_category(project_category):
     """  Adds project_type to database    """
+    project_category = project_category.title()
 
     c.execute('''INSERT INTO project_category(category) VALUES(?)''', (project_category,))
     db.commit()
@@ -405,61 +353,43 @@ def add_project_category(project_category):
 def list_project_category():
     """    :return: all the project categories from database    """
 
-    c.execute('''SELECT category FROM project_category''')
-    results = c.fetchall()
-    for row in results:
-        ID = row[0]
-        category = row[1]
-        print(ID, category)
-
+    c.execute('''SELECT category FROM project_category ORDER BY category''')
+    categories = c.fetchall()
+    results = [x for t in categories for x in t]
+    results = ' '.join(results)
     return results
 
-
 def get_project_categoryID(project_category):
-    """    :return: the ID (PK) of a given project_category'    """
-
-    try:
-        c.execute('''SELECT ID FROM project_category WHERE category = ? ''', (project_category,))
-        project_categoryID = c.fetchone()[0]
-
-    except TypeError:
-        c.execute('''INSERT OR IGNORE INTO project_category(category) VALUES(?)''', (project_category,))
-        db.commit()
 
         c.execute('''SELECT ID FROM project_category WHERE category = ? ''', (project_category,))
-        project_categoryID = c.fetchone()[0]
-
-    return project_categoryID
+        return c.fetchone()[0]
 
 
 def get_project_category(project_categoryID):
-    """     return: project type from ID    """
-
     c.execute('''SELECT category FROM project_category WHERE ID = ?''', (project_categoryID,))
 
     return c.fetchall()[0]
 
 
 def update_project_category(project_category, project_category_correction):
-    """ Modifies project category"""
 
     project_categoryID = get_project_categoryID(project_category)
 
-    c.execute('''UPDATE project_category SET category = ? WHERE ID =?''', (project_category_correction, project_categoryID))
+    c.execute('''UPDATE project_category SET category = ? WHERE ID =?''',
+              (project_category_correction, project_categoryID))
     db.commit()
 
 
 def delete_project_category(project_category):
     project_categoryID = get_project_categoryID(project_category)
     c.execute('''DELETE FROM project_category WHERE ID = ?''', (project_categoryID,))
-  
+
     db.commit()
 
 
 # Project CRUD functions
 
-def add_project(project_name, project_category, description, date_start, date_end ):
-    """    Adds item to SQL database    """
+def add_project(project_name, project_category, description, date_start, date_end):
 
     project_categoryID = get_project_categoryID(project_category)
 
@@ -468,9 +398,19 @@ def add_project(project_name, project_category, description, date_start, date_en
         (project_name, project_categoryID, description, date_start, date_end))
     db.commit()
 
+
 def get_projectID(project_name):
     """ Returns the ID of a given project """
-    c.execute('''SELECT ID FROM project WHERE project_name = ?''', (project_name,))
+
+    c.execute('''SELECT ID FROM projects WHERE project_name = ?''', (project_name,))
+    return c.fetchall()
+
+def find_project(project_name):
+    search = "%" + project_name + "%"
+    c.execute('''SELECT project_name, category, description, date_start, date_end
+                FROM projects JOIN project_category 
+                ON projects.project_category = project_category.ID
+                WHERE project_name LIKE ?''', (search,))
     return c.fetchall()
 
 
@@ -478,8 +418,9 @@ def list_projects():
     """ :return list of projects """
     c.execute('''SELECT project_name, category, description, date_start, date_end
             FROM projects JOIN project_category 
-            ON projects.project_category = project_category.ID           
-                ''')
+            ON projects.project_category = project_category.ID 
+            ORDER BY project_name          
+            ''')
     return c.fetchall()
 
 
@@ -488,17 +429,18 @@ def get_project(projectID):
                 FROM projects JOIN project_category 
                 ON projects.project_category = project_category.ID 
                 WHERE projects.ID = ? ''', (projectID,))
-    return c.fetchall()
+    project =  c.fetchall()
+    results = [x for t in project for x in t]
+    results = ','.join(results)
+    return results
 
 
-def update_project(ID = None, project_name = None, project_category = None, description = None, date_start = None, date_end = None):
-
-
+"""
+def update_project(projectID=None, project_name=None, project_category=None, description=None, date_start=None, date_end=None):
     fields = get_project(projectID)
 
-    
     if not project_name:
-        project_name  = fields[0]
+        project_name = fields[0]
     if not project_category:
         project_category = fields[1]
     if not description:
@@ -507,24 +449,42 @@ def update_project(ID = None, project_name = None, project_category = None, desc
         date_start = fields[3]
     if not date_end:
         date_end = fields[4]
-        
+
     c.execute(''' UPDATE project SET project_name = ?, project_category = ?,  description = ?, date_start = ?, date_end = ?, 
             publisherID = ?, abstract = ?
             WHERE ID = ? ''', (project_name, project_category, description, date_start, date_end, ID))
 
     db.commit()
-    
+"""
 
 def delete_project(projectID):
     c.execute(''' DELETE from projects WHERE projects.ID = ?''', (projectID,))
     db.commit()
 
-def get_books_by_author(author_name):
 
-    c.execute("""SELECT resource.title, resource.abstract
-                    FROM RESOURCE_AUTHOR JOIN resource JOIN authors
-                    ON resourceID = resource.ID AND authorID = authors.ID
-                    WHERE authors.name = ?""", (author_name,))
-    results = c.fetchall()
+"""
+def init_db(filename=None):
+    global db, c
+    if not filename:
+        filename = 'small_data.db'
+    try:
+        db = sql.connect(filename)
+        c = db.cursor()
+        #c.execute('PRAGMA Foreign_Keys=True')
+    except:
+        print('Error connecting to', filename)
+        c = None
+        raise
 
-    return results
+def close_db():
+    try:
+        c.close()
+        db.commit()
+        db.close()
+    except:
+        print('Problem closing database')
+        raise
+
+if __name__ == '__main__':
+    init_db()
+"""
