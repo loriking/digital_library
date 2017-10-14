@@ -15,8 +15,6 @@ c = db.cursor()
 
 # Languages C.R.U.D.
 def add_language(language):
-    """    Adds language to SQL database    """
-
     c.execute('''INSERT OR IGNORE INTO languages(language) VALUES(?)''', (language,))
     db.commit()
 
@@ -24,8 +22,10 @@ def add_language(language):
 def list_languages():
     """    return: all the languages from database     """
 
-    c.execute('''SELECT language FROM languages ORDER BY language''')
-    results = c.fetchall()
+    c.execute('SELECT language FROM languages ORDER BY language')
+    languages = c.fetchall()
+    results = [x for t in languages for x in t]
+    results = ' '.join(results)
     
     return results
 
@@ -33,7 +33,7 @@ def list_languages():
 def get_languageID(language):
     """ return: the ID (PK) of a given language    """
 
-    c.execute('''SELECT ID FROM languages WHERE language = ? ''', (language,))
+    c.execute('SELECT ID FROM languages WHERE language = ?', (language,))
 
     langID = c.fetchall()[0]
     langID = langID[0]
@@ -52,7 +52,7 @@ def get_language(langID):
 
 def update_language(language):
     langID = get_languageID(language)
-    c.execute('''UPDATE languages SET language = ? WHERE ID =?''', (language, langID))
+    c.execute('UPDATE languages SET language = ? WHERE ID =?', (language, langID))
     db.commit()
 
 
