@@ -346,7 +346,7 @@ def add_project_category(project_category):
     """  Adds project_type to database    """
     project_category = project_category.title()
 
-    c.execute('''INSERT INTO project_category(category) VALUES(?)''', (project_category,))
+    c.execute('''INSERT OR IGNORE INTO project_category(category) VALUES(?)''', (project_category,))
     db.commit()
 
 
@@ -366,8 +366,7 @@ def get_project_categoryID(project_category):
         project_categoryID = c.fetchone()[0]
 
     except TypeError:
-        c.execute('''INSERT OR IGNORE INTO project_category(category) VALUES(?)''', (project_category,))
-        db.commit()
+        add_project_category(project_category)
 
         c.execute('''SELECT ID FROM project_category WHERE category = ? ''', (project_category,))
         project_categoryID = c.fetchone()[0]
