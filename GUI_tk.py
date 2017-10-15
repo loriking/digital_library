@@ -235,7 +235,9 @@ class AddResource(tk.Frame):
         self.resource_list.column('5', anchor='w')
         self.resource_list.column('6', anchor='w')
         self.treeview = self.resource_list
+        
         self.list_resources()
+        self.update_entry_widgets()
 
         self.addresource=tk.Button(bottomframe, text='Save', command=lambda:self.new_resource())
         self.addresource.config(cursor='hand2')
@@ -251,20 +253,29 @@ class AddResource(tk.Frame):
         resources = data.list_resources()
         for item in resources:
             self.treeview.insert('', 'end', values=item)
+            
+    def update_entry_widgets(self):
+        self.publisher_entry['values'] = data.list_publishers()
+        self.media_box['values'] = data.list_resource_medium()
+        self.language_entry['values'] = data.list_languages()
+
+        self.title_entry.delete(0, 'end')
+        self.author_entry.delete(0, 'end')
+        self.year_entry.delete(0, 'end')
+        self.pages_entry.delete(0, 'end')
+        self.publisher_entry.set('')
+        self.language_entry.set('')
+        self.media_box.set('')
+        self.subject_entry.delete(0, 'end')
+        self.abstract_entry.delete(0, 'end')
+        self.add_language_entry.delete(0, 'end')
+        self.add_publisher_entry.delete(0, 'end')
 
     def new_resource(self):
         data.add_resource(self.title.get(), self.author.get(), self.year.get(), self.pages.get(), self.publisher.get(),
                           self.language.get(), self.medium.get(), self.subject.get(), self.abstract.get())
 
-        self.title_entry.delete(0, "end")
-        self.author_entry.delete(0, "end")
-        self.year_entry.delete(0, "end")
-        self.pages_entry.delete(0, "end")
-        self.publisher_entry.set('')
-        self.language_entry.set('')
-        self.media_box.set('')
-        self.subject_entry.delete(0, 'end')
-        self.abstract_entry.delete(0, "end")
+        self.update_entry_widgets()
 
         self.list_resources()
 
@@ -360,7 +371,7 @@ class Projects(tk.Frame):
         self.description = tk.StringVar(self, value='')
         self.start_date = tk.StringVar(self, value='')
         self.end_date = tk.StringVar(self, value='')
-        self.link = tk.IntVar()
+        self.link = tk.IntVar(self, value=0)
         self.add_category = tk.StringVar()
 
         self.title_label = tk.Label(self.topframe, text='Project Name', font=labelsfont)
@@ -398,7 +409,7 @@ class Projects(tk.Frame):
         self.add_project.grid(column=1, row=6, padx=10, sticky=tk.E)
 
         self.new_cat_flag = tk.Checkbutton(self.topframe, text="Check to add new project type", variable=self.link)
-        self.new_cat_flag.grid(column=3, row=6, padx=6, sticky=tk.W)
+        self.new_cat_flag.grid(column=3, row=6, padx=6,sticky=tk.W)
 
         self.project_list = ttk.Treeview(self.bottomframe, columns=('Name', 'Type','Description', 'Start date', 'End date'))
         self.project_list['columns'] = ('Name', 'Type','Description', 'Start date', 'End date')
@@ -445,6 +456,7 @@ class Projects(tk.Frame):
             self.category = self.new_category.get()
         else:
             self.category = self.project_type.get()
+
 
         data.add_project(self.project_name.get(), self.category, self.description.get(),
                          self.start_date.get(), self.end_date.get())
