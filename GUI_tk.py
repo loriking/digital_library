@@ -3,6 +3,7 @@ from tkinter.messagebox import showinfo
 from tkinter import ttk
 import dataCRUD as data
 
+smalllabelsfont = ('times', 10, 'bold')
 labelsfont = ('times', 12, 'bold')
 headerfont = ('times', 14, 'bold')
 
@@ -106,9 +107,6 @@ class AddResource(tk.Frame):
         topframe = tk.LabelFrame(self, text="", borderwidth=0)
         topframe.grid(column=0, row=1, padx=10, sticky=tk.W)
 
-        middleframe = tk.LabelFrame(self, text='',borderwidth=0)
-        middleframe.grid(column=0, row=2,  padx=10, sticky=tk.W)
-
         bottomframe = tk.LabelFrame(self, text="", borderwidth=0)
         bottomframe.grid(column=0, row=3, padx=10, sticky=tk.W)
 
@@ -124,11 +122,12 @@ class AddResource(tk.Frame):
         self.medium = tk.StringVar(parent, value="")
         self.abstract = tk.StringVar(parent, value="")
         self.subject = tk.StringVar(parent, value='')
-        self.new_lang = tk.IntVar()
-        self.new_pub = tk.IntVar()
-        self.new_media = tk.IntVar()
-
-        self.open = 'normal'
+        self.new_lang = tk.StringVar()
+        self.new_pub = tk.StringVar()
+        self.new_format =tk.StringVar()
+        self.new_lang_flag = tk.IntVar()
+        self.new_pub_flag = tk.IntVar()
+        self.new_format_flag = tk.IntVar()
 
         self.title_label=tk.Label(topframe, text='Title', font=labelsfont)
         self.author_label=tk.Label(topframe, text ='First Author', font=labelsfont)
@@ -139,21 +138,30 @@ class AddResource(tk.Frame):
         self.media_label=tk.Label(topframe, text='Medium', font=labelsfont)
         self.subject_label = tk.Label(topframe, text='Subject', font=labelsfont)
         self.abstract_label=tk.Label(topframe, text='Abstract', font=labelsfont)
-        self.new_flag = tk.Label(middleframe, text='Add new:', font=labelsfont)
+        self.add_publisher_label = tk.Label(topframe, text='New Publisher', font=smalllabelsfont)
+        self.add_language_label = tk.Label(topframe, text='New Language', font=smalllabelsfont)
+        self.add_format_label =  tk.Label(topframe, text='New Format', font=smalllabelsfont)
 
         self.title_entry=ttk.Entry(topframe, width=50, textvariable =self.title)
         self.author_entry=ttk.Entry(topframe, width=50, textvariable=self.author)
         self.year_entry=ttk.Entry(topframe, width=50, textvariable=self.year)
         self.pages_entry=ttk.Entry(topframe, width=50, textvariable=self.pages)
-        self.publisher_entry = ttk.Combobox(topframe, width=47, textvariable=self.publisher)
-        self.language_entry=ttk.Combobox(topframe, width=47, textvariable=self.language, state=self.open)
-        self.media_box=ttk.Combobox(topframe, width=50, textvariable=self.medium)
+        self.publisher_entry = ttk.Combobox(topframe, width=47, textvariable=self.publisher, state='readonly')
+        self.add_publisher_entry =ttk.Entry(topframe, width=50, textvariable =self.new_pub)
+
+        self.language_entry=ttk.Combobox(topframe, width=47, textvariable=self.language, state='readonly')
+        self.add_language_entry=ttk.Entry(topframe, width=50, textvariable =self.new_lang)
+        self.media_box=ttk.Combobox(topframe, width=50, textvariable=self.medium, state='readonly')
+        self.add_format_entry =ttk.Entry(topframe, width=53, textvariable =self.new_format)
         self.subject_entry = ttk.Entry(topframe, width = 53, textvariable=self.subject)
         self.abstract_entry=ttk.Entry(topframe, width=53, textvariable=self.abstract)
 
-        self.new_pub_flag = tk.Checkbutton(middleframe, text='Publisher', variable=self.new_pub)
-        self.new_lang_flag = tk.Checkbutton(middleframe, text='Language', variable=self.new_lang)
-        self.new_media_flag = tk.Checkbutton(middleframe, text='Media type', variable=self.new_media)
+        self.add_pub_flag = tk.Checkbutton(topframe, text='Check if adding new publisher', 
+                                           variable=self.new_pub_flag)
+        self.add_lang_flag = tk.Checkbutton(topframe, text='Check if adding new language', 
+                                            variable=self.new_lang_flag)
+        self.add_format_flag = tk.Checkbutton(topframe, text='Check if adding new format', 
+                                              variable=self.new_format_flag)
 
 
         self.publisher_entry['values'] = data.list_publishers()
@@ -176,15 +184,24 @@ class AddResource(tk.Frame):
 
         self.publisher_label.grid(column=0, row=3,  padx=5, sticky=tk.W)
         self.publisher_entry.grid(column=1, row=3, padx=5, sticky=tk.W)
+
+        self.add_publisher_label.grid(column=0, row=4,  padx=5, sticky=tk.W)
+        self.add_publisher_entry.grid(column=1, row=4,  padx=5, sticky=tk.W)
+        
         self.lan_label.grid(column=2, row=3, padx=10, sticky=tk.W)
         self.language_entry.grid(column=3, row=3, padx=5, sticky=tk.W)
+
+        self.add_language_label.grid(column=2, row=4, padx=10, sticky=tk.W)
+        self.add_language_entry.grid(column=3, row=4, padx=5, sticky=tk.W)
         self.media_label.grid(column=4, row=3, padx=10,sticky=tk.W)
         self.media_box.grid(column=5, row=3, padx=5, sticky=tk.E)
 
-        self.new_flag.grid(column=0, row=0,   sticky=tk.W)
-        self.new_pub_flag.grid(column=1, row=0, padx=10, sticky=tk.W)
-        self.new_lang_flag.grid(column=2, row=0,padx=20,sticky=tk.W)
-        self.new_media_flag.grid(column=3, row=0,sticky=tk.W)
+        self.add_format_label.grid(column=4, row=4, padx=10,sticky=tk.W)
+        self.add_format_entry.grid(column=5, row=4, padx=5, sticky=tk.E)
+
+        self.add_pub_flag.grid(column=1, row=5,  sticky=tk.E)
+        self.add_lang_flag.grid(column=3, row=5,sticky=tk.E)
+        self.add_format_flag.grid(column=5, row=5,sticky=tk.E)
 
 
         self.resource_list = ttk.Treeview(bottomframe,
@@ -243,9 +260,9 @@ class AddResource(tk.Frame):
         self.author_entry.delete(0, "end")
         self.year_entry.delete(0, "end")
         self.pages_entry.delete(0, "end")
-        self.publisher_entry.delete(0, "end")
-        self.language_entry.delete(0, "end")
-        self.media_box.delete(0, "end")
+        self.publisher_entry.set('')
+        self.language_entry.set('')
+        self.media_box.set('')
         self.subject_entry.delete(0, 'end')
         self.abstract_entry.delete(0, "end")
 
