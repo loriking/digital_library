@@ -270,7 +270,12 @@ class AddResource(tk.Frame):
         self.abstract_entry.delete(0, 'end')
         self.add_language_entry.delete(0, 'end')
         self.add_publisher_entry.delete(0, 'end')
-
+        self.add_format_entry.delete(0, 'end')
+        self.new_lang.set(0)
+        self.new_pub.set(0)
+        self.new_format.set(0)
+        
+        
     def new_resource(self):
         data.add_resource(self.title.get(), self.author.get(), self.year.get(), self.pages.get(), self.publisher.get(),
                           self.language.get(), self.medium.get(), self.subject.get(), self.abstract.get())
