@@ -8,7 +8,7 @@ author: lak
 import sqlite3 
 
 def make_db():
-    db = sqlite3.connect('small_data.db')
+    db = sqlite3.connect('library_data.db')
     c = db.cursor()
 
     c.executescript('''
@@ -89,5 +89,5 @@ def make_db():
     db.commit()
     db.close()
 
-if__name__ == '__main__':
+if __name__ == '__main__':
     make_db()
