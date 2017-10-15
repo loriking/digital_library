@@ -361,8 +361,18 @@ def list_project_category():
 
 def get_project_categoryID(project_category):
 
+    try:
         c.execute('''SELECT ID FROM project_category WHERE category = ? ''', (project_category,))
-        return c.fetchone()[0]
+        project_categoryID = c.fetchone()[0]
+
+    except TypeError:
+        c.execute('''INSERT OR IGNORE INTO project_category(category) VALUES(?)''', (project_category,))
+        db.commit()
+
+        c.execute('''SELECT ID FROM project_category WHERE category = ? ''', (project_category,))
+        project_categoryID = c.fetchone()[0]
+
+    return project_categoryID
 
 
 def get_project_category(project_categoryID):
