@@ -113,21 +113,23 @@ class AddResource(tk.Frame):
         self.label = tk.Label(header_frame, text='New Resource', font=headerfont)
         self.label.grid(column=0, row=1)
 
-        self.title = tk.StringVar(parent, value="")
-        self.author = tk.StringVar(parent, value="")
-        self.year = tk.IntVar(parent, value=None)
-        self.pages = tk.IntVar(parent, value=None)
-        self.publisher = tk.StringVar(parent, value="")
-        self.language = tk.StringVar(parent, value="")
-        self.medium = tk.StringVar(parent, value="")
-        self.abstract = tk.StringVar(parent, value="")
-        self.subject = tk.StringVar(parent, value='')
+        self.title = tk.StringVar(self, value="")
+        self.author = tk.StringVar(self, value="")
+        self.year = tk.IntVar(self, value=None)
+        self.pages = tk.IntVar(self, value=None)
+        self.publisher = tk.StringVar(self, value="")
+        self.language = tk.StringVar(self, value="")
+        self.medium = tk.StringVar(self, value="")
+        self.abstract = tk.StringVar(self, value="")
+        self.subject = tk.StringVar(self, value='')
+
         self.new_lang = tk.StringVar()
         self.new_pub = tk.StringVar()
         self.new_format =tk.StringVar()
-        self.new_lang_flag = tk.IntVar()
-        self.new_pub_flag = tk.IntVar()
-        self.new_format_flag = tk.IntVar()
+
+        self.new_lang_flag = tk.IntVar(self, value=0)
+        self.new_pub_flag = tk.IntVar(self, value=0)
+        self.new_format_flag = tk.IntVar(self, value=0)
 
         self.title_label=tk.Label(topframe, text='Title', font=labelsfont)
         self.author_label=tk.Label(topframe, text ='First Author', font=labelsfont)
@@ -237,7 +239,6 @@ class AddResource(tk.Frame):
         self.treeview = self.resource_list
         
         self.list_resources()
-        self.update_entry_widgets()
 
         self.addresource=tk.Button(bottomframe, text='Save', command=lambda:self.new_resource())
         self.addresource.config(cursor='hand2')
@@ -271,18 +272,35 @@ class AddResource(tk.Frame):
         self.add_language_entry.delete(0, 'end')
         self.add_publisher_entry.delete(0, 'end')
         self.add_format_entry.delete(0, 'end')
-        self.new_lang.set(0)
-        self.new_pub.set(0)
-        self.new_format.set(0)
+        self.new_lang_flag.set(0)
+        self.new_pub_flag.set(0)
+        self.new_format_flag.set(0)
         
         
     def new_resource(self):
-        data.add_resource(self.title.get(), self.author.get(), self.year.get(), self.pages.get(), self.publisher.get(),
-                          self.language.get(), self.medium.get(), self.subject.get(), self.abstract.get())
+        
+        if self.new_pub_flag.get() == 1:
+            self.thepublisher = self.new_pub.get()
+        else:
+            self.thepublisher = self.publisher.get()
 
-        self.update_entry_widgets()
+        if self.new_lang_flag.get() == 1:
+            self.thelanguage = self.new_lang.get()
+        else:
+            self.thelanguage = self.language.get()
+
+        if  self.new_format_flag.get() == 1:
+            self.theformat = self.new_format.get()
+        else:
+            self.theformat = self.medium.get()
+
+        data.add_resource(self.title.get(), self.author.get(), self.year.get(), 
+                          self.pages.get(), self.thepublisher,
+                          self.thelanguage, self.theformat, self.subject.get(), 
+                          self.abstract.get())
 
         self.list_resources()
+        self.update_entry_widgets()
 
 
 
