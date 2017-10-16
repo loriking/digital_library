@@ -132,12 +132,12 @@ class AddResource(tk.Frame):
         self.new_format_flag = tk.IntVar(self, value=0)
 
         self.title_label=tk.Label(topframe, text='Title', font=labelsfont)
-        self.author_label=tk.Label(topframe, text ='First Author', font=labelsfont)
+        self.author_label=tk.Label(topframe, text ='Author(s)', font=labelsfont)
         self.year_label=tk.Label(topframe, text ='Year', font=labelsfont)
         self.pages_label=tk.Label(topframe, text ='Pages', font=labelsfont)
         self.publisher_label = tk.Label(topframe, text='Publisher', font=labelsfont)
         self.lan_label=tk.Label(topframe, text='Language',font=labelsfont)
-        self.media_label=tk.Label(topframe, text='Medium', font=labelsfont)
+        self.media_label=tk.Label(topframe, text='Fomat', font=labelsfont)
         self.subject_label = tk.Label(topframe, text='Subject', font=labelsfont)
         self.abstract_label=tk.Label(topframe, text='Abstract', font=labelsfont)
         self.add_publisher_label = tk.Label(topframe, text='New Publisher', font=smalllabelsfont)
@@ -207,8 +207,12 @@ class AddResource(tk.Frame):
 
 
         self.resource_list = ttk.Treeview(bottomframe,
-                                         columns=('Title', 'Author','Year', 'Pages','Publisher', 'Language', 'Media', 'Abstract'))
-        self.resource_list['columns'] = ('Title', 'Author', 'Year', 'Pages', 'Publisher', 'Language', 'Media', 'Abstract')
+                                         columns=('Title', 'Author','Year', 
+                                                  'Pages','Publisher', 
+                                                  'Language', 'Format', 
+                                                  'Abstract'))
+        self.resource_list['columns'] = ('Title', 'Author', 'Year', 'Pages', 
+                          'Publisher', 'Language', 'Format', 'Abstract')
         self.resource_list.column('#0', width=5)
         self.resource_list.column('0', width=250)
         self.resource_list.column('1', width=150)
@@ -221,12 +225,12 @@ class AddResource(tk.Frame):
         self.resource_list.grid(column=0, row=1)
 
         self.resource_list.heading('0', text='Title', anchor='w')
-        self.resource_list.heading('1', text='First Author', anchor='w')
+        self.resource_list.heading('1', text='Author(s)', anchor='w')
         self.resource_list.heading('2', text='Year', anchor='w')
         self.resource_list.heading('3', text='Pages', anchor='w')
         self.resource_list.heading('4', text='Publisher', anchor='w')
         self.resource_list.heading('5', text='Language', anchor='w')
-        self.resource_list.heading('6', text='Media', anchor='w')
+        self.resource_list.heading('6', text='Format', anchor='w')
         self.resource_list.heading('7', text='Abstract', anchor='w')
 
         self.resource_list.column('0', anchor='w')
@@ -323,11 +327,11 @@ class SearchProjects(tk.Frame):
         self.choiceframe = ttk.LabelFrame(self, text='')
         self.choiceframe.grid(column=0, row=3, columnspan=40, sticky=tk.W)
 
-        self.search_label = tk.Label(self.searchframe, text='Title: ', font=labelsfont)
-        self.search_label.grid(column=0, row=0, sticky=tk.W)
+        self.titlebox_label = tk.Label(self.searchframe, text='Title: ', font=labelsfont)
+        self.titlebox_label.grid(column=0, row=0, sticky=tk.W)
 
-        self.searchbox = tk.Entry(self.searchframe, width=60, textvariable=self.project_title)
-        self.searchbox.grid(column=1, row=0)
+        self.titlebox = tk.Entry(self.searchframe, width=60, textvariable=self.project_title)
+        self.titlebox.grid(column=1, row=0)
 
         self.searchbutton = ttk.Button(self.searchframe, text='Search', command=lambda: self.search_projects())
         self.searchbutton.config(width=10)
@@ -373,6 +377,7 @@ class SearchProjects(tk.Frame):
         projects = data.find_project(self.project_title.get())
         for item in projects:
             self.treeview.insert('', 'end', values=item)
+        self.titlebox.delete(0, 'end')
 
 
 class Projects(tk.Frame):
