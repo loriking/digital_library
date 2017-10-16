@@ -239,6 +239,7 @@ class AddResource(tk.Frame):
         self.treeview = self.resource_list
         
         self.list_resources()
+        self.update_entry_widgets()
 
         self.addresource=tk.Button(bottomframe, text='Save', command=lambda:self.new_resource())
         self.addresource.config(cursor='hand2')
