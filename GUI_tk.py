@@ -115,8 +115,8 @@ class AddResource(tk.Frame):
 
         self.title = tk.StringVar(self, value="")
         self.author = tk.StringVar(self, value="")
-        self.year = tk.IntVar(self, value=None)
-        self.pages = tk.IntVar(self, value=None)
+        self.year = tk.IntVar()
+        self.pages = tk.IntVar()
         self.publisher = tk.StringVar(self, value="")
         self.language = tk.StringVar(self, value="")
         self.medium = tk.StringVar(self, value="")
