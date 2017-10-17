@@ -213,15 +213,15 @@ class AddResource(tk.Frame):
                                                   'Abstract'))
         self.resource_list['columns'] = ('Title', 'Author', 'Year', 'Pages', 
                           'Publisher', 'Language', 'Format', 'Abstract')
-        self.resource_list.column('#0', width=5)
-        self.resource_list.column('0', width=250)
-        self.resource_list.column('1', width=150)
-        self.resource_list.column('2', width=75)
-        self.resource_list.column('3', width=60)
-        self.resource_list.column('4', width=100)
-        self.resource_list.column('5', width=100)
-        self.resource_list.column('6', width=90)
-        self.resource_list.column('7', width=400)
+        self.resource_list.column('#0', width=1)
+        self.resource_list.column('0', width=250, anchor='w')
+        self.resource_list.column('1', width=150, anchor='w')
+        self.resource_list.column('2', width=75, anchor='w')
+        self.resource_list.column('3', width=60, anchor='w')
+        self.resource_list.column('4', width=100, anchor='w')
+        self.resource_list.column('5', width=100, anchor='w')
+        self.resource_list.column('6', width=90, anchor='w')
+        self.resource_list.column('7', width=400, anchor='w')
         self.resource_list.grid(column=0, row=1)
 
         self.resource_list.heading('0', text='Title', anchor='w')
@@ -233,15 +233,7 @@ class AddResource(tk.Frame):
         self.resource_list.heading('6', text='Format', anchor='w')
         self.resource_list.heading('7', text='Abstract', anchor='w')
 
-        self.resource_list.column('0', anchor='w')
-        self.resource_list.column('1', anchor='w')
-        self.resource_list.column('2', anchor='w')
-        self.resource_list.column('3', anchor='w')
-        self.resource_list.column('4', anchor='w')
-        self.resource_list.column('5', anchor='w')
-        self.resource_list.column('6', anchor='w')
-        self.treeview = self.resource_list
-        
+        self.treeview = self.resource_list       
         self.list_resources()
         self.update_entry_widgets()
 
@@ -313,29 +305,34 @@ class SearchProjects(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
-        self.project_title = tk.StringVar(self, value='')
+        self.project_title = tk.StringVar()
+        self.project_type = tk.StringVar()
 
         self.searchheader = ttk.Label(self, text='Search by project title', font=headerfont)
         self.searchheader.grid(column=0, row=0)
 
-        self.searchframe = ttk.LabelFrame(self, text='')
+        self.searchframe = tk.LabelFrame(self, text='', borderwidth=0)
         self.searchframe.grid(column=0, row=1, columnspan=40, sticky=tk.W)
 
-        self.resultsframe = ttk.LabelFrame(self, text='')
+        self.resultsframe = tk.LabelFrame(self, text='', borderwidth=0)
         self.resultsframe.grid(column=0, row=2, columnspan=40, sticky=tk.W)
 
-        self.choiceframe = ttk.LabelFrame(self, text='')
+        self.choiceframe = tk.LabelFrame(self, text='', borderwidth=0)
         self.choiceframe.grid(column=0, row=3, columnspan=40, sticky=tk.W)
 
         self.titlebox_label = tk.Label(self.searchframe, text='Title: ', font=labelsfont)
         self.titlebox_label.grid(column=0, row=0, sticky=tk.W)
-
-        self.titlebox = tk.Entry(self.searchframe, width=60, textvariable=self.project_title)
+        self.titlebox = tk.Entry(self.searchframe, width=40, textvariable=self.project_title)
         self.titlebox.grid(column=1, row=0)
+
+        self.projecttype_label = tk.Label(self.searchframe,  text='Project type:', font=labelsfont)
+        self.projecttype_label.grid(column=2, row=0, padx=5, sticky=tk.W)
+        self.projecttype_entry = tk.Entry(self.searchframe,width=40, textvariable=self.project_type)
+        self.projecttype_entry.grid(column=3, row=0, sticky=tk.W)
 
         self.searchbutton = ttk.Button(self.searchframe, text='Search', command=lambda: self.search_projects())
         self.searchbutton.config(width=10)
-        self.searchbutton.grid(column=1, row=1, sticky=tk.E)
+        self.searchbutton.grid(column=3, row=1, sticky=tk.E)
 
         self.project_list = ttk.Treeview(self.resultsframe,
                                          columns=('Name', 'Type', 'Description', 'Start date', 'End date'))
