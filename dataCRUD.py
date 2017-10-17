@@ -360,6 +360,7 @@ def list_project_category():
     return results
 
 def get_project_categoryID(project_category):
+    project_category = project_category.title()
 
     try:
         c.execute('''SELECT ID FROM project_category WHERE category = ? ''', (project_category,))
