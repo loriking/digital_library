@@ -456,10 +456,6 @@ class Projects(tk.Frame):
         self.project_list.column('4', anchor='w')
         self.treeview = self.project_list
 
-        self.view_projects = tk.Button(self.topframe, text='Update List', command=lambda:self.list_projects())
-        self.view_projects.configure(width=10)
-        self.view_projects.grid(column=0,row=6, padx=10, sticky=tk.W)
-
         self.home = tk.Button(self.bottomframe, text='Home', command=lambda: controller.show_frame(HomePage))
         self.home.config(width=10)
         self.home.grid(column=0, row=1, padx=10, sticky=tk.W)
