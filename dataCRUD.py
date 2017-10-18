@@ -354,10 +354,9 @@ def list_project_category():
     """    :return: all the project categories from database    """
 
     c.execute('''SELECT category FROM project_category ORDER BY category''')
-    categories = c.fetchall()
-    results = [x for t in categories for x in t]
-    results = ' '.join(results)
+    results = [i[0] for i in c.fetchall()]
     return results
+
 
 def get_project_categoryID(project_category):
     project_category = project_category.title()
