@@ -392,13 +392,16 @@ class Projects(tk.Frame):
         self.bottomframe.config(bd=0)
         self.bottomframe.grid(column=0, row=2)
 
-        self.project_name = tk.StringVar(self, value='')
-        self.project_type = tk.StringVar(self, value='')
-        self.description = tk.StringVar(self, value='')
-        self.start_date = tk.StringVar(self, value='')
-        self.end_date = tk.StringVar(self, value='')
+        self.project_name = tk.StringVar()
+        self.project_type = tk.StringVar()
+        self.description = tk.StringVar()
+        self.start_date = tk.StringVar()
+        self.end_date = tk.StringVar()
         self.link = tk.IntVar(self, value=0)
         self.add_category = tk.StringVar()
+        self.choices = tk.StringVar()
+        self.project_category_options = data.list_project_category()
+        self.choices.set('Choose project type:')
 
         self.title_label = tk.Label(self.topframe, text='Project Name', font=labelsfont)
         self.project_type_label = tk.Label(self.topframe, text='Project Type', font=labelsfont)
@@ -408,12 +411,12 @@ class Projects(tk.Frame):
         self.new_category_label = tk.Label(self.topframe, text='New Project Type', font=labelsfont)
 
         self.project_name_entry = ttk.Entry(self.topframe, width=60, textvariable=self.project_name)
-        self.project_type_entry = ttk.Combobox(self.topframe, width=57, textvariable=self.project_type, state='readonly' )
+        self.project_type_entry = tk.OptionMenu(self.topframe, self.choices, *self.project_category_options)
+        self.project_type_entry.configure(width=54)
         self.description_entry = ttk.Entry(self.topframe, width=60, textvariable=self.description)
         self.start_entry = ttk.Entry(self.topframe, width=60, textvariable=self.start_date)
         self.end_entry = ttk.Entry(self.topframe, width=60, textvariable=self.end_date)
         self.new_category = ttk.Entry(self.topframe, width=60, textvariable=self.add_category)
-
 
         self.title_label.grid(column=0, row=1, padx=10, sticky=tk.W)
         self.project_name_entry.grid(column=1, row=1, padx=10, sticky=tk.W)
@@ -424,10 +427,8 @@ class Projects(tk.Frame):
         self.finish_label.grid(column=2, row=3, padx=10, sticky=tk.W)
         self.end_entry.grid(column=3, row=3, padx=10, sticky=tk.W)
 
-        self.project_type_entry['values'] = data.list_project_category()
-
         self.project_type_label.grid(column=0, row=4, padx=10, sticky=tk.W)
-        self.project_type_entry.grid(column=1, row=4, padx=10, sticky=tk.W)
+        self.project_type_entry.grid(column=1, row=4, padx=8, sticky=tk.E)
         self.new_category_label.grid(column=2, row=4, padx=10, sticky=tk.W)
         self.new_category.grid(column=3, row=4, padx=10, sticky=tk.W)
 
@@ -463,6 +464,7 @@ class Projects(tk.Frame):
         self.home.config(width=10)
         self.home.grid(column=0, row=1, padx=10, sticky=tk.W)
         self.list_projects()
+        self.update_widgets()
 
     def list_projects(self):
         for i in self.project_list.get_children():
@@ -472,8 +474,18 @@ class Projects(tk.Frame):
             self.treeview.insert('', 'end', values=item)
 
     def link_to_resource(self):
-        # self.controller.show_frame(LinkResources)
+        # will link project to resources:self.controller.show_frame(LinkResources)
         pass
+
+    def update_widgets(self):
+        self.project_name_entry.delete(0, 'end')
+        self.description_entry.delete(0, 'end')
+        self.start_entry.delete(0, 'end')
+        self.end_entry.delete(0, 'end')
+        self.new_category.delete(0, 'end')
+        self.link.set(0)
+        self.choices.set('Choose project type:')
+        self.project_category_options = data.list_project_category()
 
     def save_project(self):
         """ Adds project to SQL database """
@@ -481,23 +493,14 @@ class Projects(tk.Frame):
         if self.link.get() == 1:
             self.category = self.new_category.get()
         else:
-            self.category = self.project_type.get()
+            self.category = self.choices.get()
 
 
         data.add_project(self.project_name.get(), self.category, self.description.get(),
                          self.start_date.get(), self.end_date.get())
 
-        self.project_type_entry['values'] = data.list_project_category()
-        self.project_name_entry.delete(0, 'end')
-        self.project_type_entry.delete(0, 'end')
-        self.description_entry.delete(0, 'end')
-        self.start_entry.delete(0, 'end')
-        self.end_entry.delete(0, 'end')
-        self.new_category.delete(0, 'end')
-        self.link.set(0)
-
         self.list_projects()
-
+        self.update_widgets()
 
 
 class SearchResource(tk.Frame):
