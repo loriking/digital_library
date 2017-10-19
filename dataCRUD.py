@@ -25,9 +25,7 @@ def list_languages():
     """    return: all the languages from database     """
 
     c.execute('''SELECT language FROM languages ORDER BY language''')
-    languages = c.fetchall()
-    results = [x for t in languages for x in t]
-    results = ' '.join(results)
+    results = [i[0] for i in c.fetchall()]
     return results
 
 
@@ -202,9 +200,7 @@ def list_resource_medium():
     """ return: all the resource types from database    """
 
     c.execute('''SELECT medium FROM resource_medium ORDER BY medium''')
-    media = c.fetchall()
-    results = [x for t in media for x in t]
-    results = ' '.join(results)
+    results = [i[0] for i in c.fetchall()]
     return results
 
 
