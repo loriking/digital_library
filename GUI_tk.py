@@ -117,7 +117,6 @@ class AddResource(tk.Frame):
         self.author = tk.StringVar()
         self.year = tk.IntVar()
         self.pages = tk.IntVar()
-        self.language = tk.StringVar()
         self.medium = tk.StringVar()
         self.abstract = tk.StringVar()
         self.subject = tk.StringVar()
@@ -125,6 +124,11 @@ class AddResource(tk.Frame):
         self.publisher = tk.StringVar()
         self.publisher_options = data.list_publishers()
         self.publisher.set('Choose publisher:')
+        
+        self.language = tk.StringVar()
+        self.language_options = data.list_languages()
+        self.language.set('Choose language:')
+
 
         self.new_lang = tk.StringVar()
         self.new_pub = tk.StringVar()
@@ -157,7 +161,11 @@ class AddResource(tk.Frame):
         self.add_publisher_entry = ttk.Entry(topframe, width=50, 
                                              textvariable =self.new_pub)
 
-        self.language_entry=ttk.Combobox(topframe, width=47, textvariable=self.language, state='readonly')
+        self.language_entry= tk.OptionMenu(topframe, self.language, 
+                                                *self.language_options)
+        self.language_entry.configure(width=43) 
+        
+        
         self.add_language_entry=ttk.Entry(topframe, width=50, textvariable =self.new_lang)
         self.media_box=ttk.Combobox(topframe, width=50, textvariable=self.medium, state='readonly')
         self.add_format_entry =ttk.Entry(topframe, width=53, textvariable =self.new_format)
@@ -173,7 +181,7 @@ class AddResource(tk.Frame):
 
 
         self.media_box['values'] = data.list_resource_medium()
-        self.language_entry['values'] = data.list_languages()
+    
 
         self.title_label.grid(column=0, row=1,  padx=5, sticky=tk.W)
         self.title_entry.grid(column=1, row=1,  padx=5,sticky=tk.W)
@@ -260,13 +268,10 @@ class AddResource(tk.Frame):
     def update_entry_widgets(self):
        
         self.media_box['values'] = data.list_resource_medium()
-        self.language_entry['values'] = data.list_languages()
-
         self.title_entry.delete(0, 'end')
         self.author_entry.delete(0, 'end')
         self.year_entry.delete(0, 'end')
         self.pages_entry.delete(0, 'end')
-        self.language_entry.set('')
         self.media_box.set('')
         self.subject_entry.delete(0, 'end')
         self.abstract_entry.delete(0, 'end')
@@ -277,6 +282,7 @@ class AddResource(tk.Frame):
         self.new_pub_flag.set(0)
         self.new_format_flag.set(0)
         self.publisher.set('Choose publisher:')
+        self.language.set('Choose language:')
         
         
     def new_resource(self):
