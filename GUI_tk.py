@@ -117,7 +117,6 @@ class AddResource(tk.Frame):
         self.author = tk.StringVar()
         self.year = tk.IntVar()
         self.pages = tk.IntVar()
-        self.medium = tk.StringVar()
         self.abstract = tk.StringVar()
         self.subject = tk.StringVar()
         
@@ -128,6 +127,10 @@ class AddResource(tk.Frame):
         self.language = tk.StringVar()
         self.language_options = data.list_languages()
         self.language.set('Choose language:')
+        
+        self.medium = tk.StringVar()
+        self.medium_options = data.list_resource_medium()
+        self.medium.set('Choose format:')
 
 
         self.new_lang = tk.StringVar()
@@ -160,14 +163,19 @@ class AddResource(tk.Frame):
         self.publisher_entry.configure(width=43)  
         self.add_publisher_entry = ttk.Entry(topframe, width=50, 
                                              textvariable =self.new_pub)
-
         self.language_entry= tk.OptionMenu(topframe, self.language, 
                                                 *self.language_options)
-        self.language_entry.configure(width=43) 
-        
-        
+        self.language_entry.configure(width=43)                
         self.add_language_entry=ttk.Entry(topframe, width=50, textvariable =self.new_lang)
-        self.media_box=ttk.Combobox(topframe, width=50, textvariable=self.medium, state='readonly')
+        
+        
+        self.media_menu=tk.OptionMenu(topframe, self.medium, 
+                                                *self.medium_options)
+        self.media_menu.configure(width=43)                
+
+        
+        
+        
         self.add_format_entry =ttk.Entry(topframe, width=53, textvariable =self.new_format)
         self.subject_entry = ttk.Entry(topframe, width = 53, textvariable=self.subject)
         self.abstract_entry=ttk.Entry(topframe, width=53, textvariable=self.abstract)
@@ -179,9 +187,6 @@ class AddResource(tk.Frame):
         self.add_format_flag = tk.Checkbutton(topframe, text='Check if adding new format', 
                                               variable=self.new_format_flag)
 
-
-        self.media_box['values'] = data.list_resource_medium()
-    
 
         self.title_label.grid(column=0, row=1,  padx=5, sticky=tk.W)
         self.title_entry.grid(column=1, row=1,  padx=5,sticky=tk.W)
@@ -209,7 +214,7 @@ class AddResource(tk.Frame):
         self.add_language_label.grid(column=2, row=4, padx=10, sticky=tk.W)
         self.add_language_entry.grid(column=3, row=4, padx=5, sticky=tk.W)
         self.media_label.grid(column=4, row=3, padx=10,sticky=tk.W)
-        self.media_box.grid(column=5, row=3, padx=5, sticky=tk.E)
+        self.media_menu.grid(column=5, row=3, padx=5, sticky=tk.E)
 
         self.add_format_label.grid(column=4, row=4, padx=10,sticky=tk.W)
         self.add_format_entry.grid(column=5, row=4, padx=5, sticky=tk.E)
@@ -267,12 +272,10 @@ class AddResource(tk.Frame):
             
     def update_entry_widgets(self):
        
-        self.media_box['values'] = data.list_resource_medium()
         self.title_entry.delete(0, 'end')
         self.author_entry.delete(0, 'end')
         self.year_entry.delete(0, 'end')
         self.pages_entry.delete(0, 'end')
-        self.media_box.set('')
         self.subject_entry.delete(0, 'end')
         self.abstract_entry.delete(0, 'end')
         self.add_language_entry.delete(0, 'end')
@@ -283,7 +286,7 @@ class AddResource(tk.Frame):
         self.new_format_flag.set(0)
         self.publisher.set('Choose publisher:')
         self.language.set('Choose language:')
-        
+        self.medium.set('Choose format:')
         
     def new_resource(self):
         
