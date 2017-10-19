@@ -113,15 +113,18 @@ class AddResource(tk.Frame):
         self.label = tk.Label(header_frame, text='New Resource', font=headerfont)
         self.label.grid(column=0, row=1)
 
-        self.title = tk.StringVar(self, value="")
-        self.author = tk.StringVar(self, value="")
+        self.title = tk.StringVar()
+        self.author = tk.StringVar()
         self.year = tk.IntVar()
         self.pages = tk.IntVar()
-        self.publisher = tk.StringVar(self, value="")
-        self.language = tk.StringVar(self, value="")
-        self.medium = tk.StringVar(self, value="")
-        self.abstract = tk.StringVar(self, value="")
-        self.subject = tk.StringVar(self, value='')
+        self.language = tk.StringVar()
+        self.medium = tk.StringVar()
+        self.abstract = tk.StringVar()
+        self.subject = tk.StringVar()
+        
+        self.publisher = tk.StringVar()
+        self.publisher_options = data.list_publishers()
+        self.publisher.set('Choose publisher:')
 
         self.new_lang = tk.StringVar()
         self.new_pub = tk.StringVar()
@@ -148,8 +151,11 @@ class AddResource(tk.Frame):
         self.author_entry=ttk.Entry(topframe, width=50, textvariable=self.author)
         self.year_entry=ttk.Entry(topframe, width=50, textvariable=self.year)
         self.pages_entry=ttk.Entry(topframe, width=50, textvariable=self.pages)
-        self.publisher_entry = ttk.Combobox(topframe, width=47, textvariable=self.publisher, state='readonly')
-        self.add_publisher_entry =ttk.Entry(topframe, width=50, textvariable =self.new_pub)
+        self.publisher_entry = tk.OptionMenu(topframe, self.publisher, 
+                                                *self.publisher_options)
+        self.publisher_entry.configure(width=43)  
+        self.add_publisher_entry = ttk.Entry(topframe, width=50, 
+                                             textvariable =self.new_pub)
 
         self.language_entry=ttk.Combobox(topframe, width=47, textvariable=self.language, state='readonly')
         self.add_language_entry=ttk.Entry(topframe, width=50, textvariable =self.new_lang)
@@ -166,7 +172,6 @@ class AddResource(tk.Frame):
                                               variable=self.new_format_flag)
 
 
-        self.publisher_entry['values'] = data.list_publishers()
         self.media_box['values'] = data.list_resource_medium()
         self.language_entry['values'] = data.list_languages()
 
@@ -253,7 +258,7 @@ class AddResource(tk.Frame):
             self.treeview.insert('', 'end', values=item)
             
     def update_entry_widgets(self):
-        self.publisher_entry['values'] = data.list_publishers()
+       
         self.media_box['values'] = data.list_resource_medium()
         self.language_entry['values'] = data.list_languages()
 
@@ -261,7 +266,6 @@ class AddResource(tk.Frame):
         self.author_entry.delete(0, 'end')
         self.year_entry.delete(0, 'end')
         self.pages_entry.delete(0, 'end')
-        self.publisher_entry.set('')
         self.language_entry.set('')
         self.media_box.set('')
         self.subject_entry.delete(0, 'end')
@@ -272,6 +276,7 @@ class AddResource(tk.Frame):
         self.new_lang_flag.set(0)
         self.new_pub_flag.set(0)
         self.new_format_flag.set(0)
+        self.publisher.set('Choose publisher:')
         
         
     def new_resource(self):
