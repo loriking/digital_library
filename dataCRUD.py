@@ -152,9 +152,7 @@ def list_publishers():
     """ Returns all the publisher from database"""
 
     c.execute('''SELECT publisher FROM publishers ORDER BY publisher''')
-    publishers = c.fetchall()
-    results = [x for t in publishers for x in t]
-    results = ' '.join(results)
+    results = [i[0] for i in c.fetchall()]
     return results
 
 def get_publisherID(publisher_entry):
