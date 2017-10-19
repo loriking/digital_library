@@ -191,7 +191,7 @@ def delete_publisher(publisher_entry):
 
 # RESOURCE medium CRUD
 def add_resource_medium(medium_entry):
-    medium = medium_entry.lower()
+    medium = medium_entry.title()
     c.execute("INSERT OR IGNORE INTO resource_medium(medium) VALUES(?)", (medium,))
     db.commit()
 
@@ -207,7 +207,7 @@ def list_resource_medium():
 def get_resource_mediumID(medium_entry):
     """ Returns the ID (PK) of a given resource medium"""
 
-    medium = medium_entry.lower()
+    medium = medium_entry.title()
 
     c.execute('''SELECT ID FROM resource_medium WHERE medium = ? ''', (medium,))
     return c.fetchone()[0]
@@ -221,8 +221,8 @@ def get_resource_type(resource_mediumID):
     return c.fetchall()[0]
 
 def update_resource_medium(resource_medium_entry, media_correction_entry):
-    resource_medium = resource_medium_entry.lower()
-    media_correction = media_correction_entry.lower()
+    resource_medium = resource_medium_entry.title()
+    media_correction = media_correction_entry.title()
 
     resource_mediumID = get_resource_mediumID(resource_medium)
 
@@ -231,7 +231,7 @@ def update_resource_medium(resource_medium_entry, media_correction_entry):
 
 
 def delete_resource_medium(resource_medium_entry):
-    resource_medium = resource_medium_entry.lower()
+    resource_medium = resource_medium_entry.title()
     resource_mediumID = get_resource_mediumID(resource_medium)
     c.execute('''DELETE FROM resource_medium WHERE ID = ?''', (resource_mediumID,))
     db.commit()
@@ -240,7 +240,7 @@ def delete_resource_medium(resource_medium_entry):
 # subject CRUD FUNCTIONS
 
 def add_subject(subject_entry):
-    subject = subject_entry.lower()
+    subject = subject_entry.title()
     c.execute('''INSERT OR IGNORE INTO subjects(subject) VALUES(?)''', (subject,))
     db.commit()
 
@@ -258,7 +258,7 @@ def list_subjects():
 
 
 def get_subjectID(subject):
-    subject = subject.lower()
+    subject = subject.title()
     c.execute('''SELECT ID FROM subjects WHERE subject = ? ''', (subject,))
     return c.fetchone()[0]
 
@@ -269,7 +269,7 @@ def get_subject(subjectID):
 
 
 def update_subject(subject):
-    subject = subject.lower()
+    subject = subject.title()
     subjectID = get_subjectID(subject)
     c.execute('''UPDATE subjects SET subject = ? WHERE ID =?''', (subject, subjectID))
     db.commit()
