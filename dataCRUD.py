@@ -318,10 +318,10 @@ def add_resource(title, author, year, pages, publisher, language, medium, subjec
     add_subject(subject)
     subjectID = get_subjectID(subject)
 
-    c.execute("INSERT OR IGNORE INTO resource_author VALUES(?,?)", (resourceID, authorID,))
+    c.execute('INSERT OR IGNORE INTO resource_author VALUES(?,?)', (resourceID, authorID,))
     db.commit()
 
-    c.execute('INSERT OR IGNORE INTO resource_subject VALUES(?,?)', (subjectID, resourceID))
+    c.execute('INSERT OR IGNORE INTO resource_subject VALUES(?,?)', (resourceID, subjectID))
     db.commit()
 
 def list_resources():
