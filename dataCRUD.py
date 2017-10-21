@@ -64,11 +64,17 @@ def delete_language():
 
 # AUTHORS
     
-def add_author(author_name):
-    """    Adds author to SQL database    """
-    author_name = author_name.title()
+def add_author(nameslist):
+    """    Adds author(s) to SQL database    """
+   
+    if ',' in nameslist:
+        names = nameslist.title().split(',')
+        for name in names:
+            c.execute('''INSERT OR IGNORE INTO authors(name) VALUES(?)''', (name,))
+    else:
+        name = nameslist.title()
+        c.execute('''INSERT OR IGNORE INTO authors(name) VALUES(?)''', (name,))
 
-    c.execute("INSERT OR IGNORE INTO authors(name) VALUES(?)", (author_name,))
     db.commit()
 
 
