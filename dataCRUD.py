@@ -339,7 +339,15 @@ def list_resources():
     return c.fetchall()
 
 
-
+def resources_by_language(language):
+    ' Returns all the resources from database of a given language'
+    
+    c.execute('''SELECT DISTINCT resource.title, resource.year, languages.language
+              FROM resource JOIN languages
+              ON resource.languageID = languages.ID 
+              WHERE resource.languageID = ?''', (language,))
+    
+    
 # PROJECT Category CRUD
 
 def add_project_category(project_category):
