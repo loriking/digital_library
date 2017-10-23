@@ -349,7 +349,7 @@ class SearchProjects(tk.Frame):
         self.searchbutton.config(width=10)
         self.searchbutton.grid(column=3, row=1, sticky=tk.E)
 
-        self.project_list = ttk.Treeview(self.resultsframe,
+        self.project_list = ttk.Treeview(self.resultsframe, height=4,
                                          columns=('Name', 'Type', 'Description', 'Start date', 'End date'))
         self.project_list['columns'] = ('Name', 'Type', 'Description', 'Start date', 'End date')
         self.project_list.column('#0', width=5)
