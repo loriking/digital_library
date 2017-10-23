@@ -252,12 +252,17 @@ class AddResource(tk.Frame):
         self.update_entry_widgets()
 
         self.addresource=tk.Button(bottomframe, text='Save', command=lambda:self.new_resource())
-        self.addresource.config(cursor='hand2')
+        self.addresource.config(width=12, cursor='hand2')
         self.addresource.grid(column=0, row=0, padx=10, sticky=tk.E)
 
         self.home=tk.Button(bottomframe, text='Home', command=lambda: controller.show_frame(HomePage))
-        self.home.config(cursor='hand2')
+        self.home.config(width=15, cursor='hand2')
         self.home.grid(column=0, row=2, padx=10, sticky=tk.W)
+
+        self.searchresource = tk.Button(bottomframe, text='Search Resources',
+                                     command=lambda: controller.show_frame(SearchResource))
+        self.searchresource.config(width=15, cursor='hand2')
+        self.searchresource.grid(column=0, row=3, padx=10, sticky=tk.W)
 
     def list_resources(self):
         for i in self.resource_list.get_children():
@@ -530,34 +535,34 @@ class SearchResource(tk.Frame):
         self.bottomframe.grid(column=0, row=2, sticky=tk.W+tk.E)
 
         self.r_title_label = tk.Label(self.searchbar, text='Title: ', font=labelsfont)
-        self.r_entry = tk.Entry(self.searchbar, textvariable=self.resource_title)
+        self.r_entry = tk.Entry(self.searchbar,  width=48, textvariable=self.resource_title)
 
         self.r_author_label = tk.Label(self.searchbar, text='Author: ', font=labelsfont)
-        self.r_author_entry= tk.Entry(self.searchbar, textvariable=self.resource_author)
+        self.r_author_entry= tk.Entry(self.searchbar,  width=48, textvariable=self.resource_author)
 
         self.r_subject_label = tk.Label(self.searchbar, text='Subject: ', font=labelsfont)
-        self.r_subject_entry= tk.Entry(self.searchbar, textvariable=self.resource_subject)
+        self.r_subject_entry= tk.Entry(self.searchbar,  width=48, textvariable=self.resource_subject)
 
-        self.r_title_label.grid(column=0, row=0)
-        self.r_entry.grid(column=1, row=0)
+        self.r_title_label.grid(column=0, row=0, padx=5)
+        self.r_entry.grid(column=1, row=0, padx=5)
 
-        self.r_author_label.grid(column=2, row=0)
-        self.r_author_entry.grid(column=3, row=0)
+        self.r_author_label.grid(column=2, row=0, padx=5)
+        self.r_author_entry.grid(column=3, row=0, padx=5)
 
-        self.r_subject_label.grid(column=4, row=0)
-        self.r_subject_entry.grid(column=5, row=0)
+        self.r_subject_label.grid(column=4, row=0, padx=5)
+        self.r_subject_entry.grid(column=5, row=0, padx=5)
 
         self.searchbutton = tk.Button(self.searchbar, text='Search')
         self.searchbutton.config(width=12, cursor='hand2')
-        self.searchbutton.grid(column=6, row=0, padx=10)
+        self.searchbutton.grid(column=6, row=0, padx= 10, pady=10, sticky=tk.E)
 
         self.homebutton = tk.Button(self.bottomframe, text='Home', command=lambda: controller.show_frame(HomePage))
         self.homebutton.config(width=12, cursor='hand2')
-        self.homebutton.grid(column=0, row=1, padx=10,  sticky=tk.W)
+        self.homebutton.grid(column=0, row=1, padx=10, pady=2, sticky=tk.W)
 
         self.addresource = tk.Button(self.bottomframe, text='Add Resource', command=lambda: controller.show_frame(AddResource))
         self.addresource.config(width=12, cursor='hand2')
-        self.addresource.grid(column=0, row=2, padx=10, sticky=tk.W)
+        self.addresource.grid(column=0, row=2, padx=10,pady=2, sticky=tk.W)
 
         self.resource_list = ttk.Treeview(self.middleframe,
                                           columns=('Title', 'Author', 'Year',
