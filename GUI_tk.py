@@ -23,7 +23,7 @@ class ProjectLibrary(tk.Tk):
             self.frames[F] = frame
             frame.grid(row = 0, column = 0, sticky ='nsew')
 
-        self.show_frame(HomePage)
+        self.show_frame(SearchResource)
         
     def show_frame(self, cont):
         frame = self.frames[cont]
@@ -79,7 +79,8 @@ class HomePage(tk.Frame):
         self.new_resources.config(height=5, width=13)
         self.new_resources.grid(column=1, row=0, pady=5)
 
-        self.view_resources = tk.Button(self.secondframe, text='Search Resources')
+        self.view_resources = tk.Button(self.secondframe, text='Search Resources',
+                                        command=lambda: controller.show_frame(SearchResource))
         self.view_resources.config(height=5, width=13)
         self.view_resources.grid(column=1, row=1, pady=5)
 
@@ -132,7 +133,6 @@ class AddResource(tk.Frame):
         self.medium_options = data.list_resource_medium()
         self.medium.set('Choose format:')
 
-
         self.new_lang = tk.StringVar()
         self.new_pub = tk.StringVar()
         self.new_format =tk.StringVar()
@@ -167,15 +167,11 @@ class AddResource(tk.Frame):
                                                 *self.language_options)
         self.language_entry.configure(width=43)                
         self.add_language_entry=ttk.Entry(topframe, width=50, textvariable =self.new_lang)
-        
-        
+
         self.media_menu=tk.OptionMenu(topframe, self.medium, 
                                                 *self.medium_options)
         self.media_menu.configure(width=43)                
 
-        
-        
-        
         self.add_format_entry =ttk.Entry(topframe, width=53, textvariable =self.new_format)
         self.subject_entry = ttk.Entry(topframe, width = 53, textvariable=self.subject)
         self.abstract_entry=ttk.Entry(topframe, width=53, textvariable=self.abstract)
@@ -516,7 +512,77 @@ class Projects(tk.Frame):
 class SearchResource(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        pass
+
+        self.resource_title = tk.StringVar()
+        self.resource_author = tk.StringVar()
+        self.resource_subject = tk.StringVar()
+
+        self.searchframe = tk.LabelFrame(self, text='Search parameters', borderwidth=0, font=headerfont)
+        self.searchframe.grid(column=0, row=0)
+
+        self.searchbar = tk.LabelFrame(self.searchframe, text='', borderwidth=0)
+        self.searchbar.grid(column=0, row=0, sticky =tk.W+tk.E)
+
+        self.middleframe = tk.LabelFrame(self.searchframe, text='',borderwidth=0)
+        self.middleframe.grid(column=0, row=1, sticky=tk.W+tk.E)
+
+        self.bottomframe = tk.LabelFrame(self.searchframe, text='', borderwidth=0)
+        self.bottomframe.grid(column=0, row=2, sticky=tk.W+tk.E)
+
+        self.r_title_label = tk.Label(self.searchbar, text='Title: ', font=labelsfont)
+        self.r_entry = tk.Entry(self.searchbar, textvariable=self.resource_title)
+
+        self.r_author_label = tk.Label(self.searchbar, text='Author: ', font=labelsfont)
+        self.r_author_entry= tk.Entry(self.searchbar, textvariable=self.resource_author)
+
+        self.r_subject_label = tk.Label(self.searchbar, text='Subject: ', font=labelsfont)
+        self.r_subject_entry= tk.Entry(self.searchbar, textvariable=self.resource_subject)
+
+        self.r_title_label.grid(column=0, row=0)
+        self.r_entry.grid(column=1, row=0)
+
+        self.r_author_label.grid(column=2, row=0)
+        self.r_author_entry.grid(column=3, row=0)
+
+        self.r_subject_label.grid(column=4, row=0)
+        self.r_subject_entry.grid(column=5, row=0)
+
+        self.searchbutton = tk.Button(self.searchbar, text='Search')
+        self.searchbutton.grid(column=6, row=0)
+
+        self.homebutton = tk.Button(self.bottomframe, text='Home', command=lambda: controller.show_frame(HomePage))
+        self.homebutton.config(width=10)
+        self.homebutton.grid(column=0, row=1, sticky=tk.W)
+
+        self.resource_list = ttk.Treeview(self.middleframe,
+                                          columns=('Title', 'Author', 'Year',
+                                                   'Pages', 'Publisher',
+                                                   'Language', 'Format',
+                                                   'Abstract'))
+        self.resource_list['columns'] = ('Title', 'Author', 'Year', 'Pages',
+                                         'Publisher', 'Language', 'Format', 'Abstract')
+        self.resource_list.column('#0', width=1)
+        self.resource_list.column('0', width=250, anchor='w')
+        self.resource_list.column('1', width=150, anchor='w')
+        self.resource_list.column('2', width=75, anchor='w')
+        self.resource_list.column('3', width=60, anchor='w')
+        self.resource_list.column('4', width=100, anchor='w')
+        self.resource_list.column('5', width=100, anchor='w')
+        self.resource_list.column('6', width=90, anchor='w')
+        self.resource_list.column('7', width=400, anchor='w')
+        self.resource_list.grid(column=0, row=1)
+
+        self.resource_list.heading('0', text='Title', anchor='w')
+        self.resource_list.heading('1', text='Author(s)', anchor='w')
+        self.resource_list.heading('2', text='Year', anchor='w')
+        self.resource_list.heading('3', text='Pages', anchor='w')
+        self.resource_list.heading('4', text='Publisher', anchor='w')
+        self.resource_list.heading('5', text='Language', anchor='w')
+        self.resource_list.heading('6', text='Format', anchor='w')
+        self.resource_list.heading('7', text='Abstract', anchor='w')
+
+        self.treeview = self.resource_list
+
 
 
 class EditResource(tk.Frame):
