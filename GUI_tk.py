@@ -548,11 +548,16 @@ class SearchResource(tk.Frame):
         self.r_subject_entry.grid(column=5, row=0)
 
         self.searchbutton = tk.Button(self.searchbar, text='Search')
-        self.searchbutton.grid(column=6, row=0)
+        self.searchbutton.config(width=12, cursor='hand2')
+        self.searchbutton.grid(column=6, row=0, padx=10)
 
         self.homebutton = tk.Button(self.bottomframe, text='Home', command=lambda: controller.show_frame(HomePage))
-        self.homebutton.config(width=10)
-        self.homebutton.grid(column=0, row=1, sticky=tk.W)
+        self.homebutton.config(width=12, cursor='hand2')
+        self.homebutton.grid(column=0, row=1, padx=10,  sticky=tk.W)
+
+        self.addresource = tk.Button(self.bottomframe, text='Add Resource', command=lambda: controller.show_frame(AddResource))
+        self.addresource.config(width=12, cursor='hand2')
+        self.addresource.grid(column=0, row=2, padx=10, sticky=tk.W)
 
         self.resource_list = ttk.Treeview(self.middleframe,
                                           columns=('Title', 'Author', 'Year',
@@ -570,7 +575,7 @@ class SearchResource(tk.Frame):
         self.resource_list.column('5', width=100, anchor='w')
         self.resource_list.column('6', width=90, anchor='w')
         self.resource_list.column('7', width=400, anchor='w')
-        self.resource_list.grid(column=0, row=1)
+        self.resource_list.grid(column=0, row=1, padx=10)
 
         self.resource_list.heading('0', text='Title', anchor='w')
         self.resource_list.heading('1', text='Author(s)', anchor='w')
