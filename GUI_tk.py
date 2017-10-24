@@ -359,7 +359,7 @@ class SearchProjects(tk.Frame):
                                          columns=('Name', 'Type', 'Description', 'Start date', 'End date'))
         self.project_list['columns'] = ('Name', 'Type', 'Description', 'Start date', 'End date')
         self.project_list.column('#0', width=5)
-        self.project_list.grid(column=3, row=0, padx=10, pady=10)
+        self.project_list.grid(column=3, row=0, padx=10, pady=10, sticky=tk.E)
 
         self.project_list.heading('0', text='Name', anchor='w')
         self.project_list.heading('1', text='Type', anchor='w')
@@ -370,9 +370,9 @@ class SearchProjects(tk.Frame):
         self.project_list.column('0', anchor='w')
         self.project_list.column('1', anchor='w')
         self.project_list.column('2', anchor='w')
-        self.project_list.column('3', anchor='w')
-        self.project_list.column('4', anchor='w')
-        self.treeview = self.project_list
+        self.project_list.column('3', width=100, anchor='w')
+        self.project_list.column('4', width=100, anchor='w')
+        self.treeview_projects = self.project_list
 
 
         self.audio_rb = tk.Radiobutton(self.sortframe, text='Audio', variable=self.media_type, value=1)
@@ -391,6 +391,7 @@ class SearchProjects(tk.Frame):
         self.video_rb.grid(column=0, row=5, sticky=tk.W)
         self.webdocs_rb.grid(column=0, row=6, sticky=tk.W)
 
+
         self.resource_list = ttk.Treeview(self.resultsframe, height=4,
                                           columns=('Title', 'Author', 'Year',
                                                    'Pages', 'Publisher',
@@ -406,7 +407,7 @@ class SearchProjects(tk.Frame):
         self.resource_list.column('4', width=100, anchor='w')
         self.resource_list.column('5', width=100, anchor='w')
         self.resource_list.column('6', width=90, anchor='w')
-        self.resource_list.column('7', width=400, anchor='w')
+        self.resource_list.column('7', width=250, anchor='w')
         self.resource_list.grid(column=0, row=1)
 
         self.resource_list.heading('0', text='Title', anchor='w')
@@ -417,8 +418,8 @@ class SearchProjects(tk.Frame):
         self.resource_list.heading('5', text='Language', anchor='w')
         self.resource_list.heading('6', text='Format', anchor='w')
         self.resource_list.heading('7', text='Abstract', anchor='w')
+        self.treeview_resources = self.resource_list
 
-        self.treeview = self.resource_list
 
         self.go_to_resources = tk.Button(self.choiceframe, text='Link resource')#,
                                          #command=lambda: controller.show_frame(LinkResources))
@@ -440,7 +441,7 @@ class SearchProjects(tk.Frame):
             self.project_list.delete(i)
         projects = data.find_project(self.project_title.get())
         for item in projects:
-            self.treeview.insert('', 'end', values=item)
+            self.treeview_projects.insert('', 'end', values=item)
         self.titlebox.delete(0, 'end')
 
 
