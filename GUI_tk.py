@@ -23,7 +23,7 @@ class ProjectLibrary(tk.Tk):
             self.frames[F] = frame
             frame.grid(row = 0, column = 0, sticky ='nsew')
 
-        self.show_frame(SearchResource)
+        self.show_frame(SearchProjects)
         
     def show_frame(self, cont):
         frame = self.frames[cont]
@@ -323,6 +323,9 @@ class SearchProjects(tk.Frame):
         self.project_title = tk.StringVar()
         self.project_type = tk.StringVar()
 
+        self.media_type = tk.StringVar()
+        self.media_type.set("?")
+
         self.searchheader = ttk.Label(self, text='Search by project title', font=headerfont)
         self.searchheader.grid(column=0, row=0)
 
@@ -330,7 +333,10 @@ class SearchProjects(tk.Frame):
         self.searchframe.grid(column=0, row=1, columnspan=40, sticky=tk.W)
 
         self.resultsframe = tk.LabelFrame(self, text='', borderwidth=0)
-        self.resultsframe.grid(column=0, row=2, columnspan=40, sticky=tk.W)
+        self.resultsframe.grid(column=1, row=2, columnspan=40, sticky=tk.W)
+
+        self.sortframe = tk.LabelFrame(self, text='', borderwidth=1)
+        self.sortframe.grid(column=0, row=4, columnspan=40, padx=10, sticky=tk.W)
 
         self.choiceframe = tk.LabelFrame(self, text='', borderwidth=0)
         self.choiceframe.grid(column=0, row=3, columnspan=40, sticky=tk.W)
@@ -349,11 +355,28 @@ class SearchProjects(tk.Frame):
         self.searchbutton.config(width=10)
         self.searchbutton.grid(column=3, row=1, sticky=tk.E)
 
+        self.audio_rb = tk.Radiobutton(self.sortframe, text='Audio', variable=self.media_type, value=1)
+        self.book_rb = tk.Radiobutton(self.sortframe, text='Book/eBook', variable=self.media_type, value=2)
+        self.course_rb = tk.Radiobutton(self.sortframe, text='Course', variable=self.media_type, value=3)
+        self.interactive_rb = tk.Radiobutton(self.sortframe, text='Interactive Media', variable=self.media_type, value=4)
+        self.multimedia_rb = tk.Radiobutton(self.sortframe, text='Multimedia', variable=self.media_type, value=5)
+        self.video_rb = tk.Radiobutton(self.sortframe, text='Video', variable=self.media_type, value=6)
+        self.webdocs_rb = tk.Radiobutton(self.sortframe, text='Web doc', variable=self.media_type, value=7)
+
+        self.audio_rb.grid(column=0, row=0, sticky=tk.W)
+        self.book_rb.grid(column=0, row=1, sticky=tk.W)
+        self.course_rb.grid(column=0, row=2, sticky=tk.W)
+        self.interactive_rb.grid(column=0, row=3, sticky=tk.W)
+        self.multimedia_rb.grid(column=0, row=4, sticky=tk.W)
+        self.video_rb.grid(column=0, row=5, sticky=tk.W)
+        self.webdocs_rb.grid(column=0, row=6, sticky=tk.W)
+
+
         self.project_list = ttk.Treeview(self.resultsframe, height=4,
                                          columns=('Name', 'Type', 'Description', 'Start date', 'End date'))
         self.project_list['columns'] = ('Name', 'Type', 'Description', 'Start date', 'End date')
         self.project_list.column('#0', width=5)
-        self.project_list.grid(column=0, row=0)
+        self.project_list.grid(column=0, row=0, pady=10)
 
         self.project_list.heading('0', text='Name', anchor='w')
         self.project_list.heading('1', text='Type', anchor='w')
