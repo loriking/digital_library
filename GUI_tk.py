@@ -6,6 +6,8 @@ import dataCRUD as data
 smalllabelsfont = ('times', 10, 'bold')
 labelsfont = ('times', 12, 'bold')
 headerfont = ('times', 14, 'bold')
+smallheaderfont = ('times', 12, 'italic')
+
 
 class ProjectLibrary(tk.Tk):
     def __init__(self, *args, **kwargs):
@@ -374,9 +376,16 @@ class SearchProjects(tk.Frame):
         self.project_list.column('4', width=100, anchor='w')
         self.treeview_projects = self.project_list
 
+        # MIDDLE FRAME
+        self.middleframe = tk.LabelFrame(self.mainframe, text='', borderwidth=1)
+        self.middleframe.grid(columnspan=40, column=2, row=3, sticky=tk.W + tk.E)
+
+        self.resourceresults_label = ttk.Label(self.middleframe, text='Available Resources', font=smallheaderfont)
+        self.resourceresults_label.grid(columnspan=40, column=0, row=0, pady=5, padx=375, sticky=tk.W + tk.E)
+
         # BOTTOM LEFT FRAME SORT FRAME
         self.sortframe = tk.LabelFrame(self.mainframe, text='', borderwidth=1)
-        self.sortframe.grid(column=0, row=3, columnspan=40, padx=10, sticky=tk.W)
+        self.sortframe.grid(column=0, row=4, padx=10, sticky=tk.W)
 
         self.audio_rb = tk.Radiobutton(self.sortframe, text='Audio and Video', variable=self.media_type, value=1)
         self.book_rb = tk.Radiobutton(self.sortframe, text='Books', variable=self.media_type, value=2)
@@ -396,7 +405,7 @@ class SearchProjects(tk.Frame):
 
         # BOTTOM RIGHT FRAME
         self.resourceresults = tk.LabelFrame(self.mainframe, text='', borderwidth=1)
-        self.resourceresults.grid(column=3, row=3, columnspan=40, sticky=tk.W)
+        self.resourceresults.grid(column=3, row=4, columnspan=40, sticky=tk.W)
 
         self.resource_list = ttk.Treeview(self.resourceresults, height=4,
                                           columns=('Title', 'Author', 'Year',
