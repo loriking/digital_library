@@ -221,12 +221,18 @@ class AddResource(tk.Frame):
         self.add_lang_flag.grid(column=3, row=5,sticky=tk.E)
         self.add_format_flag.grid(column=5, row=5,sticky=tk.E)
 
+        self.scroll = tk.Scrollbar(bottomframe)
+        self.scroll.grid(column=1,row=1, sticky=tk.N+tk.S+tk.W)
 
         self.resource_list = ttk.Treeview(bottomframe,
                                          columns=('Title', 'Author','Year', 
                                                   'Pages','Publisher', 
                                                   'Language', 'Format', 
                                                   'Abstract'))
+
+        self.scroll.configure(orient="vertical", command=self.resource_list.yview)
+        self.resource_list.configure(yscrollcommand=self.scroll.set)
+
         self.resource_list['columns'] = ('Title', 'Author', 'Year', 'Pages', 
                           'Publisher', 'Language', 'Format', 'Abstract')
         self.resource_list.column('#0', width=1)
