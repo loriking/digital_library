@@ -221,8 +221,8 @@ class AddResource(tk.Frame):
         self.add_lang_flag.grid(column=3, row=5,sticky=tk.E)
         self.add_format_flag.grid(column=5, row=5,sticky=tk.E)
 
-        self.scroll = tk.Scrollbar(bottomframe)
-        self.scroll.grid(column=1,row=1, sticky=tk.N+tk.S+tk.W)
+        self.scrollresources = tk.Scrollbar(bottomframe)
+        self.scrollresources.grid(column=1,row=1, sticky=tk.N+tk.S+tk.W)
 
         self.resource_list = ttk.Treeview(bottomframe,
                                          columns=('Title', 'Author','Year', 
@@ -230,8 +230,8 @@ class AddResource(tk.Frame):
                                                   'Language', 'Format', 
                                                   'Abstract'))
 
-        self.scroll.configure(orient="vertical", command=self.resource_list.yview)
-        self.resource_list.configure(yscrollcommand=self.scroll.set)
+        self.scrollresources.configure(orient="vertical", command=self.resource_list.yview)
+        self.resource_list.configure(yscrollcommand=self.scrollresources.set)
 
         self.resource_list['columns'] = ('Title', 'Author', 'Year', 'Pages', 
                           'Publisher', 'Language', 'Format', 'Abstract')
@@ -363,8 +363,15 @@ class SearchProjects(tk.Frame):
         self.resultsframe = tk.LabelFrame(self.mainframe, text='', borderwidth=1)
         self.resultsframe.grid(column=3, row=0, sticky=tk.W)
 
+        self.scrollresults = tk.Scrollbar(self.resultsframe)
+        self.scrollresults.grid(column=4, row=0, sticky=tk.N + tk.S + tk.W)
+
         self.project_list = ttk.Treeview(self.resultsframe, height=4,
                                          columns=('Name', 'Type', 'Description', 'Start date', 'End date'))
+
+        self.scrollresults.configure(orient="vertical", command=self.project_list.yview)
+        self.project_list.configure(yscrollcommand=self.scrollresults.set)
+
         self.project_list['columns'] = ('Name', 'Type', 'Description', 'Start date', 'End date')
         self.project_list.column('#0', width=5)
         self.project_list.grid(column=3, row=0, sticky=tk.W)
