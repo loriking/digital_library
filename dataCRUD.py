@@ -351,6 +351,7 @@ def find_resource_by_subject(subject):
                 AND resource_subject.subjectID = subjects.ID
                 AND resource_subject.resourceID = resource.ID
                 WHERE subjects.subject = ?''', (subject,))
+    return c.fetchall()
 
 def resources_by_language(language):
     ' Returns all the resources from database of a given language'

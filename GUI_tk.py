@@ -403,12 +403,16 @@ class SearchProjects(tk.Frame):
         self.searchresourceframe.grid(column=0, row=4, sticky=tk.N)
 
         self.sortframe = tk.LabelFrame(self.searchresourceframe, text='', borderwidth=4)
-        self.sortframe.grid(columnspan=2, column=0, row=1, padx=5, pady=5)
+        self.sortframe.grid(columnspan=2, column=0, row=2, padx=5, pady=5)
 
         self.subjectbox_label = tk.Label(self.searchresourceframe, text='Subject', font=labelsfont)
         self.subjectbox_label.grid(column=0, row=0, sticky=tk.N+tk.W)
-        self.subjectbox = tk.Entry(self.searchresourceframe, width=25, textvariable=self.resource_subject)
+        self.subjectbox = tk.Entry(self.searchresourceframe, width=26, textvariable=self.resource_subject)
         self.subjectbox.grid(column=1, row=0,  sticky=tk.W)
+
+        self.searchbutton = tk.Button(self.searchresourceframe, text='Search',command=lambda:self.search_resources())
+        self.searchbutton.config(width=10)
+        self.searchbutton.grid(column=1, row=1, pady=5, sticky=tk.E)
 
         self.sort_label = tk.Label(self.sortframe, text='Sort by type', font=smallheaderfont)
         self.sort_label.grid(column=0, row=0, sticky=tk.W)
@@ -434,7 +438,7 @@ class SearchProjects(tk.Frame):
         self.resourceresults = tk.LabelFrame(self.mainframe, text='', borderwidth=1)
         self.resourceresults.grid(column=3, row=4, columnspan=40, sticky=tk.N+tk.W)
 
-        self.resource_list = ttk.Treeview(self.resourceresults, height=8,
+        self.resource_list = ttk.Treeview(self.resourceresults, height=10,
                                           columns=('Title', 'Author', 'Year',
                                                    'Pages', 'Language', 'Format',
                                                    'Abstract'))
@@ -465,7 +469,7 @@ class SearchProjects(tk.Frame):
 
         self.home = tk.Button(self.mainframe, text='Home', command=lambda: controller.show_frame(HomePage))
         self.home.config(width=10)
-        self.home.grid(column=0, row=5)
+        self.home.grid(column=0, row=5, sticky=tk.N)
 
     def select_project(self):
         """ Takes item selected from listbox and stores it as a global variable to be used in
@@ -480,6 +484,17 @@ class SearchProjects(tk.Frame):
         for item in projects:
             self.treeview_projects.insert('', 'end', values=item)
         self.titlebox.delete(0, 'end')
+
+    def search_resources(self):
+        for i in self.resource_list.get_children():
+            self.resource_list.delete(i)
+
+        resources = data.find_resource_by_subject(self.resource_subject.get())
+
+        for item in resources:
+            self.treeview_resources.insert('', 'end', values=item)
+        self.subjectbox.delete(0, 'end')
+
 
 
 class Projects(tk.Frame):
