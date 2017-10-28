@@ -340,9 +340,10 @@ def list_resources():
     return c.fetchall()
 
 def find_resource_by_subject(subject):
+    subject = subject.title()
 
-    c.execute('''SELECT resource.title, authors.name, resource.year, resource.pages, languages.language, 
-                    resource.abstract
+    c.execute('''SELECT resource.title, authors.name, resource.year, resource.pages, 
+                languages.language,  resource_medium.medium, resource.abstract
                 FROM resource JOIN languages JOIN publishers JOIN resource_medium JOIN authors
                 JOIN resource_author JOIN subjects JOIN resource_subject
                 ON resource.languageID = languages.ID AND resource.mediaID = resource_medium.ID 
