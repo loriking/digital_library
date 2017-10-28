@@ -292,6 +292,7 @@ def get_resource_id(resource_title_entry):
     c.execute('''SELECT ID FROM resource WHERE title = ?''', (resource_title,))
     return c.fetchone()[0]
 
+
 def add_resource(title, author, year, pages, publisher, language, medium, subject, abstract):
     """ Adds item to SQL database"""
 
@@ -338,6 +339,18 @@ def list_resources():
 
     return c.fetchall()
 
+def find_resource_by_subject(subject):
+
+    c.execute('''SELECT resource.title, authors.name, resource.year, resource.pages, languages.language, 
+                    resource.abstract
+                FROM resource JOIN languages JOIN publishers JOIN resource_medium JOIN authors
+                JOIN resource_author JOIN subjects JOIN resource_subject
+                ON resource.languageID = languages.ID AND resource.mediaID = resource_medium.ID 
+                AND resource.publisherID = publishers.ID AND authors.ID = resource_author.authorID 
+                AND resource.ID = resource_author.resourceID
+                AND resource_subject.subjectID = subjects.ID
+                AND resource_subject.resourceID = resource.ID
+                WHERE subjects.subject = ?''', (subject,))
 
 def resources_by_language(language):
     ' Returns all the resources from database of a given language'
