@@ -348,16 +348,16 @@ class SearchProjects(tk.Frame):
         self.titlebox_label = tk.Label(self.searchframe, text='Title', font=labelsfont)
         self.titlebox_label.grid(column=0, row=0, sticky=tk.W)
         self.titlebox = tk.Entry(self.searchframe, width=32, textvariable=self.project_title)
-        self.titlebox.grid(column=1, row=0, sticky=tk.E)
+        self.titlebox.grid(column=1, row=0, padx=5, sticky=tk.E)
 
         self.projecttype_label = tk.Label(self.searchframe, text='Type', font=labelsfont)
         self.projecttype_label.grid(column=0, row=1)
         self.projecttype_entry = tk.Entry(self.searchframe, width=32, textvariable=self.project_type)
-        self.projecttype_entry.grid(column=1, row=1)
+        self.projecttype_entry.grid(column=1, row=1, padx=5)
 
         self.searchbutton = ttk.Button(self.searchframe, text='Search', command=lambda: self.search_projects())
         self.searchbutton.config(width=10, cursor='hand2')
-        self.searchbutton.grid(column=1, row=2, pady=5, sticky=tk.E)
+        self.searchbutton.grid(column=1, row=2, padx=5, pady=5, sticky=tk.E)
 
         # TOP RIGHT FRAME PROJECT SEARCH RESULTS:
 
@@ -375,7 +375,7 @@ class SearchProjects(tk.Frame):
 
         self.project_list['columns'] = ('Name', 'Type', 'Description', 'Start date', 'End date')
         self.project_list.column('#0', width=5)
-        self.project_list.grid(column=3, row=0, sticky=tk.W)
+        self.project_list.grid(column=3, row=0, sticky=tk.W+tk.E)
 
         self.project_list.heading('0', text='Name', anchor='w')
         self.project_list.heading('1', text='Type', anchor='w')
@@ -383,11 +383,11 @@ class SearchProjects(tk.Frame):
         self.project_list.heading('3', text='Start date', anchor='w')
         self.project_list.heading('4', text='End date', anchor='w')
 
-        self.project_list.column('0', anchor='w')
-        self.project_list.column('1', width=300, anchor='w')
+        self.project_list.column('0', width=300, anchor='w')
+        self.project_list.column('1',  anchor='w')
         self.project_list.column('2', width=300, anchor='w')
-        self.project_list.column('3', width=100, anchor='w')
-        self.project_list.column('4', width=100, anchor='w')
+        self.project_list.column('3', width=113, anchor='w')
+        self.project_list.column('4', width=113, anchor='w')
         self.treeview_projects = self.project_list
 
         # MIDDLE FRAME
@@ -414,7 +414,7 @@ class SearchProjects(tk.Frame):
         self.searchbutton.config(width=10, cursor='hand2')
         self.searchbutton.grid(column=1, row=1, pady=5, sticky=tk.E)
 
-        self.sort_label = tk.Label(self.sortframe, text='Sort by type', font=smallheaderfont)
+        self.sort_label = tk.Label(self.sortframe, text='Limit by type', font=smallheaderfont)
         self.sort_label.grid(column=0, row=0, sticky=tk.W)
 
         self.audio_rb = tk.Radiobutton(self.sortframe, text='Audio and Video', variable=self.media_type, value=1)
@@ -439,7 +439,7 @@ class SearchProjects(tk.Frame):
         self.resourceresults.grid(column=3, row=4, columnspan=40, sticky=tk.E)
 
         self.scollresources = tk.Scrollbar(self.resourceresults)
-        self.scollresources.grid(column=4, row=0, sticky=tk.N + tk.S + tk.W)
+        self.scollresources.grid(column=2, row=0, sticky=tk.N + tk.S + tk.W)
 
         self.resource_list = ttk.Treeview(self.resourceresults, height=10,
                                           columns=('Title', 'Author', 'Year',
@@ -457,8 +457,8 @@ class SearchProjects(tk.Frame):
         self.resource_list.column('3', width=60, anchor='w')
         self.resource_list.column('4', width=100, anchor='w')
         self.resource_list.column('5', width=100, anchor='w')
-        self.resource_list.column('6', width=250, anchor='w')
-        self.resource_list.grid(column=0, row=0, sticky=tk.W + tk.N)
+        self.resource_list.column('6', width=300, anchor='w')
+        self.resource_list.grid(column=0, row=0, sticky=tk.W + tk.N + tk.E)
 
         self.resource_list.heading('0', text='Title', anchor='w')
         self.resource_list.heading('1', text='Author(s)', anchor='w')
