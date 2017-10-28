@@ -438,10 +438,17 @@ class SearchProjects(tk.Frame):
         self.resourceresults = tk.LabelFrame(self.mainframe, text='', borderwidth=1)
         self.resourceresults.grid(column=3, row=4, columnspan=40, sticky=tk.N+tk.W)
 
+        self.scollresources = tk.Scrollbar(self.resourceresults)
+        self.scollresources.grid(column=4, row=0, sticky=tk.N + tk.S + tk.W)
+
         self.resource_list = ttk.Treeview(self.resourceresults, height=10,
                                           columns=('Title', 'Author', 'Year',
                                                    'Pages', 'Language', 'Format',
                                                    'Abstract'))
+
+        self.scollresources.configure(orient="vertical", command=self.resource_list.yview)
+        self.resource_list.configure(yscrollcommand=self.scollresources.set)
+
         self.resource_list['columns'] = ('Title', 'Author', 'Year', 'Pages', 'Language', 'Format', 'Abstract')
         self.resource_list.column('#0', width=1)
         self.resource_list.column('0', width=250, anchor='w')
