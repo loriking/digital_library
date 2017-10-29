@@ -487,7 +487,7 @@ class SearchProjects(tk.Frame):
             resource_name = item_text['values'][0]
 
             resource_id = data.get_resource_id(resource_name)
-            resource_id = resource_id[0]
+            print('Resource ID = ', resource_id)
 
             self.resources.add(resource_id)
 
@@ -506,10 +506,24 @@ class SearchProjects(tk.Frame):
         self.project_id = project[0]
         return self.project_id
 
+    def clear_selection(self):
+        item = self.treeview_projects.selection()[0]
+        self.project_list.selection_remove(item)
+
+        items = self.treeview_resources.selection()[0]
+        self.resource_list.selection_remove(items)
+
     def link_project_resources(self):
 
         for item in self.resources:
             data.link_to_resources(self.project_id, item)
+
+        self.clear_selection()
+
+
+        print("Added item(s)")
+
+
 
 
         """
