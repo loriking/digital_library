@@ -350,10 +350,10 @@ class SearchProjects(tk.Frame):
         self.titlebox = tk.Entry(self.searchframe, width=32, textvariable=self.project_title)
         self.titlebox.grid(column=1, row=0, padx=5, sticky=tk.E)
 
-        self.projecttype_label = tk.Label(self.searchframe, text='Type', font=labelsfont)
-        self.projecttype_label.grid(column=0, row=1)
-        self.projecttype_entry = tk.Entry(self.searchframe, width=32, textvariable=self.project_type)
-        self.projecttype_entry.grid(column=1, row=1, padx=5)
+        #self.projecttype_label = tk.Label(self.searchframe, text='Type', font=labelsfont)
+        #self.projecttype_label.grid(column=0, row=1)
+        #self.projecttype_entry = tk.Entry(self.searchframe, width=32, textvariable=self.project_type)
+        #self.projecttype_entry.grid(column=1, row=1, padx=5)
 
         self.searchbutton = ttk.Button(self.searchframe, text='Search', command=lambda: self.search_projects())
         self.searchbutton.config(width=10, cursor='hand2')
@@ -367,7 +367,7 @@ class SearchProjects(tk.Frame):
         self.scrollresults = tk.Scrollbar(self.resultsframe)
         self.scrollresults.grid(column=4, row=0, sticky=tk.N +tk.S + tk.W)
 
-        self.project_list = ttk.Treeview(self.resultsframe, height=4,
+        self.project_list = ttk.Treeview(self.resultsframe, height=4, selectmode='browse',
                                          columns=('Name', 'Type', 'Description', 'Start date', 'End date'))
 
         self.scrollresults.configure(orient="vertical", command=self.project_list.yview)
@@ -389,6 +389,7 @@ class SearchProjects(tk.Frame):
         self.project_list.column('3', width=113, anchor='w')
         self.project_list.column('4', width=113, anchor='w')
         self.treeview_projects = self.project_list
+        self.treeview_projects.bind('<ButtonRelease-1>', self.select_project)
 
         # MIDDLE FRAME
         self.middleframe = tk.LabelFrame(self.mainframe, text='', borderwidth=0)
@@ -441,7 +442,7 @@ class SearchProjects(tk.Frame):
         self.scollresources = tk.Scrollbar(self.resourceresults)
         self.scollresources.grid(column=2, row=0, sticky=tk.N + tk.S + tk.W)
 
-        self.resource_list = ttk.Treeview(self.resourceresults, height=10,
+        self.resource_list = ttk.Treeview(self.resourceresults, height=10, selectmode='extended',
                                           columns=('Title', 'Author', 'Year',
                                                    'Pages', 'Language', 'Format',
                                                    'Abstract'))
@@ -478,11 +479,15 @@ class SearchProjects(tk.Frame):
         self.home.config(width=10, cursor='hand2')
         self.home.grid(column=0, row=5, sticky=tk.N)
 
-    def select_project(self):
+    def select_project(self, event):
         """ Takes item selected from listbox and stores it as a global variable to be used in
             Link resource window
         """
-        pass
+        print("selected items:")
+        item = self.treeview_projects.selection()[0]
+        print('You clicked on', self.treeview_projects.item(item))
+
+
 
     def search_projects(self):
         for i in self.project_list.get_children():
@@ -491,6 +496,8 @@ class SearchProjects(tk.Frame):
         for item in projects:
             self.treeview_projects.insert('', 'end', values=item)
         self.titlebox.delete(0, 'end')
+
+
 
     def search_resources(self):
         for i in self.resource_list.get_children():
