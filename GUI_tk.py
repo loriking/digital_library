@@ -485,9 +485,8 @@ class SearchProjects(tk.Frame):
             item_text = self.treeview_resources.item(item)
 
             resource_name = item_text['values'][0]
-            print(resource_name)
             self.resources.add(resource_name)
-        print(self.resources)
+
         return self.resources
 
     def select_project(self, event):
@@ -502,14 +501,22 @@ class SearchProjects(tk.Frame):
         #project_id
         project = data.get_projectID(project_name)
         self.project_id = project[0]
-        print(self.project_id)
         return self.project_id
 
     def link_project_resources(self):
         print(self.project_id, self.resources)
+
         for item in self.resources:
+            resource_id = data.get_resource_id(item)
+            data.link_to_resources(self.project_id, resource_id)
+            print('Entered:', item)
+
+
+        """
+        for item in resource_ids:
             data.link_to_resources(self.project_id, item)
             print('Entered:', item)
+        """
 
 
 
