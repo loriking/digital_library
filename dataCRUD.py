@@ -64,8 +64,12 @@ def delete_language():
 
 # AUTHORS
     
-def add_author(nameslist):
+def add_author(name):
     """    Adds author(s) to SQL database    """
+    c.execute('''INSERT OR IGNORE INTO authors(name) VALUES(?)''', (name,))
+    db.commit()
+
+    """
    
     if ',' in nameslist:
         names = nameslist.title().split(',')
@@ -76,6 +80,7 @@ def add_author(nameslist):
         c.execute('''INSERT OR IGNORE INTO authors(name) VALUES(?)''', (name,))
 
     db.commit()
+    """
 
 
 def list_authors():
@@ -290,10 +295,8 @@ def delete_subject(subjectID):
 def get_resource_id(resource_title_entry):
     #resource_title = resource_title_entry.title()
     c.execute('''SELECT ID FROM resource WHERE title = ?''', (resource_title_entry,))
-    results = [i[0] for i in c.fetchall()]
-    return results
-
-    #return c.fetchone()[0]
+    return c.fetchone()[0]
+    
 
 
 def add_resource(title, author, year, pages, publisher, language, medium, subject, abstract):
@@ -301,26 +304,33 @@ def add_resource(title, author, year, pages, publisher, language, medium, subjec
 
     add_publisher(publisher)
     publisherID = get_publisherID(publisher)
+    print('Pub ID =', publisherID)
 
     add_language(language)
     languageID = get_languageID(language)
+    print('Lang ID = ', languageID)
 
     add_resource_medium(medium)
     mediaID = get_resource_mediumID(medium)
+    print('Media ID = ', mediaID)
 
     title = title.title()
+    print('Title = ', title)
 
     c.execute('''INSERT OR IGNORE INTO resource(title, year, pages, publisherID, languageID, mediaID, abstract) 
                  VALUES(?,?,?,?,?,?,?)''',
               (title, year, pages, publisherID, languageID, mediaID, abstract,))
 
     resourceID = get_resource_id(title)
+    print('ResourceID = ', resourceID)
 
     add_author(author)
     authorID = get_authorID(author)
+    print('Author ID = ', authorID)
 
     add_subject(subject)
     subjectID = get_subjectID(subject)
+    print('Subject ID =', subjectID)
 
     c.execute('INSERT OR IGNORE INTO resource_author VALUES(?,?)', (resourceID, authorID,))
     db.commit()
