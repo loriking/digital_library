@@ -81,7 +81,7 @@ def make_db():
     CREATE TABLE IF NOT EXISTS project_references(
         projectID INTEGER,
         resourceID INTEGER,
-        PRIMARY KEY (projectID, resourceID)
+        PRIMARY KEY UNIQUE (projectID, resourceID) 
         );
         ''')
 

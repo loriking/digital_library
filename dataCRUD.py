@@ -496,7 +496,7 @@ def delete_project(projectID):
 
 
 def link_to_resources(projectID, resourceID):
-    c.execute('''INSERT INTO project_references(projectID, resourceID) VALUES(?,?)''',
+    c.execute('''INSERT OR IGNORE INTO project_references(projectID, resourceID) VALUES(?,?)''',
               (projectID, resourceID))
 
     db.commit()
