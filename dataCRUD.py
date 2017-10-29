@@ -435,7 +435,8 @@ def get_projectID(project_name):
     """ Returns the ID of a given project """
 
     c.execute('''SELECT ID FROM projects WHERE project_name = ?''', (project_name,))
-    return c.fetchall()
+    results = [i[0] for i in c.fetchall()]
+    return results
 
 def find_project(project_name):
     search = "%" + project_name + "%"
@@ -491,6 +492,13 @@ def update_project(projectID=None, project_name=None, project_category=None, des
 
 def delete_project(projectID):
     c.execute(''' DELETE from projects WHERE projects.ID = ?''', (projectID,))
+    db.commit()
+
+
+def link_to_resources(projectID, resourceID):
+    c.execute('''INSERT INTO project_references(projectID, resourceID) VALUES(?,?)''',
+              (projectID, resourceID))
+
     db.commit()
 
 
