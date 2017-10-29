@@ -328,6 +328,9 @@ class SearchProjects(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
+        self.project_id = None
+        self.resources = set()
+
         self.project_title = tk.StringVar()
         self.project_type = tk.StringVar()
         self.resource_subject = tk.StringVar()
@@ -349,11 +352,6 @@ class SearchProjects(tk.Frame):
         self.titlebox_label.grid(column=0, row=0, sticky=tk.W)
         self.titlebox = tk.Entry(self.searchframe, width=32, textvariable=self.project_title)
         self.titlebox.grid(column=1, row=0, padx=5, sticky=tk.E)
-
-        #self.projecttype_label = tk.Label(self.searchframe, text='Type', font=labelsfont)
-        #self.projecttype_label.grid(column=0, row=1)
-        #self.projecttype_entry = tk.Entry(self.searchframe, width=32, textvariable=self.project_type)
-        #self.projecttype_entry.grid(column=1, row=1, padx=5)
 
         self.searchbutton = ttk.Button(self.searchframe, text='Search', command=lambda: self.search_projects())
         self.searchbutton.config(width=10, cursor='hand2')
@@ -469,9 +467,10 @@ class SearchProjects(tk.Frame):
         self.resource_list.heading('5', text='Format', anchor='w')
         self.resource_list.heading('6', text='Abstract', anchor='w')
         self.treeview_resources = self.resource_list
+        self.treeview_resources.bind('<ButtonRelease-1>', self.select_resources)
 
-        self.go_to_resources = ttk.Button(self.resourceresults, text='Link resource(s)')  # ,
-        # command=lambda: controller.show_frame(LinkResources))
+        self.go_to_resources = ttk.Button(self.resourceresults, text='Link resource(s)',
+                                          command=lambda: self.link_project_resources())
         self.go_to_resources.config(cursor='hand2')
         self.go_to_resources.grid(column=0, row=4, sticky=tk.E)
 
@@ -479,13 +478,41 @@ class SearchProjects(tk.Frame):
         self.home.config(width=10, cursor='hand2')
         self.home.grid(column=0, row=5, sticky=tk.N)
 
+    def select_resources(self, event):
+        self.resources.clear()
+
+        for item in self.treeview_resources.selection():
+            item_text = self.treeview_resources.item(item)
+
+            resource_name = item_text['values'][0]
+            print(resource_name)
+            self.resources.add(resource_name)
+        print(self.resources)
+        return self.resources
+
     def select_project(self, event):
         """ Takes item selected from listbox and stores it as a global variable to be used in
             Link resource window
         """
-        print("selected items:")
+        self.project_id = None
         item = self.treeview_projects.selection()[0]
-        print('You clicked on', self.treeview_projects.item(item))
+        project = self.treeview_projects.item(item)
+        project_name = project['values'][0]
+
+        #project_id
+        project = data.get_projectID(project_name)
+        self.project_id = project[0]
+        print(self.project_id)
+        return self.project_id
+
+    def link_project_resources(self):
+        print(self.project_id, self.resources)
+        for item in self.resources:
+            data.link_to_resources(self.project_id, item)
+            print('Entered:', item)
+
+
+
 
 
 
