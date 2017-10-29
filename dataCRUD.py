@@ -288,9 +288,12 @@ def delete_subject(subjectID):
 
 # RESOURCE
 def get_resource_id(resource_title_entry):
-    resource_title = resource_title_entry.title()
-    c.execute('''SELECT ID FROM resource WHERE title = ?''', (resource_title,))
-    return c.fetchone()[0]
+    #resource_title = resource_title_entry.title()
+    c.execute('''SELECT ID FROM resource WHERE title = ?''', (resource_title_entry,))
+    results = [i[0] for i in c.fetchall()]
+    return results
+
+    #return c.fetchone()[0]
 
 
 def add_resource(title, author, year, pages, publisher, language, medium, subject, abstract):
