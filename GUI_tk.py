@@ -20,12 +20,13 @@ class ProjectLibrary(tk.Tk):
 
         self.frames = {}
 
-        for F in (HomePage, Projects, SearchProjects, AddResource, SearchResource, EditResource):
+        for F in (HomePage, Projects, LinkResources, AddResource, AddText, AddAudioVideo, AddCourse,
+                  AddInteractiveMedia, AddWebDoc, AddImages, SearchResource, EditResource):
             frame = F(main, self)
             self.frames[F] = frame
             frame.grid(row = 0, column = 0, sticky ='nsew')
 
-        self.show_frame(SearchProjects)
+        self.show_frame(LinkResources)
         
     def show_frame(self, cont):
         frame = self.frames[cont]
@@ -61,20 +62,14 @@ class HomePage(tk.Frame):
         self.new_projects.config(height=5, width=13)
         self.new_projects.grid(column = 0, row= 0, pady=5)
 
-        self.view_project = tk.Button(self.firstframe, text='Search Projects',
-                                      command=lambda: controller.show_frame(SearchProjects))
+        self.view_project = tk.Button(self.firstframe, text='Link Resources\n to Projects',
+                                      command=lambda: controller.show_frame(LinkResources))
         self.view_project.config(height=5,width=13)
         self.view_project.grid(column=0, row=1, pady=5)
 
         self.edit_project = tk.Button(self.firstframe, text='Edit Project')
         self.edit_project.config(height=5, width=13)
         self.edit_project.grid(column=0, row=2, pady=5)
-        """
-        self.link_projects = tk.Button(self.firstframe, text='View All',
-                                       command=lambda: controller.show_frame(AddProjects))
-        self.link_projects.config(height=3, width=13)
-        self.link_projects.grid(column=0, row=3)
-        """
 
         self.new_resources = tk.Button(self.secondframe, text='Add Resource',
                                    command=lambda: controller.show_frame(AddResource))
@@ -89,11 +84,6 @@ class HomePage(tk.Frame):
         self.edit_resource = tk.Button(self.secondframe, text='Edit Resource')
         self.edit_resource.config(height=5, width=13)
         self.edit_resource.grid(column=1, row=2, pady=5)
-        """
-        self.search_resources = tk.Button(self.secondframe, text='Search Resources')
-        self.search_resources.config(height=3, width=13)
-        self.search_resources.grid(column=1,row=3)
-        """
 
         button1 = ttk.Button(self.middleframe, text = "", image=self.wordcloud, compound="center")
         button1.grid(column=2, row=1, rowspan=5,padx=10,sticky=tk.E)
@@ -101,6 +91,80 @@ class HomePage(tk.Frame):
 
 
 class AddResource(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+
+        self.AddAudioVideoButton = tk.Button(self, text='Audio\n and Video',
+                                        command=lambda: controller.show_frame(AddAudioVideo))
+        self.AddTextButton= tk.Button(self, text='Add Text',
+                                        command=lambda: controller.show_frame(AddText))
+        self.AddCourseButton= tk.Button(self, text='Courses',
+                                        command=lambda: controller.show_frame(AddCourse))
+        self.AddInteractiveMediaButton= tk.Button(self, text='Interactive\n Media',
+                                        command=lambda: controller.show_frame(AddInteractiveMedia))
+        self.AddWebDocButton= tk.Button(self, text='Web docs',
+                                        command=lambda: controller.show_frame(AddWebDoc))
+        self.AddImagesButton= tk.Button(self, text='Images',
+                                        command=lambda: controller.show_frame(AddImages))
+
+        self.AddAudioVideoButton.grid(column=0, row=0)
+        self.AddTextButton.grid(column=0, row=1)
+        self.AddCourseButton.grid(column=0, row=2)
+        self.AddInteractiveMediaButton.grid(column=1, row=0)
+        self.AddWebDocButton.grid(column=1, row=1)
+        self.AddImagesButton.grid(column=1, row=2)
+
+
+class AddAudioVideo(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+
+        self.home = tk.Button(self, text='Home', command=lambda: controller.show_frame(HomePage))
+        self.home.config(width=15, cursor='hand2')
+        self.home.grid(column=0, row=2, padx=10, sticky=tk.W)
+
+
+class AddWebDoc(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+
+        self.home = tk.Button(self, text='Home', command=lambda: controller.show_frame(HomePage))
+        self.home.config(width=15, cursor='hand2')
+        self.home.grid(column=0, row=2, padx=10, sticky=tk.W)
+
+
+class AddInteractiveMedia(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+
+        self.home = tk.Button(self, text='Home', command=lambda: controller.show_frame(HomePage))
+        self.home.config(width=15, cursor='hand2')
+        self.home.grid(column=0, row=2, padx=10, sticky=tk.W)
+
+
+
+class AddImages(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+
+        self.home = tk.Button(self, text='Home', command=lambda: controller.show_frame(HomePage))
+        self.home.config(width=15, cursor='hand2')
+        self.home.grid(column=0, row=2, padx=10, sticky=tk.W)
+
+
+
+
+class AddCourse(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+
+        self.home = tk.Button(self, text='Home', command=lambda: controller.show_frame(HomePage))
+        self.home.config(width=15, cursor='hand2')
+        self.home.grid(column=0, row=2, padx=10, sticky=tk.W)
+
+
+
+class AddText(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
@@ -324,7 +388,7 @@ class AddResource(tk.Frame):
 
 
 
-class SearchProjects(tk.Frame):
+class LinkResources(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
@@ -360,7 +424,7 @@ class SearchProjects(tk.Frame):
         # TOP RIGHT FRAME PROJECT SEARCH RESULTS:
 
         self.resultsframe = tk.LabelFrame(self.mainframe, text='', borderwidth=0)
-        self.resultsframe.grid(column=3, row=0, sticky=tk.E) #changed from W
+        self.resultsframe.grid(column=3, row=0, sticky=tk.E)
 
         self.scrollresults = tk.Scrollbar(self.resultsframe)
         self.scrollresults.grid(column=4, row=0, sticky=tk.N +tk.S + tk.W)
@@ -416,12 +480,16 @@ class SearchProjects(tk.Frame):
         self.sort_label = tk.Label(self.sortframe, text='Limit by type', font=smallheaderfont)
         self.sort_label.grid(column=0, row=0, sticky=tk.W)
 
-        self.audio_rb = tk.Radiobutton(self.sortframe, text='Audio and Video', variable=self.media_type, value=1)
-        self.book_rb = tk.Radiobutton(self.sortframe, text='Books', variable=self.media_type, value=2)
-        self.course_rb = tk.Radiobutton(self.sortframe, text='Courses', variable=self.media_type, value=3)
+        self.audio_rb = tk.Radiobutton(self.sortframe, text='Audio and Video', variable=self.media_type,
+                                       value='Audio and Video', command= self.limit_resources)
+        self.book_rb = tk.Radiobutton(self.sortframe, text='Texts', variable=self.media_type, value='Texts',
+                                       command= self.limit_resources)
+        self.course_rb = tk.Radiobutton(self.sortframe, text='Courses', variable=self.media_type, value='Courses',
+                                       command= self.limit_resources)
         self.interactive_rb = tk.Radiobutton(self.sortframe, text='Interactive Media', variable=self.media_type,
-                                             value=4)
-        self.webdocs_rb = tk.Radiobutton(self.sortframe, text='Web doc', variable=self.media_type, value=5)
+                                             value='Interactive Media', command= self.limit_resources)
+        self.webdocs_rb = tk.Radiobutton(self.sortframe, text='Web docs', variable=self.media_type,
+                                         value='Web docs', command= self.limit_resources)
 
         self.audio_rb.grid(column=1, row=0, sticky=tk.W)
         self.book_rb.grid(column=1, row=1, sticky=tk.W)
@@ -520,8 +588,24 @@ class SearchProjects(tk.Frame):
 
         self.clear_selection()
 
-
         print("Added item(s)")
+
+    def limit_resources(self):
+
+        if self.media_type.get() == 1:
+            media_type = ''
+        elif self.media_type.get() == 2:
+            media_type = ''
+        elif self.media_type.get() == 3:
+            media_type = ''
+        elif self.media_type.get() == 4:
+            media_type = ''
+        elif self.media_type.get() == 5:
+            media_type = ''
+
+
+        data.sort_resources_by_type(media_type )
+        pass
 
 
 
