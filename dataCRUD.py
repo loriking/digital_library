@@ -296,7 +296,7 @@ def get_resource_id(resource_title_entry):
     #resource_title = resource_title_entry.title()
     c.execute('''SELECT ID FROM resource WHERE title = ?''', (resource_title_entry,))
     return c.fetchone()[0]
-    
+
 
 
 def add_resource(title, author, year, pages, publisher, language, medium, subject, abstract):
@@ -375,7 +375,12 @@ def resources_by_language(language):
               ON resource.languageID = languages.ID 
               WHERE resource.languageID = ?''', (language,))
     
-    
+def resources_by_type(media_type):
+    c.execute('''SELECT resource.title, resource.year, resource.mediaID
+                FROM resource JOIN resource_medium
+                ON resource.mediaID = resource_medium.ID 
+                WHERE resource.mediaID = ?''', (media_type,))
+
 # PROJECT Category CRUD
 
 def add_project_category(project_category):
