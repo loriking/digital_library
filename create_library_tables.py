@@ -48,19 +48,21 @@ def make_db():
         publisherID INTEGER REFERENCES publishers(ID),
         mediaID INTEGER REFERENCES resource_medium(ID),
         languageID INTEGER REFERENCES languages(ID),
-        abstract TEXT
+        notes TEXT
         );
     
     CREATE TABLE IF NOT EXISTS resource_author(  
         resourceID INTEGER,
         authorID INTEGER,
-        PRIMARY KEY (resourceID, authorID)
+        mediaID INTEGER REFERENCES resource_medium(ID),
+        PRIMARY KEY (resourceID, authorID, mediaID)
         );    
         
     CREATE TABLE IF NOT EXISTS resource_subject(
         resourceID INTEGER,
         subjectID INTEGER,
-        PRIMARY KEY(resourceID, subjectID)
+        mediaID INTEGER,
+        PRIMARY KEY(resourceID, subjectID, mediaID)
         );
 
         
@@ -69,6 +71,19 @@ def make_db():
         category TEXT UNIQUE
         );
         
+    CREATE TABLE IF NOT EXISTS online_media(
+        ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+        title TEXT,
+        media_date TEXT,
+        domainID INTEGER REFERENCES publisher(ID),
+        media_URL TEXT,
+        access_date TEXT,
+        comments TEXT,
+        mediaID INTEGER REFERENCES resource_medium(ID),
+        audio_video INTEGER
+        );
+        
+         
     CREATE TABLE IF NOT EXISTS projects (
         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
         project_name TEXT NOT NULL,
@@ -81,7 +96,8 @@ def make_db():
     CREATE TABLE IF NOT EXISTS project_references(
         projectID INTEGER,
         resourceID INTEGER,
-        PRIMARY KEY UNIQUE (projectID, resourceID) 
+        mediaID INTEGER,
+        PRIMARY KEY (projectID, resourceID, mediaID) 
         );
         ''')
 
