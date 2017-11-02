@@ -294,12 +294,11 @@ def delete_subject(subjectID):
 # RESOURCE
 def get_resource_id(resource_title_entry):
     #resource_title = resource_title_entry.title()
-    c.execute('''SELECT ID FROM resource WHERE title = ?''', (resource_title_entry,))
-    return c.fetchone()[0]
+    c.execute('''SELECT ID, mediaID FROM resource WHERE title = ?''', (resource_title_entry,))
+    return c.fetchall()
 
 
-
-def add_resource(title, author, year, pages, publisher, language, medium, subject, abstract):
+def add_text(title, author, year, pages, publisher, language, subject, notes):
     """ Adds item to SQL database"""
 
     add_publisher(publisher)
@@ -310,16 +309,15 @@ def add_resource(title, author, year, pages, publisher, language, medium, subjec
     languageID = get_languageID(language)
     print('Lang ID = ', languageID)
 
-    add_resource_medium(medium)
-    mediaID = get_resource_mediumID(medium)
-    print('Media ID = ', mediaID)
+    mediaID = get_resource_mediumID('Text')
+    print('Text media ID = ', mediaID)
 
     title = title.title()
     print('Title = ', title)
 
-    c.execute('''INSERT OR IGNORE INTO resource(title, year, pages, publisherID, languageID, mediaID, abstract) 
+    c.execute('''INSERT OR IGNORE INTO resource(title, year, pages, publisherID, languageID, mediaID, notes) 
                  VALUES(?,?,?,?,?,?,?)''',
-              (title, year, pages, publisherID, languageID, mediaID, abstract,))
+              (title, year, pages, publisherID, languageID, mediaID, notes))
 
     resourceID = get_resource_id(title)
     print('ResourceID = ', resourceID)
@@ -332,20 +330,21 @@ def add_resource(title, author, year, pages, publisher, language, medium, subjec
     subjectID = get_subjectID(subject)
     print('Subject ID =', subjectID)
 
-    c.execute('INSERT OR IGNORE INTO resource_author VALUES(?,?)', (resourceID, authorID,))
+    c.execute('''INSERT OR IGNORE INTO resource_author(resourceID, authorID, mediaID) VALUES(?,?, ?)''',
+              (resourceID, authorID, mediaID))
     db.commit()
 
-    c.execute('INSERT OR IGNORE INTO resource_subject VALUES(?,?)', (resourceID, subjectID))
+    c.execute('''INSERT OR IGNORE INTO resource_subject(resourceID, subjectID, mediaID) VALUES(?,?, ?)''',
+              (resourceID, subjectID, mediaID))
     db.commit()
 
-def list_resources():
+def list_text_resources():
     """ Returns all the resources from database"""
 
     c.execute('''SELECT resource.title, authors.name, resource.year, resource.pages, 
-                publishers.publisher, languages.language, resource_medium.medium, resource.abstract
-                FROM resource JOIN languages JOIN publishers JOIN resource_medium JOIN authors
-                JOIN resource_author
-                ON resource.languageID = languages.ID AND resource.mediaID = resource_medium.ID 
+                publishers.publisher, languages.language, resource.notes
+                FROM resource JOIN languages JOIN publishers JOIN authors JOIN resource_author
+                ON resource.languageID = languages.ID
                 AND resource.publisherID = publishers.ID AND authors.ID = resource_author.authorID 
                 AND resource.ID = resource_author.resourceID
                 ''')
@@ -356,7 +355,7 @@ def find_resource_by_subject(subject):
     subject = subject.title()
 
     c.execute('''SELECT resource.title, authors.name, resource.year, resource.pages, 
-                languages.language,  resource_medium.medium, resource.abstract
+                languages.language,  resource_medium.medium
                 FROM resource JOIN languages JOIN publishers JOIN resource_medium JOIN authors
                 JOIN resource_author JOIN subjects JOIN resource_subject
                 ON resource.languageID = languages.ID AND resource.mediaID = resource_medium.ID 
@@ -380,6 +379,54 @@ def resources_by_type(media_type):
                 FROM resource JOIN resource_medium
                 ON resource.mediaID = resource_medium.ID 
                 WHERE resource.mediaID = ?''', (media_type,))
+
+
+# Web doc
+def get_onlinemediaID(Title):
+    c.execute('''SELECT ID FROM online_media WHERE title = ?''', (Title,))
+    return c.fetchone()[0]
+
+def add_online_media(Title, Author, Media_date, Subject, Domain, URL, access_date, comments, audio_video):
+
+    add_author(Author)
+
+    add_publisher(Domain)
+    domainID = get_publisherID(Domain)
+    print('Domain ID =', domainID)
+
+    mediaID = get_resource_mediumID('Online Media')
+    print('Online Media ID = ', mediaID)
+
+
+    c.execute('''INSERT OR IGNORE INTO online_media(title, media_date, domainID, media_URL, access_date, 
+                comments, mediaID, audio_video
+                VALUES(?,?,?,?,?,?,?,?)''', (Title, Media_date, domainID, URL, access_date, comments,
+                                               mediaID, audio_video))
+    db.commit()
+
+
+    authorID = get_authorID(Author)
+    print('Author ID = ', authorID)
+
+    add_subject(Subject)
+    subjectID = get_subjectID(Subject)
+    print('Subject ID =', subjectID)
+
+    onlinemediaID = get_onlinemediaID(Title)
+    print('Online Media ID', onlinemediaID)
+
+
+    c.execute('''INSERT OR IGNORE INTO resource_author(resourceID, authorID, mediaID ) 
+              VALUES(?, ?, ?)''', (onlinemediaID, authorID, mediaID ))
+
+
+    c.execute('''INSERT OR IGNORE INTO resource_subject(resourceID, subjectID, mediaID) 
+                VALUES(?,?, ?)''', (onlinemediaID, subjectID, mediaID ))
+    db.commit()
+
+
+def link_onlinemedia():
+    pass
 
 # PROJECT Category CRUD
 
@@ -513,9 +560,9 @@ def delete_project(projectID):
     db.commit()
 
 
-def link_to_resources(projectID, resourceID):
-    c.execute('''INSERT OR IGNORE INTO project_references(projectID, resourceID) VALUES(?,?)''',
-              (projectID, resourceID))
+def link_to_resources(projectID, resourceID, mediaID):
+    c.execute('''INSERT OR IGNORE INTO project_references(projectID, resourceID, mediaID) VALUES(?,?, ?)''',
+              (projectID, resourceID, mediaID))
 
     db.commit()
 
