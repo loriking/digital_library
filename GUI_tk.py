@@ -21,12 +21,12 @@ class ProjectLibrary(tk.Tk):
         self.frames = {}
 
         for F in (HomePage, Projects, LinkResources, AddResource, AddText, AddAudioVideo, AddCourse,
-                  AddInteractiveMedia, AddWebDoc, AddImages, SearchResource, EditResource):
+                  AddInteractiveMedia, AddOnlineMedia, AddImages, SearchResource, EditResource):
             frame = F(main, self)
             self.frames[F] = frame
             frame.grid(row = 0, column = 0, sticky ='nsew')
 
-        self.show_frame(LinkResources)
+        self.show_frame(HomePage)
         
     def show_frame(self, cont):
         frame = self.frames[cont]
@@ -39,26 +39,21 @@ class HomePage(tk.Frame):
         self.label = tk.Label(self, text ='', font=headerfont)
         self.label.grid(row= 0, column = 0, columnspan=20)
           
-        self.topframe = tk.LabelFrame(self, text='')
-        self.topframe.config(bd=0)
+        self.topframe = tk.LabelFrame(self, text='', borderwidth=0)
         self.topframe.grid(row=1, column=0, padx=200, columnspan=20)
 
-        self.firstframe =tk.LabelFrame(self.topframe, text='Project Menu', font=labelsfont)
-        self.firstframe.config(bd=0)
+        self.firstframe =tk.LabelFrame(self.topframe, text='Project Menu', borderwidth=0, font=labelsfont)
+        self.secondframe = tk.LabelFrame(self.topframe, text='Resource Menu', borderwidth=0, font=labelsfont)
+        self.middleframe = tk.LabelFrame(self.topframe, borderwidth=0, text='')
 
-        self.secondframe = tk.LabelFrame(self.topframe, text='Resource Menu', font=labelsfont)
-        self.secondframe.config(bd=0)
-
-        self.middleframe = tk.LabelFrame(self.topframe, text='')
-        self.middleframe.config(bd=0)
-
-        self.firstframe.grid(column= 0, row=0, padx=40)
-        self.middleframe.grid(column=1, row=0, padx=40)
-        self.secondframe.grid(column=2, row=0, padx=40)
+        self.firstframe.grid(column= 0, row=0, padx=10)
+        self.middleframe.grid(column=1, row=0, padx=10)
+        self.secondframe.grid(column=2, row=0, padx=10)
 
         self.wordcloud = tk.PhotoImage(file="smallwhitewordcloud.png")
 
-        self.new_projects = tk.Button(self.firstframe, text='Add Project', command=lambda: controller.show_frame(Projects))
+        self.new_projects = tk.Button(self.firstframe, text='Add Project',
+                                      command=lambda: controller.show_frame(Projects))
         self.new_projects.config(height=5, width=13)
         self.new_projects.grid(column = 0, row= 0, pady=5)
 
@@ -102,35 +97,393 @@ class AddResource(tk.Frame):
                                         command=lambda: controller.show_frame(AddCourse))
         self.AddInteractiveMediaButton= tk.Button(self, text='Interactive\n Media',
                                         command=lambda: controller.show_frame(AddInteractiveMedia))
-        self.AddWebDocButton= tk.Button(self, text='Web docs',
-                                        command=lambda: controller.show_frame(AddWebDoc))
+        self.AddOnlineMediaButton= tk.Button(self, text='Online Media',
+                                        command=lambda: controller.show_frame(AddOnlineMedia))
         self.AddImagesButton= tk.Button(self, text='Images',
                                         command=lambda: controller.show_frame(AddImages))
 
-        self.AddAudioVideoButton.grid(column=0, row=0)
-        self.AddTextButton.grid(column=0, row=1)
-        self.AddCourseButton.grid(column=0, row=2)
-        self.AddInteractiveMediaButton.grid(column=1, row=0)
-        self.AddWebDocButton.grid(column=1, row=1)
+
+
+        self.AddTextButton.grid(column=0, row=0)
+        self.AddOnlineMediaButton.grid(column=1, row=0)
+        self.AddAudioVideoButton.grid(column=0, row=1)
+        self.AddCourseButton.grid(column=1, row=1)
+        self.AddInteractiveMediaButton.grid(column=0, row=2)
         self.AddImagesButton.grid(column=1, row=2)
 
 
-class AddAudioVideo(tk.Frame):
+class AddText(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
-        self.home = tk.Button(self, text='Home', command=lambda: controller.show_frame(HomePage))
+        mainframe = tk.LabelFrame(self, text='Books/Texts', borderwidth=0)
+        mainframe.grid(column=0, row=0, sticky=tk.N+tk.S+tk.W+tk.E)
+
+        header_frame = tk.LabelFrame(mainframe, text='', borderwidth=0)
+        header_frame.grid(column=0, row=0, columnspan=20,padx=10)
+
+        topleftframe = tk.LabelFrame(mainframe, text="", borderwidth=0)
+        topleftframe.grid(column=0, row=1, padx=10, pady=5)
+
+        topcenterframe = tk.LabelFrame(mainframe, text="", borderwidth=0)
+        topcenterframe.grid(column=1, row=1, pady=5)
+
+        toprightframe = tk.LabelFrame(mainframe, text="", borderwidth=0)
+        toprightframe.grid(column=2, row=1, pady=5)
+
+        bottomframe = tk.LabelFrame(self, text="", borderwidth=0)
+        bottomframe.grid(column=0, row=3, padx=10, sticky=tk.W)
+
+        self.label = tk.Label(header_frame, text='New Text', font=smallheaderfont)
+        self.label.grid(column=0, row=1, pady=5)
+
+        self.title = tk.StringVar()
+        self.author = tk.StringVar()
+        self.year = tk.IntVar()
+        self.pages = tk.IntVar()
+        self.subject = tk.StringVar()
+        self.notes = tk.StringVar()
+
+        self.publisher = tk.StringVar()
+        self.publisher_options = data.list_publishers()
+        self.publisher.set('Choose one:')
+
+        self.language = tk.StringVar()
+        self.language_options = data.list_languages()
+        self.language.set('Choose one:')
+
+        self.new_lang = tk.StringVar()
+        self.new_pub = tk.StringVar()
+
+        self.new_lang_flag = tk.IntVar(self, value=0)
+        self.new_pub_flag = tk.IntVar(self, value=0)
+
+        # Top left frame
+
+        self.title_label=tk.Label(topleftframe, text='Title')
+        self.title_entry=ttk.Entry(topleftframe, width=50, textvariable =self.title)
+
+        self.author_label=tk.Label(topleftframe, text ='Author(s)')
+        self.author_entry = ttk.Entry(topleftframe, width=50, textvariable=self.author)
+
+        self.year_label=tk.Label(topleftframe, text ='Year')
+        self.year_entry = ttk.Entry(topleftframe, width=50, textvariable=self.year)
+
+        self.pages_label=tk.Label(topleftframe, text ='Pages')
+        self.pages_entry = ttk.Entry(topleftframe, width=50, textvariable=self.pages)
+
+        self.title_label.grid(column=0, row=0, pady=2, sticky=tk.W)
+        self.title_entry.grid(column=1, row=0, pady=2)
+
+        self.author_label.grid(column=0, row=1, pady=2, sticky=tk.W)
+        self.author_entry.grid(column=1, row=1, pady=2)
+
+        self.year_label.grid(column=0, row=2, pady=2, sticky=tk.W)
+        self.year_entry.grid(column=1, row=2, pady=2)
+
+        self.pages_label.grid(column=0, row=3,  pady=2, sticky=tk.W)
+        self.pages_entry.grid(column=1, row=3, pady=2)
+
+
+        # Top center frame
+        self.publisher_label = tk.Label(topcenterframe, text='Publisher')
+        self.publisher_entry = tk.OptionMenu(topcenterframe, self.publisher,
+                                                *self.publisher_options)
+        self.publisher_entry.configure(width=20)
+
+        self.add_publisher_entry = ttk.Entry(topcenterframe, textvariable =self.new_pub)
+        self.add_publisher_entry.configure(width=20)
+
+        self.language_label = tk.Label(topcenterframe, text='Language')
+        self.language_entry= tk.OptionMenu(topcenterframe, self.language,
+                                                *self.language_options)
+        self.language_entry.configure(width=20)
+
+        self.add_language_entry=ttk.Entry(topcenterframe, width=20, textvariable =self.new_lang)
+
+
+        self.notes_label = tk.Label(topcenterframe, text='Notes')
+        self.notes_entry = ttk.Entry(topcenterframe, width=50, textvariable =self.notes)
+
+        self.subject_label = tk.Label(topcenterframe, text='Subject')
+        self.subject_entry = ttk.Entry(topcenterframe, width=50, textvariable=self.subject)
+
+
+        self.publisher_label.grid(column=0, row=0)
+        self.publisher_entry.grid(column=1, row=0)
+        self.add_publisher_entry.grid(column=2, row=0)
+
+
+        self.language_label.grid(column=0, row=2)
+        self.language_entry.grid(column=1, row=2)
+        self.add_language_entry.grid(column=2, row=2)
+
+        self.notes_label.grid(column=0, row=3, sticky=tk.W)
+        self.notes_entry.grid(column=1, row=3, columnspan=2, sticky=tk.W)
+
+        self.subject_label.grid(column=0, row=4, sticky=tk.W)
+        self.subject_entry.grid(column=1, row=4, columnspan=2, sticky=tk.W)
+
+        # Top right frame
+
+        self.add_pub_flag = tk.Checkbutton(toprightframe, text='Add new publisher',
+                                           variable=self.new_pub_flag)
+        self.add_lang_flag = tk.Checkbutton(toprightframe, text='Add new language',
+                                            variable=self.new_lang_flag)
+
+        self.add_pub_flag.grid(column=0, row=0, sticky=tk.E)
+        self.add_lang_flag.grid(column=0, row=1, sticky=tk.E)
+
+        self.addtextresource = tk.Button(toprightframe, text='Save', command=lambda: self.new_textresource())
+        self.addtextresource.config(width=12, cursor='hand2')
+        self.addtextresource.grid(column=0, row=2, padx=10, pady=12)
+
+
+        # Bottom frame
+
+        self.scrollresources = tk.Scrollbar(bottomframe)
+        self.scrollresources.grid(column=1,row=1, sticky=tk.N+tk.S+tk.W)
+
+        self.resource_list = ttk.Treeview(bottomframe,
+                                         columns=('Title', 'Author','Year',
+                                                  'Pages','Publisher',
+                                                  'Language', 'Notes'))
+
+        self.scrollresources.configure(orient="vertical", command=self.resource_list.yview)
+        self.resource_list.configure(yscrollcommand=self.scrollresources.set)
+
+        self.resource_list['columns'] = ('Title', 'Author', 'Year', 'Pages',
+                          'Publisher', 'Language', 'Notes')
+        self.resource_list.column('#0', width=1)
+        self.resource_list.column('0', width=200, anchor='w')
+        self.resource_list.column('1', width=150, anchor='w')
+        self.resource_list.column('2', width=75, anchor='w')
+        self.resource_list.column('3', width=60, anchor='w')
+        self.resource_list.column('4', width=100, anchor='w')
+        self.resource_list.column('5', width=100, anchor='w')
+        self.resource_list.column('6', width=200, anchor='w')
+        self.resource_list.grid(column=0, row=1)
+
+        self.resource_list.heading('0', text='Title', anchor='w')
+        self.resource_list.heading('1', text='Author(s)', anchor='w')
+        self.resource_list.heading('2', text='Year', anchor='w')
+        self.resource_list.heading('3', text='Pages', anchor='w')
+        self.resource_list.heading('4', text='Publisher', anchor='w')
+        self.resource_list.heading('5', text='Language', anchor='w')
+        self.resource_list.heading('6', text='Notes', anchor='w')
+
+        self.treeview = self.resource_list
+        self.list_resources()
+        self.update_entry_widgets()
+
+        self.home=tk.Button(bottomframe, text='Home', command=lambda: controller.show_frame(HomePage))
         self.home.config(width=15, cursor='hand2')
         self.home.grid(column=0, row=2, padx=10, sticky=tk.W)
 
+        self.searchresource = tk.Button(bottomframe, text='Search Resources',
+                                     command=lambda: controller.show_frame(SearchResource))
+        self.searchresource.config(width=15, cursor='hand2')
+        self.searchresource.grid(column=0, row=3, padx=10, sticky=tk.W)
 
-class AddWebDoc(tk.Frame):
+    def list_resources(self):
+        for i in self.resource_list.get_children():
+            self.resource_list.delete(i)
+        resources = data.list_text_resources()
+        for item in resources:
+            self.treeview.insert('', 'end', values=item)
+
+    def update_entry_widgets(self):
+
+        self.title_entry.delete(0, 'end')
+        self.author_entry.delete(0, 'end')
+        self.year_entry.delete(0, 'end')
+        self.pages_entry.delete(0, 'end')
+        self.subject_entry.delete(0, 'end')
+        self.notes_entry.delete(0, 'end')
+        self.add_language_entry.delete(0, 'end')
+        self.add_publisher_entry.delete(0, 'end')
+        self.new_lang_flag.set(0)
+        self.new_pub_flag.set(0)
+        self.publisher.set('Choose publisher:')
+        self.language.set('Choose language:')
+
+
+    def new_textresource(self):
+
+        if self.new_pub_flag.get() == 1:
+            self.thepublisher = self.new_pub.get()
+        else:
+            self.thepublisher = self.publisher.get()
+
+        if self.new_lang_flag.get() == 1:
+            self.thelanguage = self.new_lang.get()
+        else:
+            self.thelanguage = self.language.get()
+
+# add_text(title, author, year, pages, publisher, language, subject, notes)
+# c.execute('''INSERT OR IGNORE INTO resource(title, year, pages, publisherID, languageID, mediaID, notes)
+        data.add_text(self.title.get(), self.author.get(), self.year.get(),
+                          self.pages.get(), self.thepublisher,
+                          self.thelanguage, self.subject.get(), self.notes.get())
+
+        self.list_resources()
+        self.update_entry_widgets()
+
+
+
+
+
+class AddOnlineMedia(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
-        self.home = tk.Button(self, text='Home', command=lambda: controller.show_frame(HomePage))
+        self.author = tk.StringVar()
+        self.title = tk.StringVar()
+        self.date = tk.StringVar()
+        self.host = tk.StringVar()
+        self.access_date = tk.StringVar()
+        self.url = tk.StringVar()
+        self.subject = tk.StringVar()
+        self.comment = tk.StringVar()
+        self.audio_video = tk.IntVar()
+        self.audio_video.set('?')
+
+        self.mainframe = tk.LabelFrame(self, text='', borderwidth=4)
+        self.mainframe.grid(column=0, row=1, sticky=tk.N+tk.S+tk.W+tk.E)
+
+        # Title Frame
+        self.title = tk.Label(self.mainframe, text='Online Media')
+        self.title.grid(column=0, row=0,  columnspan=2 )
+        #Enter resource information
+
+        # Top left frame
+        self.topleft = tk.LabelFrame(self.mainframe, text="", borderwidth=3)
+        self.topleft.grid(column=0, row=1,sticky=tk.W+tk.E)
+
+        self.author_label = tk.Label(self.topleft, text='Author')
+        self.author_entry = tk.Entry(self.topleft,  width=50,textvariable = self.author)
+
+        self.title_label= tk.Label(self.topleft, text='Title')
+        self.title_entry = tk.Entry(self.topleft,  width=50,textvariable = self.title)
+
+        self.date_label = tk.Label(self.topleft, text='Date')
+        self.date_entry = tk.Entry(self.topleft,  width=50, textvariable = self.date)
+
+        self.subject_label = tk.Label(self.topleft, text='Subject')
+        self.subject_entry = tk.Entry(self.topleft,  width=50, textvariable = self.subject)
+
+        self.author_label.grid(column=0, row=0)
+        self.author_entry.grid(column=1, row=0)
+        self.title_label.grid(column=0, row=1)
+        self.title_entry.grid(column=1, row=1)
+        self.date_label.grid(column=0, row=2)
+        self.date_entry.grid(column=1, row=2)
+        self.subject_label.grid(column=0, row=3)
+        self.subject_entry.grid(column=1, row=3)
+
+        # Top right frame
+        self.topright = tk.LabelFrame(self.mainframe, text="", borderwidth=3)
+        self.topright.grid(column=1, row=1, sticky=tk.W + tk.E)
+
+        self.host_label = tk.Label(self.topright, text='Domain')
+        self.host_entry = tk.Entry(self.topright, width=50, textvariable=self.host)
+
+
+        self.access_date_label = tk.Label(self.topright, text='Access date')
+        self.access_date_entry= tk.Entry(self.topright, width=50, textvariable=self.access_date)
+
+        self.url_label = tk.Label(self.topright, text='URL')
+        self.url_entry= tk.Entry(self.topright, width=50, textvariable=self.url)
+
+        self.comment_label= tk.Label(self.topright, text='Notes')
+        self.comment_entry= tk.Entry(self.topright, width=50, textvariable= self.comment)
+
+        self.host_label.grid(column=0, row=0)
+        self.host_entry.grid(column=1, row=0)
+        self.url_label.grid(column=0, row=1)
+        self.url_entry.grid(column=1, row=1)
+        self.access_date_label.grid(column=0, row=2)
+        self.access_date_entry.grid(column=1, row=2)
+        self.comment_label.grid(column=0, row=3)
+        self.comment_entry.grid(column=1, row=3)
+
+        # top center frame
+        self.center_leftframe = tk.LabelFrame(self.mainframe,text='', borderwidth=3)
+        self.center_leftframe.grid(column=0, row=2)
+
+        self.media_audio =  tk.Radiobutton(self.center_leftframe, text='Audio', variable=self.audio_video)
+        self.media_audio.grid(column=1, row=0)
+
+        self.media_video = tk.Radiobutton(self.center_leftframe, text='Video', variable=self.audio_video)
+        self.media_video.grid(column=2, row=0)
+
+        self.media_other = tk.Radiobutton(self.center_leftframe, text='Other', variable=self.audio_video)
+        self.media_other.grid(column=3, row=0)
+
+        # Center right frame
+        self.center_rightframe = tk.LabelFrame(self.mainframe,text='', borderwidth=3)
+        self.center_rightframe.grid(column=1, row=2, columnspan=2, sticky=tk.E)
+
+        self.addwebdocbutton = ttk.Button(self.center_rightframe, text='Save', command=self.saveonlinemedia)
+        self.addwebdocbutton.grid(column=4, row=0)
+
+        # bottom center frame
+        self.bottom_middleframe = tk.LabelFrame(self.mainframe,text='', borderwidth=3)
+        self.bottom_middleframe.grid(column=0, row=3,  columnspan=2,  sticky=tk.W + tk.E)
+
+        self.onlineresources = tk.Label(self.bottom_middleframe, text='Online Resources')
+        self.onlineresources.grid(column=0, row=0)
+
+        self.scrollwebdocs = tk.Scrollbar(self.bottom_middleframe)
+        self.scrollwebdocs.grid(column=1, row=1, sticky=tk.N + tk.S + tk.W)
+
+        self.webdocs_list = ttk.Treeview(self.bottom_middleframe,
+                                         columns=('Title', 'Author', 'Year',
+                                                  'Domain', 'Access date', 'URL'))
+
+        self.scrollwebdocs.configure(orient="vertical", command=self.webdocs_list.yview)
+        self.webdocs_list.configure(yscrollcommand=self.scrollwebdocs.set)
+
+        self.webdocs_list['columns'] = ('Title', 'Author', 'Year',
+                                        'Host', 'Access date', 'URL')
+        self.webdocs_list.column('#0', width=1)
+        self.webdocs_list.column('0', width=150, anchor='w')
+        self.webdocs_list.column('1', width=100, anchor='w')
+        self.webdocs_list.column('2', width=75, anchor='w')
+        self.webdocs_list.column('3', width=75, anchor='w')
+        self.webdocs_list.column('4', width=75, anchor='w')
+        self.webdocs_list.column('5', width=250, anchor='w')
+        self.webdocs_list.grid(column=0, row=1)
+
+        self.webdocs_list.heading('0', text='Title', anchor='w')
+        self.webdocs_list.heading('1', text='Author', anchor='w')
+        self.webdocs_list.heading('2', text='Year', anchor='w')
+        self.webdocs_list.heading('3', text='Host', anchor='w')
+        self.webdocs_list.heading('4', text='Access date', anchor='w')
+        self.webdocs_list.heading('5', text='URL', anchor='w')
+
+        self.treeview = self.webdocs_list
+
+        # Bottom left frame
+        self.bottomleft = tk.LabelFrame(self.mainframe, text="", borderwidth=3)
+        self.bottomleft.grid(column=0, row=4, sticky=tk.W + tk.E)
+
+        self.home = tk.Button(self.bottomleft, text='Home', command=lambda: controller.show_frame(HomePage))
         self.home.config(width=15, cursor='hand2')
         self.home.grid(column=0, row=2, padx=10, sticky=tk.W)
+
+        # Bottom right frame
+        self.bottomright = tk.LabelFrame(self.mainframe, text="", borderwidth=3)
+        self.bottomright.grid(column=1, row=5, sticky=tk.W + tk.E)
+
+    def saveonlinemedia(self):
+        data.add_online_media(self.title.get(), self.author.get(), self.date.get(), self.subject.get(),
+                              self.host.get(), self.url.get(), self.access_date.get(), self.comments.get(),
+                              self.audio_video.get())
+        pass
+
+
+
 
 
 class AddInteractiveMedia(tk.Frame):
@@ -142,6 +495,14 @@ class AddInteractiveMedia(tk.Frame):
         self.home.grid(column=0, row=2, padx=10, sticky=tk.W)
 
 
+
+class AddAudioVideo(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+
+        self.home = tk.Button(self, text='Home', command=lambda: controller.show_frame(HomePage))
+        self.home.config(width=15, cursor='hand2')
+        self.home.grid(column=0, row=2, padx=10, sticky=tk.W)
 
 class AddImages(tk.Frame):
     def __init__(self, parent, controller):
@@ -164,227 +525,6 @@ class AddCourse(tk.Frame):
 
 
 
-class AddText(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-
-        header_frame = tk.LabelFrame(self, text='', borderwidth=0)
-        header_frame.grid(column=0, row=0, columnspan=20,padx=10)
-
-        topframe = tk.LabelFrame(self, text="", borderwidth=0)
-        topframe.grid(column=0, row=1, padx=10, sticky=tk.W)
-
-        bottomframe = tk.LabelFrame(self, text="", borderwidth=0)
-        bottomframe.grid(column=0, row=3, padx=10, sticky=tk.W)
-
-        self.label = tk.Label(header_frame, text='New Resource', font=headerfont)
-        self.label.grid(column=0, row=1)
-
-        self.title = tk.StringVar()
-        self.author = tk.StringVar()
-        self.year = tk.IntVar()
-        self.pages = tk.IntVar()
-        self.abstract = tk.StringVar()
-        self.subject = tk.StringVar()
-        
-        self.publisher = tk.StringVar()
-        self.publisher_options = data.list_publishers()
-        self.publisher.set('Choose publisher:')
-        
-        self.language = tk.StringVar()
-        self.language_options = data.list_languages()
-        self.language.set('Choose language:')
-        
-        self.medium = tk.StringVar()
-        self.medium_options = data.list_resource_medium()
-        self.medium.set('Choose format:')
-
-        self.new_lang = tk.StringVar()
-        self.new_pub = tk.StringVar()
-        self.new_format =tk.StringVar()
-
-        self.new_lang_flag = tk.IntVar(self, value=0)
-        self.new_pub_flag = tk.IntVar(self, value=0)
-        self.new_format_flag = tk.IntVar(self, value=0)
-
-        self.title_label=tk.Label(topframe, text='Title', font=labelsfont)
-        self.author_label=tk.Label(topframe, text ='Author(s)', font=labelsfont)
-        self.year_label=tk.Label(topframe, text ='Year', font=labelsfont)
-        self.pages_label=tk.Label(topframe, text ='Pages', font=labelsfont)
-        self.publisher_label = tk.Label(topframe, text='Publisher', font=labelsfont)
-        self.lan_label=tk.Label(topframe, text='Language',font=labelsfont)
-        self.media_label=tk.Label(topframe, text='Fomat', font=labelsfont)
-        self.subject_label = tk.Label(topframe, text='Subject', font=labelsfont)
-        self.abstract_label=tk.Label(topframe, text='Abstract', font=labelsfont)
-        self.add_publisher_label = tk.Label(topframe, text='New Publisher', font=smalllabelsfont)
-        self.add_language_label = tk.Label(topframe, text='New Language', font=smalllabelsfont)
-        self.add_format_label =  tk.Label(topframe, text='New Format', font=smalllabelsfont)
-
-        self.title_entry=ttk.Entry(topframe, width=50, textvariable =self.title)
-        self.author_entry=ttk.Entry(topframe, width=50, textvariable=self.author)
-        self.year_entry=ttk.Entry(topframe, width=50, textvariable=self.year)
-        self.pages_entry=ttk.Entry(topframe, width=50, textvariable=self.pages)
-        self.publisher_entry = tk.OptionMenu(topframe, self.publisher, 
-                                                *self.publisher_options)
-        self.publisher_entry.configure(width=43)  
-        self.add_publisher_entry = ttk.Entry(topframe, width=50, 
-                                             textvariable =self.new_pub)
-        self.language_entry= tk.OptionMenu(topframe, self.language, 
-                                                *self.language_options)
-        self.language_entry.configure(width=43)                
-        self.add_language_entry=ttk.Entry(topframe, width=50, textvariable =self.new_lang)
-
-        self.media_menu=tk.OptionMenu(topframe, self.medium, 
-                                                *self.medium_options)
-        self.media_menu.configure(width=43)                
-
-        self.add_format_entry =ttk.Entry(topframe, width=53, textvariable =self.new_format)
-        self.subject_entry = ttk.Entry(topframe, width = 53, textvariable=self.subject)
-        self.abstract_entry=ttk.Entry(topframe, width=53, textvariable=self.abstract)
-
-        self.add_pub_flag = tk.Checkbutton(topframe, text='Check if adding new publisher', 
-                                           variable=self.new_pub_flag)
-        self.add_lang_flag = tk.Checkbutton(topframe, text='Check if adding new language', 
-                                            variable=self.new_lang_flag)
-        self.add_format_flag = tk.Checkbutton(topframe, text='Check if adding new format', 
-                                              variable=self.new_format_flag)
-
-
-        self.title_label.grid(column=0, row=1,  padx=5, sticky=tk.W)
-        self.title_entry.grid(column=1, row=1,  padx=5,sticky=tk.W)
-        self.author_label.grid(column=2, row=1, padx=10, sticky=tk.W)
-        self.author_entry.grid(column=3, row=1,padx=5, sticky=tk.W)
-        self.subject_label.grid(column=4, row=1,  padx=10, sticky=tk.W)
-        self.subject_entry.grid(column=5, row=1, padx=6,sticky=tk.E)
-
-        self.year_label.grid(column=0, row=2, padx=5, sticky=tk.W)
-        self.year_entry.grid(column=1, row=2,padx=5, sticky=tk.W)
-        self.pages_label.grid(column=2, row=2, padx=10, sticky=tk.W)
-        self.pages_entry.grid(column=3, row=2,padx=5, sticky=tk.W)
-        self.abstract_label.grid(column=4, row=2, padx=10, sticky=tk.W)
-        self.abstract_entry.grid(column=5, row=2, padx=5, sticky=tk.E)
-
-        self.publisher_label.grid(column=0, row=3,  padx=5, sticky=tk.W)
-        self.publisher_entry.grid(column=1, row=3, padx=5, sticky=tk.W)
-
-        self.add_publisher_label.grid(column=0, row=4,  padx=5, sticky=tk.W)
-        self.add_publisher_entry.grid(column=1, row=4,  padx=5, sticky=tk.W)
-        
-        self.lan_label.grid(column=2, row=3, padx=10, sticky=tk.W)
-        self.language_entry.grid(column=3, row=3, padx=5, sticky=tk.W)
-
-        self.add_language_label.grid(column=2, row=4, padx=10, sticky=tk.W)
-        self.add_language_entry.grid(column=3, row=4, padx=5, sticky=tk.W)
-        self.media_label.grid(column=4, row=3, padx=10,sticky=tk.W)
-        self.media_menu.grid(column=5, row=3, padx=5, sticky=tk.E)
-
-        self.add_format_label.grid(column=4, row=4, padx=10,sticky=tk.W)
-        self.add_format_entry.grid(column=5, row=4, padx=5, sticky=tk.E)
-
-        self.add_pub_flag.grid(column=1, row=5,  sticky=tk.E)
-        self.add_lang_flag.grid(column=3, row=5,sticky=tk.E)
-        self.add_format_flag.grid(column=5, row=5,sticky=tk.E)
-
-        self.scrollresources = tk.Scrollbar(bottomframe)
-        self.scrollresources.grid(column=1,row=1, sticky=tk.N+tk.S+tk.W)
-
-        self.resource_list = ttk.Treeview(bottomframe,
-                                         columns=('Title', 'Author','Year', 
-                                                  'Pages','Publisher', 
-                                                  'Language', 'Format', 
-                                                  'Abstract'))
-
-        self.scrollresources.configure(orient="vertical", command=self.resource_list.yview)
-        self.resource_list.configure(yscrollcommand=self.scrollresources.set)
-
-        self.resource_list['columns'] = ('Title', 'Author', 'Year', 'Pages', 
-                          'Publisher', 'Language', 'Format', 'Abstract')
-        self.resource_list.column('#0', width=1)
-        self.resource_list.column('0', width=250, anchor='w')
-        self.resource_list.column('1', width=150, anchor='w')
-        self.resource_list.column('2', width=75, anchor='w')
-        self.resource_list.column('3', width=60, anchor='w')
-        self.resource_list.column('4', width=100, anchor='w')
-        self.resource_list.column('5', width=100, anchor='w')
-        self.resource_list.column('6', width=90, anchor='w')
-        self.resource_list.column('7', width=400, anchor='w')
-        self.resource_list.grid(column=0, row=1)
-
-        self.resource_list.heading('0', text='Title', anchor='w')
-        self.resource_list.heading('1', text='Author(s)', anchor='w')
-        self.resource_list.heading('2', text='Year', anchor='w')
-        self.resource_list.heading('3', text='Pages', anchor='w')
-        self.resource_list.heading('4', text='Publisher', anchor='w')
-        self.resource_list.heading('5', text='Language', anchor='w')
-        self.resource_list.heading('6', text='Format', anchor='w')
-        self.resource_list.heading('7', text='Abstract', anchor='w')
-
-        self.treeview = self.resource_list       
-        self.list_resources()
-        self.update_entry_widgets()
-
-        self.addresource=tk.Button(bottomframe, text='Save', command=lambda:self.new_resource())
-        self.addresource.config(width=12, cursor='hand2')
-        self.addresource.grid(column=0, row=0, padx=10, sticky=tk.E)
-
-        self.home=tk.Button(bottomframe, text='Home', command=lambda: controller.show_frame(HomePage))
-        self.home.config(width=15, cursor='hand2')
-        self.home.grid(column=0, row=2, padx=10, sticky=tk.W)
-
-        self.searchresource = tk.Button(bottomframe, text='Search Resources',
-                                     command=lambda: controller.show_frame(SearchResource))
-        self.searchresource.config(width=15, cursor='hand2')
-        self.searchresource.grid(column=0, row=3, padx=10, sticky=tk.W)
-
-    def list_resources(self):
-        for i in self.resource_list.get_children():
-            self.resource_list.delete(i)
-        resources = data.list_resources()
-        for item in resources:
-            self.treeview.insert('', 'end', values=item)
-            
-    def update_entry_widgets(self):
-       
-        self.title_entry.delete(0, 'end')
-        self.author_entry.delete(0, 'end')
-        self.year_entry.delete(0, 'end')
-        self.pages_entry.delete(0, 'end')
-        self.subject_entry.delete(0, 'end')
-        self.abstract_entry.delete(0, 'end')
-        self.add_language_entry.delete(0, 'end')
-        self.add_publisher_entry.delete(0, 'end')
-        self.add_format_entry.delete(0, 'end')
-        self.new_lang_flag.set(0)
-        self.new_pub_flag.set(0)
-        self.new_format_flag.set(0)
-        self.publisher.set('Choose publisher:')
-        self.language.set('Choose language:')
-        self.medium.set('Choose format:')
-        
-    def new_resource(self):
-        
-        if self.new_pub_flag.get() == 1:
-            self.thepublisher = self.new_pub.get()
-        else:
-            self.thepublisher = self.publisher.get()
-
-        if self.new_lang_flag.get() == 1:
-            self.thelanguage = self.new_lang.get()
-        else:
-            self.thelanguage = self.language.get()
-
-        if  self.new_format_flag.get() == 1:
-            self.theformat = self.new_format.get()
-        else:
-            self.theformat = self.medium.get()
-
-        data.add_resource(self.title.get(), self.author.get(), self.year.get(), 
-                          self.pages.get(), self.thepublisher,
-                          self.thelanguage, self.theformat, self.subject.get(), 
-                          self.abstract.get())
-
-        self.list_resources()
-        self.update_entry_widgets()
 
 
 
@@ -445,20 +585,20 @@ class LinkResources(tk.Frame):
         self.project_list.heading('3', text='Start date', anchor='w')
         self.project_list.heading('4', text='End date', anchor='w')
 
-        self.project_list.column('0', width=300, anchor='w')
-        self.project_list.column('1',  anchor='w')
-        self.project_list.column('2', width=300, anchor='w')
-        self.project_list.column('3', width=113, anchor='w')
-        self.project_list.column('4', width=113, anchor='w')
+        self.project_list.column('0', width=200, anchor='w')
+        self.project_list.column('1',  width=100, anchor='w')
+        self.project_list.column('2', width=200, anchor='w')
+        self.project_list.column('3', width=75, anchor='w')
+        self.project_list.column('4', width=75, anchor='w')
         self.treeview_projects = self.project_list
         self.treeview_projects.bind('<ButtonRelease-1>', self.select_project)
 
         # MIDDLE FRAME
         self.middleframe = tk.LabelFrame(self.mainframe, text='', borderwidth=0)
-        self.middleframe.grid(columnspan=40, pady=10, column=0, row=3)#, sticky=tk.W + tk.E)
+        self.middleframe.grid(columnspan=40, pady=10, column=0, row=3)
 
         self.resourceresults_label = ttk.Label(self.middleframe, text='Available Resources', font=smallheaderfont)
-        self.resourceresults_label.grid(columnspan=4, column=2, row=0, pady=5)#, sticky=tk.W + tk.E) #padx=375,
+        self.resourceresults_label.grid(columnspan=4, column=2, row=0, pady=5)
 
         # BOTTOM LEFT FRAME SORT FRAME
 
@@ -516,7 +656,7 @@ class LinkResources(tk.Frame):
         self.scollresources.configure(orient="vertical", command=self.resource_list.yview)
         self.resource_list.configure(yscrollcommand=self.scollresources.set)
 
-        self.resource_list['columns'] = ('Title', 'Author', 'Year', 'Pages', 'Language', 'Format', 'Abstract')
+        self.resource_list['columns'] = ('Title', 'Author', 'Year', 'Pages', 'Language', 'Format')
         self.resource_list.column('#0', width=1)
         self.resource_list.column('0', width=250, anchor='w')
         self.resource_list.column('1', width=150, anchor='w')
@@ -524,7 +664,6 @@ class LinkResources(tk.Frame):
         self.resource_list.column('3', width=60, anchor='w')
         self.resource_list.column('4', width=100, anchor='w')
         self.resource_list.column('5', width=100, anchor='w')
-        self.resource_list.column('6', width=300, anchor='w')
         self.resource_list.grid(column=0, row=0, sticky=tk.W + tk.N + tk.E)
 
         self.resource_list.heading('0', text='Title', anchor='w')
@@ -533,7 +672,6 @@ class LinkResources(tk.Frame):
         self.resource_list.heading('3', text='Pages', anchor='w')
         self.resource_list.heading('4', text='Language', anchor='w')
         self.resource_list.heading('5', text='Format', anchor='w')
-        self.resource_list.heading('6', text='Abstract', anchor='w')
         self.treeview_resources = self.resource_list
         self.treeview_resources.bind('<ButtonRelease-1>', self.select_resources)
 
@@ -590,36 +728,6 @@ class LinkResources(tk.Frame):
 
         print("Added item(s)")
 
-    def limit_resources(self):
-
-        if self.media_type.get() == 1:
-            media_type = ''
-        elif self.media_type.get() == 2:
-            media_type = ''
-        elif self.media_type.get() == 3:
-            media_type = ''
-        elif self.media_type.get() == 4:
-            media_type = ''
-        elif self.media_type.get() == 5:
-            media_type = ''
-
-
-        data.sort_resources_by_type(media_type )
-        pass
-
-
-
-
-        """
-        for item in resource_ids:
-            data.link_to_resources(self.project_id, item)
-            print('Entered:', item)
-        """
-
-
-
-
-
 
     def search_projects(self):
         for i in self.project_list.get_children():
@@ -628,7 +736,6 @@ class LinkResources(tk.Frame):
         for item in projects:
             self.treeview_projects.insert('', 'end', values=item)
         self.titlebox.delete(0, 'end')
-
 
 
     def search_resources(self):
@@ -641,73 +748,111 @@ class LinkResources(tk.Frame):
             self.treeview_resources.insert('', 'end', values=item)
         self.subjectbox.delete(0, 'end')
 
+    def limit_resources(self):
+        for i in self.resource_list.get_children():
+            self.resource_list.delete(i)
+
+        resources_sorted = data.resources_by_type(self.media_type.get())
+
+        for item in resources_sorted:
+            self.treeview_resources.insert('', 'end', values=item)
+        self.subjectbox.delete(0, 'end')
+
 
 
 class Projects(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
-        self.label = tk.Label(self, text='Project Details', font=labelsfont)
-        self.label.grid(column=0, row=0, sticky=tk.W+tk.E)
 
-        self.topframe = tk.LabelFrame(self, text='')
-        self.topframe.config(bd=0)
-        self.topframe.grid(column=0, row=1, sticky=tk.W+tk.E)
+        main_frame = tk.LabelFrame(self, text='',borderwidth=4)
+        main_frame.grid(column=0, row=0, columnspan=10, sticky=tk.W+tk.E+tk.N+tk.S)
 
-        self.bottomframe = tk.LabelFrame(self, text='', borderwidth=0)
-        self.bottomframe.config(bd=0)
-        self.bottomframe.grid(column=0, row=2)
+        self.label = tk.Label(main_frame, text='Project Details', font=labelsfont)
+        self.label.grid(column=0, row=0, columnspan=10)
+
+        # FRAMES
+
+        self.topleftframe = tk.LabelFrame(main_frame, text='', borderwidth=4)
+        self.topleftframe.grid(column=0, row=1)
+
+        self.toprightframe = tk.LabelFrame(main_frame, text='', borderwidth=4)
+        self.toprightframe.grid(column=1, row=1)
+
+        self.bottomframe = tk.LabelFrame(self, text='', borderwidth=4)
+        self.bottomframe.grid(column=0, row=5, columnspan=4)
+
+        # VARIABLES
 
         self.project_name = tk.StringVar()
         self.project_type = tk.StringVar()
         self.description = tk.StringVar()
         self.start_date = tk.StringVar()
         self.end_date = tk.StringVar()
-        self.link = tk.IntVar(self, value=0)
-        self.add_category = tk.StringVar()
+        self.new_type = tk.IntVar(self, value=0)
+        self.add_projecttype = tk.StringVar()
         self.choices = tk.StringVar()
         self.project_category_options = data.list_project_category()
         self.choices.set('Choose project type:')
 
-        self.title_label = tk.Label(self.topframe, text='Project Name', font=labelsfont)
-        self.project_type_label = tk.Label(self.topframe, text='Project Type', font=labelsfont)
-        self.description_label = tk.Label(self.topframe, text='Description', font=labelsfont)
-        self.start_label = tk.Label(self.topframe, text='Start Date', font=labelsfont)
-        self.finish_label = tk.Label(self.topframe, text='End Date', font=labelsfont)
-        self.new_category_label = tk.Label(self.topframe, text='New Project Type', font=labelsfont)
+        # Top Left frame
 
-        self.project_name_entry = ttk.Entry(self.topframe, width=60, textvariable=self.project_name)
-        self.project_type_entry = tk.OptionMenu(self.topframe, self.choices, *self.project_category_options)
-        self.project_type_entry.configure(width=54)
-        self.description_entry = ttk.Entry(self.topframe, width=60, textvariable=self.description)
-        self.start_entry = ttk.Entry(self.topframe, width=60, textvariable=self.start_date)
-        self.end_entry = ttk.Entry(self.topframe, width=60, textvariable=self.end_date)
-        self.new_category = ttk.Entry(self.topframe, width=60, textvariable=self.add_category)
+        self.project_name_label = tk.Label(self.topleftframe, text='Project Name')
+        self.project_name_entry = ttk.Entry(self.topleftframe, width=60, textvariable=self.project_name)
 
-        self.title_label.grid(column=0, row=1, padx=10, sticky=tk.W)
-        self.project_name_entry.grid(column=1, row=1, padx=10, sticky=tk.W)
-        self.description_label.grid(column=2, row=1, padx=10, sticky=tk.W)
-        self.description_entry.grid(column=3, row=1, padx=10, sticky=tk.W)
-        self.start_label.grid(column=0, row=3, padx=10, sticky=tk.W)
-        self.start_entry.grid(column=1, row=3, padx=10, sticky=tk.W)
-        self.finish_label.grid(column=2, row=3, padx=10, sticky=tk.W)
-        self.end_entry.grid(column=3, row=3, padx=10, sticky=tk.W)
+        self.description_label = tk.Label(self.topleftframe, text='Description')
+        self.description_entry = ttk.Entry(self.topleftframe, width=60, textvariable=self.description)
 
-        self.project_type_label.grid(column=0, row=4, padx=10, sticky=tk.W)
-        self.project_type_entry.grid(column=1, row=4, padx=8, sticky=tk.E)
-        self.new_category_label.grid(column=2, row=4, padx=10, sticky=tk.W)
-        self.new_category.grid(column=3, row=4, padx=10, sticky=tk.W)
+        self.project_type_label = tk.Label(self.topleftframe, text='Project Type')
+        self.project_type_entry = tk.OptionMenu(self.topleftframe, self.choices, *self.project_category_options)
+        self.project_type_entry.configure(width=20)
 
-        self.add_project = tk.Button(self.topframe, text='Add Project', command=lambda: self.save_project())
-        self.add_project.grid(column=1, row=6, padx=10, sticky=tk.E)
+        self.new_projecttype_label = tk.Label(self.topleftframe, text='New Project Type')
+        self.new_projecttype = ttk.Entry(self.topleftframe, width=60, textvariable=self.add_projecttype)
 
-        self.new_cat_flag = tk.Checkbutton(self.topframe, text="Check to add new project type", variable=self.link)
-        self.new_cat_flag.grid(column=3, row=6, padx=6,sticky=tk.W)
+        self.project_name_label.grid(column=0, row=1, sticky=tk.W)
+        self.project_name_entry.grid(column=1, row=1, columnspan=3, sticky=tk.W)
+
+        self.description_label.grid(column=0, row=2, sticky=tk.W)
+        self.description_entry.grid(column=1, row=2,  columnspan=3, sticky=tk.W)
+
+        self.project_type_label.grid(column=0, row=4, sticky=tk.W)
+        self.project_type_entry.grid(column=1, row=4, sticky=tk.W)
+        self.new_projecttype_label.grid(column=0, row=5)
+        self.new_projecttype.grid(column=1, row=5, columnspan=3,)
+
+        self.new_type_flag = tk.Checkbutton(self.topleftframe, text="Add new project type", variable=self.new_type)
+        self.new_type_flag.grid(column=2, row=4, padx=6, sticky=tk.W)
+
+
+        # Top right frame
+        self.start_label = tk.Label(self.toprightframe, text='Start Date')
+        self.start_entry = ttk.Entry(self.toprightframe, width=50, textvariable=self.start_date)
+
+        self.finish_label = tk.Label(self.toprightframe, text='End Date')
+        self.finish_entry = ttk.Entry(self.toprightframe, width=50, textvariable=self.end_date)
+
+        self.start_label.grid(column=0, row=1, sticky=tk.W)
+        self.start_entry.grid(column=1, row=1,  sticky=tk.W)
+        self.finish_label.grid(column=0, row=2, sticky=tk.W)
+        self.finish_entry.grid(column=1, row=2, sticky=tk.W)
+
+        self.add_project = tk.Button(self.toprightframe, text='Add Project', command=lambda: self.save_project())
+        self.add_project.grid(column=1, row=6, padx=10,pady=12, sticky=tk.E)
+
+        # Bottom Frame
+
+        self.scollprojects = tk.Scrollbar(self.bottomframe)
+        self.scollprojects.grid(column=1, row=0, sticky=tk.N + tk.S)
 
         self.project_list = ttk.Treeview(self.bottomframe, columns=('Name', 'Type','Description', 'Start date', 'End date'))
+
+        self.scollprojects.configure(orient="vertical", command=self.project_list.yview)
+        self.project_list.configure(yscrollcommand=self.scollprojects.set)
+
         self.project_list['columns'] = ('Name', 'Type','Description', 'Start date', 'End date')
         self.project_list.column('#0', width=5)
-        self.project_list.grid(column=0, row=0, padx=10)
+        self.project_list.grid(column=0, row=0,sticky=tk.E)
 
         self.project_list.heading('0',  text='Name', anchor='w')
         self.project_list.heading('1',text='Type', anchor='w')
@@ -715,12 +860,13 @@ class Projects(tk.Frame):
         self.project_list.heading('3',text='Start date', anchor='w')
         self.project_list.heading('4', text='End date', anchor='w')
 
-        self.project_list.column('0', anchor='w')
-        self.project_list.column('1', anchor='w' )
-        self.project_list.column('2', anchor='w')
-        self.project_list.column('3', anchor='w')
-        self.project_list.column('4', anchor='w')
+        self.project_list.column('0', width=250, anchor='w')
+        self.project_list.column('1', width=150, anchor='w' )
+        self.project_list.column('2', width=250, anchor='w')
+        self.project_list.column('3', width=100, anchor='w')
+        self.project_list.column('4', width=100,anchor='w')
         self.treeview = self.project_list
+
 
         self.home = tk.Button(self.bottomframe, text='Home', command=lambda: controller.show_frame(HomePage))
         self.home.config(width=10)
@@ -735,6 +881,7 @@ class Projects(tk.Frame):
         for item in projects:
             self.treeview.insert('', 'end', values=item)
 
+
     def link_to_resource(self):
         # will link project to resources:self.controller.show_frame(LinkResources)
         pass
@@ -743,17 +890,17 @@ class Projects(tk.Frame):
         self.project_name_entry.delete(0, 'end')
         self.description_entry.delete(0, 'end')
         self.start_entry.delete(0, 'end')
-        self.end_entry.delete(0, 'end')
-        self.new_category.delete(0, 'end')
-        self.link.set(0)
+        self.finish_entry.delete(0, 'end')
+        self.new_projecttype.delete(0, 'end')
+        self.new_type.set(0)
         self.choices.set('Choose project type:')
         self.project_category_options = data.list_project_category()
 
-    def save_project(self):
-        """ Adds project to SQL database """
 
-        if self.link.get() == 1:
-            self.category = self.new_category.get()
+    def save_project(self):
+
+        if self.new_type.get() == 1:
+            self.category = self.add_projecttype.get()
         else:
             self.category = self.choices.get()
 
@@ -765,6 +912,7 @@ class Projects(tk.Frame):
         self.update_widgets()
 
 
+
 class SearchResource(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -773,7 +921,7 @@ class SearchResource(tk.Frame):
         self.resource_author = tk.StringVar()
         self.resource_subject = tk.StringVar()
 
-        self.searchframe = tk.LabelFrame(self, text='Search parameters', borderwidth=0, font=headerfont)
+        self.searchframe = tk.LabelFrame(self, text='Search parameters', borderwidth=0)
         self.searchframe.grid(column=0, row=0)
 
         self.searchbar = tk.LabelFrame(self.searchframe, text='', borderwidth=0)
@@ -785,52 +933,51 @@ class SearchResource(tk.Frame):
         self.bottomframe = tk.LabelFrame(self.searchframe, text='', borderwidth=0)
         self.bottomframe.grid(column=0, row=2, sticky=tk.W+tk.E)
 
-        self.r_title_label = tk.Label(self.searchbar, text='Title: ', font=labelsfont)
+        self.r_title_label = tk.Label(self.searchbar, text='Title: ')
         self.r_entry = tk.Entry(self.searchbar,  width=48, textvariable=self.resource_title)
 
-        self.r_author_label = tk.Label(self.searchbar, text='Author: ', font=labelsfont)
+        self.r_author_label = tk.Label(self.searchbar, text='Author: ')
         self.r_author_entry= tk.Entry(self.searchbar,  width=48, textvariable=self.resource_author)
 
-        self.r_subject_label = tk.Label(self.searchbar, text='Subject: ', font=labelsfont)
+        self.r_subject_label = tk.Label(self.searchbar, text='Subject: ')
         self.r_subject_entry= tk.Entry(self.searchbar,  width=48, textvariable=self.resource_subject)
 
         self.r_title_label.grid(column=0, row=0, padx=5)
         self.r_entry.grid(column=1, row=0, padx=5)
 
-        self.r_author_label.grid(column=2, row=0, padx=5)
-        self.r_author_entry.grid(column=3, row=0, padx=5)
+        self.r_author_label.grid(column=0, row=1, padx=5)
+        self.r_author_entry.grid(column=1, row=1, padx=5)
 
-        self.r_subject_label.grid(column=4, row=0, padx=5)
-        self.r_subject_entry.grid(column=5, row=0, padx=5)
+        self.r_subject_label.grid(column=0, row=2, padx=5)
+        self.r_subject_entry.grid(column=1, row=2, padx=5)
 
         self.searchbutton = tk.Button(self.searchbar, text='Search')
         self.searchbutton.config(width=12, cursor='hand2')
-        self.searchbutton.grid(column=6, row=0, padx= 10, pady=10, sticky=tk.E)
+        self.searchbutton.grid(column=1, row=3, padx= 10, pady=10, sticky=tk.E)
 
         self.homebutton = tk.Button(self.bottomframe, text='Home', command=lambda: controller.show_frame(HomePage))
         self.homebutton.config(width=12, cursor='hand2')
         self.homebutton.grid(column=0, row=1, padx=10, pady=2, sticky=tk.W)
 
-        self.addresource = tk.Button(self.bottomframe, text='Add Resource', command=lambda: controller.show_frame(AddResource))
+        self.addresource = tk.Button(self.bottomframe, text='Add Resource',
+                                     command=lambda: controller.show_frame(AddResource))
         self.addresource.config(width=12, cursor='hand2')
         self.addresource.grid(column=0, row=2, padx=10,pady=2, sticky=tk.W)
 
         self.resource_list = ttk.Treeview(self.middleframe,
                                           columns=('Title', 'Author', 'Year',
                                                    'Pages', 'Publisher',
-                                                   'Language', 'Format',
-                                                   'Abstract'))
+                                                   'Language', 'Notes'))
         self.resource_list['columns'] = ('Title', 'Author', 'Year', 'Pages',
-                                         'Publisher', 'Language', 'Format', 'Abstract')
+                                         'Publisher', 'Language', 'Notes')
         self.resource_list.column('#0', width=1)
         self.resource_list.column('0', width=250, anchor='w')
         self.resource_list.column('1', width=150, anchor='w')
         self.resource_list.column('2', width=75, anchor='w')
         self.resource_list.column('3', width=60, anchor='w')
         self.resource_list.column('4', width=100, anchor='w')
-        self.resource_list.column('5', width=100, anchor='w')
-        self.resource_list.column('6', width=90, anchor='w')
-        self.resource_list.column('7', width=400, anchor='w')
+        self.resource_list.column('5', width=90, anchor='w')
+        self.resource_list.column('6', width=200, anchor='w')
         self.resource_list.grid(column=0, row=1, padx=10)
 
         self.resource_list.heading('0', text='Title', anchor='w')
@@ -839,8 +986,7 @@ class SearchResource(tk.Frame):
         self.resource_list.heading('3', text='Pages', anchor='w')
         self.resource_list.heading('4', text='Publisher', anchor='w')
         self.resource_list.heading('5', text='Language', anchor='w')
-        self.resource_list.heading('6', text='Format', anchor='w')
-        self.resource_list.heading('7', text='Abstract', anchor='w')
+        self.resource_list.heading('6', text='Notes', anchor='w')
 
         self.treeview = self.resource_list
 
