@@ -320,8 +320,6 @@ class AddText(tk.Frame):
         else:
             self.thelanguage = self.language.get()
 
-# add_text(title, author, year, pages, publisher, language, subject, notes)
-# c.execute('''INSERT OR IGNORE INTO resource(title, year, pages, publisherID, languageID, mediaID, notes)
         data.add_text(self.title.get(), self.author.get(), self.year.get(),
                           self.pages.get(), self.thepublisher,
                           self.thelanguage, self.subject.get(), self.notes.get())
@@ -344,7 +342,7 @@ class AddOnlineMedia(tk.Frame):
         self.access_date = tk.StringVar()
         self.url = tk.StringVar()
         self.subject = tk.StringVar()
-        self.comment = tk.StringVar()
+        self.comments = tk.StringVar()
         self.audio_video = tk.IntVar()
         self.audio_video.set('?')
 
@@ -692,10 +690,13 @@ class LinkResources(tk.Frame):
 
             resource_name = item_text['values'][0]
 
-            resource_id = data.get_resource_id(resource_name)
-            print('Resource ID = ', resource_id)
+            resource_ids = data.get_resource_id(resource_name)
+            resourceID = resource_ids[0][0]
+            mediaID = resource_ids[0][1]
+            print('Resource ID = ', resourceID)
+            print('Media ID = ', mediaID)
 
-            self.resources.add(resource_id)
+            self.resources.add((resourceID, mediaID))
 
         return self.resources
 
@@ -721,8 +722,8 @@ class LinkResources(tk.Frame):
 
     def link_project_resources(self):
 
-        for item in self.resources:
-            data.link_to_resources(self.project_id, item)
+        for resource_item, media_type in self.resources:
+            data.link_to_resources(self.project_id, resource_item, media_type)
 
         self.clear_selection()
 
