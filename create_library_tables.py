@@ -42,7 +42,7 @@ def make_db():
     
     CREATE TABLE IF NOT EXISTS resource (
         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-        title TEXT NOT NULL,
+        title TEXT NOT NULL UNIQUE,
         year INTEGER,
         pages INTEGER,
         publisherID INTEGER REFERENCES publishers(ID),
