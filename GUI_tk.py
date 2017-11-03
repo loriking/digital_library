@@ -26,7 +26,7 @@ class ProjectLibrary(tk.Tk):
             self.frames[F] = frame
             frame.grid(row = 0, column = 0, sticky ='nsew')
 
-        self.show_frame(HomePage)
+        self.show_frame(AddCourse)
         
     def show_frame(self, cont):
         frame = self.frames[cont]
@@ -83,33 +83,34 @@ class HomePage(tk.Frame):
         button1 = ttk.Button(self.middleframe, text = "", image=self.wordcloud, compound="center")
         button1.grid(column=2, row=1, rowspan=5,padx=10,sticky=tk.E)
 
-
-
 class AddResource(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
-        self.AddAudioVideoButton = tk.Button(self, text='Audio\n and Video',
+        self.button_window = tk.LabelFrame(self, text='Resource Type')
+        self.button_window.grid(column=0, row=0, columnspan=4, padx=250, pady=100, sticky=tk.N+tk.S+tk.E+tk.W)
+
+        self.AddAudioVideoButton = tk.Button(self.button_window, text='Audio\n and Video', width=20,height=5,
                                         command=lambda: controller.show_frame(AddAudioVideo))
-        self.AddTextButton= tk.Button(self, text='Add Text',
+        self.AddTextButton= tk.Button(self.button_window, text='Add Text', width=20,height=5,
                                         command=lambda: controller.show_frame(AddText))
-        self.AddCourseButton= tk.Button(self, text='Courses',
+        self.AddCourseButton= tk.Button(self.button_window, text='Courses', width=20,height=5,
                                         command=lambda: controller.show_frame(AddCourse))
-        self.AddInteractiveMediaButton= tk.Button(self, text='Interactive\n Media',
+        self.AddInteractiveMediaButton= tk.Button(self.button_window, text='Interactive\n Media',  width=20,height=5,
                                         command=lambda: controller.show_frame(AddInteractiveMedia))
-        self.AddOnlineMediaButton= tk.Button(self, text='Online Media',
+        self.AddOnlineMediaButton= tk.Button(self.button_window, text='Online Media', width=20,height=5,
                                         command=lambda: controller.show_frame(AddOnlineMedia))
-        self.AddImagesButton= tk.Button(self, text='Images',
+        self.AddImagesButton= tk.Button(self.button_window, text='Images', width=20,height=5,
                                         command=lambda: controller.show_frame(AddImages))
 
 
 
         self.AddTextButton.grid(column=0, row=0)
         self.AddOnlineMediaButton.grid(column=1, row=0)
-        self.AddAudioVideoButton.grid(column=0, row=1)
+        self.AddAudioVideoButton.grid(column=2, row=0)
         self.AddCourseButton.grid(column=1, row=1)
-        self.AddInteractiveMediaButton.grid(column=0, row=2)
-        self.AddImagesButton.grid(column=1, row=2)
+        self.AddInteractiveMediaButton.grid(column=0, row=1)
+        self.AddImagesButton.grid(column=2, row=1)
 
 
 class AddText(tk.Frame):
@@ -200,7 +201,6 @@ class AddText(tk.Frame):
         self.language_entry.configure(width=20)
 
         self.add_language_entry=ttk.Entry(topcenterframe, width=20, textvariable =self.new_lang)
-
 
         self.notes_label = tk.Label(topcenterframe, text='Notes')
         self.notes_entry = ttk.Entry(topcenterframe, width=50, textvariable =self.notes)
@@ -331,156 +331,6 @@ class AddText(tk.Frame):
 
 
 
-class AddOnlineMedia(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-
-        self.author = tk.StringVar()
-        self.title = tk.StringVar()
-        self.date = tk.StringVar()
-        self.host = tk.StringVar()
-        self.access_date = tk.StringVar()
-        self.url = tk.StringVar()
-        self.subject = tk.StringVar()
-        self.comments = tk.StringVar()
-        self.audio_video = tk.IntVar()
-        self.audio_video.set('?')
-
-        self.mainframe = tk.LabelFrame(self, text='', borderwidth=4)
-        self.mainframe.grid(column=0, row=1, sticky=tk.N+tk.S+tk.W+tk.E)
-
-        # Title Frame
-        self.title = tk.Label(self.mainframe, text='Online Media')
-        self.title.grid(column=0, row=0,  columnspan=2 )
-        #Enter resource information
-
-        # Top left frame
-        self.topleft = tk.LabelFrame(self.mainframe, text="", borderwidth=3)
-        self.topleft.grid(column=0, row=1,sticky=tk.W+tk.E)
-
-        self.author_label = tk.Label(self.topleft, text='Author')
-        self.author_entry = tk.Entry(self.topleft,  width=50,textvariable = self.author)
-
-        self.title_label= tk.Label(self.topleft, text='Title')
-        self.title_entry = tk.Entry(self.topleft,  width=50,textvariable = self.title)
-
-        self.date_label = tk.Label(self.topleft, text='Date')
-        self.date_entry = tk.Entry(self.topleft,  width=50, textvariable = self.date)
-
-        self.subject_label = tk.Label(self.topleft, text='Subject')
-        self.subject_entry = tk.Entry(self.topleft,  width=50, textvariable = self.subject)
-
-        self.author_label.grid(column=0, row=0)
-        self.author_entry.grid(column=1, row=0)
-        self.title_label.grid(column=0, row=1)
-        self.title_entry.grid(column=1, row=1)
-        self.date_label.grid(column=0, row=2)
-        self.date_entry.grid(column=1, row=2)
-        self.subject_label.grid(column=0, row=3)
-        self.subject_entry.grid(column=1, row=3)
-
-        # Top right frame
-        self.topright = tk.LabelFrame(self.mainframe, text="", borderwidth=3)
-        self.topright.grid(column=1, row=1, sticky=tk.W + tk.E)
-
-        self.host_label = tk.Label(self.topright, text='Domain')
-        self.host_entry = tk.Entry(self.topright, width=50, textvariable=self.host)
-
-
-        self.access_date_label = tk.Label(self.topright, text='Access date')
-        self.access_date_entry= tk.Entry(self.topright, width=50, textvariable=self.access_date)
-
-        self.url_label = tk.Label(self.topright, text='URL')
-        self.url_entry= tk.Entry(self.topright, width=50, textvariable=self.url)
-
-        self.comment_label= tk.Label(self.topright, text='Notes')
-        self.comment_entry= tk.Entry(self.topright, width=50, textvariable= self.comment)
-
-        self.host_label.grid(column=0, row=0)
-        self.host_entry.grid(column=1, row=0)
-        self.url_label.grid(column=0, row=1)
-        self.url_entry.grid(column=1, row=1)
-        self.access_date_label.grid(column=0, row=2)
-        self.access_date_entry.grid(column=1, row=2)
-        self.comment_label.grid(column=0, row=3)
-        self.comment_entry.grid(column=1, row=3)
-
-        # top center frame
-        self.center_leftframe = tk.LabelFrame(self.mainframe,text='', borderwidth=3)
-        self.center_leftframe.grid(column=0, row=2)
-
-        self.media_audio =  tk.Radiobutton(self.center_leftframe, text='Audio', variable=self.audio_video)
-        self.media_audio.grid(column=1, row=0)
-
-        self.media_video = tk.Radiobutton(self.center_leftframe, text='Video', variable=self.audio_video)
-        self.media_video.grid(column=2, row=0)
-
-        self.media_other = tk.Radiobutton(self.center_leftframe, text='Other', variable=self.audio_video)
-        self.media_other.grid(column=3, row=0)
-
-        # Center right frame
-        self.center_rightframe = tk.LabelFrame(self.mainframe,text='', borderwidth=3)
-        self.center_rightframe.grid(column=1, row=2, columnspan=2, sticky=tk.E)
-
-        self.addwebdocbutton = ttk.Button(self.center_rightframe, text='Save', command=self.saveonlinemedia)
-        self.addwebdocbutton.grid(column=4, row=0)
-
-        # bottom center frame
-        self.bottom_middleframe = tk.LabelFrame(self.mainframe,text='', borderwidth=3)
-        self.bottom_middleframe.grid(column=0, row=3,  columnspan=2,  sticky=tk.W + tk.E)
-
-        self.onlineresources = tk.Label(self.bottom_middleframe, text='Online Resources')
-        self.onlineresources.grid(column=0, row=0)
-
-        self.scrollwebdocs = tk.Scrollbar(self.bottom_middleframe)
-        self.scrollwebdocs.grid(column=1, row=1, sticky=tk.N + tk.S + tk.W)
-
-        self.webdocs_list = ttk.Treeview(self.bottom_middleframe,
-                                         columns=('Title', 'Author', 'Year',
-                                                  'Domain', 'Access date', 'URL'))
-
-        self.scrollwebdocs.configure(orient="vertical", command=self.webdocs_list.yview)
-        self.webdocs_list.configure(yscrollcommand=self.scrollwebdocs.set)
-
-        self.webdocs_list['columns'] = ('Title', 'Author', 'Year',
-                                        'Host', 'Access date', 'URL')
-        self.webdocs_list.column('#0', width=1)
-        self.webdocs_list.column('0', width=150, anchor='w')
-        self.webdocs_list.column('1', width=100, anchor='w')
-        self.webdocs_list.column('2', width=75, anchor='w')
-        self.webdocs_list.column('3', width=75, anchor='w')
-        self.webdocs_list.column('4', width=75, anchor='w')
-        self.webdocs_list.column('5', width=250, anchor='w')
-        self.webdocs_list.grid(column=0, row=1)
-
-        self.webdocs_list.heading('0', text='Title', anchor='w')
-        self.webdocs_list.heading('1', text='Author', anchor='w')
-        self.webdocs_list.heading('2', text='Year', anchor='w')
-        self.webdocs_list.heading('3', text='Host', anchor='w')
-        self.webdocs_list.heading('4', text='Access date', anchor='w')
-        self.webdocs_list.heading('5', text='URL', anchor='w')
-
-        self.treeview = self.webdocs_list
-
-        # Bottom left frame
-        self.bottomleft = tk.LabelFrame(self.mainframe, text="", borderwidth=3)
-        self.bottomleft.grid(column=0, row=4, sticky=tk.W + tk.E)
-
-        self.home = tk.Button(self.bottomleft, text='Home', command=lambda: controller.show_frame(HomePage))
-        self.home.config(width=15, cursor='hand2')
-        self.home.grid(column=0, row=2, padx=10, sticky=tk.W)
-
-        # Bottom right frame
-        self.bottomright = tk.LabelFrame(self.mainframe, text="", borderwidth=3)
-        self.bottomright.grid(column=1, row=5, sticky=tk.W + tk.E)
-
-    def saveonlinemedia(self):
-        data.add_online_media(self.title.get(), self.author.get(), self.date.get(), self.subject.get(),
-                              self.host.get(), self.url.get(), self.access_date.get(), self.comments.get(),
-                              self.audio_video.get())
-        pass
-
-
 
 
 
@@ -494,14 +344,6 @@ class AddInteractiveMedia(tk.Frame):
 
 
 
-class AddAudioVideo(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-
-        self.home = tk.Button(self, text='Home', command=lambda: controller.show_frame(HomePage))
-        self.home.config(width=15, cursor='hand2')
-        self.home.grid(column=0, row=2, padx=10, sticky=tk.W)
-
 class AddImages(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -509,22 +351,6 @@ class AddImages(tk.Frame):
         self.home = tk.Button(self, text='Home', command=lambda: controller.show_frame(HomePage))
         self.home.config(width=15, cursor='hand2')
         self.home.grid(column=0, row=2, padx=10, sticky=tk.W)
-
-
-
-
-class AddCourse(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-
-        self.home = tk.Button(self, text='Home', command=lambda: controller.show_frame(HomePage))
-        self.home.config(width=15, cursor='hand2')
-        self.home.grid(column=0, row=2, padx=10, sticky=tk.W)
-
-
-
-
-
 
 class LinkResources(tk.Frame):
     def __init__(self, parent, controller):
@@ -759,12 +585,9 @@ class LinkResources(tk.Frame):
             self.treeview_resources.insert('', 'end', values=item)
         self.subjectbox.delete(0, 'end')
 
-
-
 class Projects(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-
 
         main_frame = tk.LabelFrame(self, text='',borderwidth=4)
         main_frame.grid(column=0, row=0, columnspan=10, sticky=tk.W+tk.E+tk.N+tk.S)
@@ -912,6 +735,230 @@ class Projects(tk.Frame):
         self.list_projects()
         self.update_widgets()
 
+
+class AddOnlineMedia(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+
+        self.author = tk.StringVar()
+        self.title = tk.StringVar()
+        self.date = tk.StringVar()
+        self.host = tk.StringVar()
+        self.access_date = tk.StringVar()
+        self.url = tk.StringVar()
+        self.subject = tk.StringVar()
+        self.comments = tk.StringVar()
+        self.audio_video = tk.IntVar()
+        self.audio_video.set('?')
+
+        # Frames
+
+        self.mainframe = tk.LabelFrame(self, text='', borderwidth=4)
+        self.mainframe.grid(column=0, row=1, sticky=tk.N + tk.S + tk.W + tk.E)
+
+        self.topleft = tk.LabelFrame(self.mainframe, text="", borderwidth=3)
+        self.topleft.grid(column=0, row=1, sticky=tk.W + tk.E)
+
+        self.topright = tk.LabelFrame(self.mainframe, text="", borderwidth=3)
+        self.topright.grid(column=1, row=1, sticky=tk.W + tk.E)
+
+        self.bottomleft = tk.LabelFrame(self.mainframe, text="", borderwidth=3)
+        self.bottomleft.grid(column=0, row=4, sticky=tk.W + tk.E)
+
+        self.bottomright = tk.LabelFrame(self.mainframe, text="", borderwidth=3)
+        self.bottomright.grid(column=1, row=5, sticky=tk.W + tk.E)
+
+        self.bottom_middleframe = tk.LabelFrame(self.mainframe, text='', borderwidth=3)
+        self.bottom_middleframe.grid(column=0, row=3, columnspan=2, sticky=tk.W + tk.E)
+
+        # Bottom left frame
+        self.home = tk.Button(self.bottomleft, text='Home', command=lambda: controller.show_frame(HomePage))
+        self.home.config(width=15, cursor='hand2')
+        self.home.grid(column=0, row=2, padx=10, sticky=tk.W)
+
+        self.create_values()
+
+        self.create_top_frame_widgets(self.A, self.B, self.C, self.D, self.E)
+
+        self.add_radio_buttons()
+
+        self.display_resources(self.c1, self.c2, self.c3, self.c4, self.c5, self.c6)
+
+    def create_values(self):
+        self.A = 'Online Media'
+        self.B = 'Author'
+        self.C = 'Date'
+        self.D = 'Access date'
+        self.E = 'Domain'
+
+        self.c1 = 'Title'
+        self.c2 ='Author'
+        self.c3 = 'Date'
+        self.c4 = 'Host'
+        self.c5 = 'Access date'
+        self.c6 = 'URL'
+
+    def create_top_frame_widgets(self, a, b, c, d, e):
+
+        # Title Frame
+        window_title = tk.Label(self.mainframe, text=a)
+        window_title.grid(column=0, row=0, columnspan=2)
+
+        # Top left frame
+
+        author_label = tk.Label(self.topleft, text=b)
+        author_entry = tk.Entry(self.topleft, width=50, textvariable=self.author)
+
+        title_label = tk.Label(self.topleft, text='Title')
+        title_entry = tk.Entry(self.topleft, width=50, textvariable=self.title)
+
+        date_label = tk.Label(self.topleft, text=c)
+        date_entry = tk.Entry(self.topleft, width=50, textvariable=self.date)
+
+        subject_label = tk.Label(self.topleft, text='Subject')
+        subject_entry = tk.Entry(self.topleft, width=50, textvariable=self.subject)
+
+        host_label = tk.Label(self.topright, text=d)
+        host_entry = tk.Entry(self.topright, width=50, textvariable=self.host)
+
+        access_date_label = tk.Label(self.topright, text=e)
+        access_date_entry = tk.Entry(self.topright, width=50, textvariable=self.access_date)
+
+        url_label = tk.Label(self.topright, text='URL')
+        url_entry = tk.Entry(self.topright, width=50, textvariable=self.url)
+
+        comment_label = tk.Label(self.topright, text='Notes')
+        comment_entry = tk.Entry(self.topright, width=50, textvariable=self.comments)
+
+        author_label.grid(column=0, row=0)
+        author_entry.grid(column=1, row=0)
+        title_label.grid(column=0, row=1)
+        title_entry.grid(column=1, row=1)
+        date_label.grid(column=0, row=2)
+        date_entry.grid(column=1, row=2)
+        subject_label.grid(column=0, row=3)
+        subject_entry.grid(column=1, row=3)
+
+        host_label.grid(column=0, row=0)
+        host_entry.grid(column=1, row=0)
+        url_label.grid(column=0, row=1)
+        url_entry.grid(column=1, row=1)
+        access_date_label.grid(column=0, row=2)
+        access_date_entry.grid(column=1, row=2)
+        comment_label.grid(column=0, row=3)
+        comment_entry.grid(column=1, row=3)
+
+
+
+    def add_radio_buttons(self):
+        self.center_leftframe = tk.LabelFrame(self.mainframe, text='', borderwidth=3)
+        self.center_leftframe.grid(column=0, row=2)
+
+        self.media_audio = tk.Radiobutton(self.center_leftframe, text='Audio', variable=self.audio_video)
+        self.media_audio.grid(column=1, row=0)
+
+        self.media_video = tk.Radiobutton(self.center_leftframe, text='Video', variable=self.audio_video)
+        self.media_video.grid(column=2, row=0)
+
+        self.media_other = tk.Radiobutton(self.center_leftframe, text='Other', variable=self.audio_video)
+        self.media_other.grid(column=3, row=0)
+
+
+    def display_resources(self, c1, c2, c3, c4, c5, c6):
+        scrollwebdocs = tk.Scrollbar(self.bottom_middleframe)
+        scrollwebdocs.grid(column=1, row=1, sticky=tk.N + tk.S + tk.W)
+
+        webdocs_list = ttk.Treeview(self.bottom_middleframe,
+                                         columns= (c1, c2, c3, c4, c5, c6))
+
+        scrollwebdocs.configure(orient="vertical", command=webdocs_list.yview)
+        webdocs_list.configure(yscrollcommand=scrollwebdocs.set)
+
+        webdocs_list['columns'] = ('Title', 'Author', 'Date',
+                                        'Host', 'Access date', 'URL')
+        webdocs_list.column('#0', width=1)
+        webdocs_list.column('0', width=150, anchor='w')
+        webdocs_list.column('1', width=100, anchor='w')
+        webdocs_list.column('2', width=75, anchor='w')
+        webdocs_list.column('3', width=75, anchor='w')
+        webdocs_list.column('4', width=75, anchor='w')
+        webdocs_list.column('5', width=250, anchor='w')
+        webdocs_list.grid(column=0, row=1)
+
+        webdocs_list.heading('0', text=c1, anchor='w')
+        webdocs_list.heading('1', text=c2, anchor='w')
+        webdocs_list.heading('2', text=c3, anchor='w')
+        webdocs_list.heading('3', text=c4, anchor='w')
+        webdocs_list.heading('4', text=c5, anchor='w')
+        webdocs_list.heading('5', text='URL', anchor='w')
+
+        treeview = webdocs_list
+
+
+    def saveonlinemedia(self):
+        data.add_online_media(self.title.get(), self.author.get(), self.date.get(), self.subject.get(),
+                              self.host.get(), self.url.get(), self.access_date.get(), self.comments.get(),
+                              self.audio_video.get())
+        pass
+
+class AddCourse(AddOnlineMedia):
+    def __init__(self, parent, controller):
+        AddOnlineMedia.__init__(self, parent, controller)
+
+        self.create_values()
+
+        self.display_resources(AddOnlineMedia.c1, AddOnlineMedia.c2, AddOnlineMedia.c3, AddOnlineMedia.c4,
+                               AddOnlineMedia.c5, AddOnlineMedia.c6)
+
+
+        self.create_top_frame_widgets(AddOnlineMedia.A, AddOnlineMedia.B, AddOnlineMedia.C,
+                                      AddOnlineMedia.D, AddOnlineMedia.E)
+
+    def create_values(self):
+
+        AddOnlineMedia.A = 'Courses'
+        AddOnlineMedia.B = 'Teacher'
+        AddOnlineMedia.C = 'Start date'
+        AddOnlineMedia.D = 'End date'
+        AddOnlineMedia.E = 'Platform'
+
+        AddOnlineMedia.c1 = 'Title'
+        AddOnlineMedia.c2 = 'Teacher'
+        AddOnlineMedia.c3 = 'Start date'
+        AddOnlineMedia.c4 = 'End date'
+        AddOnlineMedia.c5 = 'Platform'
+        AddOnlineMedia.c6 = 'URL'
+
+
+
+        #self.create_top_frame_widgets('Courses', 'Teacher', 'Start date', 'End date', 'Platform')
+
+
+
+
+class AddAudioVideo(AddOnlineMedia):
+    def __init__(self, parent, controller):
+        AddOnlineMedia.__init__(self, parent, controller)
+
+        self.display_resources(AddOnlineMedia.c1, AddOnlineMedia.c2, AddOnlineMedia.c3, AddOnlineMedia.c4,
+                               AddOnlineMedia.c5, AddOnlineMedia.c6)
+
+        self.create_top_frame_widgets(AddOnlineMedia.A, AddOnlineMedia.B, AddOnlineMedia.C,
+                                      AddOnlineMedia.D, AddOnlineMedia.E)
+
+    def create_values(self):
+        AddOnlineMedia.A = 'Audio and Video'
+        AddOnlineMedia.B = 'Creator'
+        AddOnlineMedia.C = 'Duration'
+        AddOnlineMedia.D = 'Format'
+        AddOnlineMedia.E = 'Type'
+
+        AddOnlineMedia.c1 = 'Title'
+        AddOnlineMedia.c2 ='Creator'
+        AddOnlineMedia.c3 = 'Duration'
+        AddOnlineMedia.c4 = 'Format'
+        AddOnlineMedia.c5 = 'Type'
+        AddOnlineMedia.c6 = 'URL'
 
 
 class SearchResource(tk.Frame):
