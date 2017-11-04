@@ -334,23 +334,9 @@ class AddText(tk.Frame):
 
 
 
-class AddInteractiveMedia(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-
-        self.home = tk.Button(self, text='Home', command=lambda: controller.show_frame(HomePage))
-        self.home.config(width=15, cursor='hand2')
-        self.home.grid(column=0, row=2, padx=10, sticky=tk.W)
 
 
 
-class AddImages(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-
-        self.home = tk.Button(self, text='Home', command=lambda: controller.show_frame(HomePage))
-        self.home.config(width=15, cursor='hand2')
-        self.home.grid(column=0, row=2, padx=10, sticky=tk.W)
 
 class LinkResources(tk.Frame):
     def __init__(self, parent, controller):
@@ -929,13 +915,6 @@ class AddCourse(AddOnlineMedia):
         AddOnlineMedia.c5 = 'Platform'
         AddOnlineMedia.c6 = 'URL'
 
-
-
-        #self.create_top_frame_widgets('Courses', 'Teacher', 'Start date', 'End date', 'Platform')
-
-
-
-
 class AddAudioVideo(AddOnlineMedia):
     def __init__(self, parent, controller):
         AddOnlineMedia.__init__(self, parent, controller)
@@ -960,6 +939,55 @@ class AddAudioVideo(AddOnlineMedia):
         AddOnlineMedia.c5 = 'Type'
         AddOnlineMedia.c6 = 'URL'
 
+
+class AddInteractiveMedia(AddOnlineMedia):
+    def __init__(self, parent, controller):
+        AddOnlineMedia.__init__(self, parent, controller)
+
+        self.display_resources(AddOnlineMedia.c1, AddOnlineMedia.c2, AddOnlineMedia.c3, AddOnlineMedia.c4,
+                               AddOnlineMedia.c5, AddOnlineMedia.c6)
+
+        self.create_top_frame_widgets(AddOnlineMedia.A, AddOnlineMedia.B, AddOnlineMedia.C,
+                                      AddOnlineMedia.D, AddOnlineMedia.E)
+
+    def create_values(self):
+        AddOnlineMedia.A = 'Interactive Media'
+        AddOnlineMedia.B = 'Creator'
+        AddOnlineMedia.C = 'Version'
+        AddOnlineMedia.D = 'Type'
+        AddOnlineMedia.E = 'Platform'
+
+        AddOnlineMedia.c1 = 'Title'
+        AddOnlineMedia.c2 = 'Creator'
+        AddOnlineMedia.c3 = 'Duration'
+        AddOnlineMedia.c4 = 'Format'
+        AddOnlineMedia.c5 = 'Type'
+        AddOnlineMedia.c6 = 'URL'
+
+
+class AddImages(AddOnlineMedia):
+    def __init__(self, parent, controller):
+        AddOnlineMedia.__init__(self, parent, controller)
+
+        self.display_resources(AddOnlineMedia.c1, AddOnlineMedia.c2, AddOnlineMedia.c3, AddOnlineMedia.c4,
+                               AddOnlineMedia.c5, AddOnlineMedia.c6)
+
+        self.create_top_frame_widgets(AddOnlineMedia.A, AddOnlineMedia.B, AddOnlineMedia.C,
+                                      AddOnlineMedia.D, AddOnlineMedia.E)
+
+    def create_values(self):
+        AddOnlineMedia.A = 'Images'
+        AddOnlineMedia.B = 'Creator'
+        AddOnlineMedia.C = 'Format'
+        AddOnlineMedia.D = 'Date Created'
+        AddOnlineMedia.E = 'Material'
+
+        AddOnlineMedia.c1 = 'Title'
+        AddOnlineMedia.c2 = 'Creator'
+        AddOnlineMedia.c3 = 'Format'
+        AddOnlineMedia.c4 = 'Dimensions'
+        AddOnlineMedia.c5 = 'Creation date'
+        AddOnlineMedia.c6 = 'Location'
 
 class SearchResource(tk.Frame):
     def __init__(self, parent, controller):
