@@ -21,7 +21,7 @@ class ProjectLibrary(tk.Tk):
         self.frames = {}
 
         for F in (HomePage, Projects, LinkResources, AddResource, AddText, AddAudioVideo, AddCourse,
-                  AddInteractiveMedia, AddOnlineMedia, AddImages, SearchResource, EditResource):
+                  AddInteractiveMedia, AddMedia, AddImages, SearchResource, EditResource):
             frame = F(main, self)
             self.frames[F] = frame
             frame.grid(row = 0, column = 0, sticky ='nsew')
@@ -99,7 +99,7 @@ class AddResource(tk.Frame):
         self.AddInteractiveMediaButton= tk.Button(self.button_window, text='Interactive\n Media',  width=20,height=5,
                                         command=lambda: controller.show_frame(AddInteractiveMedia))
         self.AddOnlineMediaButton= tk.Button(self.button_window, text='Online Media', width=20,height=5,
-                                        command=lambda: controller.show_frame(AddOnlineMedia))
+                                        command=lambda: controller.show_frame(AddMedia))
         self.AddImagesButton= tk.Button(self.button_window, text='Images', width=20,height=5,
                                         command=lambda: controller.show_frame(AddImages))
 
@@ -326,16 +326,6 @@ class AddText(tk.Frame):
 
         self.list_resources()
         self.update_entry_widgets()
-
-
-
-
-
-
-
-
-
-
 
 
 class LinkResources(tk.Frame):
@@ -722,18 +712,20 @@ class Projects(tk.Frame):
         self.update_widgets()
 
 
-class AddOnlineMedia(tk.Frame):
-    def __init__(self, parent, controller):
+class AddMedia(tk.Frame):
+    def __init__(self, parent, controller, *args):
         tk.Frame.__init__(self, parent)
 
-        self.author = tk.StringVar()
-        self.title = tk.StringVar()
-        self.date = tk.StringVar()
-        self.host = tk.StringVar()
-        self.access_date = tk.StringVar()
-        self.url = tk.StringVar()
-        self.subject = tk.StringVar()
-        self.comments = tk.StringVar()
+        self.box1L = tk.StringVar()
+        self.box2L = tk.StringVar()
+        self.box3L = tk.StringVar()
+        self.box4L = tk.StringVar()
+
+        self.box1R = tk.StringVar()
+        self.box2R = tk.StringVar()
+        self.box3R = tk.StringVar()
+        self.box4R = tk.StringVar()
+
         self.audio_video = tk.IntVar()
         self.audio_video.set('?')
 
@@ -757,83 +749,105 @@ class AddOnlineMedia(tk.Frame):
         self.bottom_middleframe = tk.LabelFrame(self.mainframe, text='', borderwidth=3)
         self.bottom_middleframe.grid(column=0, row=3, columnspan=2, sticky=tk.W + tk.E)
 
-        # Bottom left frame
+        # Home button
         self.home = tk.Button(self.bottomleft, text='Home', command=lambda: controller.show_frame(HomePage))
         self.home.config(width=15, cursor='hand2')
         self.home.grid(column=0, row=2, padx=10, sticky=tk.W)
 
+        # Save resource button
+        self.save_resource = tk.Button(self.bottomleft, text='Save', command=lambda: self.save_data())
+        self.save_resource.config(width=15, cursor='hand2')
+        self.save_resource.grid(column=1, row=2, padx=10, sticky=tk.W)
+
         self.create_values()
 
-        self.create_top_frame_widgets(self.A, self.B, self.C, self.D, self.E)
+        self.create_top_frame_widgets(self.window_header, self.b2L, self.b3L, self.b4L, self.b1R, self.b2R,
+                                      self.b3R, self.b4R)
+
+        self.place_widgets()
 
         self.add_radio_buttons()
 
         self.display_resources(self.c1, self.c2, self.c3, self.c4, self.c5, self.c6)
 
+
     def create_values(self):
-        self.A = 'Online Media'
-        self.B = 'Author'
-        self.C = 'Date'
-        self.D = 'Access date'
-        self.E = 'Domain'
+        self.window_header = 'Online Media'
+        self.b2L = 'Author'
+        self.b3L = 'Date'
+        self.b4L = 'Subject'
+        self.b1R = 'Domain'
+        self.b2R = 'URL'
+        self.b3R = 'Access date'
+        self.b4R = 'Notes'
 
         self.c1 = 'Title'
-        self.c2 ='Author'
+        self.c2 = 'Author'
         self.c3 = 'Date'
         self.c4 = 'Host'
         self.c5 = 'Access date'
         self.c6 = 'URL'
 
-    def create_top_frame_widgets(self, a, b, c, d, e):
+        return self.window_header, self.b2L, self.b3L, self.b4L, self.b1R, self.b2R, self.b3R, \
+               self.b4R, self.c1, self.c2, self.c3, self.c4, self.c5, self.c6
+
+    def create_top_frame_widgets(self, window_header, box2L, box3L, box4L, box1R, box2R, box3R, box4R):
 
         # Title Frame
-        window_title = tk.Label(self.mainframe, text=a)
-        window_title.grid(column=0, row=0, columnspan=2)
+        self.window_title = tk.Label(self.mainframe, text=window_header)
 
         # Top left frame
 
-        author_label = tk.Label(self.topleft, text=b)
-        author_entry = tk.Entry(self.topleft, width=50, textvariable=self.author)
+        self.title_label = tk.Label(self.topleft, text='Title')
+        self.title_entry = tk.Entry(self.topleft, width=50, textvariable=self.box1L)
 
-        title_label = tk.Label(self.topleft, text='Title')
-        title_entry = tk.Entry(self.topleft, width=50, textvariable=self.title)
+        self.box_2_L = tk.Label(self.topleft, text=box2L)
+        self.box_2_L_entry = tk.Entry(self.topleft, width=50, textvariable=self.box2L)
 
-        date_label = tk.Label(self.topleft, text=c)
-        date_entry = tk.Entry(self.topleft, width=50, textvariable=self.date)
+        self.box_3_L = tk.Label(self.topleft, text=box3L)
+        self.box_3_L_entry = tk.Entry(self.topleft, width=50, textvariable=self.box3L)
 
-        subject_label = tk.Label(self.topleft, text='Subject')
-        subject_entry = tk.Entry(self.topleft, width=50, textvariable=self.subject)
+        self.box_4_L = tk.Label(self.topleft, text=box4L)
+        self.box_4_L_entry = tk.Entry(self.topleft, width=50, textvariable=self.box4L)
 
-        host_label = tk.Label(self.topright, text=d)
-        host_entry = tk.Entry(self.topright, width=50, textvariable=self.host)
+        self.box_1_R = tk.Label(self.topright, text=box1R)
+        self.box_1_R_entry = tk.Entry(self.topright, width=50, textvariable=self.box1R)
 
-        access_date_label = tk.Label(self.topright, text=e)
-        access_date_entry = tk.Entry(self.topright, width=50, textvariable=self.access_date)
+        self.box_2_R = tk.Label(self.topright, text=box2R)
+        self.box_2_R_entry = tk.Entry(self.topright, width=50, textvariable=self.box2R)
 
-        url_label = tk.Label(self.topright, text='URL')
-        url_entry = tk.Entry(self.topright, width=50, textvariable=self.url)
+        self.box_3_R = tk.Label(self.topright, text=box3R)
+        self.box_3_R_entry = tk.Entry(self.topright, width=50, textvariable=self.box3R)
 
-        comment_label = tk.Label(self.topright, text='Notes')
-        comment_entry = tk.Entry(self.topright, width=50, textvariable=self.comments)
+        self.box_4_R = tk.Label(self.topright, text=box4R)
+        self.box_4_R_entry = tk.Entry(self.topright, width=50, textvariable=self.box4R)
 
-        author_label.grid(column=0, row=0)
-        author_entry.grid(column=1, row=0)
-        title_label.grid(column=0, row=1)
-        title_entry.grid(column=1, row=1)
-        date_label.grid(column=0, row=2)
-        date_entry.grid(column=1, row=2)
-        subject_label.grid(column=0, row=3)
-        subject_entry.grid(column=1, row=3)
+    def place_widgets(self):
+        self.window_title.grid(column=0, row=0, columnspan=2)
 
-        host_label.grid(column=0, row=0)
-        host_entry.grid(column=1, row=0)
-        url_label.grid(column=0, row=1)
-        url_entry.grid(column=1, row=1)
-        access_date_label.grid(column=0, row=2)
-        access_date_entry.grid(column=1, row=2)
-        comment_label.grid(column=0, row=3)
-        comment_entry.grid(column=1, row=3)
+        self.title_label.grid(column=0, row=0)
+        self.title_entry.grid(column=1, row=0)
 
+        self.box_2_L.grid(column=0, row=1)
+        self.box_2_L_entry.grid(column=1, row=1)
+
+        self.box_3_L.grid(column=0, row=2)
+        self.box_3_L_entry.grid(column=1, row=2)
+
+        self.box_4_L.grid(column=0, row=3)
+        self.box_4_L_entry.grid(column=1, row=3)
+
+        self.box_1_R.grid(column=0, row=0)
+        self.box_1_R_entry.grid(column=1, row=0)
+
+        self.box_2_R.grid(column=0, row=1)
+        self.box_2_R_entry.grid(column=1, row=1)
+
+        self.box_3_R.grid(column=0, row=2)
+        self.box_3_R_entry.grid(column=1, row=2)
+
+        self.box_4_R.grid(column=0, row=3)
+        self.box_4_R_entry.grid(column=1, row=3)
 
 
     def add_radio_buttons(self):
@@ -850,18 +864,17 @@ class AddOnlineMedia(tk.Frame):
         self.media_other.grid(column=3, row=0)
 
 
-    def display_resources(self, c1, c2, c3, c4, c5, c6):
+    def display_resources(self, col1, col2, col3, col4, col5, col6):
         scrollwebdocs = tk.Scrollbar(self.bottom_middleframe)
         scrollwebdocs.grid(column=1, row=1, sticky=tk.N + tk.S + tk.W)
 
         webdocs_list = ttk.Treeview(self.bottom_middleframe,
-                                         columns= (c1, c2, c3, c4, c5, c6))
+                                         columns= (col1, col2, col3, col4, col5, col6))
 
         scrollwebdocs.configure(orient="vertical", command=webdocs_list.yview)
         webdocs_list.configure(yscrollcommand=scrollwebdocs.set)
 
-        webdocs_list['columns'] = ('Title', 'Author', 'Date',
-                                        'Host', 'Access date', 'URL')
+        webdocs_list['columns'] = (col1, col2, col3, col4, col5, col6)
         webdocs_list.column('#0', width=1)
         webdocs_list.column('0', width=150, anchor='w')
         webdocs_list.column('1', width=100, anchor='w')
@@ -871,123 +884,173 @@ class AddOnlineMedia(tk.Frame):
         webdocs_list.column('5', width=250, anchor='w')
         webdocs_list.grid(column=0, row=1)
 
-        webdocs_list.heading('0', text=c1, anchor='w')
-        webdocs_list.heading('1', text=c2, anchor='w')
-        webdocs_list.heading('2', text=c3, anchor='w')
-        webdocs_list.heading('3', text=c4, anchor='w')
-        webdocs_list.heading('4', text=c5, anchor='w')
-        webdocs_list.heading('5', text='URL', anchor='w')
+        webdocs_list.heading('0', text=col1, anchor='w')
+        webdocs_list.heading('1', text=col2, anchor='w')
+        webdocs_list.heading('2', text=col3, anchor='w')
+        webdocs_list.heading('3', text=col4, anchor='w')
+        webdocs_list.heading('4', text=col5, anchor='w')
+        webdocs_list.heading('5', text=col6, anchor='w')
 
         treeview = webdocs_list
 
 
-    def saveonlinemedia(self):
-        data.add_online_media(self.title.get(), self.author.get(), self.date.get(), self.subject.get(),
-                              self.host.get(), self.url.get(), self.access_date.get(), self.comments.get(),
-                              self.audio_video.get())
-        pass
+    def save_data(self):
+        data.add_online_media(self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(), self.box1R.get(),
+                              self.box2R.get(), self.box3R.get(), self.box4R.get(), self.audio_video.get())
 
-class AddCourse(AddOnlineMedia):
+
+class AddCourse(AddMedia):
     def __init__(self, parent, controller):
-        AddOnlineMedia.__init__(self, parent, controller)
+        AddMedia.__init__(self, parent, controller)
 
         self.create_values()
 
-        self.display_resources(AddOnlineMedia.c1, AddOnlineMedia.c2, AddOnlineMedia.c3, AddOnlineMedia.c4,
-                               AddOnlineMedia.c5, AddOnlineMedia.c6)
+        self.display_resources(AddMedia.c1, AddMedia.c2, AddMedia.c3, AddMedia.c4,
+                               AddMedia.c5, AddMedia.c6)
 
 
-        self.create_top_frame_widgets(AddOnlineMedia.A, AddOnlineMedia.B, AddOnlineMedia.C,
-                                      AddOnlineMedia.D, AddOnlineMedia.E)
+        self.create_top_frame_widgets(AddMedia.window_header, AddMedia.b2L, AddMedia.b3L, AddMedia.b4L, \
+                                      AddMedia.b1R, AddMedia.b2R, AddMedia.b3R, AddMedia.b4R)
 
     def create_values(self):
+        AddMedia.window_header = 'Online Courses'
+        AddMedia.b2L = 'Teacher'
+        AddMedia.b3L = 'Start date'
+        AddMedia.b4L = 'Subject'
 
-        AddOnlineMedia.A = 'Courses'
-        AddOnlineMedia.B = 'Teacher'
-        AddOnlineMedia.C = 'Start date'
-        AddOnlineMedia.D = 'End date'
-        AddOnlineMedia.E = 'Platform'
+        AddMedia.b1R = 'Platform'
+        AddMedia.b2R = 'URL'
+        AddMedia.b3R = 'End date'
+        AddMedia.b4R = 'Level'
 
-        AddOnlineMedia.c1 = 'Title'
-        AddOnlineMedia.c2 = 'Teacher'
-        AddOnlineMedia.c3 = 'Start date'
-        AddOnlineMedia.c4 = 'End date'
-        AddOnlineMedia.c5 = 'Platform'
-        AddOnlineMedia.c6 = 'URL'
+        AddMedia.c1 = 'Title'
+        AddMedia.c2 = 'Teacher'
+        AddMedia.c3 = 'Start date'
+        AddMedia.c4 = 'End date'
+        AddMedia.c5 = 'Platform'
+        AddMedia.c6 = 'URL'
 
-class AddAudioVideo(AddOnlineMedia):
+        return AddMedia.c1, AddMedia.c2, AddMedia.c3, AddMedia.c4, AddMedia.c5, AddMedia.c6, AddMedia.window_header, \
+               AddMedia.b2L, AddMedia.b3L, AddMedia.b4L, AddMedia.b1R, AddMedia.b2R, AddMedia.b3R, AddMedia.b4R
+
+    def save_data(self):
+        data.add_online_media(self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(), self.box1R.get(),
+                              self.box2R.get(), self.box3R.get(), self.box4R.get(), self.audio_video.get())
+        pass
+
+class AddAudioVideo(AddMedia):
     def __init__(self, parent, controller):
-        AddOnlineMedia.__init__(self, parent, controller)
+        AddMedia.__init__(self, parent, controller)
 
-        self.display_resources(AddOnlineMedia.c1, AddOnlineMedia.c2, AddOnlineMedia.c3, AddOnlineMedia.c4,
-                               AddOnlineMedia.c5, AddOnlineMedia.c6)
+        self.create_values()
 
-        self.create_top_frame_widgets(AddOnlineMedia.A, AddOnlineMedia.B, AddOnlineMedia.C,
-                                      AddOnlineMedia.D, AddOnlineMedia.E)
+        self.display_resources(AddMedia.c1, AddMedia.c2, AddMedia.c3, AddMedia.c4,
+                               AddMedia.c5, AddMedia.c6)
+
+        self.create_top_frame_widgets(AddMedia.window_header, AddMedia.b2L, AddMedia.b3L, AddMedia.b4L, \
+                                      AddMedia.b1R, AddMedia.b2R, AddMedia.b3R, AddMedia.b4R)
 
     def create_values(self):
-        AddOnlineMedia.A = 'Audio and Video'
-        AddOnlineMedia.B = 'Creator'
-        AddOnlineMedia.C = 'Duration'
-        AddOnlineMedia.D = 'Format'
-        AddOnlineMedia.E = 'Type'
+        AddMedia.window_header = 'Audio and Video'
+        AddMedia.b2L = 'Creator'
+        AddMedia.b3L = 'Duration'
+        AddMedia.b4L = 'Subject'
+        AddMedia.b1R = 'Format'
+        AddMedia.b2R = 'Date'
+        AddMedia.b3R = 'Location'
+        AddMedia.b4R = 'Comments'
 
-        AddOnlineMedia.c1 = 'Title'
-        AddOnlineMedia.c2 ='Creator'
-        AddOnlineMedia.c3 = 'Duration'
-        AddOnlineMedia.c4 = 'Format'
-        AddOnlineMedia.c5 = 'Type'
-        AddOnlineMedia.c6 = 'URL'
+        AddMedia.c1 = 'Title'
+        AddMedia.c2 ='Creator'
+        AddMedia.c3 = 'Duration'
+        AddMedia.c4 = 'Format'
+        AddMedia.c5 = 'Type'
+        AddMedia.c6 = 'URL'
+
+        return AddMedia.c1, AddMedia.c2, AddMedia.c3, AddMedia.c4, AddMedia.c5, AddMedia.c6, AddMedia.window_header, \
+               AddMedia.b2L, AddMedia.b3L, AddMedia.b4L, AddMedia.b1R, AddMedia.b2R, AddMedia.b3R, AddMedia.b4R
+
+    def save_data(self):
+        data.add_online_media(self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(), self.box1R.get(),
+                              self.box2R.get(), self.box3R.get(), self.box4R.get(), self.audio_video.get())
+        pass
 
 
-class AddInteractiveMedia(AddOnlineMedia):
+class AddInteractiveMedia(AddMedia):
     def __init__(self, parent, controller):
-        AddOnlineMedia.__init__(self, parent, controller)
+        AddMedia.__init__(self, parent, controller)
 
-        self.display_resources(AddOnlineMedia.c1, AddOnlineMedia.c2, AddOnlineMedia.c3, AddOnlineMedia.c4,
-                               AddOnlineMedia.c5, AddOnlineMedia.c6)
+        self.create_values()
 
-        self.create_top_frame_widgets(AddOnlineMedia.A, AddOnlineMedia.B, AddOnlineMedia.C,
-                                      AddOnlineMedia.D, AddOnlineMedia.E)
+        self.display_resources(AddMedia.c1, AddMedia.c2, AddMedia.c3, AddMedia.c4,
+                               AddMedia.c5, AddMedia.c6)
+
+        self.create_top_frame_widgets(AddMedia.window_header, AddMedia.b2L, AddMedia.b3L, AddMedia.b4L, \
+                                      AddMedia.b1R, AddMedia.b2R, AddMedia.b3R, AddMedia.b4R)
 
     def create_values(self):
-        AddOnlineMedia.A = 'Interactive Media'
-        AddOnlineMedia.B = 'Creator'
-        AddOnlineMedia.C = 'Version'
-        AddOnlineMedia.D = 'Type'
-        AddOnlineMedia.E = 'Platform'
+        AddMedia.window_header = 'Interactive Media'
+        AddMedia.b2L = 'Creator'
+        AddMedia.b3L = 'Year'
+        AddMedia.b4L = 'Genre'
+        AddMedia.b1R = 'Platform'
+        AddMedia.b2R = 'Engine'
+        AddMedia.b3R = 'Version'
+        AddMedia.b4R = 'Comments'
 
-        AddOnlineMedia.c1 = 'Title'
-        AddOnlineMedia.c2 = 'Creator'
-        AddOnlineMedia.c3 = 'Duration'
-        AddOnlineMedia.c4 = 'Format'
-        AddOnlineMedia.c5 = 'Type'
-        AddOnlineMedia.c6 = 'URL'
+        AddMedia.c1 = 'Title'
+        AddMedia.c2 = 'Creator'
+        AddMedia.c3 = 'Duration'
+        AddMedia.c4 = 'Format'
+        AddMedia.c5 = 'Type'
+        AddMedia.c6 = 'URL'
+
+        return AddMedia.c1, AddMedia.c2, AddMedia.c3, AddMedia.c4, AddMedia.c5, AddMedia.c6, AddMedia.window_header, \
+               AddMedia.b2L, AddMedia.b3L, AddMedia.b4L, AddMedia.b1R, AddMedia.b2R, AddMedia.b3R, AddMedia.b4R
+
+    def save_data(self):
+        data.add_online_media(self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(), self.box1R.get(),
+                              self.box2R.get(), self.box3R.get(), self.box4R.get(), self.audio_video.get())
+        pass
 
 
-class AddImages(AddOnlineMedia):
+class AddImages(AddMedia):
     def __init__(self, parent, controller):
-        AddOnlineMedia.__init__(self, parent, controller)
+        AddMedia.__init__(self, parent, controller)
 
-        self.display_resources(AddOnlineMedia.c1, AddOnlineMedia.c2, AddOnlineMedia.c3, AddOnlineMedia.c4,
-                               AddOnlineMedia.c5, AddOnlineMedia.c6)
+        self.create_values()
 
-        self.create_top_frame_widgets(AddOnlineMedia.A, AddOnlineMedia.B, AddOnlineMedia.C,
-                                      AddOnlineMedia.D, AddOnlineMedia.E)
+        self.display_resources(AddMedia.c1, AddMedia.c2, AddMedia.c3, AddMedia.c4,
+                               AddMedia.c5, AddMedia.c6)
+
+        self.create_top_frame_widgets(AddMedia.window_header, AddMedia.b2L, AddMedia.b3L, AddMedia.b4L, \
+                                      AddMedia.b1R, AddMedia.b2R, AddMedia.b3R, AddMedia.b4R)
 
     def create_values(self):
-        AddOnlineMedia.A = 'Images'
-        AddOnlineMedia.B = 'Creator'
-        AddOnlineMedia.C = 'Format'
-        AddOnlineMedia.D = 'Date Created'
-        AddOnlineMedia.E = 'Material'
+        AddMedia.window_header = 'Images'
+        AddMedia.b2L = 'Creator'
+        AddMedia.b3L = 'Format'
+        AddMedia.b4L = 'Date Created'
+        AddMedia.b1R = 'Material'
+        AddMedia.b2R = 'Size'
+        AddMedia.b3R = 'Location'
+        AddMedia.b4R = 'Comments'
 
-        AddOnlineMedia.c1 = 'Title'
-        AddOnlineMedia.c2 = 'Creator'
-        AddOnlineMedia.c3 = 'Format'
-        AddOnlineMedia.c4 = 'Dimensions'
-        AddOnlineMedia.c5 = 'Creation date'
-        AddOnlineMedia.c6 = 'Location'
+
+        AddMedia.c1 = 'Title'
+        AddMedia.c2 = 'Creator'
+        AddMedia.c3 = 'Format'
+        AddMedia.c4 = 'Dimensions'
+        AddMedia.c5 = 'Creation date'
+        AddMedia.c6 = 'Location'
+
+        return AddMedia.c1, AddMedia.c2, AddMedia.c3, AddMedia.c4, AddMedia.c5, AddMedia.c6, AddMedia.window_header, \
+               AddMedia.b2L, AddMedia.b3L, AddMedia.b4L, AddMedia.b1R, AddMedia.b2R, AddMedia.b3R, AddMedia.b4R
+
+    def save_data(self):
+        data.add_online_media(self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(), self.box1R.get(),
+                              self.box2R.get(), self.box3R.get(), self.box4R.get(), self.audio_video.get())
+        pass
 
 class SearchResource(tk.Frame):
     def __init__(self, parent, controller):
