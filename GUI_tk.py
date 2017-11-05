@@ -26,7 +26,7 @@ class ProjectLibrary(tk.Tk):
             self.frames[F] = frame
             frame.grid(row = 0, column = 0, sticky ='nsew')
 
-        self.show_frame(AddCourse)
+        self.show_frame(AddText)
         
     def show_frame(self, cont):
         frame = self.frames[cont]
@@ -117,25 +117,25 @@ class AddText(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
-        mainframe = tk.LabelFrame(self, text='Books/Texts', borderwidth=0)
-        mainframe.grid(column=0, row=0, sticky=tk.N+tk.S+tk.W+tk.E)
+        mainframe = tk.LabelFrame(self, text='', borderwidth=0)
+        mainframe.grid(columnspan=20, column=0, row=0, sticky=tk.N+tk.S+tk.W+tk.E)
 
         header_frame = tk.LabelFrame(mainframe, text='', borderwidth=0)
         header_frame.grid(column=0, row=0, columnspan=20,padx=10)
 
-        topleftframe = tk.LabelFrame(mainframe, text="", borderwidth=0)
-        topleftframe.grid(column=0, row=1, padx=10, pady=5)
+        topleftframe = tk.LabelFrame(mainframe, text="", borderwidth=4)
+        topleftframe.grid(columnspan=4, column=0, row=1)
 
-        topcenterframe = tk.LabelFrame(mainframe, text="", borderwidth=0)
-        topcenterframe.grid(column=1, row=1, pady=5)
+        topcenterframe = tk.LabelFrame(mainframe, text="", borderwidth=4)
+        topcenterframe.grid(columnspan=4,column=5, row=1)
 
-        toprightframe = tk.LabelFrame(mainframe, text="", borderwidth=0)
-        toprightframe.grid(column=2, row=1, pady=5)
+        middleframe = tk.LabelFrame(mainframe, text="", borderwidth=0)
+        middleframe.grid(columnspan=20, column=7, row=2, sticky=tk.E+tk.N)
 
-        bottomframe = tk.LabelFrame(self, text="", borderwidth=0)
-        bottomframe.grid(column=0, row=3, padx=10, sticky=tk.W)
+        bottomframe = tk.LabelFrame(self, text="", borderwidth=4)
+        bottomframe.grid(column=0, row=3, pady=10)
 
-        self.label = tk.Label(header_frame, text='New Text', font=smallheaderfont)
+        self.label = tk.Label(header_frame, text='New Text')
         self.label.grid(column=0, row=1, pady=5)
 
         self.title = tk.StringVar()
@@ -147,11 +147,11 @@ class AddText(tk.Frame):
 
         self.publisher = tk.StringVar()
         self.publisher_options = data.list_publishers()
-        self.publisher.set('Choose one:')
+        self.publisher.set('Select:')
 
         self.language = tk.StringVar()
         self.language_options = data.list_languages()
-        self.language.set('Choose one:')
+        self.language.set('Select:')
 
         self.new_lang = tk.StringVar()
         self.new_pub = tk.StringVar()
@@ -165,78 +165,78 @@ class AddText(tk.Frame):
         self.title_entry=ttk.Entry(topleftframe, width=50, textvariable =self.title)
 
         self.author_label=tk.Label(topleftframe, text ='Author(s)')
-        self.author_entry = ttk.Entry(topleftframe, width=50, textvariable=self.author)
+        self.author_entry = ttk.Entry(topleftframe,  width=50, textvariable=self.author)
 
         self.year_label=tk.Label(topleftframe, text ='Year')
-        self.year_entry = ttk.Entry(topleftframe, width=50, textvariable=self.year)
+        self.year_entry = ttk.Entry(topleftframe, width=16, textvariable=self.year)
 
-        self.pages_label=tk.Label(topleftframe, text ='Pages')
-        self.pages_entry = ttk.Entry(topleftframe, width=50, textvariable=self.pages)
-
-        self.title_label.grid(column=0, row=0, pady=2, sticky=tk.W)
-        self.title_entry.grid(column=1, row=0, pady=2)
-
-        self.author_label.grid(column=0, row=1, pady=2, sticky=tk.W)
-        self.author_entry.grid(column=1, row=1, pady=2)
-
-        self.year_label.grid(column=0, row=2, pady=2, sticky=tk.W)
-        self.year_entry.grid(column=1, row=2, pady=2)
-
-        self.pages_label.grid(column=0, row=3,  pady=2, sticky=tk.W)
-        self.pages_entry.grid(column=1, row=3, pady=2)
-
+        self.pages_label=tk.Label(topleftframe, width=5, text ='Pages')
+        self.pages_entry = ttk.Entry(topleftframe, width=16, textvariable=self.pages)
 
         # Top center frame
         self.publisher_label = tk.Label(topcenterframe, text='Publisher')
         self.publisher_entry = tk.OptionMenu(topcenterframe, self.publisher,
                                                 *self.publisher_options)
-        self.publisher_entry.configure(width=20)
+        self.publisher_entry.configure(width=10)
 
-        self.add_publisher_entry = ttk.Entry(topcenterframe, textvariable =self.new_pub)
-        self.add_publisher_entry.configure(width=20)
+        self.add_publisher_entry = ttk.Entry(topcenterframe, width=16, textvariable =self.new_pub)
 
         self.language_label = tk.Label(topcenterframe, text='Language')
         self.language_entry= tk.OptionMenu(topcenterframe, self.language,
                                                 *self.language_options)
-        self.language_entry.configure(width=20)
+        self.language_entry.configure(width=10)
 
-        self.add_language_entry=ttk.Entry(topcenterframe, width=20, textvariable =self.new_lang)
+        self.add_language_entry=ttk.Entry(topcenterframe, width=16, textvariable =self.new_lang)
 
         self.notes_label = tk.Label(topcenterframe, text='Notes')
         self.notes_entry = ttk.Entry(topcenterframe, width=50, textvariable =self.notes)
 
-        self.subject_label = tk.Label(topcenterframe, text='Subject')
-        self.subject_entry = ttk.Entry(topcenterframe, width=50, textvariable=self.subject)
+        self.subject_label = tk.Label(topleftframe, text='Subject')
+        self.subject_entry = ttk.Entry(topleftframe, width=50, textvariable=self.subject)
 
 
-        self.publisher_label.grid(column=0, row=0)
-        self.publisher_entry.grid(column=1, row=0)
-        self.add_publisher_entry.grid(column=2, row=0)
+        # Place widgets
+        self.title_label.grid(column=0, row=0, sticky=tk.W)
+        self.title_entry.grid(columnspan=3, column=1, row=0, sticky=tk.E)
+
+        self.author_label.grid(column=0, row=1, sticky=tk.W)
+        self.author_entry.grid(columnspan=3, column=1, row=1)
+
+        self.year_label.grid(columnspan=1, column=0, row=2, sticky=tk.W)
+        self.year_entry.grid(columnspan=1, column=1, row=2, sticky=tk.W)
+        self.pages_label.grid(columnspan=1, column=2, row=2)
+        self.pages_entry.grid(columnspan=1,column=3, row=2, sticky=tk.E)
+
+        #self.select_label.grid(column=0, row=3, sticky=tk.W)
 
 
-        self.language_label.grid(column=0, row=2)
-        self.language_entry.grid(column=1, row=2)
-        self.add_language_entry.grid(column=2, row=2)
+        self.notes_label.grid(columnspan=1, column=0, row=1, sticky=tk.W)
+        self.notes_entry.grid(columnspan=3, column=1, row=1, sticky=tk.W)
 
-        self.notes_label.grid(column=0, row=3, sticky=tk.W)
-        self.notes_entry.grid(column=1, row=3, columnspan=2, sticky=tk.W)
+        self.subject_label.grid(column=0, row=3, sticky=tk.W)
+        self.subject_entry.grid(columnspan=3, column=1, row=3, sticky=tk.W)
 
-        self.subject_label.grid(column=0, row=4, sticky=tk.W)
-        self.subject_entry.grid(column=1, row=4, columnspan=2, sticky=tk.W)
 
         # Top right frame
 
-        self.add_pub_flag = tk.Checkbutton(toprightframe, text='Add new publisher',
+        self.add_pub_flag = tk.Checkbutton(topcenterframe,  text='Add new',
                                            variable=self.new_pub_flag)
-        self.add_lang_flag = tk.Checkbutton(toprightframe, text='Add new language',
+        self.add_lang_flag = tk.Checkbutton(topcenterframe, text='Add new',
                                             variable=self.new_lang_flag)
 
-        self.add_pub_flag.grid(column=0, row=0, sticky=tk.E)
-        self.add_lang_flag.grid(column=0, row=1, sticky=tk.E)
+        self.publisher_label.grid(column=0, row=3)
+        self.publisher_entry.grid(columnspan=1, column=1, row=3, sticky=tk.W)
+        self.add_pub_flag.grid(column=2, row=3,  sticky=tk.W)
+        self.add_publisher_entry.grid(column=3, row=3,  sticky=tk.E)
 
-        self.addtextresource = tk.Button(toprightframe, text='Save', command=lambda: self.new_textresource())
+        self.language_label.grid(column=0, row=4, sticky=tk.W)
+        self.language_entry.grid(columnspan=1, column=1, row=4, sticky=tk.W)
+        self.add_lang_flag.grid(column=2, row=4, sticky=tk.W)
+        self.add_language_entry.grid(column=3, row=4, sticky=tk.N+tk.E)
+
+        self.addtextresource = tk.Button(middleframe, text='Save', command=lambda: self.new_textresource())
         self.addtextresource.config(width=12, cursor='hand2')
-        self.addtextresource.grid(column=0, row=2, padx=10, pady=12)
+        self.addtextresource.grid(column=7, row=0,sticky=tk.E+tk.N)
 
 
         # Bottom frame
@@ -304,8 +304,8 @@ class AddText(tk.Frame):
         self.add_publisher_entry.delete(0, 'end')
         self.new_lang_flag.set(0)
         self.new_pub_flag.set(0)
-        self.publisher.set('Choose publisher:')
-        self.language.set('Choose language:')
+        self.publisher.set('Select:')
+        self.language.set('Select:')
 
 
     def new_textresource(self):
