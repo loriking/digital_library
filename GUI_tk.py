@@ -26,7 +26,7 @@ class ProjectLibrary(tk.Tk):
             self.frames[F] = frame
             frame.grid(row = 0, column = 0, sticky ='nsew')
 
-        self.show_frame(AddText)
+        self.show_frame(LinkResources)
         
     def show_frame(self, cont):
         frame = self.frames[cont]
@@ -342,32 +342,32 @@ class LinkResources(tk.Frame):
         self.media_type = tk.StringVar()
         self.media_type.set("?")
 
-        self.searchheader = ttk.Label(self, text='Search by project title', font=headerfont)
+        self.searchheader = ttk.Label(self, text='Find Projects')
         self.searchheader.grid(column=0, row=0)
 
-        self.mainframe = tk.LabelFrame(self, text='', borderwidth=0)
+        self.mainframe = tk.LabelFrame(self, text='', borderwidth=4)
         self.mainframe.grid(column=0, row=1, sticky=tk.W + tk.E + tk.N)
 
         # TOP LEFT FRAME
-        self.searchframe = tk.LabelFrame(self.mainframe, text='', borderwidth=0)
-        self.searchframe.grid(column=0, row=0, sticky=tk.N+tk.W+tk.E)
+        self.projectframe = tk.LabelFrame(self.mainframe, text='', borderwidth=4)
+        self.projectframe.grid(column=0, row=0, columnspan=3, sticky=tk.N+tk.W+tk.E)
 
-        self.titlebox_label = tk.Label(self.searchframe, text='Title', font=labelsfont)
+        self.titlebox_label = tk.Label(self.projectframe, text='Enter search keyword')
         self.titlebox_label.grid(column=0, row=0, sticky=tk.W)
-        self.titlebox = tk.Entry(self.searchframe, width=32, textvariable=self.project_title)
-        self.titlebox.grid(column=1, row=0, padx=5, sticky=tk.E)
+        self.titlebox = tk.Entry(self.projectframe, width=32, textvariable=self.project_title)
+        self.titlebox.grid(column=1, row=0, sticky=tk.W)
 
-        self.searchbutton = ttk.Button(self.searchframe, text='Search', command=lambda: self.search_projects())
+        self.searchbutton = ttk.Button(self.projectframe, text='Search', command=lambda: self.search_projects())
         self.searchbutton.config(width=10, cursor='hand2')
-        self.searchbutton.grid(column=1, row=2, padx=5, pady=5, sticky=tk.E)
+        self.searchbutton.grid(column=2, row=0, padx=5, pady=5, sticky=tk.E)
 
         # TOP RIGHT FRAME PROJECT SEARCH RESULTS:
 
-        self.resultsframe = tk.LabelFrame(self.mainframe, text='', borderwidth=0)
-        self.resultsframe.grid(column=3, row=0, sticky=tk.E)
+        self.resultsframe = tk.LabelFrame(self.mainframe, text='', borderwidth=4)
+        self.resultsframe.grid(column=0, row=2, sticky=tk.E)
 
         self.scrollresults = tk.Scrollbar(self.resultsframe)
-        self.scrollresults.grid(column=4, row=0, sticky=tk.N +tk.S + tk.W)
+        self.scrollresults.grid(column=1, row=4, sticky=tk.N +tk.S + tk.W)
 
         self.project_list = ttk.Treeview(self.resultsframe, height=4, selectmode='browse',
                                          columns=('Name', 'Type', 'Description', 'Start date', 'End date'))
@@ -377,7 +377,7 @@ class LinkResources(tk.Frame):
 
         self.project_list['columns'] = ('Name', 'Type', 'Description', 'Start date', 'End date')
         self.project_list.column('#0', width=5)
-        self.project_list.grid(column=3, row=0, sticky=tk.W+tk.E)
+        self.project_list.grid(column=0, row=4, sticky=tk.W+tk.E)
 
         self.project_list.heading('0', text='Name', anchor='w')
         self.project_list.heading('1', text='Type', anchor='w')
@@ -387,7 +387,7 @@ class LinkResources(tk.Frame):
 
         self.project_list.column('0', width=200, anchor='w')
         self.project_list.column('1',  width=100, anchor='w')
-        self.project_list.column('2', width=200, anchor='w')
+        self.project_list.column('2', width=250, anchor='w')
         self.project_list.column('3', width=75, anchor='w')
         self.project_list.column('4', width=75, anchor='w')
         self.treeview_projects = self.project_list
@@ -397,56 +397,57 @@ class LinkResources(tk.Frame):
         self.middleframe = tk.LabelFrame(self.mainframe, text='', borderwidth=0)
         self.middleframe.grid(columnspan=40, pady=10, column=0, row=3)
 
-        self.resourceresults_label = ttk.Label(self.middleframe, text='Available Resources', font=smallheaderfont)
+        self.resourceresults_label = ttk.Label(self.middleframe, text='Available Resources')
         self.resourceresults_label.grid(columnspan=4, column=2, row=0, pady=5)
 
-        # BOTTOM LEFT FRAME SORT FRAME
+        # BOTTOM FRAME SORT FRAME
 
-        self.searchresourceframe = tk.LabelFrame(self.mainframe, text='', borderwidth=0)
-        self.searchresourceframe.grid(column=0, row=4,  sticky=tk.N)
+        self.searchresourceframe = tk.LabelFrame(self.mainframe, text='', borderwidth=4)
+        self.searchresourceframe.grid( column=0, row=4, columnspan=3, sticky=tk.N+tk.W+tk.E)
 
-        self.sortframe = tk.LabelFrame(self.searchresourceframe, text='', borderwidth=4)
-        self.sortframe.grid(columnspan=2, column=0, row=2, padx=5, pady=5, sticky=tk.W+tk.E)
-
-        self.subjectbox_label = tk.Label(self.searchresourceframe, text='Subject', font=labelsfont)
+        self.subjectbox_label = tk.Label(self.searchresourceframe, text='Search by subject')
         self.subjectbox_label.grid(column=0, row=0, sticky=tk.W)
         self.subjectbox = tk.Entry(self.searchresourceframe, width=28, textvariable=self.resource_subject)
-        self.subjectbox.grid(column=1, row=0,  sticky=tk.W)
+        self.subjectbox.grid(columnspan=5, column=1, row=0, sticky=tk.W)
 
-        self.searchbutton = ttk.Button(self.searchresourceframe, text='Search',command=lambda:self.search_resources())
+        self.searchbutton = ttk.Button(self.searchresourceframe, text='Search', command=lambda: self.search_resources())
         self.searchbutton.config(width=10, cursor='hand2')
-        self.searchbutton.grid(column=1, row=1, pady=5, sticky=tk.E)
+        self.searchbutton.grid(column=4, row=0, padx=5, pady=5, sticky=tk.E)
 
-        self.sort_label = tk.Label(self.sortframe, text='Limit by type', font=smallheaderfont)
-        self.sort_label.grid(column=0, row=0, sticky=tk.W)
 
-        self.audio_rb = tk.Radiobutton(self.sortframe, text='Audio and Video', variable=self.media_type,
+        self.sort_label = tk.Label(self.searchresourceframe, text='Limit by type')
+        self.sort_label.grid(column=0, row=1, sticky=tk.W)
+
+        self.audio_rb = tk.Radiobutton(self.searchresourceframe, text='Audio and Video', variable=self.media_type,
                                        value='Audio and Video', command= self.limit_resources)
-        self.book_rb = tk.Radiobutton(self.sortframe, text='Texts', variable=self.media_type, value='Texts',
+        self.book_rb = tk.Radiobutton(self.searchresourceframe, text='Texts', variable=self.media_type, value='Texts',
                                        command= self.limit_resources)
-        self.course_rb = tk.Radiobutton(self.sortframe, text='Courses', variable=self.media_type, value='Courses',
+        self.course_rb = tk.Radiobutton(self.searchresourceframe, text='Courses', variable=self.media_type, value='Courses',
                                        command= self.limit_resources)
-        self.interactive_rb = tk.Radiobutton(self.sortframe, text='Interactive Media', variable=self.media_type,
+        self.interactive_rb = tk.Radiobutton(self.searchresourceframe, text='Interactive Media', variable=self.media_type,
                                              value='Interactive Media', command= self.limit_resources)
-        self.webdocs_rb = tk.Radiobutton(self.sortframe, text='Web docs', variable=self.media_type,
+        self.webdocs_rb = tk.Radiobutton(self.searchresourceframe, text='Web docs', variable=self.media_type,
                                          value='Web docs', command= self.limit_resources)
 
-        self.audio_rb.grid(column=1, row=0, sticky=tk.W)
-        self.book_rb.grid(column=1, row=1, sticky=tk.W)
-        self.course_rb.grid(column=1, row=2, sticky=tk.W)
-        self.interactive_rb.grid(column=1, row=3, sticky=tk.W)
-        self.webdocs_rb.grid( column=1, row=4, sticky=tk.W)
+        self.audio_rb.grid(column=2, row=1, sticky=tk.W)
+        self.book_rb.grid(column=3, row=1, sticky=tk.W)
+        self.course_rb.grid(column=4, row=1, sticky=tk.W)
+        self.interactive_rb.grid(column=5, row=1, sticky=tk.W)
+        self.webdocs_rb.grid( column=6, row=1, sticky=tk.W)
 
-        self.showall = ttk.Button(self.sortframe, text='Show All')
+        self.showall = ttk.Button(self.searchresourceframe, text='Show All')
         self.showall.config(width=10, cursor='hand2')
-        self.showall.grid(column=1, row=7)
+        self.showall.grid(column=7, row=1)
 
         # BOTTOM RIGHT FRAME
-        self.resourceresults = tk.LabelFrame(self.mainframe, text='', borderwidth=0)
-        self.resourceresults.grid(column=3, row=4, columnspan=40, sticky=tk.E)
+
+
+        self.resourceresults = tk.LabelFrame(self.mainframe, text='', borderwidth=4)
+        self.resourceresults.grid(column=0, row=5, columnspan=40, sticky=tk.W)
+
 
         self.scollresources = tk.Scrollbar(self.resourceresults)
-        self.scollresources.grid(column=2, row=0, sticky=tk.N + tk.S + tk.W)
+        self.scollresources.grid(column=2, row=2, sticky=tk.N + tk.S + tk.W)
 
         self.resource_list = ttk.Treeview(self.resourceresults, height=10, selectmode='extended',
                                           columns=('Title', 'Author', 'Year',
@@ -457,14 +458,14 @@ class LinkResources(tk.Frame):
         self.resource_list.configure(yscrollcommand=self.scollresources.set)
 
         self.resource_list['columns'] = ('Title', 'Author', 'Year', 'Pages', 'Language', 'Format')
-        self.resource_list.column('#0', width=1)
-        self.resource_list.column('0', width=250, anchor='w')
+        self.resource_list.column('#0', width=5)
+        self.resource_list.column('0', width=215, anchor='w')
         self.resource_list.column('1', width=150, anchor='w')
         self.resource_list.column('2', width=75, anchor='w')
         self.resource_list.column('3', width=60, anchor='w')
         self.resource_list.column('4', width=100, anchor='w')
         self.resource_list.column('5', width=100, anchor='w')
-        self.resource_list.grid(column=0, row=0, sticky=tk.W + tk.N + tk.E)
+        self.resource_list.grid(column=0, row=2, sticky=tk.W + tk.N + tk.E)
 
         self.resource_list.heading('0', text='Title', anchor='w')
         self.resource_list.heading('1', text='Author(s)', anchor='w')
@@ -482,7 +483,7 @@ class LinkResources(tk.Frame):
 
         self.home = ttk.Button(self.mainframe, text='Home', command=lambda: controller.show_frame(HomePage))
         self.home.config(width=10, cursor='hand2')
-        self.home.grid(column=0, row=5, sticky=tk.N)
+        self.home.grid(column=0, row=10, sticky=tk.N)
 
     def select_resources(self, event):
         self.resources.clear()
@@ -1140,6 +1141,7 @@ if __name__ == "__main__":
     app = ProjectLibrary()
     app.title('Project Library')
     app.iconbitmap('project.ico')
+    #app.maxsize(900,500)
     app.mainloop()
 
 
