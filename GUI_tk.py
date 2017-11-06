@@ -26,7 +26,7 @@ class ProjectLibrary(tk.Tk):
             self.frames[F] = frame
             frame.grid(row = 0, column = 0, sticky ='nsew')
 
-        self.show_frame(LinkResources)
+        self.show_frame(HomePage)
         
     def show_frame(self, cont):
         frame = self.frames[cont]
@@ -40,7 +40,7 @@ class HomePage(tk.Frame):
         self.label.grid(row= 0, column = 0, columnspan=20)
           
         self.topframe = tk.LabelFrame(self, text='', borderwidth=0)
-        self.topframe.grid(row=1, column=0, padx=200, columnspan=20)
+        self.topframe.grid(row=1, column=0, columnspan=20) # padx=200,
 
         self.firstframe =tk.LabelFrame(self.topframe, text='Project Menu', borderwidth=0, font=labelsfont)
         self.secondframe = tk.LabelFrame(self.topframe, text='Resource Menu', borderwidth=0, font=labelsfont)
@@ -88,7 +88,7 @@ class AddResource(tk.Frame):
         tk.Frame.__init__(self, parent)
 
         self.button_window = tk.LabelFrame(self, text='Resource Type')
-        self.button_window.grid(column=0, row=0, columnspan=4, padx=250, pady=100, sticky=tk.N+tk.S+tk.E+tk.W)
+        self.button_window.grid(column=0, row=0, columnspan=4, sticky=tk.N+tk.S+tk.E+tk.W) # padx=250, pady=100,
 
         self.AddAudioVideoButton = tk.Button(self.button_window, text='Audio\n and Video', width=20,height=5,
                                         command=lambda: controller.show_frame(AddAudioVideo))
@@ -255,13 +255,13 @@ class AddText(tk.Frame):
         self.resource_list['columns'] = ('Title', 'Author', 'Year', 'Pages',
                           'Publisher', 'Language', 'Notes')
         self.resource_list.column('#0', width=1)
-        self.resource_list.column('0', width=200, anchor='w')
+        self.resource_list.column('0', width=180, anchor='w')
         self.resource_list.column('1', width=150, anchor='w')
         self.resource_list.column('2', width=75, anchor='w')
         self.resource_list.column('3', width=60, anchor='w')
         self.resource_list.column('4', width=100, anchor='w')
-        self.resource_list.column('5', width=100, anchor='w')
-        self.resource_list.column('6', width=200, anchor='w')
+        self.resource_list.column('5', width=90, anchor='w')
+        self.resource_list.column('6', width=185, anchor='w')
         self.resource_list.grid(column=0, row=1)
 
         self.resource_list.heading('0', text='Title', anchor='w')
@@ -569,7 +569,7 @@ class Projects(tk.Frame):
         main_frame = tk.LabelFrame(self, text='',borderwidth=4)
         main_frame.grid(column=0, row=0, columnspan=10, sticky=tk.W+tk.E+tk.N+tk.S)
 
-        self.label = tk.Label(main_frame, text='Project Details', font=labelsfont)
+        self.label = tk.Label(main_frame, text='New Project')
         self.label.grid(column=0, row=0, columnspan=10)
 
         # FRAMES
@@ -599,17 +599,17 @@ class Projects(tk.Frame):
         # Top Left frame
 
         self.project_name_label = tk.Label(self.topleftframe, text='Project Name')
-        self.project_name_entry = ttk.Entry(self.topleftframe, width=60, textvariable=self.project_name)
+        self.project_name_entry = ttk.Entry(self.topleftframe, width=40, textvariable=self.project_name)
 
         self.description_label = tk.Label(self.topleftframe, text='Description')
-        self.description_entry = ttk.Entry(self.topleftframe, width=60, textvariable=self.description)
+        self.description_entry = ttk.Entry(self.topleftframe, width=40, textvariable=self.description)
 
         self.project_type_label = tk.Label(self.topleftframe, text='Project Type')
         self.project_type_entry = tk.OptionMenu(self.topleftframe, self.choices, *self.project_category_options)
         self.project_type_entry.configure(width=20)
 
         self.new_projecttype_label = tk.Label(self.topleftframe, text='New Project Type')
-        self.new_projecttype = ttk.Entry(self.topleftframe, width=60, textvariable=self.add_projecttype)
+        self.new_projecttype = ttk.Entry(self.topleftframe, width=40, textvariable=self.add_projecttype)
 
         self.project_name_label.grid(column=0, row=1, sticky=tk.W)
         self.project_name_entry.grid(column=1, row=1, columnspan=3, sticky=tk.W)
@@ -620,9 +620,9 @@ class Projects(tk.Frame):
         self.project_type_label.grid(column=0, row=4, sticky=tk.W)
         self.project_type_entry.grid(column=1, row=4, sticky=tk.W)
         self.new_projecttype_label.grid(column=0, row=5)
-        self.new_projecttype.grid(column=1, row=5, columnspan=3,)
+        self.new_projecttype.grid(column=1, row=5, columnspan=3, sticky=tk.W)
 
-        self.new_type_flag = tk.Checkbutton(self.topleftframe, text="Add new project type", variable=self.new_type)
+        self.new_type_flag = tk.Checkbutton(self.topleftframe, text="Add type", variable=self.new_type)
         self.new_type_flag.grid(column=2, row=4, padx=6, sticky=tk.W)
 
 
@@ -661,9 +661,9 @@ class Projects(tk.Frame):
         self.project_list.heading('3',text='Start date', anchor='w')
         self.project_list.heading('4', text='End date', anchor='w')
 
-        self.project_list.column('0', width=250, anchor='w')
+        self.project_list.column('0', width=200, anchor='w')
         self.project_list.column('1', width=150, anchor='w' )
-        self.project_list.column('2', width=250, anchor='w')
+        self.project_list.column('2', width=200, anchor='w')
         self.project_list.column('3', width=100, anchor='w')
         self.project_list.column('4', width=100,anchor='w')
         self.treeview = self.project_list
@@ -1109,7 +1109,7 @@ class SearchResource(tk.Frame):
                                                    'Pages', 'Publisher',
                                                    'Language', 'Notes'))
         self.resource_list['columns'] = ('Title', 'Author', 'Year', 'Pages',
-                                         'Publisher', 'Language', 'Notes')
+                                         'Publisher', 'Language')#, 'Notes')
         self.resource_list.column('#0', width=1)
         self.resource_list.column('0', width=250, anchor='w')
         self.resource_list.column('1', width=150, anchor='w')
@@ -1117,7 +1117,7 @@ class SearchResource(tk.Frame):
         self.resource_list.column('3', width=60, anchor='w')
         self.resource_list.column('4', width=100, anchor='w')
         self.resource_list.column('5', width=90, anchor='w')
-        self.resource_list.column('6', width=200, anchor='w')
+        #self.resource_list.column('6', width=200, anchor='w')
         self.resource_list.grid(column=0, row=1, padx=10)
 
         self.resource_list.heading('0', text='Title', anchor='w')
@@ -1126,7 +1126,7 @@ class SearchResource(tk.Frame):
         self.resource_list.heading('3', text='Pages', anchor='w')
         self.resource_list.heading('4', text='Publisher', anchor='w')
         self.resource_list.heading('5', text='Language', anchor='w')
-        self.resource_list.heading('6', text='Notes', anchor='w')
+        #self.resource_list.heading('6', text='Notes', anchor='w')
 
         self.treeview = self.resource_list
 
@@ -1141,7 +1141,7 @@ if __name__ == "__main__":
     app = ProjectLibrary()
     app.title('Project Library')
     app.iconbitmap('project.ico')
-    #app.maxsize(900,500)
+    app.maxsize(900,750)
     app.mainloop()
 
 
