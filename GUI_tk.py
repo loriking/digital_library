@@ -26,7 +26,7 @@ class ProjectLibrary(tk.Tk):
             self.frames[F] = frame
             frame.grid(row = 0, column = 0, sticky ='nsew')
 
-        self.show_frame(AddMedia)
+        self.show_frame(AddText)
         
     def show_frame(self, cont):
         frame = self.frames[cont]
@@ -192,7 +192,7 @@ class AddText(tk.Frame):
         self.add_language_entry=ttk.Entry(topcenterframe, width=25, textvariable =self.new_lang)
 
         self.notes_label = tk.Label(topcenterframe, text='Notes')
-        self.notes_entry = ttk.Entry(topcenterframe, width=61, textvariable =self.notes)
+        self.notes_entry = ttk.Entry(topcenterframe, width=63, textvariable =self.notes)
 
         self.subject_label = tk.Label(topleftframe, text='Subject')
         self.subject_entry = ttk.Entry(topleftframe, width=61, textvariable=self.subject)
@@ -239,7 +239,7 @@ class AddText(tk.Frame):
 
         self.addtextresource = tk.Button(middleframe, text='Save', command=lambda: self.new_textresource())
         self.addtextresource.config(width=12, cursor='hand2')
-        self.addtextresource.grid(column=7, row=0,sticky=tk.E+tk.N)
+        self.addtextresource.grid(column=7, row=0,padx=2,sticky=tk.E+tk.N)
 
 
         # Bottom frame
@@ -264,8 +264,8 @@ class AddText(tk.Frame):
         self.resource_list.column('3', width=60, anchor='w')
         self.resource_list.column('4', width=100, anchor='w')
         self.resource_list.column('5', width=90, anchor='w')
-        self.resource_list.column('6', width=195, anchor='w')
-        self.resource_list.grid(column=0, row=1)
+        self.resource_list.column('6', width=200, anchor='w')
+        self.resource_list.grid(column=0, row=1, sticky=tk.E)
 
         self.resource_list.heading('0', text='Title', anchor='w')
         self.resource_list.heading('1', text='Author(s)', anchor='w')
@@ -373,6 +373,10 @@ class LinkResources(tk.Frame):
         self.resultsframe = tk.LabelFrame(self.mainframe, text='', borderwidth=4)
         self.resultsframe.grid(column=0, row=2, sticky=tk.E)
 
+        self.clearbutton = ttk.Button(self.resultsframe, text='Clear project')#, command=lambda: self.search_resources())
+        self.clearbutton.config( cursor='hand2')
+        self.clearbutton.grid(column=0, row=10, pady=5, sticky=tk.E)
+
         self.scrollresults = tk.Scrollbar(self.resultsframe)
         self.scrollresults.grid(column=1, row=4, sticky=tk.N +tk.S + tk.W)
 
@@ -412,39 +416,45 @@ class LinkResources(tk.Frame):
         self.searchresourceframe = tk.LabelFrame(self.mainframe, text='', borderwidth=4)
         self.searchresourceframe.grid( column=0, row=4, columnspan=3, sticky=tk.N+tk.W+tk.E)
 
-        self.subjectbox_label = tk.Label(self.searchresourceframe, text='Search by subject')
+        self.media_type_frame = tk.LabelFrame(self.searchresourceframe, text='', borderwidth=3)
+        self.media_type_frame.grid(rowspan=2, column=4, row=0, padx=10, sticky=tk.E)
+
+        self.media_button_frame = tk.LabelFrame(self.searchresourceframe, text='', borderwidth=0)
+        self.media_button_frame.grid(rowspan=2, column=6, row=0,sticky=tk.E)
+
+        self.subjectbox_label = tk.Label(self.searchresourceframe, text='Enter search keyword')
         self.subjectbox_label.grid(column=0, row=0, sticky=tk.W)
-        self.subjectbox = tk.Entry(self.searchresourceframe, width=28, textvariable=self.resource_subject)
-        self.subjectbox.grid(columnspan=5, column=1, row=0, sticky=tk.W)
+        self.subjectbox = tk.Entry(self.searchresourceframe, width=32, textvariable=self.resource_subject)
+        self.subjectbox.grid(column=1, row=0, sticky=tk.W)
 
-        self.searchbutton = ttk.Button(self.searchresourceframe, text='Search', command=lambda: self.search_resources())
+        self.searchbutton = ttk.Button(self.media_button_frame, text='Search', command=lambda: self.search_resources())
         self.searchbutton.config(width=10, cursor='hand2')
-        self.searchbutton.grid(column=4, row=0, padx=5, pady=5, sticky=tk.E)
+        self.searchbutton.grid(column=0, row=2, padx=5, pady=5, sticky=tk.E)
 
 
-        self.sort_label = tk.Label(self.searchresourceframe, text='Limit by type')
-        self.sort_label.grid(column=0, row=1, sticky=tk.W)
+        self.sort_label = tk.Label(self.searchresourceframe, text='Resource type:')
+        self.sort_label.grid(column=3, row=0, padx=5, sticky=tk.W)
 
-        self.audio_rb = tk.Radiobutton(self.searchresourceframe, text='Audio and Video', variable=self.media_type,
-                                       value='Audio and Video', command= self.limit_resources)
-        self.book_rb = tk.Radiobutton(self.searchresourceframe, text='Texts', variable=self.media_type, value='Texts',
+        self.audiovideo_rb = tk.Radiobutton(self.media_type_frame, text='Audio and Video', variable=self.media_type,
+                                       value=1, command= self.limit_resources)
+        self.courses_rb = tk.Radiobutton(self.media_type_frame, text='Courses', variable=self.media_type, value=2,
                                        command= self.limit_resources)
-        self.course_rb = tk.Radiobutton(self.searchresourceframe, text='Courses', variable=self.media_type, value='Courses',
+        self.onlinemedia_rb = tk.Radiobutton(self.media_type_frame, text='Online Media', variable=self.media_type, value=3,
                                        command= self.limit_resources)
-        self.interactive_rb = tk.Radiobutton(self.searchresourceframe, text='Interactive Media', variable=self.media_type,
-                                             value='Interactive Media', command= self.limit_resources)
-        self.webdocs_rb = tk.Radiobutton(self.searchresourceframe, text='Web docs', variable=self.media_type,
-                                         value='Web docs', command= self.limit_resources)
+        self.images_rb = tk.Radiobutton(self.media_type_frame, text='Images', variable=self.media_type,
+                                             value=4, command= self.limit_resources)
+        self.interactive_rb = tk.Radiobutton(self.media_type_frame, text='Interactive Media',
+                                             variable=self.media_type,
+                                             value=5, command=self.limit_resources)
+        self.texts_rb = tk.Radiobutton(self.media_type_frame, text='Books and Texts', variable=self.media_type,
+                                         value=6, command= self.limit_resources)
 
-        self.audio_rb.grid(column=2, row=1, sticky=tk.W)
-        self.book_rb.grid(column=3, row=1, sticky=tk.W)
-        self.course_rb.grid(column=4, row=1, sticky=tk.W)
-        self.interactive_rb.grid(column=5, row=1, sticky=tk.W)
-        self.webdocs_rb.grid( column=6, row=1, sticky=tk.W)
-
-        self.showall = ttk.Button(self.searchresourceframe, text='Show All')
-        self.showall.config(width=10, cursor='hand2')
-        self.showall.grid(column=7, row=1)
+        self.audiovideo_rb.grid(column=0, row=0, sticky=tk.W)
+        self.texts_rb.grid(column=1, row=0, sticky=tk.W)
+        self.courses_rb.grid(column=2, row=0, sticky=tk.W)
+        self.onlinemedia_rb.grid(column=2, row=1, sticky=tk.W)
+        self.images_rb.grid(column=0, row=1, sticky=tk.W)
+        self.interactive_rb.grid(column=1, row=1, sticky=tk.W)
 
         # BOTTOM RIGHT FRAME
 
@@ -934,7 +944,7 @@ class AddCourse(AddMedia):
 
     def create_values(self):
         AddMedia.window_header = 'Online Courses'
-        AddMedia.b2L = 'Teacher'
+        AddMedia.b2L = 'Instructor'
         AddMedia.b3L = 'Start date'
         AddMedia.b4L = 'Subject'
 
