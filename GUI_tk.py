@@ -941,7 +941,7 @@ class AddCourse(AddMedia):
 
         AddMedia.media_choice1 = 'Audio'
         AddMedia.media_choice2 = 'Video'
-        AddMedia.media_choice3 = 'Other'
+        AddMedia.media_choice3 = 'Classroom'
 
         return AddMedia.c1, AddMedia.c2, AddMedia.c3, AddMedia.c4, AddMedia.c5, AddMedia.c6, AddMedia.window_header, \
                AddMedia.b2L, AddMedia.b3L, AddMedia.b4L, AddMedia.b1R, AddMedia.b2R, AddMedia.b3R, AddMedia.b4R, \
@@ -1022,8 +1022,8 @@ class AddInteractiveMedia(AddMedia):
         AddMedia.c4 = 'Format'
         AddMedia.c5 = 'Type'
         AddMedia.c6 = 'URL'
-        AddMedia.media_choice1 = 'Audio'
-        AddMedia.media_choice2 = 'Video'
+        AddMedia.media_choice1 = 'Interactive Fiction'
+        AddMedia.media_choice2 = 'Video game'
         AddMedia.media_choice3 = 'Other'
 
         return AddMedia.c1, AddMedia.c2, AddMedia.c3, AddMedia.c4, AddMedia.c5, AddMedia.c6, AddMedia.window_header, \
