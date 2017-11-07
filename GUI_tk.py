@@ -133,7 +133,10 @@ class AddText(tk.Frame):
         middleframe.grid(columnspan=20, column=7, row=2, sticky=tk.E+tk.N)
 
         bottomframe = tk.LabelFrame(self, text="", borderwidth=4)
-        bottomframe.grid(column=0, row=3, pady=10)
+        bottomframe.grid(column=0, row=3, pady=5)
+
+        buttonsframe = tk.LabelFrame(self, text="", borderwidth=0)
+        buttonsframe.grid(column=0, row=4)#, sticky=tk.W+tk.E+tk.N)
 
         self.label = tk.Label(header_frame, text='New Text')
         self.label.grid(column=0, row=1, pady=5)
@@ -276,14 +279,18 @@ class AddText(tk.Frame):
         self.list_resources()
         self.update_entry_widgets()
 
-        self.home=tk.Button(bottomframe, text='Home', command=lambda: controller.show_frame(HomePage))
+        self.home=tk.Button(buttonsframe, text='Home', command=lambda: controller.show_frame(HomePage))
         self.home.config(width=15, cursor='hand2')
-        self.home.grid(column=0, row=2, padx=10, sticky=tk.W)
+        self.home.grid(column=1, row=0, padx=10, sticky=tk.W+tk.E)
 
-        self.searchresource = tk.Button(bottomframe, text='Search Resources',
+        self.back_button = tk.Button(buttonsframe, text='Back', command=lambda: controller.show_frame(AddResource))
+        self.back_button.config(width=15, cursor='hand2')
+        self.back_button.grid(column=0, row=0, padx=10, sticky=tk.W)
+
+        self.searchresource = tk.Button(buttonsframe, text='Search Resources',
                                      command=lambda: controller.show_frame(SearchResource))
         self.searchresource.config(width=15, cursor='hand2')
-        self.searchresource.grid(column=0, row=3, padx=10, sticky=tk.W)
+        self.searchresource.grid(column=2, row=0, padx=10, sticky=tk.E)
 
     def list_resources(self):
         for i in self.resource_list.get_children():
@@ -758,10 +765,14 @@ class AddMedia(tk.Frame):
         self.home.config(width=15, cursor='hand2')
         self.home.grid(column=0, row=2, padx=10, sticky=tk.W)
 
+        self.back_button = tk.Button(self.bottomleft, text='Back', command=lambda:controller.show_frame(AddResource))
+        self.back_button.config(width=15, cursor='hand2')
+        self.back_button.grid(column=1, row=2, padx=10, sticky=tk.W)
+
         # Save resource button
         self.save_resource = tk.Button(self.bottomleft, text='Save', command=lambda: self.save_data())
         self.save_resource.config(width=15, cursor='hand2')
-        self.save_resource.grid(column=1, row=2, padx=10, sticky=tk.W)
+        #self.save_resource.grid(column=1, row=2, padx=10, sticky=tk.W)
 
         self.create_values()
 
