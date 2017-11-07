@@ -26,7 +26,7 @@ class ProjectLibrary(tk.Tk):
             self.frames[F] = frame
             frame.grid(row = 0, column = 0, sticky ='nsew')
 
-        self.show_frame(HomePage)
+        self.show_frame(AddMedia)
         
     def show_frame(self, cont):
         frame = self.frames[cont]
@@ -162,37 +162,37 @@ class AddText(tk.Frame):
         # Top left frame
 
         self.title_label=tk.Label(topleftframe, text='Title')
-        self.title_entry=ttk.Entry(topleftframe, width=50, textvariable =self.title)
+        self.title_entry=ttk.Entry(topleftframe, width=61, textvariable =self.title)
 
         self.author_label=tk.Label(topleftframe, text ='Author(s)')
-        self.author_entry = ttk.Entry(topleftframe,  width=50, textvariable=self.author)
+        self.author_entry = ttk.Entry(topleftframe,  width=61, textvariable=self.author)
 
         self.year_label=tk.Label(topleftframe, text ='Year')
-        self.year_entry = ttk.Entry(topleftframe, width=16, textvariable=self.year)
+        self.year_entry = ttk.Entry(topleftframe, width=25, textvariable=self.year)
 
         self.pages_label=tk.Label(topleftframe, width=5, text ='Pages')
-        self.pages_entry = ttk.Entry(topleftframe, width=16, textvariable=self.pages)
+        self.pages_entry = ttk.Entry(topleftframe, width=25, textvariable=self.pages)
 
         # Top center frame
         self.publisher_label = tk.Label(topcenterframe, text='Publisher')
         self.publisher_entry = tk.OptionMenu(topcenterframe, self.publisher,
                                                 *self.publisher_options)
-        self.publisher_entry.configure(width=10)
+        self.publisher_entry.configure(width=15)
 
-        self.add_publisher_entry = ttk.Entry(topcenterframe, width=16, textvariable =self.new_pub)
+        self.add_publisher_entry = ttk.Entry(topcenterframe, width=25, textvariable =self.new_pub)
 
         self.language_label = tk.Label(topcenterframe, text='Language')
         self.language_entry= tk.OptionMenu(topcenterframe, self.language,
                                                 *self.language_options)
-        self.language_entry.configure(width=10)
+        self.language_entry.configure(width=15)
 
-        self.add_language_entry=ttk.Entry(topcenterframe, width=16, textvariable =self.new_lang)
+        self.add_language_entry=ttk.Entry(topcenterframe, width=25, textvariable =self.new_lang)
 
         self.notes_label = tk.Label(topcenterframe, text='Notes')
-        self.notes_entry = ttk.Entry(topcenterframe, width=50, textvariable =self.notes)
+        self.notes_entry = ttk.Entry(topcenterframe, width=61, textvariable =self.notes)
 
         self.subject_label = tk.Label(topleftframe, text='Subject')
-        self.subject_entry = ttk.Entry(topleftframe, width=50, textvariable=self.subject)
+        self.subject_entry = ttk.Entry(topleftframe, width=61, textvariable=self.subject)
 
 
         # Place widgets
@@ -261,7 +261,7 @@ class AddText(tk.Frame):
         self.resource_list.column('3', width=60, anchor='w')
         self.resource_list.column('4', width=100, anchor='w')
         self.resource_list.column('5', width=90, anchor='w')
-        self.resource_list.column('6', width=185, anchor='w')
+        self.resource_list.column('6', width=195, anchor='w')
         self.resource_list.grid(column=0, row=1)
 
         self.resource_list.heading('0', text='Title', anchor='w')
@@ -385,11 +385,11 @@ class LinkResources(tk.Frame):
         self.project_list.heading('3', text='Start date', anchor='w')
         self.project_list.heading('4', text='End date', anchor='w')
 
-        self.project_list.column('0', width=200, anchor='w')
-        self.project_list.column('1',  width=100, anchor='w')
-        self.project_list.column('2', width=250, anchor='w')
-        self.project_list.column('3', width=75, anchor='w')
-        self.project_list.column('4', width=75, anchor='w')
+        self.project_list.column('0', width=250, anchor='w')
+        self.project_list.column('1',  width=110, anchor='w')
+        self.project_list.column('2', width=280, anchor='w')
+        self.project_list.column('3', width=100, anchor='w')
+        self.project_list.column('4', width=100, anchor='w')
         self.treeview_projects = self.project_list
         self.treeview_projects.bind('<ButtonRelease-1>', self.select_project)
 
@@ -459,12 +459,12 @@ class LinkResources(tk.Frame):
 
         self.resource_list['columns'] = ('Title', 'Author', 'Year', 'Pages', 'Language', 'Format')
         self.resource_list.column('#0', width=5)
-        self.resource_list.column('0', width=215, anchor='w')
+        self.resource_list.column('0', width=240, anchor='w')
         self.resource_list.column('1', width=150, anchor='w')
         self.resource_list.column('2', width=75, anchor='w')
-        self.resource_list.column('3', width=60, anchor='w')
+        self.resource_list.column('3', width=75, anchor='w')
         self.resource_list.column('4', width=100, anchor='w')
-        self.resource_list.column('5', width=100, anchor='w')
+        self.resource_list.column('5', width=200, anchor='w')
         self.resource_list.grid(column=0, row=2, sticky=tk.W + tk.N + tk.E)
 
         self.resource_list.heading('0', text='Title', anchor='w')
@@ -599,17 +599,17 @@ class Projects(tk.Frame):
         # Top Left frame
 
         self.project_name_label = tk.Label(self.topleftframe, text='Project Name')
-        self.project_name_entry = ttk.Entry(self.topleftframe, width=40, textvariable=self.project_name)
+        self.project_name_entry = ttk.Entry(self.topleftframe, width=61, textvariable=self.project_name)
 
         self.description_label = tk.Label(self.topleftframe, text='Description')
-        self.description_entry = ttk.Entry(self.topleftframe, width=40, textvariable=self.description)
+        self.description_entry = ttk.Entry(self.topleftframe, width=61, textvariable=self.description)
 
         self.project_type_label = tk.Label(self.topleftframe, text='Project Type')
         self.project_type_entry = tk.OptionMenu(self.topleftframe, self.choices, *self.project_category_options)
         self.project_type_entry.configure(width=20)
 
         self.new_projecttype_label = tk.Label(self.topleftframe, text='New Project Type')
-        self.new_projecttype = ttk.Entry(self.topleftframe, width=40, textvariable=self.add_projecttype)
+        self.new_projecttype = ttk.Entry(self.topleftframe, width=61, textvariable=self.add_projecttype)
 
         self.project_name_label.grid(column=0, row=1, sticky=tk.W)
         self.project_name_entry.grid(column=1, row=1, columnspan=3, sticky=tk.W)
@@ -628,10 +628,10 @@ class Projects(tk.Frame):
 
         # Top right frame
         self.start_label = tk.Label(self.toprightframe, text='Start Date')
-        self.start_entry = ttk.Entry(self.toprightframe, width=50, textvariable=self.start_date)
+        self.start_entry = ttk.Entry(self.toprightframe, width=55, textvariable=self.start_date)
 
         self.finish_label = tk.Label(self.toprightframe, text='End Date')
-        self.finish_entry = ttk.Entry(self.toprightframe, width=50, textvariable=self.end_date)
+        self.finish_entry = ttk.Entry(self.toprightframe, width=55, textvariable=self.end_date)
 
         self.start_label.grid(column=0, row=1, sticky=tk.W)
         self.start_entry.grid(column=1, row=1,  sticky=tk.W)
@@ -661,9 +661,9 @@ class Projects(tk.Frame):
         self.project_list.heading('3',text='Start date', anchor='w')
         self.project_list.heading('4', text='End date', anchor='w')
 
-        self.project_list.column('0', width=200, anchor='w')
+        self.project_list.column('0', width=250, anchor='w')
         self.project_list.column('1', width=150, anchor='w' )
-        self.project_list.column('2', width=200, anchor='w')
+        self.project_list.column('2', width=250, anchor='w')
         self.project_list.column('3', width=100, anchor='w')
         self.project_list.column('4', width=100,anchor='w')
         self.treeview = self.project_list
@@ -727,8 +727,8 @@ class AddMedia(tk.Frame):
         self.box3R = tk.StringVar()
         self.box4R = tk.StringVar()
 
-        self.audio_video = tk.IntVar()
-        self.audio_video.set('?')
+        self.media_buttons = tk.IntVar()
+        self.media_buttons.set('?')
 
         # Frames
 
@@ -740,6 +740,9 @@ class AddMedia(tk.Frame):
 
         self.topright = tk.LabelFrame(self.mainframe, text="", borderwidth=3)
         self.topright.grid(column=1, row=1, sticky=tk.W + tk.E)
+
+        self.center_leftframe = tk.LabelFrame(self.mainframe, text='', borderwidth=3)
+        self.center_leftframe.grid(column=0, row=2)
 
         self.bottomleft = tk.LabelFrame(self.mainframe, text="", borderwidth=3)
         self.bottomleft.grid(column=0, row=4, sticky=tk.W + tk.E)
@@ -767,7 +770,7 @@ class AddMedia(tk.Frame):
 
         self.place_widgets()
 
-        self.add_radio_buttons()
+        self.add_radio_buttons(self.media_choice1, self.media_choice2, self.media_choice3)
 
         self.display_resources(self.c1, self.c2, self.c3, self.c4, self.c5, self.c6)
 
@@ -789,8 +792,13 @@ class AddMedia(tk.Frame):
         self.c5 = 'Access date'
         self.c6 = 'URL'
 
+        self.media_choice1 = 'Audio'
+        self.media_choice2 = 'Video'
+        self.media_choice3 = 'Other'
+
         return self.window_header, self.b2L, self.b3L, self.b4L, self.b1R, self.b2R, self.b3R, \
-               self.b4R, self.c1, self.c2, self.c3, self.c4, self.c5, self.c6
+               self.b4R, self.c1, self.c2, self.c3, self.c4, self.c5, self.c6, self.media_choice1, \
+               self.media_choice2
 
     def create_top_frame_widgets(self, window_header, box2L, box3L, box4L, box1R, box2R, box3R, box4R):
 
@@ -800,68 +808,68 @@ class AddMedia(tk.Frame):
         # Top left frame
 
         self.title_label = tk.Label(self.topleft, text='Title')
-        self.title_entry = tk.Entry(self.topleft, width=50, textvariable=self.box1L)
+        self.title_entry = tk.Entry(self.topleft, width=60, textvariable=self.box1L)
 
         self.box_2_L = tk.Label(self.topleft, text=box2L)
-        self.box_2_L_entry = tk.Entry(self.topleft, width=50, textvariable=self.box2L)
+        self.box_2_L_entry = tk.Entry(self.topleft, width=60, textvariable=self.box2L)
 
         self.box_3_L = tk.Label(self.topleft, text=box3L)
-        self.box_3_L_entry = tk.Entry(self.topleft, width=50, textvariable=self.box3L)
+        self.box_3_L_entry = tk.Entry(self.topleft, width=60, textvariable=self.box3L)
 
         self.box_4_L = tk.Label(self.topleft, text=box4L)
-        self.box_4_L_entry = tk.Entry(self.topleft, width=50, textvariable=self.box4L)
+        self.box_4_L_entry = tk.Entry(self.topleft, width=60, textvariable=self.box4L)
 
         self.box_1_R = tk.Label(self.topright, text=box1R)
-        self.box_1_R_entry = tk.Entry(self.topright, width=50, textvariable=self.box1R)
+        self.box_1_R_entry = tk.Entry(self.topright, width=60, textvariable=self.box1R)
 
         self.box_2_R = tk.Label(self.topright, text=box2R)
-        self.box_2_R_entry = tk.Entry(self.topright, width=50, textvariable=self.box2R)
+        self.box_2_R_entry = tk.Entry(self.topright, width=60, textvariable=self.box2R)
 
         self.box_3_R = tk.Label(self.topright, text=box3R)
-        self.box_3_R_entry = tk.Entry(self.topright, width=50, textvariable=self.box3R)
+        self.box_3_R_entry = tk.Entry(self.topright, width=60, textvariable=self.box3R)
 
         self.box_4_R = tk.Label(self.topright, text=box4R)
-        self.box_4_R_entry = tk.Entry(self.topright, width=50, textvariable=self.box4R)
+        self.box_4_R_entry = tk.Entry(self.topright, width=60, textvariable=self.box4R)
 
     def place_widgets(self):
         self.window_title.grid(column=0, row=0, columnspan=2)
 
-        self.title_label.grid(column=0, row=0)
-        self.title_entry.grid(column=1, row=0)
+        self.title_label.grid(column=0, row=0, sticky=tk.W)
+        self.title_entry.grid(column=1, row=0, sticky=tk.W)
 
-        self.box_2_L.grid(column=0, row=1)
-        self.box_2_L_entry.grid(column=1, row=1)
+        self.box_2_L.grid(column=0, row=1, sticky=tk.W)
+        self.box_2_L_entry.grid(column=1, row=1, sticky=tk.W)
 
-        self.box_3_L.grid(column=0, row=2)
-        self.box_3_L_entry.grid(column=1, row=2)
+        self.box_3_L.grid(column=0, row=2, sticky=tk.W)
+        self.box_3_L_entry.grid(column=1, row=2, sticky=tk.W)
 
-        self.box_4_L.grid(column=0, row=3)
-        self.box_4_L_entry.grid(column=1, row=3)
+        self.box_4_L.grid(column=0, row=3, sticky=tk.W)
+        self.box_4_L_entry.grid(column=1, row=3, sticky=tk.W)
 
-        self.box_1_R.grid(column=0, row=0)
-        self.box_1_R_entry.grid(column=1, row=0)
+        self.box_1_R.grid(column=0, row=0, sticky=tk.W)
+        self.box_1_R_entry.grid(column=1, row=0, sticky=tk.W)
 
-        self.box_2_R.grid(column=0, row=1)
-        self.box_2_R_entry.grid(column=1, row=1)
+        self.box_2_R.grid(column=0, row=1, sticky=tk.W)
+        self.box_2_R_entry.grid(column=1, row=1, sticky=tk.W)
 
-        self.box_3_R.grid(column=0, row=2)
-        self.box_3_R_entry.grid(column=1, row=2)
+        self.box_3_R.grid(column=0, row=2, sticky=tk.W)
+        self.box_3_R_entry.grid(column=1, row=2, sticky=tk.W)
 
-        self.box_4_R.grid(column=0, row=3)
-        self.box_4_R_entry.grid(column=1, row=3)
+        self.box_4_R.grid(column=0, row=3, sticky=tk.W)
+        self.box_4_R_entry.grid(column=1, row=3, sticky=tk.W)
 
 
-    def add_radio_buttons(self):
-        self.center_leftframe = tk.LabelFrame(self.mainframe, text='', borderwidth=3)
-        self.center_leftframe.grid(column=0, row=2)
+    def add_radio_buttons(self, media_type1, media_type2, media_type3 ):
+        # self.center_leftframe = tk.LabelFrame(self.mainframe, text='', borderwidth=3)
+        # self.center_leftframe.grid(column=0, row=2)
 
-        self.media_audio = tk.Radiobutton(self.center_leftframe, text='Audio', variable=self.audio_video)
-        self.media_audio.grid(column=1, row=0)
+        self.media_1 = tk.Radiobutton(self.center_leftframe, text=media_type1, variable=self.media_buttons)
+        self.media_1.grid(column=1, row=0)
 
-        self.media_video = tk.Radiobutton(self.center_leftframe, text='Video', variable=self.audio_video)
-        self.media_video.grid(column=2, row=0)
+        self.media_2 = tk.Radiobutton(self.center_leftframe, text=media_type2, variable=self.media_buttons)
+        self.media_2.grid(column=2, row=0)
 
-        self.media_other = tk.Radiobutton(self.center_leftframe, text='Other', variable=self.audio_video)
+        self.media_other = tk.Radiobutton(self.center_leftframe, text=media_type3, variable=self.media_buttons)
         self.media_other.grid(column=3, row=0)
 
 
@@ -877,8 +885,8 @@ class AddMedia(tk.Frame):
 
         webdocs_list['columns'] = (col1, col2, col3, col4, col5, col6)
         webdocs_list.column('#0', width=1)
-        webdocs_list.column('0', width=150, anchor='w')
-        webdocs_list.column('1', width=100, anchor='w')
+        webdocs_list.column('0', width=200, anchor='w')
+        webdocs_list.column('1', width=180, anchor='w')
         webdocs_list.column('2', width=75, anchor='w')
         webdocs_list.column('3', width=75, anchor='w')
         webdocs_list.column('4', width=75, anchor='w')
@@ -897,7 +905,7 @@ class AddMedia(tk.Frame):
 
     def save_data(self):
         data.add_online_media(self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(), self.box1R.get(),
-                              self.box2R.get(), self.box3R.get(), self.box4R.get(), self.audio_video.get())
+                              self.box2R.get(), self.box3R.get(), self.box4R.get(), self.media_buttons.get())
 
 
 class AddCourse(AddMedia):
@@ -931,12 +939,17 @@ class AddCourse(AddMedia):
         AddMedia.c5 = 'Platform'
         AddMedia.c6 = 'URL'
 
+        AddMedia.media_choice1 = 'Audio'
+        AddMedia.media_choice2 = 'Video'
+        AddMedia.media_choice3 = 'Other'
+
         return AddMedia.c1, AddMedia.c2, AddMedia.c3, AddMedia.c4, AddMedia.c5, AddMedia.c6, AddMedia.window_header, \
-               AddMedia.b2L, AddMedia.b3L, AddMedia.b4L, AddMedia.b1R, AddMedia.b2R, AddMedia.b3R, AddMedia.b4R
+               AddMedia.b2L, AddMedia.b3L, AddMedia.b4L, AddMedia.b1R, AddMedia.b2R, AddMedia.b3R, AddMedia.b4R, \
+               AddMedia.media_choice1, AddMedia.media_choice2, AddMedia.media_choice3
 
     def save_data(self):
         data.add_online_media(self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(), self.box1R.get(),
-                              self.box2R.get(), self.box3R.get(), self.box4R.get(), self.audio_video.get())
+                              self.box2R.get(), self.box3R.get(), self.box4R.get(), self.media_buttons.get())
         pass
 
 class AddAudioVideo(AddMedia):
@@ -967,13 +980,17 @@ class AddAudioVideo(AddMedia):
         AddMedia.c4 = 'Format'
         AddMedia.c5 = 'Type'
         AddMedia.c6 = 'URL'
+        AddMedia.media_choice1 = 'Audio'
+        AddMedia.media_choice2 = 'Video'
+        AddMedia.media_choice3 = 'Other'
 
         return AddMedia.c1, AddMedia.c2, AddMedia.c3, AddMedia.c4, AddMedia.c5, AddMedia.c6, AddMedia.window_header, \
-               AddMedia.b2L, AddMedia.b3L, AddMedia.b4L, AddMedia.b1R, AddMedia.b2R, AddMedia.b3R, AddMedia.b4R
+               AddMedia.b2L, AddMedia.b3L, AddMedia.b4L, AddMedia.b1R, AddMedia.b2R, AddMedia.b3R, AddMedia.b4R, \
+               AddMedia.media_choice1, AddMedia.media_choice2, AddMedia.media_choice3
 
     def save_data(self):
         data.add_online_media(self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(), self.box1R.get(),
-                              self.box2R.get(), self.box3R.get(), self.box4R.get(), self.audio_video.get())
+                              self.box2R.get(), self.box3R.get(), self.box4R.get(), self.media_buttons.get())
         pass
 
 
@@ -1005,13 +1022,16 @@ class AddInteractiveMedia(AddMedia):
         AddMedia.c4 = 'Format'
         AddMedia.c5 = 'Type'
         AddMedia.c6 = 'URL'
+        AddMedia.media_choice1 = 'Audio'
+        AddMedia.media_choice2 = 'Video'
+        AddMedia.media_choice3 = 'Other'
 
         return AddMedia.c1, AddMedia.c2, AddMedia.c3, AddMedia.c4, AddMedia.c5, AddMedia.c6, AddMedia.window_header, \
-               AddMedia.b2L, AddMedia.b3L, AddMedia.b4L, AddMedia.b1R, AddMedia.b2R, AddMedia.b3R, AddMedia.b4R
-
+               AddMedia.b2L, AddMedia.b3L, AddMedia.b4L, AddMedia.b1R, AddMedia.b2R, AddMedia.b3R, AddMedia.b4R, \
+               AddMedia.media_choice1, AddMedia.media_choice2, AddMedia.media_choice3
     def save_data(self):
         data.add_online_media(self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(), self.box1R.get(),
-                              self.box2R.get(), self.box3R.get(), self.box4R.get(), self.audio_video.get())
+                              self.box2R.get(), self.box3R.get(), self.box4R.get(), self.media_buttons.get())
         pass
 
 
@@ -1033,7 +1053,7 @@ class AddImages(AddMedia):
         AddMedia.b3L = 'Format'
         AddMedia.b4L = 'Date Created'
         AddMedia.b1R = 'Material'
-        AddMedia.b2R = 'Size'
+        AddMedia.b2R = 'Dimensions'
         AddMedia.b3R = 'Location'
         AddMedia.b4R = 'Comments'
 
@@ -1042,15 +1062,19 @@ class AddImages(AddMedia):
         AddMedia.c2 = 'Creator'
         AddMedia.c3 = 'Format'
         AddMedia.c4 = 'Dimensions'
-        AddMedia.c5 = 'Creation date'
+        AddMedia.c5 = 'Date'
         AddMedia.c6 = 'Location'
+        AddMedia.media_choice1 = 'Photo'
+        AddMedia.media_choice2 = 'Clip art'
+        AddMedia.media_choice3 = 'Sprite'
 
         return AddMedia.c1, AddMedia.c2, AddMedia.c3, AddMedia.c4, AddMedia.c5, AddMedia.c6, AddMedia.window_header, \
-               AddMedia.b2L, AddMedia.b3L, AddMedia.b4L, AddMedia.b1R, AddMedia.b2R, AddMedia.b3R, AddMedia.b4R
+               AddMedia.b2L, AddMedia.b3L, AddMedia.b4L, AddMedia.b1R, AddMedia.b2R, AddMedia.b3R, AddMedia.b4R, \
+               AddMedia.media_choice1, AddMedia.media_choice2, AddMedia.media_choice3
 
     def save_data(self):
         data.add_online_media(self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(), self.box1R.get(),
-                              self.box2R.get(), self.box3R.get(), self.box4R.get(), self.audio_video.get())
+                              self.box2R.get(), self.box3R.get(), self.box4R.get(), self.media_buttons.get())
         pass
 
 class SearchResource(tk.Frame):
@@ -1141,7 +1165,7 @@ if __name__ == "__main__":
     app = ProjectLibrary()
     app.title('Project Library')
     app.iconbitmap('project.ico')
-    app.maxsize(900,750)
+    app.maxsize(890,750)
     app.mainloop()
 
 
