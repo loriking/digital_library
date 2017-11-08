@@ -26,7 +26,7 @@ class ProjectLibrary(tk.Tk):
             self.frames[F] = frame
             frame.grid(row = 0, column = 0, sticky ='nsew')
 
-        self.show_frame(HomePage)
+        self.show_frame(LinkResources)
         
     def show_frame(self, cont):
         frame = self.frames[cont]
@@ -345,14 +345,20 @@ class LinkResources(tk.Frame):
         self.project_type = tk.StringVar()
         self.resource_subject = tk.StringVar()
 
-        self.media_type = tk.StringVar()
+        self.media_type = tk.IntVar()
         self.media_type.set("?")
+
+        self.columns = ()
 
         self.searchheader = ttk.Label(self, text='Find Projects')
         self.searchheader.grid(column=0, row=0)
 
         self.mainframe = tk.LabelFrame(self, text='', borderwidth=4)
         self.mainframe.grid(column=0, row=1, sticky=tk.W + tk.E + tk.N)
+
+        self.home = ttk.Button(self.mainframe, text='Home', command=lambda: controller.show_frame(HomePage))
+        self.home.config(width=10, cursor='hand2')
+        self.home.grid(column=0, row=10, sticky=tk.N)
 
         # TOP LEFT FRAME
         self.projectframe = tk.LabelFrame(self.mainframe, text='', borderwidth=4)
@@ -376,6 +382,10 @@ class LinkResources(tk.Frame):
         self.clearbutton.config( cursor='hand2')
         self.clearbutton.grid(column=0, row=10, pady=5, sticky=tk.E)
 
+
+        # self.show_results()
+
+        # Project results
         self.scrollresults = tk.Scrollbar(self.resultsframe)
         self.scrollresults.grid(column=1, row=4, sticky=tk.N +tk.S + tk.W)
 
@@ -426,7 +436,8 @@ class LinkResources(tk.Frame):
         self.subjectbox = tk.Entry(self.searchresourceframe, width=32, textvariable=self.resource_subject)
         self.subjectbox.grid(column=1, row=0, sticky=tk.W)
 
-        self.searchbutton = ttk.Button(self.media_button_frame, text='Search', command=lambda: self.search_resources())
+        self.searchbutton = ttk.Button(self.media_button_frame, text='Search',
+                                       command=lambda:self.show_results())#command=lambda: self.search_resources())
         self.searchbutton.config(width=10, cursor='hand2')
         self.searchbutton.grid(column=0, row=2, padx=5, pady=5, sticky=tk.E)
 
@@ -435,18 +446,18 @@ class LinkResources(tk.Frame):
         self.sort_label.grid(column=3, row=0, padx=5, sticky=tk.W)
 
         self.audiovideo_rb = tk.Radiobutton(self.media_type_frame, text='Audio and Video', variable=self.media_type,
-                                       value=1, command= self.limit_resources)
-        self.courses_rb = tk.Radiobutton(self.media_type_frame, text='Courses', variable=self.media_type, value=2,
-                                       command= self.limit_resources)
-        self.onlinemedia_rb = tk.Radiobutton(self.media_type_frame, text='Online Media', variable=self.media_type, value=3,
-                                       command= self.limit_resources)
+                                       value=1)#, command= lambda:self.create_table_values(self.columns))
+        self.courses_rb = tk.Radiobutton(self.media_type_frame, text='Courses', variable=self.media_type, value=2)#,
+                                       #command= lambda:self.create_table_values(self.columns))#self.limit_resources)
+        self.onlinemedia_rb = tk.Radiobutton(self.media_type_frame, text='Online Media', variable=self.media_type,
+                                             value=3)#, command= lambda:self.create_table_values(self.columns))#self.limit_resources)
         self.images_rb = tk.Radiobutton(self.media_type_frame, text='Images', variable=self.media_type,
-                                             value=4, command= self.limit_resources)
+                                             value=4)#, command= lambda:self.create_table_values(self.columns))#self.limit_resources)
         self.interactive_rb = tk.Radiobutton(self.media_type_frame, text='Interactive Media',
-                                             variable=self.media_type,
-                                             value=5, command=self.limit_resources)
+                                             variable=self.media_type, value=5)#
+        # , command=lambda:self.create_table_values(self.columns))#self.limit_resources)
         self.texts_rb = tk.Radiobutton(self.media_type_frame, text='Books and Texts', variable=self.media_type,
-                                         value=6, command= self.limit_resources)
+                                         value=6)#, command= lambda:self.create_table_values(self.columns))#self.limit_resources)
 
         self.audiovideo_rb.grid(column=0, row=0, sticky=tk.W)
         self.texts_rb.grid(column=1, row=0, sticky=tk.W)
@@ -456,24 +467,28 @@ class LinkResources(tk.Frame):
         self.interactive_rb.grid(column=1, row=1, sticky=tk.W)
 
         # BOTTOM RIGHT FRAME
-
-
         self.resourceresults = tk.LabelFrame(self.mainframe, text='', borderwidth=4)
         self.resourceresults.grid(column=0, row=5, columnspan=40, sticky=tk.W)
 
+
+    def show_results(self):
+        column_names = self.create_table_values()
+
+        self.columns = ('Title', 'Author', 'Year', 'Pages', 'Language', 'Format')
 
         self.scollresources = tk.Scrollbar(self.resourceresults)
         self.scollresources.grid(column=2, row=2, sticky=tk.N + tk.S + tk.W)
 
         self.resource_list = ttk.Treeview(self.resourceresults, height=10, selectmode='extended',
-                                          columns=('Title', 'Author', 'Year',
-                                                   'Pages', 'Language', 'Format',
-                                                   'Abstract'))
+                                          columns=column_names )
+                                          # ('Title', 'Author', 'Year',
+                                          #          'Pages', 'Language', 'Format',
+                                          #          'Abstract'))
 
         self.scollresources.configure(orient="vertical", command=self.resource_list.yview)
         self.resource_list.configure(yscrollcommand=self.scollresources.set)
 
-        self.resource_list['columns'] = ('Title', 'Author', 'Year', 'Pages', 'Language', 'Format')
+        self.resource_list['columns'] = column_names#('Title', 'Author', 'Year', 'Pages', 'Language', 'Format')
         self.resource_list.column('#0', width=5)
         self.resource_list.column('0', width=240, anchor='w')
         self.resource_list.column('1', width=150, anchor='w')
@@ -483,12 +498,12 @@ class LinkResources(tk.Frame):
         self.resource_list.column('5', width=200, anchor='w')
         self.resource_list.grid(column=0, row=2, sticky=tk.W + tk.N + tk.E)
 
-        self.resource_list.heading('0', text='Title', anchor='w')
-        self.resource_list.heading('1', text='Author(s)', anchor='w')
-        self.resource_list.heading('2', text='Year', anchor='w')
-        self.resource_list.heading('3', text='Pages', anchor='w')
-        self.resource_list.heading('4', text='Language', anchor='w')
-        self.resource_list.heading('5', text='Format', anchor='w')
+        self.resource_list.heading('0', anchor='w', text=column_names[0])#'Title', anchor='w')
+        self.resource_list.heading('1', anchor='w', text=column_names[1])#text='Author(s)', anchor='w')
+        self.resource_list.heading('2', anchor='w', text=column_names[2])#text='Year', anchor='w')
+        self.resource_list.heading('3', anchor='w', text=column_names[3])#text='Pages', anchor='w')
+        self.resource_list.heading('4', anchor='w', text=column_names[4])# text='Language', anchor='w')
+        self.resource_list.heading('5', anchor='w', text=column_names[5])#text='Format', anchor='w')
         self.treeview_resources = self.resource_list
         self.treeview_resources.bind('<ButtonRelease-1>', self.select_resources)
 
@@ -497,9 +512,30 @@ class LinkResources(tk.Frame):
         self.go_to_resources.config(cursor='hand2')
         self.go_to_resources.grid(column=0, row=4, sticky=tk.E)
 
-        self.home = ttk.Button(self.mainframe, text='Home', command=lambda: controller.show_frame(HomePage))
-        self.home.config(width=10, cursor='hand2')
-        self.home.grid(column=0, row=10, sticky=tk.N)
+
+    def create_table_values(self):
+        if self.media_type.get() == 1:
+            column_names = ('Title', 'Creator', 'Duration', 'Format', 'Type', 'URL')
+            print('Audio/Video')
+        elif self.media_type.get() ==2:
+            column_names = ('Title', 'Instructor', 'Start date', 'End date', 'Platform', 'URL')
+            print('Courses')
+        elif self.media_type.get() ==3:
+            column_names = ('Title', 'Author', 'Date', 'Host', 'Access date', 'URL')
+            print('OnlineMedia')
+        elif self.media_type.get() ==4:
+            column_names = ('Title', 'Creator', 'Format', 'Dimensions', 'Date', 'Location')
+            print('Images')
+        elif self.media_type.get() == 5:
+            column_names = ('Title', 'Creator', 'Duration', 'Format', 'Type', 'URL')
+            print('Interactive Media')
+        elif self.media_type.get() ==6:
+            column_names = ('Title', 'Author', 'Year', 'Pages', 'Language', 'Format')
+            print('Books/texts')
+        else:
+            print('Not working')
+        return column_names
+
 
     def select_resources(self, event):
         self.resources.clear()
