@@ -26,7 +26,7 @@ class ProjectLibrary(tk.Tk):
             self.frames[F] = frame
             frame.grid(row = 0, column = 0, sticky ='nsew')
 
-        self.show_frame(LinkResources)
+        self.show_frame(AddAudioVideo)
         
     def show_frame(self, cont):
         frame = self.frames[cont]
@@ -776,7 +776,7 @@ class AddMedia(tk.Frame):
         # Frames
 
         self.mainframe = tk.LabelFrame(self, text='', borderwidth=4)
-        self.mainframe.grid(column=0, row=1, sticky=tk.N + tk.S + tk.W + tk.E)
+        self.mainframe.grid(column=0, row=1, columnspan=40, sticky=tk.N + tk.S + tk.W + tk.E)
 
         self.topleft = tk.LabelFrame(self.mainframe, text="", borderwidth=3)
         self.topleft.grid(column=0, row=1, sticky=tk.W + tk.E)
@@ -784,8 +784,11 @@ class AddMedia(tk.Frame):
         self.topright = tk.LabelFrame(self.mainframe, text="", borderwidth=3)
         self.topright.grid(column=1, row=1, sticky=tk.W + tk.E)
 
-        self.center_leftframe = tk.LabelFrame(self.mainframe, text='', borderwidth=3)
-        self.center_leftframe.grid(column=0, row=2)
+        self.center_leftframe = tk.LabelFrame(self.mainframe, text='', borderwidth=0)
+        self.center_leftframe.grid(column=0, row=2, sticky=tk.W)
+
+        self.center_frame = tk.LabelFrame(self.mainframe, text='', borderwidth=0)
+        self.center_frame.grid(column=1, row=2, sticky=tk.W+tk.E)
 
         self.bottomleft = tk.LabelFrame(self.mainframe, text="", borderwidth=3)
         self.bottomleft.grid(column=0, row=4, sticky=tk.W + tk.E)
@@ -806,9 +809,9 @@ class AddMedia(tk.Frame):
         self.back_button.grid(column=1, row=2, padx=10, sticky=tk.W)
 
         # Save resource button
-        self.save_resource = tk.Button(self.bottomleft, text='Save', command=lambda: self.save_data())
-        self.save_resource.config(width=15, cursor='hand2')
-        #self.save_resource.grid(column=1, row=2, padx=10, sticky=tk.W)
+        self.save_resource = ttk.Button(self.center_frame, text='Save', command=lambda: self.save_data())
+        self.save_resource.config(cursor='hand2')
+        self.save_resource.grid(column=4, row=0,  sticky=tk.E)
 
         self.create_values()
 
@@ -907,16 +910,17 @@ class AddMedia(tk.Frame):
 
 
     def add_radio_buttons(self, media_type1, media_type2, media_type3 ):
-        # self.center_leftframe = tk.LabelFrame(self.mainframe, text='', borderwidth=3)
-        # self.center_leftframe.grid(column=0, row=2)
 
-        self.media_1 = tk.Radiobutton(self.center_leftframe, text=media_type1, variable=self.media_buttons)
+        self.media_label = tk.Label(self.center_frame, text='Select type: ')
+        self.media_label.grid(column=0, row=0, sticky=tk.W)
+
+        self.media_1 = tk.Radiobutton(self.center_frame, text=media_type1, variable=self.media_buttons)
         self.media_1.grid(column=1, row=0)
 
-        self.media_2 = tk.Radiobutton(self.center_leftframe, text=media_type2, variable=self.media_buttons)
+        self.media_2 = tk.Radiobutton(self.center_frame, text=media_type2, variable=self.media_buttons)
         self.media_2.grid(column=2, row=0)
 
-        self.media_other = tk.Radiobutton(self.center_leftframe, text=media_type3, variable=self.media_buttons)
+        self.media_other = tk.Radiobutton(self.center_frame, text=media_type3, variable=self.media_buttons)
         self.media_other.grid(column=3, row=0)
 
 
@@ -1003,6 +1007,18 @@ class AddAudioVideo(AddMedia):
     def __init__(self, parent, controller):
         AddMedia.__init__(self, parent, controller)
 
+        self.language = tk.StringVar()
+        self.language_options = data.list_languages()
+        self.language.set('Select one')
+
+        self.language_label = tk.Label(self.center_leftframe, text='Language:')
+        self.language_entry = tk.OptionMenu(self.center_leftframe, self.language,
+                                            *self.language_options)
+        self.language_entry.configure(width=15)
+        self.language_label.grid(column=0, row=0)
+        self.language_entry.grid(column=1, row=0, sticky=tk.E)
+
+
         self.create_values()
 
         self.display_resources(AddMedia.c1, AddMedia.c2, AddMedia.c3, AddMedia.c4,
@@ -1010,6 +1026,7 @@ class AddAudioVideo(AddMedia):
 
         self.create_top_frame_widgets(AddMedia.window_header, AddMedia.b2L, AddMedia.b3L, AddMedia.b4L, \
                                       AddMedia.b1R, AddMedia.b2R, AddMedia.b3R, AddMedia.b4R)
+
 
     def create_values(self):
         AddMedia.window_header = 'Audio and Video'
@@ -1027,8 +1044,8 @@ class AddAudioVideo(AddMedia):
         AddMedia.c4 = 'Format'
         AddMedia.c5 = 'Type'
         AddMedia.c6 = 'URL'
-        AddMedia.media_choice1 = 'Music and Sounds'
-        AddMedia.media_choice2 = 'Podcasts'
+        AddMedia.media_choice1 = 'Music or Sound'
+        AddMedia.media_choice2 = 'Podcast'
         AddMedia.media_choice3 = 'Video'
 
         return AddMedia.c1, AddMedia.c2, AddMedia.c3, AddMedia.c4, AddMedia.c5, AddMedia.c6, AddMedia.window_header, \
