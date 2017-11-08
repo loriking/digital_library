@@ -97,7 +97,7 @@ class AddResource(tk.Frame):
                                         command=lambda: controller.show_frame(AddCourse))
         self.AddInteractiveMediaButton= tk.Button(self.button_window, text='Interactive\n Media',  width=20,height=5,
                                         command=lambda: controller.show_frame(AddInteractiveMedia))
-        self.AddOnlineMediaButton= tk.Button(self.button_window, text='Online Media', width=20,height=5,
+        self.AddOnlineMediaButton= tk.Button(self.button_window, text='Websites', width=20,height=5,
                                         command=lambda: controller.show_frame(AddMedia))
         self.AddImagesButton= tk.Button(self.button_window, text='Images', width=20,height=5,
                                         command=lambda: controller.show_frame(AddImages))
@@ -358,7 +358,7 @@ class LinkResources(tk.Frame):
 
         self.home = ttk.Button(self.mainframe, text='Home', command=lambda: controller.show_frame(HomePage))
         self.home.config(width=10, cursor='hand2')
-        self.home.grid(column=0, row=10, sticky=tk.N)
+        self.home.grid(column=0, row=10, padx=20, sticky=tk.E)
 
         # TOP LEFT FRAME
         self.projectframe = tk.LabelFrame(self.mainframe, text='', borderwidth=4)
@@ -378,18 +378,15 @@ class LinkResources(tk.Frame):
         self.resultsframe = tk.LabelFrame(self.mainframe, text='', borderwidth=4)
         self.resultsframe.grid(column=0, row=2, sticky=tk.E)
 
-        self.clearbutton = ttk.Button(self.resultsframe, text='Clear project')#, command=lambda: self.search_resources())
+        self.clearbutton = ttk.Button(self.resultsframe, text='Clear project')
         self.clearbutton.config( cursor='hand2')
         self.clearbutton.grid(column=0, row=10, pady=5, sticky=tk.E)
-
-
-        # self.show_results()
 
         # Project results
         self.scrollresults = tk.Scrollbar(self.resultsframe)
         self.scrollresults.grid(column=1, row=4, sticky=tk.N +tk.S + tk.W)
 
-        self.project_list = ttk.Treeview(self.resultsframe, height=4, selectmode='browse',
+        self.project_list = ttk.Treeview(self.resultsframe, height=2, selectmode='browse',
                                          columns=('Name', 'Type', 'Description', 'Start date', 'End date'))
 
         self.scrollresults.configure(orient="vertical", command=self.project_list.yview)
@@ -415,7 +412,7 @@ class LinkResources(tk.Frame):
 
         # MIDDLE FRAME
         self.middleframe = tk.LabelFrame(self.mainframe, text='', borderwidth=0)
-        self.middleframe.grid(columnspan=40, pady=10, column=0, row=3)
+        self.middleframe.grid(columnspan=40, pady=5, column=0, row=3)
 
         self.resourceresults_label = ttk.Label(self.middleframe, text='Available Resources')
         self.resourceresults_label.grid(columnspan=4, column=2, row=0, pady=5)
@@ -429,7 +426,7 @@ class LinkResources(tk.Frame):
         self.media_type_frame.grid(rowspan=2, column=4, row=0, padx=10, sticky=tk.E)
 
         self.media_button_frame = tk.LabelFrame(self.searchresourceframe, text='', borderwidth=0)
-        self.media_button_frame.grid(rowspan=2, column=6, row=0,sticky=tk.E)
+        self.media_button_frame.grid(rowspan=2, column=6, row=0, sticky=tk.E)
 
         self.subjectbox_label = tk.Label(self.searchresourceframe, text='Enter search keyword')
         self.subjectbox_label.grid(column=0, row=0, sticky=tk.W)
@@ -441,7 +438,6 @@ class LinkResources(tk.Frame):
         self.searchbutton.config(width=10, cursor='hand2')
         self.searchbutton.grid(column=0, row=2, padx=5, pady=5, sticky=tk.E)
 
-
         self.sort_label = tk.Label(self.searchresourceframe, text='Resource type:')
         self.sort_label.grid(column=3, row=0, padx=5, sticky=tk.W)
 
@@ -449,7 +445,7 @@ class LinkResources(tk.Frame):
                                        value=1)
         self.courses_rb = tk.Radiobutton(self.media_type_frame, text='Courses', variable=self.media_type, value=2)
 
-        self.onlinemedia_rb = tk.Radiobutton(self.media_type_frame, text='Online Media', variable=self.media_type,
+        self.websites_rb = tk.Radiobutton(self.media_type_frame, text='Websites', variable=self.media_type,
                                              value=3)
         self.images_rb = tk.Radiobutton(self.media_type_frame, text='Images', variable=self.media_type,
                                              value=4)
@@ -461,7 +457,7 @@ class LinkResources(tk.Frame):
         self.audiovideo_rb.grid(column=0, row=0, sticky=tk.W)
         self.texts_rb.grid(column=1, row=0, sticky=tk.W)
         self.courses_rb.grid(column=2, row=0, sticky=tk.W)
-        self.onlinemedia_rb.grid(column=2, row=1, sticky=tk.W)
+        self.websites_rb.grid(column=2, row=1, sticky=tk.W)
         self.images_rb.grid(column=0, row=1, sticky=tk.W)
         self.interactive_rb.grid(column=1, row=1, sticky=tk.W)
 
@@ -473,21 +469,16 @@ class LinkResources(tk.Frame):
     def show_results(self):
         column_names = self.create_table_values()
 
-        self.columns = ('Title', 'Author', 'Year', 'Pages', 'Language', 'Format')
-
         self.scollresources = tk.Scrollbar(self.resourceresults)
         self.scollresources.grid(column=2, row=2, sticky=tk.N + tk.S + tk.W)
 
-        self.resource_list = ttk.Treeview(self.resourceresults, height=10, selectmode='extended',
+        self.resource_list = ttk.Treeview(self.resourceresults, height=4, selectmode='extended',
                                           columns=column_names )
-                                          # ('Title', 'Author', 'Year',
-                                          #          'Pages', 'Language', 'Format',
-                                          #          'Abstract'))
 
         self.scollresources.configure(orient="vertical", command=self.resource_list.yview)
         self.resource_list.configure(yscrollcommand=self.scollresources.set)
 
-        self.resource_list['columns'] = column_names#('Title', 'Author', 'Year', 'Pages', 'Language', 'Format')
+        self.resource_list['columns'] = column_names
         self.resource_list.column('#0', width=5)
         self.resource_list.column('0', width=240, anchor='w')
         self.resource_list.column('1', width=150, anchor='w')
@@ -497,12 +488,12 @@ class LinkResources(tk.Frame):
         self.resource_list.column('5', width=200, anchor='w')
         self.resource_list.grid(column=0, row=2, sticky=tk.W + tk.N + tk.E)
 
-        self.resource_list.heading('0', anchor='w', text=column_names[0])#'Title', anchor='w')
-        self.resource_list.heading('1', anchor='w', text=column_names[1])#text='Author(s)', anchor='w')
-        self.resource_list.heading('2', anchor='w', text=column_names[2])#text='Year', anchor='w')
-        self.resource_list.heading('3', anchor='w', text=column_names[3])#text='Pages', anchor='w')
-        self.resource_list.heading('4', anchor='w', text=column_names[4])# text='Language', anchor='w')
-        self.resource_list.heading('5', anchor='w', text=column_names[5])#text='Format', anchor='w')
+        self.resource_list.heading('0', anchor='w', text=column_names[0])
+        self.resource_list.heading('1', anchor='w', text=column_names[1])
+        self.resource_list.heading('2', anchor='w', text=column_names[2])
+        self.resource_list.heading('3', anchor='w', text=column_names[3])
+        self.resource_list.heading('4', anchor='w', text=column_names[4])
+        self.resource_list.heading('5', anchor='w', text=column_names[5])
         self.treeview_resources = self.resource_list
         self.treeview_resources.bind('<ButtonRelease-1>', self.select_resources)
 
@@ -522,8 +513,8 @@ class LinkResources(tk.Frame):
             column_names = ('Title', 'Instructor', 'Start date', 'End date', 'Platform', 'URL')
             print('Courses')
         elif self.media_type.get() ==3:
-            column_names = ('Title', 'Author', 'Date', 'Host', 'Access date', 'URL')
-            print('OnlineMedia')
+            column_names = ('Title', 'Author', 'Date', 'Website', 'Access date', 'URL')
+            print('Websites')
         elif self.media_type.get() ==4:
             column_names = ('Title', 'Creator', 'Format', 'Dimensions', 'Date', 'Location')
             print('Images')
@@ -532,11 +523,9 @@ class LinkResources(tk.Frame):
             print('Interactive Media')
         elif self.media_type.get() ==6:
             column_names = ('Title', 'Author', 'Year', 'Pages', 'Language', 'Format')
-
             print('Books/texts')
         else:
             print('Not working')
-        return column_names
 
 
     def select_resources(self, event):
@@ -834,11 +823,11 @@ class AddMedia(tk.Frame):
 
 
     def create_values(self):
-        self.window_header = 'Online Media'
+        self.window_header = 'Websites'
         self.b2L = 'Author'
         self.b3L = 'Date'
         self.b4L = 'Subject'
-        self.b1R = 'Domain'
+        self.b1R = 'Website'
         self.b2R = 'URL'
         self.b3R = 'Access date'
         self.b4R = 'Notes'
@@ -846,12 +835,12 @@ class AddMedia(tk.Frame):
         self.c1 = 'Title'
         self.c2 = 'Author'
         self.c3 = 'Date'
-        self.c4 = 'Host'
+        self.c4 = 'Website'
         self.c5 = 'Access date'
         self.c6 = 'URL'
 
-        self.media_choice1 = 'Audio'
-        self.media_choice2 = 'Video'
+        self.media_choice1 = 'Documention'
+        self.media_choice2 = 'Q&A site'
         self.media_choice3 = 'Other'
 
         return self.window_header, self.b2L, self.b3L, self.b4L, self.b1R, self.b2R, self.b3R, \
@@ -1033,14 +1022,14 @@ class AddAudioVideo(AddMedia):
         AddMedia.b4R = 'Comments'
 
         AddMedia.c1 = 'Title'
-        AddMedia.c2 ='Creator'
+        AddMedia.c2 = 'Creator'
         AddMedia.c3 = 'Duration'
         AddMedia.c4 = 'Format'
         AddMedia.c5 = 'Type'
         AddMedia.c6 = 'URL'
-        AddMedia.media_choice1 = 'Audio'
-        AddMedia.media_choice2 = 'Video'
-        AddMedia.media_choice3 = 'Other'
+        AddMedia.media_choice1 = 'Music and Sounds'
+        AddMedia.media_choice2 = 'Podcasts'
+        AddMedia.media_choice3 = 'Video'
 
         return AddMedia.c1, AddMedia.c2, AddMedia.c3, AddMedia.c4, AddMedia.c5, AddMedia.c6, AddMedia.window_header, \
                AddMedia.b2L, AddMedia.b3L, AddMedia.b4L, AddMedia.b1R, AddMedia.b2R, AddMedia.b3R, AddMedia.b4R, \
