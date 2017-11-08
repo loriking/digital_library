@@ -437,7 +437,7 @@ class LinkResources(tk.Frame):
         self.subjectbox.grid(column=1, row=0, sticky=tk.W)
 
         self.searchbutton = ttk.Button(self.media_button_frame, text='Search',
-                                       command=lambda:self.show_results())#command=lambda: self.search_resources())
+                                       command=lambda:self.show_results())
         self.searchbutton.config(width=10, cursor='hand2')
         self.searchbutton.grid(column=0, row=2, padx=5, pady=5, sticky=tk.E)
 
@@ -446,18 +446,17 @@ class LinkResources(tk.Frame):
         self.sort_label.grid(column=3, row=0, padx=5, sticky=tk.W)
 
         self.audiovideo_rb = tk.Radiobutton(self.media_type_frame, text='Audio and Video', variable=self.media_type,
-                                       value=1)#, command= lambda:self.create_table_values(self.columns))
-        self.courses_rb = tk.Radiobutton(self.media_type_frame, text='Courses', variable=self.media_type, value=2)#,
-                                       #command= lambda:self.create_table_values(self.columns))#self.limit_resources)
+                                       value=1)
+        self.courses_rb = tk.Radiobutton(self.media_type_frame, text='Courses', variable=self.media_type, value=2)
+
         self.onlinemedia_rb = tk.Radiobutton(self.media_type_frame, text='Online Media', variable=self.media_type,
-                                             value=3)#, command= lambda:self.create_table_values(self.columns))#self.limit_resources)
+                                             value=3)
         self.images_rb = tk.Radiobutton(self.media_type_frame, text='Images', variable=self.media_type,
-                                             value=4)#, command= lambda:self.create_table_values(self.columns))#self.limit_resources)
+                                             value=4)
         self.interactive_rb = tk.Radiobutton(self.media_type_frame, text='Interactive Media',
-                                             variable=self.media_type, value=5)#
-        # , command=lambda:self.create_table_values(self.columns))#self.limit_resources)
+                                             variable=self.media_type, value=5)
         self.texts_rb = tk.Radiobutton(self.media_type_frame, text='Books and Texts', variable=self.media_type,
-                                         value=6)#, command= lambda:self.create_table_values(self.columns))#self.limit_resources)
+                                         value=6)
 
         self.audiovideo_rb.grid(column=0, row=0, sticky=tk.W)
         self.texts_rb.grid(column=1, row=0, sticky=tk.W)
@@ -512,6 +511,8 @@ class LinkResources(tk.Frame):
         self.go_to_resources.config(cursor='hand2')
         self.go_to_resources.grid(column=0, row=4, sticky=tk.E)
 
+        self.search_resources()
+
 
     def create_table_values(self):
         if self.media_type.get() == 1:
@@ -531,6 +532,7 @@ class LinkResources(tk.Frame):
             print('Interactive Media')
         elif self.media_type.get() ==6:
             column_names = ('Title', 'Author', 'Year', 'Pages', 'Language', 'Format')
+
             print('Books/texts')
         else:
             print('Not working')
