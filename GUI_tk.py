@@ -26,7 +26,7 @@ class ProjectLibrary(tk.Tk):
             self.frames[F] = frame
             frame.grid(row = 0, column = 0, sticky ='nsew')
 
-        self.show_frame(AddText)
+        self.show_frame(HomePage)
         
     def show_frame(self, cont):
         frame = self.frames[cont]
@@ -35,53 +35,52 @@ class ProjectLibrary(tk.Tk):
 class HomePage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-                
-        self.label = tk.Label(self, text ='', font=headerfont)
-        self.label.grid(row= 0, column = 0, columnspan=20)
-          
-        self.topframe = tk.LabelFrame(self, text='', borderwidth=0)
-        self.topframe.grid(row=1, column=0, columnspan=20) # padx=200,
 
-        self.firstframe =tk.LabelFrame(self.topframe, text='Project Menu', borderwidth=0, font=labelsfont)
-        self.secondframe = tk.LabelFrame(self.topframe, text='Resource Menu', borderwidth=0, font=labelsfont)
+        self.topframe = tk.LabelFrame(self, text='', borderwidth=0)
+        self.topframe.pack(expand=tk.TRUE, fill=tk.BOTH)
+
+        self.firstframe =tk.LabelFrame(self.topframe, text='', borderwidth=0)
+        self.secondframe = tk.LabelFrame(self.topframe, text='', borderwidth=0)
         self.middleframe = tk.LabelFrame(self.topframe, borderwidth=0, text='')
 
-        self.firstframe.grid(column= 0, row=0, padx=10)
-        self.middleframe.grid(column=1, row=0, padx=10)
-        self.secondframe.grid(column=2, row=0, padx=10)
+        self.firstframe.pack(side=tk.LEFT, anchor=tk.CENTER,expand=tk.TRUE, ipadx=10, ipady=10, padx=10,pady=10)
+        self.middleframe.pack(side=tk.LEFT, anchor=tk.CENTER, expand=tk.TRUE, ipadx=10, ipady=10, padx=10,pady=20)
+        self.secondframe.pack(side=tk.LEFT, anchor=tk.CENTER, expand=tk.TRUE, ipadx=10, ipady=10, padx=10,pady=10)
+
+
 
         self.wordcloud = tk.PhotoImage(file="smallwhitewordcloud.png")
 
         self.new_projects = tk.Button(self.firstframe, text='Add Project',
                                       command=lambda: controller.show_frame(Projects))
         self.new_projects.config(height=5, width=13)
-        self.new_projects.grid(column = 0, row= 0, pady=5)
+        self.new_projects.pack( pady=10)
 
         self.view_project = tk.Button(self.firstframe, text='Link Resources\n to Projects',
                                       command=lambda: controller.show_frame(LinkResources))
         self.view_project.config(height=5,width=13)
-        self.view_project.grid(column=0, row=1, pady=5)
+        self.view_project.pack( pady=10)
 
         self.edit_project = tk.Button(self.firstframe, text='Edit Project')
         self.edit_project.config(height=5, width=13)
-        self.edit_project.grid(column=0, row=2, pady=5)
+        self.edit_project.pack( pady=10)
 
         self.new_resources = tk.Button(self.secondframe, text='Add Resource',
                                    command=lambda: controller.show_frame(AddResource))
         self.new_resources.config(height=5, width=13)
-        self.new_resources.grid(column=1, row=0, pady=5)
+        self.new_resources.pack( pady=10)
 
         self.view_resources = tk.Button(self.secondframe, text='Search Resources',
                                         command=lambda: controller.show_frame(SearchResource))
         self.view_resources.config(height=5, width=13)
-        self.view_resources.grid(column=1, row=1, pady=5)
+        self.view_resources.pack(pady=10)
 
         self.edit_resource = tk.Button(self.secondframe, text='Edit Resource')
         self.edit_resource.config(height=5, width=13)
-        self.edit_resource.grid(column=1, row=2, pady=5)
+        self.edit_resource.pack(pady=10)
 
         button1 = ttk.Button(self.middleframe, text = "", image=self.wordcloud, compound="center")
-        button1.grid(column=2, row=1, rowspan=5,padx=10,sticky=tk.E)
+        button1.pack(anchor=tk.CENTER)
 
 class AddResource(tk.Frame):
     def __init__(self, parent, controller):
