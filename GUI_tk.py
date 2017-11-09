@@ -802,10 +802,10 @@ class AddMedia(tk.Frame):
         self.topright.grid(column=1, row=1, sticky=tk.W + tk.E)
 
         self.center_leftframe = tk.LabelFrame(self.mainframe, text='', borderwidth=0)
-        self.center_leftframe.grid(column=0, row=2, sticky=tk.W)
+        self.center_leftframe.grid(column=0, row=2, columnspan=2,sticky=tk.W)
 
         self.center_frame = tk.LabelFrame(self.mainframe, text='', borderwidth=0)
-        self.center_frame.grid(column=1, row=2, sticky=tk.W+tk.E)
+        self.center_frame.grid(column=1, row=2,columnspan=3, sticky=tk.W)
 
         self.bottomleft = tk.LabelFrame(self.mainframe, text="", borderwidth=3)
         self.bottomleft.grid(column=0, row=4, sticky=tk.W + tk.E)
@@ -828,7 +828,7 @@ class AddMedia(tk.Frame):
         # Save resource button
         self.save_resource = ttk.Button(self.center_frame, text='Save', command=lambda: self.save_data())
         self.save_resource.config(cursor='hand2')
-        self.save_resource.grid(column=4, row=0,  sticky=tk.E)
+        self.save_resource.grid(column=4, row=0, sticky=tk.E)
 
         self.create_values()
 
@@ -928,16 +928,16 @@ class AddMedia(tk.Frame):
 
     def add_radio_buttons(self, media_type1, media_type2, media_type3 ):
 
-        self.media_label = tk.Label(self.center_frame, text='Select type: ')
+        self.media_label = tk.Label(self.center_leftframe, text='Select type: ')
         self.media_label.grid(column=0, row=0, sticky=tk.W)
 
-        self.media_1 = tk.Radiobutton(self.center_frame, text=media_type1, variable=self.media_buttons)
+        self.media_1 = tk.Radiobutton(self.center_leftframe, text=media_type1, variable=self.media_buttons)
         self.media_1.grid(column=1, row=0)
 
-        self.media_2 = tk.Radiobutton(self.center_frame, text=media_type2, variable=self.media_buttons)
+        self.media_2 = tk.Radiobutton(self.center_leftframe, text=media_type2, variable=self.media_buttons)
         self.media_2.grid(column=2, row=0)
 
-        self.media_other = tk.Radiobutton(self.center_frame, text=media_type3, variable=self.media_buttons)
+        self.media_other = tk.Radiobutton(self.center_leftframe, text=media_type3, variable=self.media_buttons)
         self.media_other.grid(column=3, row=0)
 
 
@@ -1028,12 +1028,12 @@ class AddAudioVideo(AddMedia):
         self.language_options = data.list_languages()
         self.language.set('Select one')
 
-        self.language_label = tk.Label(self.center_leftframe, text='Language:')
-        self.language_entry = tk.OptionMenu(self.center_leftframe, self.language,
+        self.language_label = tk.Label(self.center_frame, text='Language:')
+        self.language_entry = tk.OptionMenu(self.center_frame, self.language,
                                             *self.language_options)
         self.language_entry.configure(width=15)
-        self.language_label.grid(column=0, row=0)
-        self.language_entry.grid(column=1, row=0, sticky=tk.E)
+        self.language_label.grid(column=0, row=0, sticky=tk.W)
+        self.language_entry.grid(column=1, row=0,padx=10, sticky=tk.W)
 
 
         self.create_values()
