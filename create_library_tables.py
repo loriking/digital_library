@@ -34,7 +34,7 @@ def make_db():
         subject TEXT UNIQUE
         );
         
-    CREATE TABLE IF NOT EXISTS level (
+    CREATE TABLE IF NOT EXISTS levels (
         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
         level TEXT NOT NULL
         );
@@ -49,10 +49,10 @@ def make_db():
         title TEXT NOT NULL UNIQUE,
         year INTEGER,
         pages INTEGER,
-        levelID INTEGER REFERENCES level(ID),
+        levelID INTEGER REFERENCES levels(ID),
         publisherID INTEGER REFERENCES publishers(ID),
         languageID INTEGER REFERENCES languages(ID),
-        subjectID INTEGER REFERENCES subject(ID),
+        subjectID INTEGER REFERENCES subjects(ID),
         mediaID INTEGER REFERENCES resource_medium(ID),
         notes TEXT
         );
@@ -60,13 +60,13 @@ def make_db():
     CREATE TABLE IF NOT EXISTS websites (
         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
         title TEXT NOT NULL,
-        date INTEGER,
-        website_nameID INTEGER REFERENCES publisher(ID),
+        creation_date INTEGER,
+        website_nameID INTEGER REFERENCES publishers(ID),
         url TEXT,
         access_date INTEGER,
         notes TEXT,
         mediaID INTEGER REFERENCES resource_medium(ID),
-        subjectID INTEGER REFERENCES subjectID
+        subjectID INTEGER REFERENCES subjects(ID)
         );
             
         
@@ -76,10 +76,11 @@ def make_db():
         duration_mins INTEGER NOT NULL,
         format TEXT NOT NULL,
         year INTEGER,
-        location TEXT,
+        source TEXT,
         comments TEXT,
         mediaID INTEGER REFERENCES resource_medium(ID),
-        subjectID INTEGER REFERENCE subjectID
+        subjectID INTEGER REFERENCES subjects(ID),
+        publisherID INTEGER REFERENCES publishers(ID)
         );
         
     
@@ -92,7 +93,7 @@ def make_db():
         levelID INTEGER REFERENCES level(ID),
         platformID INTEGER REFERENCES publishers(ID),
         mediaID INTEGER REFERENCES resource_medium(ID),
-        subjectID INTEGER REFERENCE subjectID
+        subjectID INTEGER REFERENCES subjects(ID)
         );
         
     CREATE TABLE IF NOT EXISTS interactive_media(
@@ -104,7 +105,7 @@ def make_db():
         comments TEXT,
         engineID INTEGER REFERENCES publishers(ID),
         typeID INTEGER REFERENCES resource_medium(ID),
-        genreID INTEGER REFERENCE subjectID
+        genreID INTEGER REFERENCES subjects(ID)
         );
         
     CREATE TABLE IF NOT EXISTS images(
@@ -123,7 +124,7 @@ def make_db():
     CREATE TABLE IF NOT EXISTS resource_author(  
         resourceID INTEGER,
         authorID INTEGER,
-        mediaID INTEGER REFERENCES resource_medium(ID),
+        mediaID INTEGER,
         PRIMARY KEY (resourceID, authorID, mediaID)
         );    
         
@@ -149,7 +150,7 @@ def make_db():
         mediaID INTEGER,
         PRIMARY KEY (projectID, resourceID, mediaID) 
         );
-        ''')
+    ''')
 
 
     db.commit()
