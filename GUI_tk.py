@@ -510,7 +510,7 @@ class LinkResources(tk.Frame):
             column_names = ('Title', 'Creator', 'Duration', 'Format', 'Type', 'URL')
             print('Audio/Video')
         elif self.media_type.get() ==2:
-            column_names = ('Title', 'Instructor', 'Start date', 'End date', 'Platform', 'URL')
+            column_names = ('Title', 'Instructor', 'Start date', 'Duration', 'Platform', 'URL')
             print('Courses')
         elif self.media_type.get() ==3:
             column_names = ('Title', 'Author', 'Date', 'Website', 'Access date', 'URL')
@@ -1081,7 +1081,7 @@ class AddInteractiveMedia(AddMedia):
         AddMedia.b2R = 'Engine'
         AddMedia.b3R = 'Version'
         AddMedia.b4R = 'Comments'
-       
+
         AddMedia.c1 = 'Title'
         AddMedia.c2 = 'Creator'
         AddMedia.c3 = 'Genre'

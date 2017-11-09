@@ -116,7 +116,7 @@ def make_db():
         dimensions TEXT,
         location TEXT,
         comments TEXT,        
-        mediaID INTEGER REFERENCES resource_medium(ID)
+        imagetypeID INTEGER REFERENCES resource_medium(ID)
         );
         
         
