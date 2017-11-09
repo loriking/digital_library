@@ -19,7 +19,7 @@ def make_db():
         language TEXT UNIQUE NOT NULL
         );
         
-    CREATE TABLE IF NOT EXISTS  authors (
+    CREATE TABLE IF NOT EXISTS authors (
         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
         name TEXT UNIQUE NOT NULL
         );
@@ -33,24 +33,93 @@ def make_db():
         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
         subject TEXT UNIQUE
         );
+        
+    CREATE TABLE IF NOT EXISTS level (
+        ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+        level TEXT NOT NULL
+        );
 
-    
     CREATE TABLE IF NOT EXISTS resource_medium (
         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
         medium TEXT UNIQUE
         );
     
-    CREATE TABLE IF NOT EXISTS resource (
+    CREATE TABLE IF NOT EXISTS texts (
         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
         title TEXT NOT NULL UNIQUE,
         year INTEGER,
         pages INTEGER,
+        levelID INTEGER REFERENCES level(ID),
         publisherID INTEGER REFERENCES publishers(ID),
-        mediaID INTEGER REFERENCES resource_medium(ID),
         languageID INTEGER REFERENCES languages(ID),
+        subjectID INTEGER REFERENCES subject(ID),
+        mediaID INTEGER REFERENCES resource_medium(ID),
         notes TEXT
         );
     
+    CREATE TABLE IF NOT EXISTS websites (
+        ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+        title TEXT NOT NULL,
+        date INTEGER,
+        website_nameID INTEGER REFERENCES publisher(ID),
+        url TEXT,
+        access_date INTEGER,
+        notes TEXT,
+        mediaID INTEGER REFERENCES resource_medium(ID),
+        subjectID INTEGER REFERENCES subjectID
+        );
+            
+        
+    CREATE TABLE IF NOT EXISTS audio_video (
+        ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+        title TEXT NOT NULL,
+        duration_mins INTEGER NOT NULL,
+        format TEXT NOT NULL,
+        year INTEGER,
+        location TEXT,
+        comments TEXT,
+        mediaID INTEGER REFERENCES resource_medium(ID),
+        subjectID INTEGER REFERENCE subjectID
+        );
+        
+    
+    CREATE TABLE IF NOT EXISTS courses (
+        ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+        title TEXT NOT NULL,
+        start_date INTEGER NOT NULL,
+        duration_hours INTEGER,
+        url TEXT,
+        levelID INTEGER REFERENCES level(ID),
+        platformID INTEGER REFERENCES publishers(ID),
+        mediaID INTEGER REFERENCES resource_medium(ID),
+        subjectID INTEGER REFERENCE subjectID
+        );
+        
+    CREATE TABLE IF NOT EXISTS interactive_media(
+        ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+        title TEXT NOT NULL,
+        year INTEGER,
+        platform TEXT,
+        version INTEGER,
+        comments TEXT,
+        engineID INTEGER REFERENCES publishers(ID),
+        typeID INTEGER REFERENCES resource_medium(ID),
+        genreID INTEGER REFERENCE subjectID
+        );
+        
+    CREATE TABLE IF NOT EXISTS images(
+        ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+        title TEXT NOT NULL,
+        format TEXT NOT NULL,
+        date INTEGER,
+        material TEXT,
+        dimensions TEXT,
+        location TEXT,
+        comments TEXT,        
+        mediaID INTEGER REFERENCES resource_medium(ID)
+        );
+        
+        
     CREATE TABLE IF NOT EXISTS resource_author(  
         resourceID INTEGER,
         authorID INTEGER,
@@ -58,29 +127,10 @@ def make_db():
         PRIMARY KEY (resourceID, authorID, mediaID)
         );    
         
-    CREATE TABLE IF NOT EXISTS resource_subject(
-        resourceID INTEGER,
-        subjectID INTEGER,
-        mediaID INTEGER,
-        PRIMARY KEY(resourceID, subjectID, mediaID)
-        );
-
         
     CREATE TABLE IF NOT EXISTS project_category(
         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
         category TEXT UNIQUE
-        );
-        
-    CREATE TABLE IF NOT EXISTS online_media(
-        ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-        title TEXT,
-        media_date TEXT,
-        domainID INTEGER REFERENCES publisher(ID),
-        media_URL TEXT,
-        access_date TEXT,
-        comments TEXT,
-        mediaID INTEGER REFERENCES resource_medium(ID),
-        audio_video INTEGER
         );
         
          
