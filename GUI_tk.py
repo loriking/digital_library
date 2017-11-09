@@ -26,7 +26,7 @@ class ProjectLibrary(tk.Tk):
             self.frames[F] = frame
             frame.grid(row = 0, column = 0, sticky ='nsew')
 
-        self.show_frame(AddAudioVideo)
+        self.show_frame(AddText)
         
     def show_frame(self, cont):
         frame = self.frames[cont]
@@ -129,7 +129,10 @@ class AddText(tk.Frame):
         topcenterframe.grid(columnspan=4,column=5, row=1)
 
         middleframe = tk.LabelFrame(mainframe, text="", borderwidth=0)
-        middleframe.grid(columnspan=20, column=7, row=2, sticky=tk.E+tk.N)
+        middleframe.grid(columnspan=20, column=4, row=2, sticky=tk.E)
+
+        middleleftframe = tk.LabelFrame(mainframe, text="", borderwidth=4)
+        middleleftframe.grid(columnspan=10, column=0, row=2, sticky=tk.W)
 
         bottomframe = tk.LabelFrame(self, text="", borderwidth=4)
         bottomframe.grid(column=0, row=3, pady=5)
@@ -160,6 +163,9 @@ class AddText(tk.Frame):
 
         self.new_lang_flag = tk.IntVar(self, value=0)
         self.new_pub_flag = tk.IntVar(self, value=0)
+
+        self.text_type = tk.IntVar()
+        self.text_type.set('?')
 
         # Top left frame
 
@@ -238,7 +244,16 @@ class AddText(tk.Frame):
 
         self.addtextresource = tk.Button(middleframe, text='Save', command=lambda: self.new_textresource())
         self.addtextresource.config(width=12, cursor='hand2')
-        self.addtextresource.grid(column=7, row=0,padx=2,sticky=tk.E+tk.N)
+        self.addtextresource.grid(column=7, row=0,padx=2,sticky=tk.E)
+
+        self.text_type_label = tk.Label(middleleftframe, text='Text type:')
+        self.text_type1 = tk.Radiobutton(middleleftframe, text='Book', variable=self.text_type, value=1)
+        self.text_type2= tk.Radiobutton(middleleftframe, text='Short story', variable=self.text_type, value=2)
+        self.text_type3= tk.Radiobutton(middleleftframe, text='Other', variable=self.text_type, value=3)
+        self.text_type_label.grid(column=0, row=0, sticky=tk.W)
+        self.text_type1.grid(column=1, row = 0, sticky= tk.W)
+        self.text_type2.grid(column=2, row=0, sticky=tk.W)
+        self.text_type3.grid(column=3, row=0, sticky=tk.W)
 
 
         # Bottom frame
