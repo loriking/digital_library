@@ -519,13 +519,15 @@ class LinkResources(tk.Frame):
             column_names = ('Title', 'Creator', 'Format', 'Dimensions', 'Date', 'Location')
             print('Images')
         elif self.media_type.get() == 5:
-            column_names = ('Title', 'Creator', 'Duration', 'Format', 'Type', 'URL')
+            column_names = ('Title', 'Creator', 'Genre', 'Engine', 'Type', 'Comments')
             print('Interactive Media')
         elif self.media_type.get() ==6:
             column_names = ('Title', 'Author', 'Year', 'Pages', 'Language', 'Format')
             print('Books/texts')
         else:
             print('Not working')
+
+        return column_names
 
 
     def select_resources(self, event):
@@ -980,13 +982,13 @@ class AddCourse(AddMedia):
 
         AddMedia.b1R = 'Platform'
         AddMedia.b2R = 'URL'
-        AddMedia.b3R = 'End date'
+        AddMedia.b3R = 'Length (hrs)'
         AddMedia.b4R = 'Level'
 
         AddMedia.c1 = 'Title'
         AddMedia.c2 = 'Teacher'
         AddMedia.c3 = 'Start date'
-        AddMedia.c4 = 'End date'
+        AddMedia.c4 = 'Duration'
         AddMedia.c5 = 'Platform'
         AddMedia.c6 = 'URL'
 
@@ -1079,13 +1081,13 @@ class AddInteractiveMedia(AddMedia):
         AddMedia.b2R = 'Engine'
         AddMedia.b3R = 'Version'
         AddMedia.b4R = 'Comments'
-
+       
         AddMedia.c1 = 'Title'
         AddMedia.c2 = 'Creator'
-        AddMedia.c3 = 'Duration'
-        AddMedia.c4 = 'Format'
+        AddMedia.c3 = 'Genre'
+        AddMedia.c4 = 'Engine'
         AddMedia.c5 = 'Type'
-        AddMedia.c6 = 'URL'
+        AddMedia.c6 = 'Comments'
         AddMedia.media_choice1 = 'Interactive Fiction'
         AddMedia.media_choice2 = 'Video game'
         AddMedia.media_choice3 = 'Other'
