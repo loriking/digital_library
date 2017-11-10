@@ -125,7 +125,6 @@ def find_author(name):
 
 def get_author_id(author_name):
     """     :return: the ID of a given author    """
-    author_name = author_name.title()
 
     c.execute('''SELECT ID FROM authors WHERE name = ? ''', (author_name,))
 
@@ -405,7 +404,7 @@ def get_website_id(title):
     c.execute('''SELECT ID FROM websites WHERE title = ?''', (title,))
     return c.fetchone()[0]
 
-def add_website(title, author, creation_date, subject, website_name, url, access_date, notes, mediaID, subjectID):
+def add_website(title, author, creation_date, subject, website_name, url, access_date, notes, medium):
 
     add_author(author)
 
@@ -413,8 +412,10 @@ def add_website(title, author, creation_date, subject, website_name, url, access
     website_nameID = get_publisher_id(website_name)
     print('Website name ID =', website_nameID)
 
-    mediaID = get_resource_medium_id('Website')
-    print('Website ID = ', mediaID)
+    add_resource_medium(medium)
+    medium = medium.title()
+    mediaID = get_resource_medium_id(medium)
+    print('Website type = ', mediaID)
 
     add_subject(subject)
     subjectID = get_subject_id(subject)
@@ -422,9 +423,8 @@ def add_website(title, author, creation_date, subject, website_name, url, access
 
 
     c.execute('''INSERT OR IGNORE INTO websites (title, creation_date, website_nameID, url, access_date, 
-                notes, mediaID, subjectID
-                VALUES(?,?,?,?,?,?,?,?)''', (title, creation_date, website_nameID, url, access_date, notes,
-                                               mediaID, subjectID))
+                notes, mediaID, subjectID) VALUES(?,?,?,?,?,?,?,?)''',
+              (title, creation_date, website_nameID, url, access_date, notes, mediaID, subjectID))
     db.commit()
 
 
@@ -437,6 +437,20 @@ def add_website(title, author, creation_date, subject, website_name, url, access
     c.execute('''INSERT OR IGNORE INTO resource_author(resourceID, authorID, mediaID ) 
               VALUES(?, ?, ?)''', (website_id, authorID, mediaID ))
     db.commit()
+
+def list_websites():
+    """ Returns all the resources from database"""
+
+    c.execute('''SELECT websites.title, authors.name, websites.creation_date, 
+                publishers.publisher, websites.url
+                FROM websites JOIN publishers JOIN authors JOIN resource_author
+                ON websites.website_nameID = publishers.ID 
+				AND authors.ID = resource_author.authorID 
+                AND websites.ID = resource_author.resourceID
+				AND websites.mediaID = resource_author.mediaID
+                ''')
+
+
 
 
 def link_website():

@@ -26,7 +26,7 @@ class ProjectLibrary(tk.Tk):
             self.frames[F] = frame
             frame.grid(row = 0, column = 0, sticky ='nsew')
 
-        self.show_frame(AddText)
+        self.show_frame(AddMedia)
         
     def show_frame(self, cont):
         frame = self.frames[cont]
@@ -372,7 +372,6 @@ class AddText(tk.Frame):
             self.thelanguage = self.language.get()
 
 
-#add_text(title, author, year, pages, level, publisher, language, subject, medium, notes)
         data.add_text(self.title.get(), self.author.get(), self.year.get(),
                           self.pages.get(), self.level.get(), self.thepublisher,
                           self.thelanguage, self.subject.get(), media_name, self.notes.get())
@@ -585,7 +584,7 @@ class LinkResources(tk.Frame):
 
             resource_name = item_text['values'][0]
 
-            resource_ids = data.get_resource_id(resource_name)
+            resource_ids = data.get_text_id(resource_name)
             resourceID = resource_ids[0][0]
             mediaID = resource_ids[0][1]
             print('Resource ID = ', resourceID)
@@ -964,13 +963,16 @@ class AddMedia(tk.Frame):
         self.media_label = tk.Label(self.center_leftframe, text='Select type: ')
         self.media_label.grid(column=0, row=0, sticky=tk.W)
 
-        self.media_1 = tk.Radiobutton(self.center_leftframe, text=media_type1, variable=self.media_buttons)
+        self.media_1 = tk.Radiobutton(self.center_leftframe, text=media_type1, variable=self.media_buttons,
+                                      value=1)
         self.media_1.grid(column=1, row=0)
 
-        self.media_2 = tk.Radiobutton(self.center_leftframe, text=media_type2, variable=self.media_buttons)
+        self.media_2 = tk.Radiobutton(self.center_leftframe, text=media_type2, variable=self.media_buttons,
+                                      value=2)
         self.media_2.grid(column=2, row=0)
 
-        self.media_other = tk.Radiobutton(self.center_leftframe, text=media_type3, variable=self.media_buttons)
+        self.media_other = tk.Radiobutton(self.center_leftframe, text=media_type3, variable=self.media_buttons,
+                                          value=3)
         self.media_other.grid(column=3, row=0)
 
 
@@ -1002,11 +1004,33 @@ class AddMedia(tk.Frame):
         webdocs_list.heading('5', text=col6, anchor='w')
 
         treeview = webdocs_list
-# add_website(title, author, creation_date, subject, website_name, url, access_date, notes, mediaID, subjectID)
+        return treeview, webdocs_list
 
+
+    def list_resources(self):
+        for i in webdocs_list.get_children():
+            webdocs_list.delete(i)
+        resources = data.list_websites()
+        for item in resources:
+            treeview.insert('', 'end', values=item)
+
+
+    def get_media_name(self):
+        if self.media_buttons.get() == 1:
+            media_name = self.media_choice1
+        elif self.media_buttons.get() == 2:
+            media_name = self.media_choice2
+        else:
+            media_name = self.media_choice3
+        return media_name
+
+    #add_website(title, author, creation_date, subject, website_name, url, access_date, notes, medium)
     def save_data(self):
+        media_name = self.get_media_name()
+
+
         data.add_website(self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(), self.box1R.get(),
-                              self.box2R.get(), self.box3R.get(), self.box4R.get(), self.media_buttons.get())
+                              self.box2R.get(), self.box3R.get(), self.box4R.get(), media_name)
 
 
 class AddCourse(AddMedia):
