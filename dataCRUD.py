@@ -495,18 +495,6 @@ def get_course_id(title):
     return c.fetchone()[0]
 
 
-"""
-ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-        title TEXT NOT NULL,
-        start_date INTEGER NOT NULL,
-        duration_hours INTEGER,
-        url TEXT,
-        comments TEXT,
-        levelID INTEGER REFERENCES level(ID),
-        platformID INTEGER REFERENCES publishers(ID),
-        mediaID INTEGER REFERENCES resource_medium(ID),
-        subjectID INTEGER REFERENCES subjects(ID)
-"""
 def add_course(title, instructor, start_date, duration, url, comments, level, platform, media, subject):
 
     levelID = get_level_id(level)
@@ -542,7 +530,14 @@ def add_course(title, instructor, start_date, duration, url, comments, level, pl
     db.commit()
 
 def list_courses():
-    c.execute('''SELECT courses.title, courses.start_date FROM courses''')
+    c.execute('''SELECT courses.title, authors.name, courses.start_date, courses.duration_hours, 
+                    publishers.publisher, courses.url
+                FROM courses JOIN publishers JOIN authors JOIN resource_author JOIN resource_medium
+                ON courses.platformID = publishers.ID 
+                AND authors.ID = resource_author.authorID 
+                AND courses.ID = resource_author.resourceID
+                AND courses.mediaID = resource_author.mediaID
+                AND courses.mediaID = resource_medium.ID''')
     return c.fetchall()
 
 # interactive media

@@ -1033,7 +1033,6 @@ class AddMedia(tk.Frame):
             media_name = self.media_choice3
         return media_name
 
-    #add_website(title, author, creation_date, subject, website_name, url, access_date, notes, medium)
     def save_data(self):
         media_name = self.get_media_name()
 
@@ -1078,6 +1077,7 @@ class AddCourse(AddMedia):
         self.display_resources(AddMedia.c1, AddMedia.c2, AddMedia.c3, AddMedia.c4,
                                AddMedia.c5, AddMedia.c6)
 
+        self.update_entry_widgets()
 
         self.create_top_frame_widgets(AddMedia.window_header, AddMedia.b2L, AddMedia.b3L, AddMedia.b4L, \
                                       AddMedia.b1R, AddMedia.b2R, AddMedia.b3R, AddMedia.b4R)
@@ -1127,11 +1127,12 @@ class AddCourse(AddMedia):
 
     def save_data(self):
         media_name = self.get_media_name()
-#add_course(title, instructor, start_date, duration, url, comments, level, platform, media, subject)
+
         data.add_course(self.box1L.get(), self.box2L.get(), self.box3L.get(),
                         self.box3R.get(), self.box2R.get(), self.box4R.get(),
                         self.level.get(), self.box1R.get(), self.box4L.get(),
                         media_name)
+        self.update_entry_widgets()
 
 class AddAudioVideo(AddMedia):
     def __init__(self, parent, controller):
