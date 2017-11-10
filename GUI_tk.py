@@ -128,11 +128,14 @@ class AddText(tk.Frame):
         topcenterframe = tk.LabelFrame(mainframe, text="", borderwidth=4)
         topcenterframe.grid(columnspan=4,column=5, row=1)
 
-        middleframe = tk.LabelFrame(mainframe, text="", borderwidth=0)
-        middleframe.grid(columnspan=20, column=4, row=2, sticky=tk.E)
-
         middleleftframe = tk.LabelFrame(mainframe, text="", borderwidth=4)
-        middleleftframe.grid(columnspan=10, column=0, row=2, sticky=tk.W)
+        middleleftframe.grid(columnspan=5, column=0, row=2, sticky=tk.W)  #
+
+        middleframe = tk.LabelFrame(mainframe, text="", borderwidth=0)
+        middleframe.grid(columnspan=5, column=4, row=2, sticky=tk.W)
+
+        middlerightframe = tk.LabelFrame(mainframe, text='', borderwidth=0)
+        middlerightframe.grid(columnspan=3, column=6, row=2,  sticky=tk.E)
 
         bottomframe = tk.LabelFrame(self, text="", borderwidth=4)
         bottomframe.grid(column=0, row=3, pady=5)
@@ -167,6 +170,10 @@ class AddText(tk.Frame):
         self.text_type = tk.IntVar()
         self.text_type.set('?')
 
+        self.level = tk.StringVar()
+        self.level_options = data.list_levels()
+        self.level.set('Select')
+
         # Top left frame
 
         self.title_label=tk.Label(topleftframe, text='Title')
@@ -184,14 +191,15 @@ class AddText(tk.Frame):
         # Top center frame
         self.publisher_label = tk.Label(topcenterframe, text='Publisher')
         self.publisher_entry = tk.OptionMenu(topcenterframe, self.publisher,
-                                                *self.publisher_options)
+                                                *self.publisher_options)# if self.publisher_options else '0')
         self.publisher_entry.configure(width=15)
 
         self.add_publisher_entry = ttk.Entry(topcenterframe, width=25, textvariable =self.new_pub)
 
         self.language_label = tk.Label(topcenterframe, text='Language')
         self.language_entry= tk.OptionMenu(topcenterframe, self.language,
-                                                *self.language_options)
+                                                *self.language_options)# if self.language_options else '0')
+
         self.language_entry.configure(width=15)
 
         self.add_language_entry=ttk.Entry(topcenterframe, width=25, textvariable =self.new_lang)
@@ -242,13 +250,22 @@ class AddText(tk.Frame):
         self.add_lang_flag.grid(column=2, row=4, sticky=tk.W)
         self.add_language_entry.grid(column=3, row=4, sticky=tk.N+tk.E)
 
-        self.addtextresource = tk.Button(middleframe, text='Save', command=lambda: self.new_textresource())
-        self.addtextresource.config(width=12, cursor='hand2')
-        self.addtextresource.grid(column=7, row=0,padx=2,sticky=tk.E)
+        self.addtextresource = tk.Button(middlerightframe, text='Save', command=lambda: self.new_textresource())
+        self.addtextresource.config(width=12, cursor='hand2')#
+        self.addtextresource.grid(column=4, row=0, padx=2, sticky=tk.E)
+
+        self.level_label = tk.Label(middleframe, text='Level:')
+        self.level_entry = tk.OptionMenu(middleframe, self.level,
+                                         *self.level_options)# if self.level_options else '0')
+        self.level_entry.configure(width=15)
+
+        self.level_label.grid(column=0, row=0, padx=10, sticky=tk.W)
+        self.level_entry.grid(column=1, row=0, padx=5, sticky=tk.W)
 
         self.text_type_label = tk.Label(middleleftframe, text='Text type:')
         self.text_type1 = tk.Radiobutton(middleleftframe, text='Book', variable=self.text_type, value=1)
-        self.text_type2= tk.Radiobutton(middleleftframe, text='Short story', variable=self.text_type, value=2)
+        self.text_type2= tk.Radiobutton(middleleftframe, text='Short story', variable=self.text_type,
+                                        value=2)
         self.text_type3= tk.Radiobutton(middleleftframe, text='Other', variable=self.text_type, value=3)
         self.text_type_label.grid(column=0, row=0, sticky=tk.W)
         self.text_type1.grid(column=1, row = 0, sticky= tk.W)
@@ -327,9 +344,22 @@ class AddText(tk.Frame):
         self.new_pub_flag.set(0)
         self.publisher.set('Select:')
         self.language.set('Select:')
+        self.level.set('Select: ')
+        self.text_type.set('?')
+
+
+    def get_media_name(self):
+        if self.text_type.get() == 1:
+            media_name = 'Book'
+        elif self.text_type.get() == 2:
+            media_name = 'Short story'
+        else:
+            media_name = 'Other'
+        return media_name
 
 
     def new_textresource(self):
+        media_name = self.get_media_name()
 
         if self.new_pub_flag.get() == 1:
             self.thepublisher = self.new_pub.get()
@@ -341,9 +371,11 @@ class AddText(tk.Frame):
         else:
             self.thelanguage = self.language.get()
 
+
+#add_text(title, author, year, pages, level, publisher, language, subject, medium, notes)
         data.add_text(self.title.get(), self.author.get(), self.year.get(),
-                          self.pages.get(), self.thepublisher,
-                          self.thelanguage, self.subject.get(), self.notes.get())
+                          self.pages.get(), self.level.get(), self.thepublisher,
+                          self.thelanguage, self.subject.get(), media_name, self.notes.get())
 
         self.list_resources()
         self.update_entry_widgets()
@@ -665,7 +697,8 @@ class Projects(tk.Frame):
         self.description_entry = ttk.Entry(self.topleftframe, width=61, textvariable=self.description)
 
         self.project_type_label = tk.Label(self.topleftframe, text='Project Type')
-        self.project_type_entry = tk.OptionMenu(self.topleftframe, self.choices, *self.project_category_options)
+        self.project_type_entry = tk.OptionMenu(self.topleftframe, self.choices,
+                                                *self.project_category_options)# if self.project_category_options else '0')
         self.project_type_entry.configure(width=20)
 
         self.new_projecttype_label = tk.Label(self.topleftframe, text='New Project Type')
@@ -969,10 +1002,10 @@ class AddMedia(tk.Frame):
         webdocs_list.heading('5', text=col6, anchor='w')
 
         treeview = webdocs_list
-
+# add_website(title, author, creation_date, subject, website_name, url, access_date, notes, mediaID, subjectID)
 
     def save_data(self):
-        data.add_online_media(self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(), self.box1R.get(),
+        data.add_website(self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(), self.box1R.get(),
                               self.box2R.get(), self.box3R.get(), self.box4R.get(), self.media_buttons.get())
 
 
@@ -1016,7 +1049,7 @@ class AddCourse(AddMedia):
                AddMedia.media_choice1, AddMedia.media_choice2, AddMedia.media_choice3
 
     def save_data(self):
-        data.add_online_media(self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(), self.box1R.get(),
+        data.add_course(self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(), self.box1R.get(),
                               self.box2R.get(), self.box3R.get(), self.box4R.get(), self.media_buttons.get())
         pass
 
@@ -1030,7 +1063,7 @@ class AddAudioVideo(AddMedia):
 
         self.language_label = tk.Label(self.center_frame, text='Language:')
         self.language_entry = tk.OptionMenu(self.center_frame, self.language,
-                                            *self.language_options)
+                                            *self.language_options  if self.language_options else '0')
         self.language_entry.configure(width=15)
         self.language_label.grid(column=0, row=0, sticky=tk.W)
         self.language_entry.grid(column=1, row=0,padx=10, sticky=tk.W)
@@ -1070,7 +1103,7 @@ class AddAudioVideo(AddMedia):
                AddMedia.media_choice1, AddMedia.media_choice2, AddMedia.media_choice3
 
     def save_data(self):
-        data.add_online_media(self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(), self.box1R.get(),
+        data.add_audio_video(self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(), self.box1R.get(),
                               self.box2R.get(), self.box3R.get(), self.box4R.get(), self.media_buttons.get())
         pass
 
@@ -1111,7 +1144,7 @@ class AddInteractiveMedia(AddMedia):
                AddMedia.b2L, AddMedia.b3L, AddMedia.b4L, AddMedia.b1R, AddMedia.b2R, AddMedia.b3R, AddMedia.b4R, \
                AddMedia.media_choice1, AddMedia.media_choice2, AddMedia.media_choice3
     def save_data(self):
-        data.add_online_media(self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(), self.box1R.get(),
+        data.add_interactive_media(self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(), self.box1R.get(),
                               self.box2R.get(), self.box3R.get(), self.box4R.get(), self.media_buttons.get())
         pass
 
@@ -1154,7 +1187,7 @@ class AddImages(AddMedia):
                AddMedia.media_choice1, AddMedia.media_choice2, AddMedia.media_choice3
 
     def save_data(self):
-        data.add_online_media(self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(), self.box1R.get(),
+        data.add_images(self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(), self.box1R.get(),
                               self.box2R.get(), self.box3R.get(), self.box4R.get(), self.media_buttons.get())
         pass
 

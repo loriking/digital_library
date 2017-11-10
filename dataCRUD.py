@@ -14,12 +14,14 @@ c = db.cursor()
 
 # level
 def add_level(level):
-    c.execute('INSERT OR IGNORE INTO levels(level) VALUES(?)', (level))
+    c.execute('INSERT OR IGNORE INTO levels(level) VALUES(?)', (level,))
     db.commit()
 
 def get_level_id(level):
     c.execute('SELECT ID FROM levels WHERE level = ?', (level,))
-    c.fetchone()
+    levelID = c.fetchall()[0]
+    levelID = levelID[0]
+    return levelID
 
 def list_levels():
 
@@ -233,9 +235,9 @@ def list_resource_medium():
 def get_resource_medium_id(medium_entry):
     """ Returns the ID (PK) of a given resource medium"""
 
-    medium = medium_entry.title()
+    medium_entry = medium_entry.title()
 
-    c.execute('''SELECT ID FROM resource_medium WHERE medium = ? ''', (medium,))
+    c.execute('''SELECT ID FROM resource_medium WHERE medium = ? ''', (medium_entry,))
     return c.fetchone()[0]
 
 
@@ -309,8 +311,8 @@ def delete_subject(subject_id):
 # RESOURCE
 def get_text_id(text_title):
     #resource_title = resource_title_entry.title()
-    c.execute('''SELECT ID, mediaID FROM texts WHERE title = ?''', (text_title,))
-    return c.fetchall()
+    c.execute('''SELECT ID FROM texts WHERE title = ?''', (text_title,))
+    return c.fetchone()[0]
 
 
 def add_text(title, author, year, pages, level, publisher, language, subject, medium, notes):
@@ -330,13 +332,15 @@ def add_text(title, author, year, pages, level, publisher, language, subject, me
     subjectID = get_subject_id(subject)
     print('Subject ID =', subjectID)
 
+    add_resource_medium(medium)
+    medium = medium.title()
     mediaID = get_resource_medium_id(medium)
     print('Text media ID = ', mediaID)
 
     title = title.title()
     print('Title = ', title)
 
-    c.execute('''INSERT OR IGNORE INTO text(title, year, pages, levelID, publisherID, languageID, subjectID, 
+    c.execute('''INSERT OR IGNORE INTO texts(title, year, pages, levelID, publisherID, languageID, subjectID, 
                     mediaID, notes) 
                  VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)''',
               (title, year, pages, levelID, publisherID, languageID, subjectID, mediaID, notes))
@@ -706,6 +710,7 @@ def link_to_resources(projectID, resourceID, mediaID):
               (projectID, resourceID, mediaID))
 
     db.commit()
+
 
 
 """
