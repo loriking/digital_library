@@ -88,9 +88,10 @@ def make_db():
         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
         title TEXT NOT NULL,
         start_date INTEGER NOT NULL,
-        duration_hours INTEGER,
+        duration_hours TEXT,
         url TEXT,
-        levelID INTEGER REFERENCES level(ID),
+        comments TEXT,
+        levelID INTEGER REFERENCES levels(ID),
         platformID INTEGER REFERENCES publishers(ID),
         mediaID INTEGER REFERENCES resource_medium(ID),
         subjectID INTEGER REFERENCES subjects(ID)
@@ -154,7 +155,26 @@ def make_db():
 
 
     db.commit()
+
+
+    default_languages = ['English']
+    default_levels = ['Absolute Beginner', 'Beginner']
+    default_project_type = ['Python App']
+    default_publisher = ['Unpublished']
+
+    for i in default_languages:
+        c.execute('INSERT OR IGNORE INTO languages(language) VALUES(?)', (i,))
+    for i in default_levels:
+        c.execute('INSERT OR IGNORE INTO levels(level) VALUES(?)', (i,))
+    for i in default_project_type:
+        c.execute('INSERT OR IGNORE INTO project_category(category) VALUES(?)', (i,))
+    for i in default_publisher:
+        c.execute('INSERT OR IGNORE INTO publishers(publisher) VALUES(?)', (i,))
+
+    db.commit()
     db.close()
+
+
 
 if __name__ == '__main__':
     make_db()

@@ -26,7 +26,7 @@ class ProjectLibrary(tk.Tk):
             self.frames[F] = frame
             frame.grid(row = 0, column = 0, sticky ='nsew')
 
-        self.show_frame(AddMedia)
+        self.show_frame(AddCourse)
         
     def show_frame(self, cont):
         frame = self.frames[cont]
@@ -191,7 +191,7 @@ class AddText(tk.Frame):
         # Top center frame
         self.publisher_label = tk.Label(topcenterframe, text='Publisher')
         self.publisher_entry = tk.OptionMenu(topcenterframe, self.publisher,
-                                                *self.publisher_options)# if self.publisher_options else '0')
+                                                *self.publisher_options)
         self.publisher_entry.configure(width=15)
 
         self.add_publisher_entry = ttk.Entry(topcenterframe, width=25, textvariable =self.new_pub)
@@ -825,16 +825,6 @@ class AddMedia(tk.Frame):
         self.treeview = None
         self.webdocs_list = None
 
-        # self.box_1_L_entry = box1L_entry
-        # self.box_2_L_entry = box2L_entry
-        # self.box_3_L_entry = box3L_entry
-        # self.box_4_L_entry = box4L_entry
-        #
-        # self.box_1_R_entry = box1R_entry
-        # self.box_2_R_entry = box2R_entry
-        # self.box_3_R_entry = box3R_entry
-        # self.box_4_R_entry = box4R_entry
-
         # Frames
 
         self.mainframe = tk.LabelFrame(self, text='', borderwidth=4)
@@ -1072,6 +1062,17 @@ class AddCourse(AddMedia):
     def __init__(self, parent, controller):
         AddMedia.__init__(self, parent, controller)
 
+        self.level = tk.StringVar()
+        self.level_options = data.list_levels()
+        self.level.set('Select one')
+
+        self.level_label = tk.Label(self.center_frame, text='Level:')
+        self.level_entry = tk.OptionMenu(self.center_frame, self.level,
+                                            *self.level_options)
+        self.level_entry.configure(width=15)
+        self.level_label.grid(column=0, row=0, sticky=tk.W)
+        self.level_entry.grid(column=1, row=0, padx=10, sticky=tk.W)
+
         self.create_values()
 
         self.display_resources(AddMedia.c1, AddMedia.c2, AddMedia.c3, AddMedia.c4,
@@ -1090,7 +1091,7 @@ class AddCourse(AddMedia):
         AddMedia.b1R = 'Platform'
         AddMedia.b2R = 'URL'
         AddMedia.b3R = 'Length (hrs)'
-        AddMedia.b4R = 'Level'
+        AddMedia.b4R = 'Comments'
 
         AddMedia.c1 = 'Title'
         AddMedia.c2 = 'Teacher'
@@ -1101,16 +1102,36 @@ class AddCourse(AddMedia):
 
         AddMedia.media_choice1 = 'Audio'
         AddMedia.media_choice2 = 'Video'
-        AddMedia.media_choice3 = 'Classroom'
+        AddMedia.media_choice3 = 'Blended Classroom'
 
         return AddMedia.c1, AddMedia.c2, AddMedia.c3, AddMedia.c4, AddMedia.c5, AddMedia.c6, AddMedia.window_header, \
                AddMedia.b2L, AddMedia.b3L, AddMedia.b4L, AddMedia.b1R, AddMedia.b2R, AddMedia.b3R, AddMedia.b4R, \
                AddMedia.media_choice1, AddMedia.media_choice2, AddMedia.media_choice3
 
-    def save_data(self):
-        data.add_course(self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(), self.box1R.get(),
-                              self.box2R.get(), self.box3R.get(), self.box4R.get(), self.media_buttons.get())
+    def list_resources(self):
+        for i in self.webdocs_list.get_children():
+            self.webdocs_list.delete(i)
+        resources = data.list_courses()
+        for item in resources:
+            self.treeview.insert('', 'end', values=item)
         pass
+
+    def get_media_name(self):
+        if self.media_buttons.get() == 1:
+            media_name = 'Audio'
+        elif self.media_buttons.get() == 2:
+            media_name = 'Video'
+        else:
+            media_name = 'Blended'
+        return media_name
+
+    def save_data(self):
+        media_name = self.get_media_name()
+#add_course(title, instructor, start_date, duration, url, comments, level, platform, media, subject)
+        data.add_course(self.box1L.get(), self.box2L.get(), self.box3L.get(),
+                        self.box3R.get(), self.box2R.get(), self.box4R.get(),
+                        self.level.get(), self.box1R.get(), self.box4L.get(),
+                        media_name)
 
 class AddAudioVideo(AddMedia):
     def __init__(self, parent, controller):

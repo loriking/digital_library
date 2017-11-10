@@ -451,9 +451,6 @@ def list_websites():
                 ''')
     return c.fetchall()
 
-
-
-
 def link_website():
     pass
 
@@ -497,11 +494,26 @@ def get_course_id(title):
     c.execute('SELECT ID FROM courses WHERE title =?', (title,))
     return c.fetchone()[0]
 
-def add_course(title, instructor, start_date, duration, url, level, platform, media, subject):
+
+"""
+ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+        title TEXT NOT NULL,
+        start_date INTEGER NOT NULL,
+        duration_hours INTEGER,
+        url TEXT,
+        comments TEXT,
+        levelID INTEGER REFERENCES level(ID),
+        platformID INTEGER REFERENCES publishers(ID),
+        mediaID INTEGER REFERENCES resource_medium(ID),
+        subjectID INTEGER REFERENCES subjects(ID)
+"""
+def add_course(title, instructor, start_date, duration, url, comments, level, platform, media, subject):
 
     levelID = get_level_id(level)
     print('Level ID is ', levelID)
 
+    add_resource_medium(media)
+    media = media.title()
     mediaID = get_resource_medium_id(media)
     print('Course ID = ', mediaID)
 
@@ -511,10 +523,12 @@ def add_course(title, instructor, start_date, duration, url, level, platform, me
 
     add_publisher(platform)
     publisherID = get_publisher_id(platform)
+    print('Platform ID', publisherID)
 
-    c.execute('''INSERT OR IGNORE INTO courses(title, start_date, duration, url, levelID, platform,
+    c.execute('''INSERT OR IGNORE INTO courses(title, start_date, duration_hours, url, comments, levelID, platformID,
                     mediaID, subjectID)
-                VALUES(?,?,?,?,?,?,?,?)''', (title, start_date, duration, url, levelID, platform, publisherID, subjectID))
+                VALUES(?,?,?,?,?,?,?,?, ?)''', (title, start_date, duration, url, comments,
+                                             levelID, publisherID, mediaID, subjectID))
 
     db.commit()
 
@@ -527,6 +541,9 @@ def add_course(title, instructor, start_date, duration, url, level, platform, me
                       VALUES(?, ?, ?)''', (courseID, authorID, mediaID))
     db.commit()
 
+def list_courses():
+    c.execute('''SELECT courses.title, courses.start_date FROM courses''')
+    return c.fetchall()
 
 # interactive media
 
