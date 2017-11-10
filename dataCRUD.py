@@ -442,13 +442,14 @@ def list_websites():
     """ Returns all the resources from database"""
 
     c.execute('''SELECT websites.title, authors.name, websites.creation_date, 
-                publishers.publisher, websites.url
+                publishers.publisher, websites.access_date, websites.url
                 FROM websites JOIN publishers JOIN authors JOIN resource_author
                 ON websites.website_nameID = publishers.ID 
 				AND authors.ID = resource_author.authorID 
                 AND websites.ID = resource_author.resourceID
 				AND websites.mediaID = resource_author.mediaID
                 ''')
+    return c.fetchall()
 
 
 

@@ -822,6 +822,19 @@ class AddMedia(tk.Frame):
         self.media_buttons = tk.IntVar()
         self.media_buttons.set('?')
 
+        self.treeview = None
+        self.webdocs_list = None
+
+        # self.box_1_L_entry = box1L_entry
+        # self.box_2_L_entry = box2L_entry
+        # self.box_3_L_entry = box3L_entry
+        # self.box_4_L_entry = box4L_entry
+        #
+        # self.box_1_R_entry = box1R_entry
+        # self.box_2_R_entry = box2R_entry
+        # self.box_3_R_entry = box3R_entry
+        # self.box_4_R_entry = box4R_entry
+
         # Frames
 
         self.mainframe = tk.LabelFrame(self, text='', borderwidth=4)
@@ -872,6 +885,9 @@ class AddMedia(tk.Frame):
         self.add_radio_buttons(self.media_choice1, self.media_choice2, self.media_choice3)
 
         self.display_resources(self.c1, self.c2, self.c3, self.c4, self.c5, self.c6)
+
+        self.list_resources()
+        self.update_entry_widgets()
 
 
     def create_values(self):
@@ -930,6 +946,9 @@ class AddMedia(tk.Frame):
         self.box_4_R = tk.Label(self.topright, text=box4R)
         self.box_4_R_entry = tk.Entry(self.topright, width=60, textvariable=self.box4R)
 
+        return self.title_entry, self.box_2_L_entry, self.box_3_L_entry, self.box_4_L_entry, self.box_1_R_entry,\
+                self.box_2_R_entry, self.box_3_R_entry, self.box_4_R_entry
+
     def place_widgets(self):
         self.window_title.grid(column=0, row=0, columnspan=2)
 
@@ -980,39 +999,39 @@ class AddMedia(tk.Frame):
         scrollwebdocs = tk.Scrollbar(self.bottom_middleframe)
         scrollwebdocs.grid(column=1, row=1, sticky=tk.N + tk.S + tk.W)
 
-        webdocs_list = ttk.Treeview(self.bottom_middleframe,
+        self.webdocs_list = ttk.Treeview(self.bottom_middleframe,
                                          columns= (col1, col2, col3, col4, col5, col6))
 
-        scrollwebdocs.configure(orient="vertical", command=webdocs_list.yview)
-        webdocs_list.configure(yscrollcommand=scrollwebdocs.set)
+        scrollwebdocs.configure(orient="vertical", command=self.webdocs_list.yview)
+        self.webdocs_list.configure(yscrollcommand=scrollwebdocs.set)
 
-        webdocs_list['columns'] = (col1, col2, col3, col4, col5, col6)
-        webdocs_list.column('#0', width=1)
-        webdocs_list.column('0', width=200, anchor='w')
-        webdocs_list.column('1', width=180, anchor='w')
-        webdocs_list.column('2', width=75, anchor='w')
-        webdocs_list.column('3', width=75, anchor='w')
-        webdocs_list.column('4', width=75, anchor='w')
-        webdocs_list.column('5', width=250, anchor='w')
-        webdocs_list.grid(column=0, row=1)
+        self.webdocs_list['columns'] = (col1, col2, col3, col4, col5, col6)
+        self.webdocs_list.column('#0', width=1)
+        self.webdocs_list.column('0', width=200, anchor='w')
+        self.webdocs_list.column('1', width=180, anchor='w')
+        self.webdocs_list.column('2', width=75, anchor='w')
+        self.webdocs_list.column('3', width=75, anchor='w')
+        self.webdocs_list.column('4', width=75, anchor='w')
+        self.webdocs_list.column('5', width=250, anchor='w')
+        self.webdocs_list.grid(column=0, row=1)
 
-        webdocs_list.heading('0', text=col1, anchor='w')
-        webdocs_list.heading('1', text=col2, anchor='w')
-        webdocs_list.heading('2', text=col3, anchor='w')
-        webdocs_list.heading('3', text=col4, anchor='w')
-        webdocs_list.heading('4', text=col5, anchor='w')
-        webdocs_list.heading('5', text=col6, anchor='w')
+        self.webdocs_list.heading('0', text=col1, anchor='w')
+        self.webdocs_list.heading('1', text=col2, anchor='w')
+        self.webdocs_list.heading('2', text=col3, anchor='w')
+        self.webdocs_list.heading('3', text=col4, anchor='w')
+        self.webdocs_list.heading('4', text=col5, anchor='w')
+        self.webdocs_list.heading('5', text=col6, anchor='w')
 
-        treeview = webdocs_list
-        return treeview, webdocs_list
+        self.treeview = self.webdocs_list
+        return self.treeview, self.webdocs_list
 
 
     def list_resources(self):
-        for i in webdocs_list.get_children():
-            webdocs_list.delete(i)
+        for i in self.webdocs_list.get_children():
+            self.webdocs_list.delete(i)
         resources = data.list_websites()
         for item in resources:
-            treeview.insert('', 'end', values=item)
+            self.treeview.insert('', 'end', values=item)
 
 
     def get_media_name(self):
@@ -1031,6 +1050,22 @@ class AddMedia(tk.Frame):
 
         data.add_website(self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(), self.box1R.get(),
                               self.box2R.get(), self.box3R.get(), self.box4R.get(), media_name)
+        self.update_entry_widgets()
+
+    def update_entry_widgets(self):
+
+        self.title_entry.delete(0, 'end')
+        self.box_2_L_entry.delete(0, 'end')
+        self.box_3_L_entry.delete(0, 'end')
+        self.box_4_L_entry.delete(0, 'end')
+
+        self.box_1_R_entry.delete(0, 'end')
+        self.box_2_R_entry.delete(0, 'end')
+        self.box_3_R_entry.delete(0, 'end')
+        self.box_4_R_entry.delete(0, 'end')
+
+        self.media_buttons.set('?')
+        self.list_resources()
 
 
 class AddCourse(AddMedia):
