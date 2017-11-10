@@ -461,9 +461,15 @@ def get_audio_video_id(title):
     return c.fetchone()[0]
 
 
-def add_audio_video(title, author, duration, format, year, source, comments, media, subject, publisher):
+def add_audio_video(title, author, duration,  year, program, url, language, media, subject, publisher):
     add_author(author)
 
+    add_language(language)
+    languageID = get_language_id(language)
+    print('Language ID is ', languageID)
+
+    add_resource_medium(media)
+    media = media.title()
     mediaID = get_resource_medium_id(media)
     print('Audio/Video ID = ', mediaID)
 
@@ -474,9 +480,10 @@ def add_audio_video(title, author, duration, format, year, source, comments, med
     add_publisher(publisher)
     publisherID = get_publisher_id(publisher)
 
-    c.execute('''INSERT OR IGNORE INTO audio_video(title, duration_mins, format, year, location,
-                comments, mediaID, subjectID, publisherID)
-                VALUES (?,?,?,?,?,?,?,?,?)''', (title, duration, format, year, source, mediaID, subjectID, publisherID ))
+    c.execute('''INSERT OR IGNORE INTO audio_video(title, duration_mins, year, 
+                program, url, languageID, mediaID, subjectID, publisherID)
+                VALUES (?,?,?,?,?,?,?,?,?)''',
+              (title, duration, year, program, url, languageID, mediaID, subjectID, publisherID ))
     db.commit()
 
     authorID = get_author_id(author)
@@ -488,6 +495,17 @@ def add_audio_video(title, author, duration, format, year, source, comments, med
     c.execute('''INSERT OR IGNORE INTO resource_author(resourceID, authorID, mediaID ) 
                   VALUES(?, ?, ?)''', (audio_video_id, authorID, mediaID))
     db.commit()
+
+def list_av():
+    c.execute('''SELECT audio_video.title, authors.name, audio_video.year, resource_medium.medium, 
+	                audio_video.program, audio_video.url
+                FROM audio_video JOIN publishers JOIN authors JOIN resource_author JOIN resource_medium
+                ON audio_video.publisherID = publishers.ID 
+                AND authors.ID = resource_author.authorID 
+                AND audio_video.ID = resource_author.resourceID
+                AND audio_video.mediaID = resource_author.mediaID
+                AND audio_video.mediaID = resource_medium.ID''')
+    return c.fetchall()
 
 # courses
 def get_course_id(title):

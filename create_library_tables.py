@@ -74,10 +74,10 @@ def make_db():
         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
         title TEXT NOT NULL,
         duration_mins INTEGER NOT NULL,
-        format TEXT NOT NULL,
         year INTEGER,
-        source TEXT,
-        comments TEXT,
+        program TEXT,
+        url TEXT,
+        languageID INTEGER REFERENCES languages(ID),
         mediaID INTEGER REFERENCES resource_medium(ID),
         subjectID INTEGER REFERENCES subjects(ID),
         publisherID INTEGER REFERENCES publishers(ID)

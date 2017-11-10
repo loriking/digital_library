@@ -553,7 +553,7 @@ class LinkResources(tk.Frame):
 
     def create_table_values(self):
         if self.media_type.get() == 1:
-            column_names = ('Title', 'Creator', 'Duration', 'Format', 'Type', 'URL')
+            column_names = ('Title', 'Artist', 'Year', 'Type', 'Program' 'URL')
             print('Audio/Video')
         elif self.media_type.get() ==2:
             column_names = ('Title', 'Instructor', 'Start date', 'Duration', 'Platform', 'URL')
@@ -568,7 +568,7 @@ class LinkResources(tk.Frame):
             column_names = ('Title', 'Creator', 'Genre', 'Engine', 'Type', 'Comments')
             print('Interactive Media')
         elif self.media_type.get() ==6:
-            column_names = ('Title', 'Author', 'Year', 'Pages', 'Language', 'Format')
+            column_names = ('Title', 'Author', 'Year', 'Pages', 'Language', 'Notes')
             print('Books/texts')
         else:
             print('Not working')
@@ -883,7 +883,7 @@ class AddMedia(tk.Frame):
     def create_values(self):
         self.window_header = 'Websites'
         self.b2L = 'Author'
-        self.b3L = 'Date'
+        self.b3L = 'Date Created'
         self.b4L = 'Subject'
         self.b1R = 'Website'
         self.b2R = 'URL'
@@ -1094,14 +1094,14 @@ class AddCourse(AddMedia):
         AddMedia.b4R = 'Comments'
 
         AddMedia.c1 = 'Title'
-        AddMedia.c2 = 'Teacher'
+        AddMedia.c2 = 'Instructor'
         AddMedia.c3 = 'Start date'
         AddMedia.c4 = 'Duration'
         AddMedia.c5 = 'Platform'
         AddMedia.c6 = 'URL'
 
-        AddMedia.media_choice1 = 'Audio'
-        AddMedia.media_choice2 = 'Video'
+        AddMedia.media_choice1 = 'Recordings'
+        AddMedia.media_choice2 = 'Web based'
         AddMedia.media_choice3 = 'Blended Classroom'
 
         return AddMedia.c1, AddMedia.c2, AddMedia.c3, AddMedia.c4, AddMedia.c5, AddMedia.c6, AddMedia.window_header, \
@@ -1114,13 +1114,13 @@ class AddCourse(AddMedia):
         resources = data.list_courses()
         for item in resources:
             self.treeview.insert('', 'end', values=item)
-        pass
+
 
     def get_media_name(self):
         if self.media_buttons.get() == 1:
-            media_name = 'Audio'
+            media_name = 'Recordings'
         elif self.media_buttons.get() == 2:
-            media_name = 'Video'
+            media_name = 'Web based'
         else:
             media_name = 'Blended'
         return media_name
@@ -1158,22 +1158,24 @@ class AddAudioVideo(AddMedia):
         self.create_top_frame_widgets(AddMedia.window_header, AddMedia.b2L, AddMedia.b3L, AddMedia.b4L, \
                                       AddMedia.b1R, AddMedia.b2R, AddMedia.b3R, AddMedia.b4R)
 
+        self.list_resources()
+
 
     def create_values(self):
         AddMedia.window_header = 'Audio and Video'
-        AddMedia.b2L = 'Creator'
-        AddMedia.b3L = 'Duration'
+        AddMedia.b2L = 'Artist'
+        AddMedia.b3L = 'Duration (mins)'
         AddMedia.b4L = 'Subject'
-        AddMedia.b1R = 'Format'
+        AddMedia.b1R = 'Producer'
         AddMedia.b2R = 'Date'
-        AddMedia.b3R = 'Location'
-        AddMedia.b4R = 'Comments'
+        AddMedia.b3R = 'Program'
+        AddMedia.b4R = 'URL'
 
         AddMedia.c1 = 'Title'
-        AddMedia.c2 = 'Creator'
-        AddMedia.c3 = 'Duration'
-        AddMedia.c4 = 'Format'
-        AddMedia.c5 = 'Type'
+        AddMedia.c2 = 'Artist'
+        AddMedia.c3 = 'Date'
+        AddMedia.c4 = 'Type'
+        AddMedia.c5 = 'Program'
         AddMedia.c6 = 'URL'
         AddMedia.media_choice1 = 'Music or Sound'
         AddMedia.media_choice2 = 'Podcast'
@@ -1183,10 +1185,34 @@ class AddAudioVideo(AddMedia):
                AddMedia.b2L, AddMedia.b3L, AddMedia.b4L, AddMedia.b1R, AddMedia.b2R, AddMedia.b3R, AddMedia.b4R, \
                AddMedia.media_choice1, AddMedia.media_choice2, AddMedia.media_choice3
 
+    def list_resources(self):
+        for i in self.webdocs_list.get_children():
+            self.webdocs_list.delete(i)
+        resources = data.list_av()
+        for item in resources:
+            self.treeview.insert('', 'end', values=item)
+
+    def get_media_name(self):
+        if self.media_buttons.get() == 1:
+            media_name = 'Music/Sound'
+        elif self.media_buttons.get() == 2:
+            media_name = 'Podcast'
+        else:
+            media_name = 'Video'
+        return media_name
+
+
     def save_data(self):
-        data.add_audio_video(self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(), self.box1R.get(),
-                              self.box2R.get(), self.box3R.get(), self.box4R.get(), self.media_buttons.get())
-        pass
+        media_name = self.get_media_name()
+
+        data.add_audio_video(self.box1L.get(), self.box2L.get(), self.box3L.get(),
+                             self.box2R.get(), self.box3R.get(), self.box4R.get(),
+                             self.language.get(), media_name, self.box4L.get(),
+                             self.box1R.get())
+
+        self.update_entry_widgets()
+        self.list_resources()
+
 
 
 class AddInteractiveMedia(AddMedia):
@@ -1204,7 +1230,7 @@ class AddInteractiveMedia(AddMedia):
     def create_values(self):
         AddMedia.window_header = 'Interactive Media'
         AddMedia.b2L = 'Creator'
-        AddMedia.b3L = 'Year'
+        AddMedia.b3L = 'Year created'
         AddMedia.b4L = 'Genre'
         AddMedia.b1R = 'Platform'
         AddMedia.b2R = 'Engine'
