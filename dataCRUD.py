@@ -575,8 +575,9 @@ def add_interactive_media(title, creator, year, platform, version, comments, eng
     typeID = get_resource_medium_id(medium)
 
     c.execute('''INSERT INTO interactive_media(title, year, platform, version, comments, engineID,
-                typeID, genreID
-                VALUES(?,?,?,?,?,?,?,?)''', (title, year, platform, version, comments, engineID, typeID, genreID))
+                typeID, genreID)
+                VALUES(?,?,?,?,?,?,?,?)''',
+              (title, year, platform, version, comments, engineID, typeID, genreID))
     db.commit()
 
     interactiveID = get_interactive_id(title)
@@ -589,7 +590,17 @@ def add_interactive_media(title, creator, year, platform, version, comments, eng
     db.commit()
 
 
-
+def list_interactive():
+    c.execute('''SELECT interactive_media.title, authors.name, interactive_media.year, 
+                    publishers.publisher, resource_medium.medium, interactive_media.comments
+                FROM interactive_media JOIN publishers JOIN authors JOIN resource_author
+                JOIN resource_medium
+                ON interactive_media.engineID = publishers.ID 
+                AND authors.ID = resource_author.authorID 
+                AND interactive_media.ID = resource_author.resourceID
+                AND interactive_media.genreID = resource_author.mediaID
+                AND interactive_media.typeID = resource_medium.ID''')
+    return c.fetchall()
 
 # images
 def get_image_id(title):
@@ -602,10 +613,8 @@ def add_images(title, creator, format, date, material, dimensions, location, com
     imagetypeID = get_resource_medium_id(image_type)
 
     c.execute('''INSERT OR IGNORE INTO images(title, format, date, material, dimensions, location, comments,
-                imagetypeID) VALUES(?,?,?,?,?,?,?,?)''', (title, format, date, material, dimensions, location, comments,
-                imagetypeID))
-    db.commit()
-
+                imagetypeID) VALUES(?,?,?,?,?,?,?,?)''',
+              (title, format, date, material, dimensions, location, comments,imagetypeID))
     db.commit()
 
     imageID = get_image_id(title)
@@ -615,6 +624,17 @@ def add_images(title, creator, format, date, material, dimensions, location, com
     c.execute('''INSERT OR IGNORE INTO resource_author(resourceID, authorID, mediaID ) 
                       VALUES(?, ?, ?)''', (imageID, authorID, imagetypeID))
     db.commit()
+
+def list_images():
+    c.execute('''SELECT images.title, authors.name, resource_medium.medium, images.dimensions, images.date, 
+                        images.location
+                    FROM images JOIN  authors JOIN resource_author JOIN resource_medium
+                    ON authors.ID = resource_author.authorID 
+                    AND images.ID = resource_author.resourceID
+                    AND images.imagetypeID = resource_author.mediaID
+                    AND images.imagetypeID = resource_medium.ID''')
+    return c.fetchall()
+
 
 
 
