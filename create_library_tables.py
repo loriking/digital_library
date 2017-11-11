@@ -112,12 +112,12 @@ def make_db():
     CREATE TABLE IF NOT EXISTS images(
         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
         title TEXT NOT NULL,
-        format TEXT NOT NULL,
         date INTEGER,
-        material TEXT,
+        copywrite TEXT,
+        website_name TEXT,
         dimensions TEXT,
-        location TEXT,
-        comments TEXT,        
+        url TEXT,
+        comments TEXT,       
         imagetypeID INTEGER REFERENCES resource_medium(ID)
         );
         

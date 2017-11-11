@@ -21,7 +21,7 @@ class ProjectLibrary(tk.Tk):
             self.frames[F] = frame
             frame.grid(row = 0, column = 0, sticky ='nsew')
 
-        self.show_frame(AddInteractiveMedia)
+        self.show_frame(AddImages)
         
     def show_frame(self, cont):
         frame = self.frames[cont]
@@ -82,7 +82,7 @@ class AddResource(tk.Frame):
         tk.Frame.__init__(self, parent)
 
         self.button_window = tk.LabelFrame(self, text='Resource Type')
-        self.button_window.grid(column=0, row=0, columnspan=4, sticky=tk.N+tk.S+tk.E+tk.W) # padx=250, pady=100,
+        self.button_window.grid(column=0, row=0, columnspan=4, sticky=tk.N+tk.S+tk.E+tk.W)
 
         self.AddAudioVideoButton = tk.Button(self.button_window, text='Audio\n and Video', width=20,height=5,
                                         command=lambda: controller.show_frame(AddAudioVideo))
@@ -136,7 +136,7 @@ class AddText(tk.Frame):
         bottomframe.grid(column=0, row=3, pady=5)
 
         buttonsframe = tk.LabelFrame(self, text="", borderwidth=0)
-        buttonsframe.grid(column=0, row=4)#, sticky=tk.W+tk.E+tk.N)
+        buttonsframe.grid(column=0, row=4)
 
         self.label = tk.Label(header_frame, text='New Text')
         self.label.grid(column=0, row=1, pady=5)
@@ -193,7 +193,7 @@ class AddText(tk.Frame):
 
         self.language_label = tk.Label(topcenterframe, text='Language')
         self.language_entry= tk.OptionMenu(topcenterframe, self.language,
-                                                *self.language_options)# if self.language_options else '0')
+                                                *self.language_options)
 
         self.language_entry.configure(width=15)
 
@@ -251,7 +251,7 @@ class AddText(tk.Frame):
 
         self.level_label = tk.Label(middleframe, text='Level:')
         self.level_entry = tk.OptionMenu(middleframe, self.level,
-                                         *self.level_options)# if self.level_options else '0')
+                                         *self.level_options)
         self.level_entry.configure(width=15)
 
         self.level_label.grid(column=0, row=0, padx=10, sticky=tk.W)
@@ -898,11 +898,9 @@ class AddMedia(tk.Frame):
         self.media_choice2 = 'Q&A site'
         self.media_choice3 = 'Other'
 
-        self.table = data.list_websites()
-
         return self.window_header, self.b2L, self.b3L, self.b4L, self.b1R, self.b2R, self.b3R, \
                self.b4R, self.c1, self.c2, self.c3, self.c4, self.c5, self.c6, self.media_choice1, \
-               self.media_choice2, self.table
+               self.media_choice2,
 
     def create_top_frame_widgets(self, window_header, box2L, box3L, box4L, box1R, box2R, box3R, box4R):
 
@@ -1018,7 +1016,7 @@ class AddMedia(tk.Frame):
     def list_resources(self, data_table):
         for i in self.webdocs_list.get_children():
             self.webdocs_list.delete(i)
-        resources = data_table #data.list_websites()
+        resources = data_table
         for item in resources:
             self.treeview.insert('', 'end', values=item)
 
@@ -1256,11 +1254,11 @@ class AddInteractiveMedia(AddMedia):
         if self.media_buttons.get() == 1:
             media_name = 'I.F.'
         elif self.media_buttons.get() == 2:
-            media_name = 'VG'
+            media_name = 'Videogame'
         else:
             media_name = 'Other'
         return media_name
-    
+
     def save_data(self):
         media_name = self.get_media_name()
 
@@ -1291,33 +1289,48 @@ class AddImages(AddMedia):
     def create_values(self):
         AddMedia.window_header = 'Images'
         AddMedia.b2L = 'Creator'
-        AddMedia.b3L = 'Format'
-        AddMedia.b4L = 'Date Created'
-        AddMedia.b1R = 'Material'
-        AddMedia.b2R = 'Dimensions'
-        AddMedia.b3R = 'Location'
+        AddMedia.b3L = 'Date Created'
+        AddMedia.b4L = 'Copywrite'
+        AddMedia.b1R = 'Dimensions'
+        AddMedia.b2R = 'Website'
+        AddMedia.b3R = 'URL'
         AddMedia.b4R = 'Comments'
-
 
         AddMedia.c1 = 'Title'
         AddMedia.c2 = 'Creator'
         AddMedia.c3 = 'Format'
         AddMedia.c4 = 'Dimensions'
         AddMedia.c5 = 'Date'
-        AddMedia.c6 = 'Location'
+        AddMedia.c6 = 'URL'
         AddMedia.media_choice1 = 'Photo'
-        AddMedia.media_choice2 = 'Clip art'
+        AddMedia.media_choice2 = 'Clipart'
         AddMedia.media_choice3 = 'Sprite'
-        AddMedia.table = data.list_images()
 
         return AddMedia.c1, AddMedia.c2, AddMedia.c3, AddMedia.c4, AddMedia.c5, AddMedia.c6, AddMedia.window_header, \
                AddMedia.b2L, AddMedia.b3L, AddMedia.b4L, AddMedia.b1R, AddMedia.b2R, AddMedia.b3R, AddMedia.b4R, \
-               AddMedia.media_choice1, AddMedia.media_choice2, AddMedia.media_choice3, AddMedia.table
+               AddMedia.media_choice1, AddMedia.media_choice2, AddMedia.media_choice3
+
+    def get_media_name(self):
+        if self.media_buttons.get() == 1:
+            media_name = 'Photo'
+        elif self.media_buttons.get() == 2:
+            media_name = 'Clipart'
+        else:
+            media_name = 'Sprite'
+        return media_name
 
     def save_data(self):
-        data.add_images(self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(), self.box1R.get(),
-                              self.box2R.get(), self.box3R.get(), self.box4R.get(), self.media_buttons.get())
-        pass
+        media_name = self.get_media_name()
+
+        data.add_images(self.box1L.get(), self.box2L.get(), self.box3L.get(),
+                        self.box4L.get(), self.box1R.get(), self.box2R.get(),
+                        self.box3R.get(), self.box4R.get(), media_name)
+
+        search_table = data.list_images()
+
+        self.update_entry_widgets()
+        self.list_resources(search_table)
+
 
 class SearchResource(tk.Frame):
     def __init__(self, parent, controller):

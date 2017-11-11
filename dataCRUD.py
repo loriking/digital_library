@@ -606,15 +606,26 @@ def list_interactive():
 def get_image_id(title):
     c.execute('SELECT ID FROM images WHERE title =?', (title,))
     return c.fetchone()[0]
-
-def add_images(title, creator, format, date, material, dimensions, location, comments, image_type):
+"""
+images(
+        ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+        title TEXT NOT NULL,
+        date INTEGER,
+        copywrite TEXT,
+        website_name TEXT,
+        dimensions TEXT,
+        url TEXT,
+        comments TEXT,       
+        imagetypeID INTEGER REFERENCES resource_medium(ID)
+"""
+def add_images(title, creator, date, copywrite, website, dimensions, url, comments, image_type):
 
     add_resource_medium(image_type)
     imagetypeID = get_resource_medium_id(image_type)
 
-    c.execute('''INSERT OR IGNORE INTO images(title, format, date, material, dimensions, location, comments,
+    c.execute('''INSERT OR IGNORE INTO images(title, date, copywrite, website_name, dimensions, url, comments,
                 imagetypeID) VALUES(?,?,?,?,?,?,?,?)''',
-              (title, format, date, material, dimensions, location, comments,imagetypeID))
+              (title, date, copywrite, website, dimensions, url, comments,imagetypeID))
     db.commit()
 
     imageID = get_image_id(title)
@@ -627,7 +638,7 @@ def add_images(title, creator, format, date, material, dimensions, location, com
 
 def list_images():
     c.execute('''SELECT images.title, authors.name, resource_medium.medium, images.dimensions, images.date, 
-                        images.location
+                        images.url
                     FROM images JOIN  authors JOIN resource_author JOIN resource_medium
                     ON authors.ID = resource_author.authorID 
                     AND images.ID = resource_author.resourceID
