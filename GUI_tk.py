@@ -21,7 +21,7 @@ class ProjectLibrary(tk.Tk):
             self.frames[F] = frame
             frame.grid(row = 0, column = 0, sticky ='nsew')
 
-        self.show_frame(AddImages)
+        self.show_frame(AddText)
         
     def show_frame(self, cont):
         frame = self.frames[cont]
@@ -124,7 +124,7 @@ class AddText(tk.Frame):
         topcenterframe.grid(columnspan=4,column=5, row=1)
 
         middleleftframe = tk.LabelFrame(mainframe, text="", borderwidth=4)
-        middleleftframe.grid(columnspan=5, column=0, row=2, sticky=tk.W)  #
+        middleleftframe.grid(columnspan=5, column=0, row=2, sticky=tk.W)
 
         middleframe = tk.LabelFrame(mainframe, text="", borderwidth=0)
         middleframe.grid(columnspan=5, column=4, row=2, sticky=tk.W)
@@ -139,7 +139,7 @@ class AddText(tk.Frame):
         buttonsframe.grid(column=0, row=4)
 
         self.label = tk.Label(header_frame, text='New Text')
-        self.label.grid(column=0, row=1, pady=5)
+        self.label.grid(column=0, row=1)#, pady=5)
 
         self.title = tk.StringVar()
         self.author = tk.StringVar()
@@ -245,7 +245,7 @@ class AddText(tk.Frame):
         self.add_lang_flag.grid(column=2, row=4, sticky=tk.W)
         self.add_language_entry.grid(column=3, row=4, sticky=tk.N+tk.E)
 
-        self.addtextresource = tk.Button(middlerightframe, text='Save', command=lambda: self.new_textresource())
+        self.addtextresource = tk.Button(middlerightframe, text='Save', command=lambda: self.save_text())
         self.addtextresource.config(width=12, cursor='hand2')#
         self.addtextresource.grid(column=4, row=0, padx=2, sticky=tk.E)
 
@@ -353,7 +353,7 @@ class AddText(tk.Frame):
         return media_name
 
 
-    def new_textresource(self):
+    def save_text(self):
         media_name = self.get_media_name()
 
         if self.new_pub_flag.get() == 1:
@@ -508,7 +508,10 @@ class LinkResources(tk.Frame):
 
 
     def show_results(self):
-        column_names = self.create_table_values()
+        results = self.create_table_values()
+        column_names = results[0] #self.create_table_values()
+        resources = results[1]
+        # self.search_resources(resources)
 
         self.scollresources = tk.Scrollbar(self.resourceresults)
         self.scollresources.grid(column=2, row=2, sticky=tk.N + tk.S + tk.W)
@@ -543,32 +546,38 @@ class LinkResources(tk.Frame):
         self.go_to_resources.config(cursor='hand2')
         self.go_to_resources.grid(column=0, row=4, sticky=tk.E)
 
-        self.search_resources()
+        self.search_resources(resources)
 
 
     def create_table_values(self):
         if self.media_type.get() == 1:
             column_names = ('Title', 'Artist', 'Year', 'Type', 'Program' 'URL')
+            resources = data.find_av(self.resource_subject.get())
             print('Audio/Video')
         elif self.media_type.get() ==2:
             column_names = ('Title', 'Instructor', 'Start date', 'Duration', 'Platform', 'URL')
+            resources = data.find_courses(self.resource_subject.get())
             print('Courses')
         elif self.media_type.get() ==3:
             column_names = ('Title', 'Author', 'Date', 'Website', 'Access date', 'URL')
+            resources = data.find_web(self.resource_subject.get())
             print('Websites')
         elif self.media_type.get() ==4:
-            column_names = ('Title', 'Creator', 'Format', 'Dimensions', 'Date', 'Location')
+            column_names = ('Title', 'Creator', 'Type', 'Dimensions', 'Date', 'Location')
+            resources = data.find_images(self.resource_subject.get())
             print('Images')
         elif self.media_type.get() == 5:
             column_names = ('Title', 'Creator', 'Genre', 'Engine', 'Type', 'Comments')
+            resources = data.find_interactive(self.resource_subject.get())
             print('Interactive Media')
         elif self.media_type.get() ==6:
             column_names = ('Title', 'Author', 'Year', 'Pages', 'Language', 'Notes')
+            resources = data.find_texts(self.resource_subject.get())
             print('Books/texts')
         else:
             print('Not working')
 
-        return column_names
+        return column_names, resources
 
 
     def select_resources(self, event):
@@ -628,11 +637,41 @@ class LinkResources(tk.Frame):
         self.titlebox.delete(0, 'end')
 
 
-    def search_resources(self):
+    # def search_resource(self):
+    #     if self.media_type.get() == 1:
+    #         column_names = ('Title', 'Artist', 'Year', 'Type', 'Program' 'URL')
+    #         resources =
+    #         print('Audio/Video')
+    #     elif self.media_type.get() ==2:
+    #         column_names = ('Title', 'Instructor', 'Start date', 'Duration', 'Platform', 'URL')
+    #         resources =
+    #         print('Courses')
+    #     elif self.media_type.get() ==3:
+    #         column_names = ('Title', 'Author', 'Date', 'Website', 'Access date', 'URL')
+    #         resources =
+    #         print('Websites')
+    #     elif self.media_type.get() ==4:
+    #         column_names = ('Title', 'Creator', 'Format', 'Dimensions', 'Date', 'Location')
+    #         resources =
+    #         print('Images')
+    #     elif self.media_type.get() == 5:
+    #         column_names = ('Title', 'Creator', 'Genre', 'Engine', 'Type', 'Comments')
+    #         resources =
+    #         print('Interactive Media')
+    #     elif self.media_type.get() ==6:
+    #         column_names = ('Title', 'Author', 'Year', 'Pages', 'Language', 'Notes')
+    #         resources = data.find_resource_by_subject(self.resource_subject.get())
+    #         print('Books/texts')
+    #     else:
+    #         print('Not working')
+    #
+    #     return column_names, resources
+
+    def search_resources(self,resources):
         for i in self.resource_list.get_children():
             self.resource_list.delete(i)
 
-        resources = data.find_resource_by_subject(self.resource_subject.get())
+        #resources = data.find_resource_by_subject(self.resource_subject.get())
 
         for item in resources:
             self.treeview_resources.insert('', 'end', values=item)
@@ -1054,7 +1093,6 @@ class AddMedia(tk.Frame):
 
         self.media_buttons.set('?')
 
-
 class AddCourse(AddMedia):
     def __init__(self, parent, controller):
         AddMedia.__init__(self, parent, controller)
@@ -1209,8 +1247,6 @@ class AddAudioVideo(AddMedia):
         self.update_entry_widgets()
         self.list_resources(search_table)
 
-
-
 class AddInteractiveMedia(AddMedia):
     def __init__(self, parent, controller):
         AddMedia.__init__(self, parent, controller)
@@ -1298,7 +1334,7 @@ class AddImages(AddMedia):
 
         AddMedia.c1 = 'Title'
         AddMedia.c2 = 'Creator'
-        AddMedia.c3 = 'Format'
+        AddMedia.c3 = 'Type'
         AddMedia.c4 = 'Dimensions'
         AddMedia.c5 = 'Date'
         AddMedia.c6 = 'URL'

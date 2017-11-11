@@ -366,6 +366,7 @@ def list_text_resources():
                 ON texts.languageID = languages.ID
                 AND texts.publisherID = publishers.ID AND authors.ID = resource_author.authorID 
                 AND texts.ID = resource_author.resourceID
+                AND texts.mediaID = resource_author.mediaID
                 ''')
 
     return c.fetchall()
@@ -724,15 +725,6 @@ def get_projectID(project_name):
     results = [i[0] for i in c.fetchall()]
     return results
 
-def find_project(project_name):
-    search = "%" + project_name + "%"
-    c.execute('''SELECT project_name, category, description, date_start, date_end
-                FROM projects JOIN project_category 
-                ON projects.project_category = project_category.ID
-                WHERE project_name LIKE ?''', (search,))
-    return c.fetchall()
-
-
 def list_projects():
     """ :return list of projects """
     c.execute('''SELECT project_name, category, description, date_start, date_end
@@ -786,6 +778,131 @@ def link_to_resources(projectID, resourceID, mediaID):
               (projectID, resourceID, mediaID))
 
     db.commit()
+
+# SEARCHES
+def find_project(project_name):
+    search = "%" + project_name + "%"
+    c.execute('''SELECT project_name, category, description, date_start, date_end
+                FROM projects JOIN project_category 
+                ON projects.project_category = project_category.ID
+                WHERE project_name LIKE ? OR description LIKE ?''', (search, search))
+    return c.fetchall()
+
+# RESOURCES
+# WANT : 'Title', 'Author', 'Year', 'Pages', 'Language', 'Notes'
+def find_texts(search_term):
+    search_term =  "%" + search_term + "%"
+    c.execute('''SELECT texts.title, authors.name, texts.year, texts.pages, languages.language, texts.notes
+                FROM texts JOIN languages JOIN resource_medium JOIN authors
+                JOIN resource_author JOIN subjects 
+                ON texts.mediaID = resource_medium.ID
+                AND authors.ID = resource_author.authorID
+                AND texts.ID = resource_author.resourceID
+                AND texts.mediaID = resource_author.mediaID
+                AND texts.subjectID = subjects.ID
+                WHERE texts.title LIKE ?
+                OR subjects.subject LIKE ? 
+                OR authors.name LIKE ? ''',
+              (search_term, search_term, search_term))
+
+    return c.fetchall()
+# Display: 'Title', 'Instructor', 'Start date', 'Duration', 'Platform', 'URL'
+
+def find_courses(search_term):
+    search_term = "%" + search_term + "%"
+
+    c.execute('''SELECT courses.title, authors.name, courses.start_date, courses.duration_hours, 
+                    publishers.publisher, courses.url
+                FROM courses JOIN  resource_medium JOIN authors JOIN resource_author JOIN subjects JOIN publishers
+                ON courses.mediaID = resource_medium.ID 
+                AND authors.ID = resource_author.authorID 
+                AND courses.ID = resource_author.resourceID
+                AND courses.mediaID = resource_author.mediaID
+                AND courses.subjectID = subjects.ID
+                AND courses.platformID = publishers.ID
+                WHERE courses.title LIKE ?
+                OR subjects.subject LIKE ?''',
+              (search_term, search_term))
+
+    return c.fetchall()
+
+
+def find_av(search_term):
+    search_term = "%" + search_term + "%"
+    # RESULTS WANTED: 'Title', 'Artist', 'Year', 'Type', 'Program' 'URL'
+
+    c.execute('''SELECT audio_video.title, authors.name, audio_video.year, resource_medium.medium, 
+                        audio_video.program, audio_video.url
+                    FROM audio_video JOIN  resource_medium JOIN authors 
+                    JOIN resource_author JOIN publishers
+                    ON audio_video.mediaID = resource_medium.ID 
+                    AND authors.ID = resource_author.authorID 
+                    AND audio_video.ID = resource_author.resourceID
+                    AND audio_video.mediaID = resource_author.mediaID
+                    AND audio_video.publisherID = publishers.ID
+                    WHERE audio_video.title LIKE ?
+                    OR authors.name LIKE ?''',
+              (search_term, search_term))
+
+    return c.fetchall()
+
+def find_interactive(search_term):
+    # Wanted 'Title', 'Creator', 'Genre', 'Engine', 'Type', 'Comments'
+    search_term = "%" + search_term + "%"
+
+    c.execute('''SELECT interactive_media.title, authors.name, subjects.subject,
+                        publishers.publisher, resource_medium.medium, 
+                        interactive_media.comments
+                        FROM interactive_media JOIN resource_medium JOIN authors 
+                        JOIN resource_author JOIN publishers JOIN subjects
+                        ON interactive_media.mediaID = resource_medium.ID 
+                        AND authors.ID = resource_author.authorID 
+                        AND interactive_media.ID = resource_author.resourceID
+                        AND interactive_media.typeID = resource_author.mediaID
+                        AND interactive_media.engineID = publishers.ID
+                        WHERE interactive_media.title LIKE ?
+                        OR authors.name LIKE ?
+                        OR subjects.subject LIKE ? ''',
+              (search_term, search_term, search_term))
+
+    return c.fetchall()
+
+
+def find_images(search_term):
+    #'Title', 'Creator', 'Type', 'Dimensions', 'Date', 'Location'
+    search_term = "%" + search_term + "%"
+    c.execute('''SELECT images.title, authors.name, resource_medium.medium,
+                        images.dimensions, images.date, images.url
+                    FROM images JOIN resource_medium JOIN authors JOIN resource_author
+                    ON images.imagetypeID = resource_medium.ID 
+                    AND authors.ID = resource_author.authorID 
+                    AND images.ID = resource_author.resourceID
+                    AND images.imagetypeID = resource_author.mediaID
+                    WHERE images.title LIKE ?
+                    OR authors.name LIKE ? 
+                    OR resource_medium.medium LIKE ?''',
+              (search_term, search_term, search_term))
+
+    return c.fetchall()
+
+def find_web(search_term):
+    # RESULTS DESIRED 'Title', 'Author', 'Date', 'Website', 'Access date', 'URL'
+    search_term = "%" + search_term + "%"
+    c.execute('''SELECT websites.title, authors.name, website.date, publishers.publisher, 
+                            websites.access_date, websites.url
+                    FROM websites JOIN resource_medium JOIN authors JOIN resource_author 
+                    JOIN publishers
+                    ON websites.website_nameID = publishers.ID
+                    AND websites.mediaID = resource_medium.ID 
+                    AND authors.ID = resource_author.authorID 
+                    AND websites.ID = resource_author.resourceID
+                    AND websites.mediaID = resource_author.mediaID
+                    WHERE websites.title LIKE ?
+                    OR authors.name LIKE ? 
+                    OR publishers.publisher LIKE ? ''',
+              (search_term, search_term, search_term))
+
+    return c.fetchall()
 
 
 
