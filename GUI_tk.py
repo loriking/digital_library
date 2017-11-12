@@ -21,7 +21,7 @@ class ProjectLibrary(tk.Tk):
             self.frames[F] = frame
             frame.grid(row = 0, column = 0, sticky ='nsew')
 
-        self.show_frame(AddText)
+        self.show_frame(LinkResources)
         
     def show_frame(self, cont):
         frame = self.frames[cont]
@@ -283,7 +283,7 @@ class AddText(tk.Frame):
 
         self.resource_list['columns'] = ('Title', 'Author', 'Year', 'Pages',
                           'Publisher', 'Language', 'Notes')
-        self.resource_list.column('#0', width=1)
+        self.resource_list.column('#0',minwidth=0, width=0)
         self.resource_list.column('0', width=180, anchor='w')
         self.resource_list.column('1', width=150, anchor='w')
         self.resource_list.column('2', width=75, anchor='w')
@@ -389,7 +389,7 @@ class LinkResources(tk.Frame):
         self.media_type = tk.IntVar()
         self.media_type.set("?")
 
-        self.columns = ()
+        #self.columns = ()
 
         self.searchheader = ttk.Label(self, text='Find Projects')
         self.searchheader.grid(column=0, row=0)
@@ -419,7 +419,7 @@ class LinkResources(tk.Frame):
         self.resultsframe = tk.LabelFrame(self.mainframe, text='', borderwidth=4)
         self.resultsframe.grid(column=0, row=2, sticky=tk.E)
 
-        self.clearbutton = ttk.Button(self.resultsframe, text='Clear project')
+        self.clearbutton = ttk.Button(self.resultsframe, text='Clear project', command=lambda: self.clear_selection())
         self.clearbutton.config( cursor='hand2')
         self.clearbutton.grid(column=0, row=10, pady=5, sticky=tk.E)
 
@@ -434,7 +434,7 @@ class LinkResources(tk.Frame):
         self.project_list.configure(yscrollcommand=self.scrollresults.set)
 
         self.project_list['columns'] = ('Name', 'Type', 'Description', 'Start date', 'End date')
-        self.project_list.column('#0', width=5)
+        self.project_list.column('#0', minwidth=0, width=0)
         self.project_list.grid(column=0, row=4, sticky=tk.W+tk.E)
 
         self.project_list.heading('0', text='Name', anchor='w')
@@ -482,8 +482,8 @@ class LinkResources(tk.Frame):
         self.sort_label = tk.Label(self.searchresourceframe, text='Resource type:')
         self.sort_label.grid(column=3, row=0, padx=5, sticky=tk.W)
 
-        self.audiovideo_rb = tk.Radiobutton(self.media_type_frame, text='Audio and Video', variable=self.media_type,
-                                       value=1)
+        self.audiovideo_rb = tk.Radiobutton(self.media_type_frame, text='Audio and Video',
+                                            variable=self.media_type, value=1)
         self.courses_rb = tk.Radiobutton(self.media_type_frame, text='Courses', variable=self.media_type, value=2)
 
         self.websites_rb = tk.Radiobutton(self.media_type_frame, text='Websites', variable=self.media_type,
@@ -511,9 +511,8 @@ class LinkResources(tk.Frame):
         results = self.create_table_values()
         column_names = results[0] #self.create_table_values()
         resources = results[1]
-        # self.search_resources(resources)
 
-        self.scollresources = tk.Scrollbar(self.resourceresults)
+        self.scollresources = ttk.Scrollbar(self.resourceresults)
         self.scollresources.grid(column=2, row=2, sticky=tk.N + tk.S + tk.W)
 
         self.resource_list = ttk.Treeview(self.resourceresults, height=4, selectmode='extended',
@@ -523,7 +522,8 @@ class LinkResources(tk.Frame):
         self.resource_list.configure(yscrollcommand=self.scollresources.set)
 
         self.resource_list['columns'] = column_names
-        self.resource_list.column('#0', width=5)
+
+        self.resource_list.column('#0', minwidth=0, width=0)
         self.resource_list.column('0', width=240, anchor='w')
         self.resource_list.column('1', width=150, anchor='w')
         self.resource_list.column('2', width=75, anchor='w')
@@ -549,12 +549,15 @@ class LinkResources(tk.Frame):
         self.search_resources(resources)
 
 
+
+
     def create_table_values(self):
+
         if self.media_type.get() == 1:
-            column_names = ('Title', 'Artist', 'Year', 'Type', 'Program' 'URL')
+            column_names = ('Title', 'Artist', 'Year', 'Type', 'Program', 'URL')
             resources = data.find_av(self.resource_subject.get())
             print('Audio/Video')
-        elif self.media_type.get() ==2:
+        if self.media_type.get() ==2:
             column_names = ('Title', 'Instructor', 'Start date', 'Duration', 'Platform', 'URL')
             resources = data.find_courses(self.resource_subject.get())
             print('Courses')
@@ -574,8 +577,7 @@ class LinkResources(tk.Frame):
             column_names = ('Title', 'Author', 'Year', 'Pages', 'Language', 'Notes')
             resources = data.find_texts(self.resource_subject.get())
             print('Books/texts')
-        else:
-            print('Not working')
+     
 
         return column_names, resources
 
@@ -612,11 +614,9 @@ class LinkResources(tk.Frame):
         return self.project_id
 
     def clear_selection(self):
-        item = self.treeview_projects.selection()[0]
-        self.project_list.selection_remove(item)
+        for i in self.treeview_projects.get_children():
+            self.treeview_projects.delete(i)
 
-        items = self.treeview_resources.selection()[0]
-        self.resource_list.selection_remove(items)
 
     def link_project_resources(self):
 
@@ -667,11 +667,10 @@ class LinkResources(tk.Frame):
     #
     #     return column_names, resources
 
-    def search_resources(self,resources):
+    def search_resources(self, resources):
+
         for i in self.resource_list.get_children():
             self.resource_list.delete(i)
-
-        #resources = data.find_resource_by_subject(self.resource_subject.get())
 
         for item in resources:
             self.treeview_resources.insert('', 'end', values=item)
@@ -778,7 +777,7 @@ class Projects(tk.Frame):
         self.project_list.configure(yscrollcommand=self.scollprojects.set)
 
         self.project_list['columns'] = ('Name', 'Type','Description', 'Start date', 'End date')
-        self.project_list.column('#0', width=5)
+        self.project_list.column('#0',minwidth=0, width=0)
         self.project_list.grid(column=0, row=0,sticky=tk.E)
 
         self.project_list.heading('0',  text='Name', anchor='w')
@@ -928,7 +927,7 @@ class AddMedia(tk.Frame):
 
         self.c1 = 'Title'
         self.c2 = 'Author'
-        self.c3 = 'Date'
+        self.c3 = 'Created'
         self.c4 = 'Website'
         self.c5 = 'Access date'
         self.c6 = 'URL'
@@ -1032,7 +1031,7 @@ class AddMedia(tk.Frame):
         self.webdocs_list.configure(yscrollcommand=scrollwebdocs.set)
 
         self.webdocs_list['columns'] = (col1, col2, col3, col4, col5, col6)
-        self.webdocs_list.column('#0', width=1)
+        self.webdocs_list.column('#0', minwidth=0, width=0)
         self.webdocs_list.column('0', width=200, anchor='w')
         self.webdocs_list.column('1', width=180, anchor='w')
         self.webdocs_list.column('2', width=75, anchor='w')
@@ -1261,6 +1260,8 @@ class AddInteractiveMedia(AddMedia):
         self.create_top_frame_widgets(AddMedia.window_header, AddMedia.b2L, AddMedia.b3L, AddMedia.b4L, \
                                       AddMedia.b1R, AddMedia.b2R, AddMedia.b3R, AddMedia.b4R)
 
+        self.list_resources(self.table)
+
     def create_values(self):
         AddMedia.window_header = 'Interactive Media'
         AddMedia.b2L = 'Creator'
@@ -1303,9 +1304,10 @@ class AddInteractiveMedia(AddMedia):
                                    self.box2R.get(), media_name, self.box4L.get())
 
         search_table = data.list_interactive()
+        self.list_resources(search_table)
 
         self.update_entry_widgets()
-        self.list_resources(search_table)
+
 
 
 
