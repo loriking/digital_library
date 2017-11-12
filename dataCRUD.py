@@ -442,8 +442,8 @@ def add_website(title, author, creation_date, subject, website_name, url, access
 def list_websites():
     """ Returns all the resources from database"""
 
-    c.execute('''SELECT websites.title, authors.name, websites.creation_date, 
-                publishers.publisher, websites.access_date, websites.url
+    c.execute('''SELECT websites.title, authors.name, publishers.publisher, 
+                websites.creation_date, websites.access_date, websites.url
                 FROM websites JOIN publishers JOIN authors JOIN resource_author
                 ON websites.website_nameID = publishers.ID 
 				AND authors.ID = resource_author.authorID 
