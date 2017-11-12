@@ -882,9 +882,9 @@ def find_images(search_term):
     return c.fetchall()
 
 def find_web(search_term):
-    # RESULTS DESIRED 'Title', 'Author', 'Date', 'Website', 'Access date', 'URL'
+    # RESULTS DESIRED 'Title', 'Author', 'Website', 'Date', 'Access date', 'URL'
     search_term = "%" + search_term + "%"
-    c.execute('''SELECT websites.title, authors.name, websites.creation_date, publishers.publisher, 
+    c.execute('''SELECT websites.title, authors.name, publishers.publisher, websites.creation_date,
                             websites.access_date, websites.url
                     FROM websites JOIN resource_medium JOIN authors JOIN resource_author 
                     JOIN publishers
