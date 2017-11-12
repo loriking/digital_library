@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter.messagebox import showinfo
 from tkinter import ttk
 import dataCRUD as data
+from blank_window import show_window
 
 
 class ProjectLibrary(tk.Tk):
@@ -389,13 +390,11 @@ class LinkResources(tk.Frame):
         self.media_type = tk.IntVar()
         self.media_type.set("?")
 
-        #self.columns = ()
-
         self.searchheader = ttk.Label(self, text='Find Projects')
         self.searchheader.grid(column=0, row=0)
 
         self.mainframe = tk.LabelFrame(self, text='', borderwidth=4)
-        self.mainframe.grid(column=0, row=1, sticky=tk.W + tk.E + tk.N)
+        self.mainframe.grid(column=0, row=1)
 
         self.home = ttk.Button(self.mainframe, text='Home', command=lambda: controller.show_frame(HomePage))
         self.home.config(width=10, cursor='hand2')
@@ -415,7 +414,6 @@ class LinkResources(tk.Frame):
         self.searchbutton.grid(column=2, row=0, padx=5, pady=5, sticky=tk.E)
 
         # TOP RIGHT FRAME PROJECT SEARCH RESULTS:
-
         self.resultsframe = tk.LabelFrame(self.mainframe, text='', borderwidth=4)
         self.resultsframe.grid(column=0, row=2, sticky=tk.E)
 
@@ -447,7 +445,7 @@ class LinkResources(tk.Frame):
         self.project_list.column('1',  width=110, anchor='w')
         self.project_list.column('2', width=280, anchor='w')
         self.project_list.column('3', width=100, anchor='w')
-        self.project_list.column('4', width=100, anchor='w')
+        self.project_list.column('4', width=120, anchor='w')
         self.treeview_projects = self.project_list
         self.treeview_projects.bind('<ButtonRelease-1>', self.select_project)
 
@@ -506,10 +504,11 @@ class LinkResources(tk.Frame):
         self.resourceresults = tk.LabelFrame(self.mainframe, text='', borderwidth=4)
         self.resourceresults.grid(column=0, row=5, columnspan=40, sticky=tk.W)
 
+        show_window(self.resourceresults, 4)
 
     def show_results(self):
         results = self.create_table_values()
-        column_names = results[0] #self.create_table_values()
+        column_names = results[0]
         resources = results[1]
 
         self.scollresources = ttk.Scrollbar(self.resourceresults)
@@ -548,39 +547,34 @@ class LinkResources(tk.Frame):
 
         self.search_resources(resources)
 
-
-
-
     def create_table_values(self):
 
         if self.media_type.get() == 1:
             column_names = ('Title', 'Artist', 'Year', 'Type', 'Program', 'URL')
             resources = data.find_av(self.resource_subject.get())
-            print('Audio/Video')
+
         if self.media_type.get() ==2:
             column_names = ('Title', 'Instructor', 'Start date', 'Duration', 'Platform', 'URL')
             resources = data.find_courses(self.resource_subject.get())
-            print('Courses')
+
         elif self.media_type.get() ==3:
             column_names = ('Title', 'Author', 'Date', 'Website', 'Access date', 'URL')
             resources = data.find_web(self.resource_subject.get())
-            print('Websites')
+
         elif self.media_type.get() ==4:
             column_names = ('Title', 'Creator', 'Type', 'Dimensions', 'Date', 'Location')
             resources = data.find_images(self.resource_subject.get())
-            print('Images')
+
         elif self.media_type.get() == 5:
             column_names = ('Title', 'Creator', 'Genre', 'Engine', 'Type', 'Comments')
             resources = data.find_interactive(self.resource_subject.get())
-            print('Interactive Media')
+
         elif self.media_type.get() ==6:
             column_names = ('Title', 'Author', 'Year', 'Pages', 'Language', 'Notes')
             resources = data.find_texts(self.resource_subject.get())
-            print('Books/texts')
 
 
         return column_names, resources
-
 
     def select_resources(self, event):
         self.resources.clear()
@@ -756,7 +750,7 @@ class Projects(tk.Frame):
         self.project_list.heading('4', text='End date', anchor='w')
 
         self.project_list.column('0', width=250, anchor='w')
-        self.project_list.column('1', width=150, anchor='w' )
+        self.project_list.column('1', width=165, anchor='w' )
         self.project_list.column('2', width=250, anchor='w')
         self.project_list.column('3', width=100, anchor='w')
         self.project_list.column('4', width=100,anchor='w')
@@ -896,8 +890,8 @@ class AddMedia(tk.Frame):
 
         self.c1 = 'Title'
         self.c2 = 'Author'
-        self.c3 = 'Created'
-        self.c4 = 'Website'
+        self.c3 = 'Website'
+        self.c4 = 'Created'
         self.c5 = 'Access date'
         self.c6 = 'URL'
 
@@ -1002,8 +996,8 @@ class AddMedia(tk.Frame):
         self.webdocs_list['columns'] = (col1, col2, col3, col4, col5, col6)
         self.webdocs_list.column('#0', minwidth=0, width=0)
         self.webdocs_list.column('0', width=200, anchor='w')
-        self.webdocs_list.column('1', width=180, anchor='w')
-        self.webdocs_list.column('2', width=75, anchor='w')
+        self.webdocs_list.column('1', width=160, anchor='w')
+        self.webdocs_list.column('2', width=95, anchor='w')
         self.webdocs_list.column('3', width=75, anchor='w')
         self.webdocs_list.column('4', width=75, anchor='w')
         self.webdocs_list.column('5', width=250, anchor='w')
@@ -1347,7 +1341,7 @@ class SearchResource(tk.Frame):
         self.resources = None
 
         self.mainframe = tk.LabelFrame(self, text='', borderwidth=4)
-        self.mainframe.grid(column=0, row=1)#,  sticky=tk.N + tk.S + tk.W + tk.E)
+        self.mainframe.grid(column=0, row=1)
 
         self.top = tk.LabelFrame(self.mainframe, text="", borderwidth=0)
         self.topmiddle = tk.LabelFrame(self.mainframe, text="", borderwidth=3)
@@ -1397,30 +1391,7 @@ class SearchResource(tk.Frame):
         self.home.config(width=10, cursor='hand2')
         self.home.grid(column=0, row=10, padx=20, sticky=tk.E)
 
-        self.show_window()
-
-    def show_window(self):
-
-        self.resource_list2 = ttk.Treeview(self.bottom, height=15, selectmode='extended')
-        self.resource_list2['columns'] = ('', '', '', '', '', '')
-
-        self.resource_list2.column('#0', minwidth=0, width=0)
-        self.resource_list2.column('0', width=240, anchor='w')
-        self.resource_list2.column('1', width=150, anchor='w')
-        self.resource_list2.column('2', width=75, anchor='w')
-        self.resource_list2.column('3', width=75, anchor='w')
-        self.resource_list2.column('4', width=100, anchor='w')
-        self.resource_list2.column('5', width=220, anchor='w')
-        self.resource_list2.grid(column=0, row=2, sticky=tk.W + tk.N + tk.E)
-
-        self.resource_list2.heading('0', anchor='w')
-        self.resource_list2.heading('1', anchor='w')
-        self.resource_list2.heading('2', anchor='w')
-        self.resource_list2.heading('3', anchor='w')
-        self.resource_list2.heading('4', anchor='w')
-        self.resource_list2.heading('5', anchor='w')
-        self.treeview_resources2 = self.resource_list2
-        # self.treeview_resources.bind('<ButtonRelease-1>', self.select_resources)
+        show_window(self.bottom, 15) # opens an empty window as a placeholder
 
     def show_results(self):
         results = self.create_table_values()
@@ -1463,27 +1434,26 @@ class SearchResource(tk.Frame):
         if self.media_type.get() == 1:
             column_names = ('Title', 'Artist', 'Year', 'Type', 'Program', 'URL')
             resources = data.find_av(self.search_bar.get())
-            print('Audio/Video')
+
         if self.media_type.get() == 2:
             column_names = ('Title', 'Instructor', 'Start date', 'Duration', 'Platform', 'URL')
             resources = data.find_courses(self.search_bar.get())
-            print('Courses')
+
         elif self.media_type.get() == 3:
             column_names = ('Title', 'Author', 'Date', 'Website', 'Access date', 'URL')
             resources = data.find_web(self.search_bar.get())
-            print('Websites')
+
         elif self.media_type.get() == 4:
             column_names = ('Title', 'Creator', 'Type', 'Dimensions', 'Date', 'Location')
             resources = data.find_images(self.search_bar.get())
-            print('Images')
+
         elif self.media_type.get() == 5:
             column_names = ('Title', 'Creator', 'Genre', 'Engine', 'Type', 'Comments')
             resources = data.find_interactive(self.search_bar.get())
-            print('Interactive Media')
+
         elif self.media_type.get() == 6:
             column_names = ('Title', 'Author', 'Year', 'Pages', 'Language', 'Notes')
             resources = data.find_texts(self.search_bar.get())
-            print('Books/texts')
 
         return column_names, resources
 
