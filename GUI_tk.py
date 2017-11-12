@@ -893,7 +893,7 @@ class AddMedia(tk.Frame):
         self.c3 = 'Website'
         self.c4 = 'Created'
         self.c5 = 'Access date'
-        self.c6 = 'URL'
+        self.c6 = 'Subject'
 
         self.media_choice1 = 'Documention'
         self.media_choice2 = 'Q&A site'
@@ -1100,7 +1100,7 @@ class AddCourse(AddMedia):
         AddMedia.c3 = 'Start date'
         AddMedia.c4 = 'Duration'
         AddMedia.c5 = 'Platform'
-        AddMedia.c6 = 'URL'
+        AddMedia.c6 = 'Comments'
 
         AddMedia.media_choice1 = 'Recordings'
         AddMedia.media_choice2 = 'Web based'
@@ -1176,7 +1176,7 @@ class AddAudioVideo(AddMedia):
         AddMedia.c3 = 'Date'
         AddMedia.c4 = 'Type'
         AddMedia.c5 = 'Program'
-        AddMedia.c6 = 'URL'
+        AddMedia.c6 = 'Language'
         AddMedia.media_choice1 = 'Music or Sound'
         AddMedia.media_choice2 = 'Podcast'
         AddMedia.media_choice3 = 'Video'
@@ -1299,7 +1299,7 @@ class AddImages(AddMedia):
         AddMedia.c3 = 'Type'
         AddMedia.c4 = 'Dimensions'
         AddMedia.c5 = 'Date'
-        AddMedia.c6 = 'URL'
+        AddMedia.c6 = 'Comments'
         AddMedia.media_choice1 = 'Photo'
         AddMedia.media_choice2 = 'Clipart'
         AddMedia.media_choice3 = 'Sprite'
@@ -1432,19 +1432,19 @@ class SearchResource(tk.Frame):
     def create_table_values(self):
 
         if self.media_type.get() == 1:
-            column_names = ('Title', 'Artist', 'Year', 'Type', 'Program', 'URL')
+            column_names = ('Title', 'Artist', 'Year', 'Type', 'Program', 'Language')
             resources = data.find_av(self.search_bar.get())
 
         if self.media_type.get() == 2:
-            column_names = ('Title', 'Instructor', 'Start date', 'Duration', 'Platform', 'URL')
+            column_names = ('Title', 'Instructor', 'Start date', 'Duration', 'Platform', 'Subject')
             resources = data.find_courses(self.search_bar.get())
 
         elif self.media_type.get() == 3:
-            column_names = ('Title', 'Author', 'Date', 'Website', 'Access date', 'URL')
+            column_names = ('Title', 'Author', 'Date', 'Website', 'Access date', 'Subject')
             resources = data.find_web(self.search_bar.get())
 
         elif self.media_type.get() == 4:
-            column_names = ('Title', 'Creator', 'Type', 'Dimensions', 'Date', 'Location')
+            column_names = ('Title', 'Creator', 'Type', 'Dimensions', 'Date', 'Comments')
             resources = data.find_images(self.search_bar.get())
 
         elif self.media_type.get() == 5:

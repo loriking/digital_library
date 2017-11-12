@@ -443,12 +443,13 @@ def list_websites():
     """ Returns all the resources from database"""
 
     c.execute('''SELECT websites.title, authors.name, publishers.publisher, 
-                websites.creation_date, websites.access_date, websites.url
-                FROM websites JOIN publishers JOIN authors JOIN resource_author
+                websites.creation_date, websites.access_date, subjects.subject
+                FROM websites JOIN publishers JOIN authors JOIN resource_author JOIN subjects
                 ON websites.website_nameID = publishers.ID 
 				AND authors.ID = resource_author.authorID 
                 AND websites.ID = resource_author.resourceID
 				AND websites.mediaID = resource_author.mediaID
+				AND websites.subjectID = subjects.ID
                 ''')
     return c.fetchall()
 
@@ -499,13 +500,15 @@ def add_audio_video(title, author, duration,  year, program, url, language, medi
 
 def list_av():
     c.execute('''SELECT audio_video.title, authors.name, audio_video.year, resource_medium.medium, 
-	                audio_video.program, audio_video.url
-                FROM audio_video JOIN publishers JOIN authors JOIN resource_author JOIN resource_medium
+	                audio_video.program, languages.language
+                FROM audio_video JOIN publishers JOIN authors JOIN resource_author 
+                JOIN resource_medium JOIN languages
                 ON audio_video.publisherID = publishers.ID 
                 AND authors.ID = resource_author.authorID 
                 AND audio_video.ID = resource_author.resourceID
                 AND audio_video.mediaID = resource_author.mediaID
-                AND audio_video.mediaID = resource_medium.ID''')
+                AND audio_video.mediaID = resource_medium.ID
+                AND audio_video.languageID = languages.ID''')
     return c.fetchall()
 
 # courses
@@ -550,7 +553,7 @@ def add_course(title, instructor, start_date, duration, url, comments, level, pl
 
 def list_courses():
     c.execute('''SELECT courses.title, authors.name, courses.start_date, courses.duration_hours, 
-                    publishers.publisher, courses.url
+                    publishers.publisher, courses.comments
                 FROM courses JOIN publishers JOIN authors JOIN resource_author JOIN resource_medium
                 ON courses.platformID = publishers.ID 
                 AND authors.ID = resource_author.authorID 
@@ -629,7 +632,7 @@ def add_images(title, creator, date, copywrite, website, dimensions, url, commen
 
 def list_images():
     c.execute('''SELECT images.title, authors.name, resource_medium.medium, images.dimensions, images.date, 
-                        images.url
+                        images.comments
                     FROM images JOIN  authors JOIN resource_author JOIN resource_medium
                     ON authors.ID = resource_author.authorID 
                     AND images.ID = resource_author.resourceID
@@ -797,13 +800,13 @@ def find_texts(search_term):
               (search_term, search_term, search_term, search_term))
 
     return c.fetchall()
-# Display: 'Title', 'Instructor', 'Start date', 'Duration', 'Platform', 'URL'
+# Display: 'Title', 'Instructor', 'Start date', 'Duration', 'Platform', 'subject'
 
 def find_courses(search_term):
     search_term = "%" + search_term + "%"
 
     c.execute('''SELECT courses.title, authors.name, courses.start_date, courses.duration_hours, 
-                    publishers.publisher, courses.url
+                    publishers.publisher, subjects.subject
                 FROM courses JOIN  resource_medium JOIN authors JOIN resource_author JOIN subjects JOIN publishers
                 ON courses.mediaID = resource_medium.ID 
                 AND authors.ID = resource_author.authorID 
@@ -821,17 +824,18 @@ def find_courses(search_term):
 
 def find_av(search_term):
     search_term = "%" + search_term + "%"
-    # RESULTS WANTED: 'Title', 'Artist', 'Year', 'Type', 'Program' 'URL'
+    # RESULTS WANTED: 'Title', 'Artist', 'Year', 'Type', 'Program' 'Language'
 
     c.execute('''SELECT audio_video.title, authors.name, audio_video.year, resource_medium.medium, 
-                        audio_video.program, audio_video.url
+                        audio_video.program, languages.language
                     FROM audio_video JOIN  resource_medium JOIN authors 
-                    JOIN resource_author JOIN publishers 
+                    JOIN resource_author JOIN publishers JOIN languages
                     ON audio_video.mediaID = resource_medium.ID 
                     AND authors.ID = resource_author.authorID 
                     AND audio_video.ID = resource_author.resourceID
                     AND audio_video.mediaID = resource_author.mediaID
                     AND audio_video.publisherID = publishers.ID
+                    AND audio_video.languageID = languages.ID
                     WHERE audio_video.title LIKE ?
                     OR authors.name LIKE ?''',
               (search_term, search_term))
@@ -864,10 +868,10 @@ def find_interactive(search_term):
 
 
 def find_images(search_term):
-    #'Title', 'Creator', 'Type', 'Dimensions', 'Date', 'Location'
+    #'Title', 'Creator', 'Type', 'Dimensions', 'Date', 'Comments'
     search_term = "%" + search_term + "%"
     c.execute('''SELECT images.title, authors.name, resource_medium.medium,
-                        images.dimensions, images.date, images.url
+                        images.dimensions, images.date, images.comments
                     FROM images JOIN resource_medium JOIN authors JOIN resource_author
                     ON images.imagetypeID = resource_medium.ID 
                     AND authors.ID = resource_author.authorID 
@@ -885,14 +889,15 @@ def find_web(search_term):
     # RESULTS DESIRED 'Title', 'Author', 'Website', 'Date', 'Access date', 'URL'
     search_term = "%" + search_term + "%"
     c.execute('''SELECT websites.title, authors.name, publishers.publisher, websites.creation_date,
-                            websites.access_date, websites.url
+                            websites.access_date, subjects.subject
                     FROM websites JOIN resource_medium JOIN authors JOIN resource_author 
-                    JOIN publishers
+                    JOIN publishers JOIN subjects
                     ON websites.website_nameID = publishers.ID
                     AND websites.mediaID = resource_medium.ID 
                     AND authors.ID = resource_author.authorID 
                     AND websites.ID = resource_author.resourceID
                     AND websites.mediaID = resource_author.mediaID
+                    AND websites.subjectID = subjects.ID
                     WHERE websites.title LIKE ?
                     OR authors.name LIKE ? 
                     OR publishers.publisher LIKE ? 
