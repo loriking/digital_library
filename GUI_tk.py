@@ -17,12 +17,12 @@ class ProjectLibrary(tk.Tk):
         self.frames = {}
 
         for F in (HomePage, Projects, LinkResources, AddResource, AddText, AddAudioVideo, AddCourse,
-                  AddInteractiveMedia, AddMedia, AddImages, SearchResource, EditResource):
+                  AddInteractiveMedia, AddMedia, AddImages, SearchResource, EditProject, EditResource):
             frame = F(main, self)
             self.frames[F] = frame
             frame.grid(row = 0, column = 0, sticky ='nsew')
 
-        self.show_frame(SearchResource)
+        self.show_frame(EditProject)
         
     def show_frame(self, cont):
         frame = self.frames[cont]
@@ -57,7 +57,8 @@ class HomePage(tk.Frame):
         self.view_project.config(height=5,width=13)
         self.view_project.pack( pady=10)
 
-        self.edit_project = tk.Button(self.firstframe, text='Edit Project')
+        self.edit_project = tk.Button(self.firstframe, text='Edit Project',
+                                      command=lambda: controller.show_frame(EditProject))
         self.edit_project.config(height=5, width=13)
         self.edit_project.pack( pady=10)
 
@@ -653,18 +654,18 @@ class Projects(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
-        main_frame = tk.LabelFrame(self, text='',borderwidth=4)
-        main_frame.grid(column=0, row=0, columnspan=10, sticky=tk.W+tk.E+tk.N+tk.S)
+        self.main_frame = tk.LabelFrame(self, text='',borderwidth=4)
+        self.main_frame.grid(column=0, row=0, columnspan=10, sticky=tk.W+tk.E+tk.N+tk.S)
 
-        self.label = tk.Label(main_frame, text='New Project')
+        self.label = tk.Label(self.main_frame, text='New Project')
         self.label.grid(column=0, row=0, columnspan=10)
 
         # FRAMES
 
-        self.topleftframe = tk.LabelFrame(main_frame, text='', borderwidth=4)
+        self.topleftframe = tk.LabelFrame(self.main_frame, text='', borderwidth=4)
         self.topleftframe.grid(column=0, row=1)
 
-        self.toprightframe = tk.LabelFrame(main_frame, text='', borderwidth=4)
+        self.toprightframe = tk.LabelFrame(self.main_frame, text='', borderwidth=4)
         self.toprightframe.grid(column=1, row=1)
 
         self.bottomframe = tk.LabelFrame(self, text='', borderwidth=4)
@@ -1403,6 +1404,7 @@ class SearchResource(tk.Frame):
 
         self.resource_list = ttk.Treeview(self.bottom, height=15, selectmode='extended',
                                               columns=column_names)
+        self.resource_list.bind()
 
         self.scollresources.configure(orient="vertical", command=self.resource_list.yview)
         self.resource_list.configure(yscrollcommand=self.scollresources.set)
@@ -1428,6 +1430,8 @@ class SearchResource(tk.Frame):
         #self.treeview_resources.bind('<ButtonRelease-1>', self.select_resources)
 
         self.search_resources(resources)
+
+
 
     def create_table_values(self):
 
@@ -1466,6 +1470,211 @@ class SearchResource(tk.Frame):
         for item in resources:
             self.treeview_resources.insert('', 'end', values=item)
         self.search_bar_entry.delete(0, 'end')
+
+
+class EditProject(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+
+        # VARIABLES
+        self.search_bar = tk.StringVar()
+
+        self.project_name = tk.StringVar()
+        self.project_type = tk.StringVar()
+        self.description = tk.StringVar()
+        self.start_date = tk.StringVar()
+        self.end_date = tk.StringVar()
+        self.new_type = tk.IntVar(self, value=0)
+        self.add_projecttype = tk.StringVar()
+        self.choices = tk.StringVar()
+        self.project_category_options = data.list_project_category()
+
+        self.project_id = None
+
+        self.choices.set('Choose project type:')
+
+        # FRAMES
+        self.main_frame = tk.LabelFrame(self, text='', borderwidth=4)
+        self.main_frame.grid(column=0, row=0, columnspan=10, sticky=tk.W + tk.E + tk.N + tk.S)
+
+        self.label = tk.Label(self.main_frame, text='Edit Project')
+        self.label.grid(column=0, row=0, columnspan=10)
+
+        self.topleftframe = tk.LabelFrame(self.main_frame, text='', borderwidth=4)
+        self.topleftframe.grid(column=0, row=2)
+
+        self.toprightframe = tk.LabelFrame(self.main_frame, text='', borderwidth=4)
+        self.toprightframe.grid(column=1, row=2)
+
+        self.bottomframe = tk.LabelFrame(self, text='', borderwidth=4)
+        self.bottomframe.grid(column=0, row=5, columnspan=4)
+
+
+        # SEARCH
+        self.projectframe = tk.LabelFrame(self.main_frame, text='', borderwidth=4)
+        self.projectframe.grid(column=0, row=1, columnspan=3, sticky=tk.N + tk.W + tk.E)
+
+        self.titlebox_label = tk.Label(self.projectframe, text='Enter search keyword')
+        self.titlebox_label.grid(column=0, row=0, sticky=tk.W)
+        self.titlebox = tk.Entry(self.projectframe, width=32, textvariable=self.search_bar)
+        self.titlebox.grid(column=1, row=0, sticky=tk.W)
+
+        self.searchbutton = ttk.Button(self.projectframe, text='Search', command=lambda: self.search_projects())
+        self.searchbutton.config(width=10, cursor='hand2')
+        self.searchbutton.grid(column=2, row=0, padx=5, pady=5, sticky=tk.E)
+
+        # Top Left frame
+
+        self.project_name_label = tk.Label(self.topleftframe, text='Project Name')
+        self.project_name_entry = ttk.Entry(self.topleftframe, width=61, textvariable=self.project_name)
+
+        self.description_label = tk.Label(self.topleftframe, text='Description')
+        self.description_entry = ttk.Entry(self.topleftframe, width=61, textvariable=self.description)
+
+        self.project_type_label = tk.Label(self.topleftframe, text='Project Type')
+        self.project_type_entry = tk.OptionMenu(self.topleftframe, self.choices,
+                                                *self.project_category_options)
+        self.project_type_entry.configure(width=20)
+
+        self.new_projecttype_label = tk.Label(self.topleftframe, text='New Project Type')
+        self.new_projecttype = ttk.Entry(self.topleftframe, width=61, textvariable=self.add_projecttype)
+
+        self.project_name_label.grid(column=0, row=1, sticky=tk.W)
+        self.project_name_entry.grid(column=1, row=1, columnspan=3, sticky=tk.W)
+
+        self.description_label.grid(column=0, row=2, sticky=tk.W)
+        self.description_entry.grid(column=1, row=2, columnspan=3, sticky=tk.W)
+
+        self.project_type_label.grid(column=0, row=4, sticky=tk.W)
+        self.project_type_entry.grid(column=1, row=4, sticky=tk.W)
+        self.new_projecttype_label.grid(column=0, row=5)
+        self.new_projecttype.grid(column=1, row=5, columnspan=3, sticky=tk.W)
+
+        self.new_type_flag = tk.Checkbutton(self.topleftframe, text="Add type", variable=self.new_type)
+        self.new_type_flag.grid(column=2, row=4, padx=6, sticky=tk.W)
+
+        # Top right frame
+        self.start_label = tk.Label(self.toprightframe, text='Start Date')
+        self.start_entry = ttk.Entry(self.toprightframe, width=55, textvariable=self.start_date)
+
+        self.finish_label = tk.Label(self.toprightframe, text='End Date')
+        self.finish_entry = ttk.Entry(self.toprightframe, width=55, textvariable=self.end_date)
+
+        self.start_label.grid(column=0, row=1, sticky=tk.W)
+        self.start_entry.grid(column=1, row=1, sticky=tk.W)
+        self.finish_label.grid(column=0, row=2, sticky=tk.W)
+        self.finish_entry.grid(column=1, row=2, sticky=tk.W)
+
+        self.update_project = tk.Button(self.toprightframe, text='Update', command=lambda: self.update())
+        self.update_project.grid(column=1, row=6, padx=10, pady=12, sticky=tk.E)
+
+        # Bottom Frame
+    # def show_results(self):
+
+        self.scollprojects = tk.Scrollbar(self.bottomframe)
+        self.scollprojects.grid(column=1, row=0, sticky=tk.N + tk.S)
+
+        self.project_list = ttk.Treeview(self.bottomframe,selectmode='browse',
+                                         columns=('Name', 'Type', 'Description', 'Start date', 'End date'))
+
+        self.scollprojects.configure(orient="vertical", command=self.project_list.yview)
+        self.project_list.configure(yscrollcommand=self.scollprojects.set)
+
+        self.project_list['columns'] = ('Name', 'Type', 'Description', 'Start date', 'End date')
+        self.project_list.column('#0', minwidth=0, width=0)
+        self.project_list.grid(column=0, row=0, sticky=tk.E)
+
+        self.project_list.heading('0', text='Name', anchor='w')
+        self.project_list.heading('1', text='Type', anchor='w')
+        self.project_list.heading('2', text='Description', anchor='w')
+        self.project_list.heading('3', text='Start date', anchor='w')
+        self.project_list.heading('4', text='End date', anchor='w')
+
+        self.project_list.column('0', width=250, anchor='w')
+        self.project_list.column('1', width=165, anchor='w')
+        self.project_list.column('2', width=250, anchor='w')
+        self.project_list.column('3', width=100, anchor='w')
+        self.project_list.column('4', width=100, anchor='w')
+        self.treeview_projects = self.project_list
+        self.treeview_projects.bind('<ButtonRelease-1>', self.select_project)
+
+        self.home = tk.Button(self.bottomframe, text='Home', command=lambda: controller.show_frame(HomePage))
+        self.home.config(width=10)
+        self.home.grid(column=0, row=1, padx=10, sticky=tk.W)
+
+        self.list_projects()
+        self.update_widgets()
+
+
+    def select_project(self,event):
+        """ Takes item selected from listbox and stores it as a global variable to be used in
+            Link resource window
+        """
+
+        item = self.project_list.focus()
+        print(self.project_list.item(item))
+
+        project = self.treeview_projects.item(item)
+        print(project)
+
+        project_name = project['values'][0]
+        print(project_name)
+
+        project_id = data.get_projectID(project_name)
+        self.project_id = project_id[0]
+        print(self.project_id)
+
+        self.project_name.set(project['values'][0])
+        self.project_type.set(project['values'][1])
+        # self.add_projecttype.set(project['values'][1])
+        self.description.set(project['values'][2])
+        self.start_date.set(project['values'][3])
+        self.end_date.set(project['values'][4])
+
+        return self.project_id
+
+    def update(self):
+        #update_project(projectID=None, project_name=None, project_category=None, description=None, date_start=None, date_end=None)
+        data.update_project(self.project_id, self.project_name.get(), self.project_type.get(), self.description.get(),
+                            self.start_date.get(), self.end_date.get())
+
+        self.list_projects()
+        print(data.list_projects())
+
+    def list_projects(self):
+       for i in self.project_list.get_children():
+            self.project_list.delete(i)
+       projects_list = data.list_projects()
+
+       for item in projects_list:
+           self.treeview_projects.insert('', 'end', values=item)
+
+    def search_projects(self):
+        data.find_project(self.search_bar.get())
+
+
+    def update_widgets(self):
+        self.project_name_entry.delete(0, 'end')
+        self.description_entry.delete(0, 'end')
+        self.start_entry.delete(0, 'end')
+        self.finish_entry.delete(0, 'end')
+        self.new_projecttype.delete(0, 'end')
+        self.new_type.set(0)
+        self.choices.set('Choose project type:')
+        self.project_category_options = data.list_project_category()
+
+    def save_project(self):
+
+        if self.new_type.get() == 1:
+            self.category = self.add_projecttype.get()
+        else:
+            self.category = self.choices.get()
+
+        data.add_project(self.project_name.get(), self.category, self.description.get(),
+                         self.start_date.get(), self.end_date.get())
+
+        self.list_projects()
+        self.update_widgets()
 
 
 class EditResource(tk.Frame):
