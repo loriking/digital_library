@@ -715,20 +715,23 @@ def get_projectID(project_name):
     """ Returns the ID of a given project """
 
     c.execute('''SELECT ID FROM projects WHERE project_name = ?''', (project_name,))
-    results = [i[0] for i in c.fetchall()]
-    return results
+    # results = [i[0] for i in c.fetchall()]
+    # return results
+    return c.fetchone()
+
 
 def list_projects():
     """ :return list of projects """
     c.execute('''SELECT project_name, category, description, date_start, date_end
             FROM projects JOIN project_category 
             ON projects.project_category = project_category.ID 
-            ORDER BY project_name          
+            ORDER BY projects.project_name          
             ''')
     return c.fetchall()
 
 
 def get_project(projectID):
+
     c.execute('''SELECT project_name, category, description, date_start, date_end 
                 FROM projects JOIN project_category 
                 ON projects.project_category = project_category.ID 
@@ -739,27 +742,17 @@ def get_project(projectID):
     return results
 
 
-"""
-def update_project(projectID=None, project_name=None, project_category=None, description=None, date_start=None, date_end=None):
-    fields = get_project(projectID)
+def update_project(projectID=None, project_name=None, project_category=None, description=None,
+                   date_start=None, date_end=None):
 
-    if not project_name:
-        project_name = fields[0]
-    if not project_category:
-        project_category = fields[1]
-    if not description:
-        description = fields[2]
-    if not date_start:
-        date_start = fields[3]
-    if not date_end:
-        date_end = fields[4]
+    project_categoryID = get_project_categoryID(project_category)
 
-    c.execute(''' UPDATE project SET project_name = ?, project_category = ?,  description = ?, date_start = ?, date_end = ?, 
-            publisherID = ?, abstract = ?
-            WHERE ID = ? ''', (project_name, project_category, description, date_start, date_end, ID))
+    c.execute(''' UPDATE projects SET project_name = ?, project_category = ?,  description = ?, 
+                    date_start = ?, date_end = ?
+                WHERE ID = ? ''', (project_name, project_categoryID, description, date_start, date_end, projectID,))
 
     db.commit()
-"""
+
 
 def delete_project(projectID):
     c.execute(''' DELETE from projects WHERE projects.ID = ?''', (projectID,))
@@ -774,6 +767,8 @@ def link_to_resources(projectID, resourceID, mediaID):
 
 # SEARCHES
 def find_project(project_name):
+ 
+    
     search = "%" + project_name + "%"
     c.execute('''SELECT project_name, category, description, date_start, date_end
                 FROM projects JOIN project_category 

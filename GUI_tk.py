@@ -551,15 +551,15 @@ class LinkResources(tk.Frame):
     def create_table_values(self):
 
         if self.media_type.get() == 1:
-            column_names = ('Title', 'Artist', 'Year', 'Type', 'Program', 'URL')
+            column_names = ('Title', 'Artist', 'Year', 'Type', 'Program', 'Language')
             resources = data.find_av(self.resource_subject.get())
 
         if self.media_type.get() ==2:
-            column_names = ('Title', 'Instructor', 'Start date', 'Duration', 'Platform', 'URL')
+            column_names = ('Title', 'Instructor', 'Start date', 'Duration', 'Platform', 'Subject')
             resources = data.find_courses(self.resource_subject.get())
 
         elif self.media_type.get() ==3:
-            column_names = ('Title', 'Author', 'Date', 'Website', 'Access date', 'URL')
+            column_names = ('Title', 'Author', 'Website', 'Date', 'Access date', 'Subject')
             resources = data.find_web(self.resource_subject.get())
 
         elif self.media_type.get() ==4:
@@ -1489,7 +1489,7 @@ class EditProject(tk.Frame):
         self.choices = tk.StringVar()
         self.project_category_options = data.list_project_category()
 
-        self.project_id = None
+        self.project_id = tk.IntVar()
 
         self.choices.set('Choose project type:')
 
@@ -1610,7 +1610,6 @@ class EditProject(tk.Frame):
         """ Takes item selected from listbox and stores it as a global variable to be used in
             Link resource window
         """
-
         item = self.project_list.focus()
         print(self.project_list.item(item))
 
@@ -1620,12 +1619,12 @@ class EditProject(tk.Frame):
         project_name = project['values'][0]
         print(project_name)
 
-        project_id = data.get_projectID(project_name)
-        self.project_id = project_id[0]
-        print(self.project_id)
+        self.project_id = data.get_projectID(project_name)
+        # self.project_id = project_id[0]
+        print(type(self.project_id), self.project_id)
 
         self.project_name.set(project['values'][0])
-        self.project_type.set(project['values'][1])
+        self.choices.set(project['values'][1])
         # self.add_projecttype.set(project['values'][1])
         self.description.set(project['values'][2])
         self.start_date.set(project['values'][3])
@@ -1635,11 +1634,27 @@ class EditProject(tk.Frame):
 
     def update(self):
         #update_project(projectID=None, project_name=None, project_category=None, description=None, date_start=None, date_end=None)
-        data.update_project(self.project_id, self.project_name.get(), self.project_type.get(), self.description.get(),
-                            self.start_date.get(), self.end_date.get())
+        self.project_id = self.project_id[0]
+
+        print('ID = ', self.project_id)
+        name =  self.project_name.get()
+        choices = self.choices.get()
+        description = self.description.get()
+        start =self.start_date.get()
+        end = self.end_date.get()
+
+        print(name, choices, description, start, end)
+
+        data.update_project(self.project_id, name,choices, description, start, end)
+
+        # data.update_project(projectID=self.project_id, project_name=self.project_name.get(),
+        #                     project_category=self.choices.get(), description= self.description.get(),
+        #                     date_start=self.start_date.get(), date_end=self.end_date.get())
 
         self.list_projects()
         print(data.list_projects())
+
+        self.update_widgets()
 
     def list_projects(self):
        for i in self.project_list.get_children():
@@ -1651,6 +1666,8 @@ class EditProject(tk.Frame):
 
     def search_projects(self):
         data.find_project(self.search_bar.get())
+        self.list_projects()
+        print()
 
 
     def update_widgets(self):
