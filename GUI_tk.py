@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter.messagebox import showinfo
+import tkinter.messagebox as tkMessageBox
 from tkinter import ttk
 import dataCRUD as data
 from blank_window import show_window
@@ -1561,12 +1562,16 @@ class EditProject(tk.Frame):
         self.finish_entry = ttk.Entry(self.toprightframe, width=55, textvariable=self.end_date)
 
         self.start_label.grid(column=0, row=1, sticky=tk.W)
-        self.start_entry.grid(column=1, row=1, sticky=tk.W)
+        self.start_entry.grid(column=1, row=1, columnspan=2,sticky=tk.W)
         self.finish_label.grid(column=0, row=2, sticky=tk.W)
-        self.finish_entry.grid(column=1, row=2, sticky=tk.W)
+        self.finish_entry.grid(column=1, row=2, columnspan=2, sticky=tk.W)
 
-        self.update_project = tk.Button(self.toprightframe, text='Update', command=lambda: self.update())
-        self.update_project.grid(column=1, row=6, padx=10, pady=12, sticky=tk.E)
+        self.update_project = tk.Button(self.toprightframe, width= 10, text='Update', command=lambda: self.update())
+        self.update_project.grid(column=1, row=6, pady=12)
+
+        self.delete_project = tk.Button(self.toprightframe, width= 10, text='Delete', bg='red',
+                                        command=lambda:self.delete())
+        self.delete_project.grid(column=2, row=6)
 
         # Bottom Frame
     # def show_results(self):
@@ -1593,8 +1598,8 @@ class EditProject(tk.Frame):
         self.project_list.column('0', width=250, anchor='w')
         self.project_list.column('1', width=165, anchor='w')
         self.project_list.column('2', width=250, anchor='w')
-        self.project_list.column('3', width=100, anchor='w')
-        self.project_list.column('4', width=100, anchor='w')
+        self.project_list.column('3', width=98, anchor='w')
+        self.project_list.column('4', width=95, anchor='w')
         self.treeview_projects = self.project_list
         self.treeview_projects.bind('<ButtonRelease-1>', self.select_project)
 
@@ -1607,75 +1612,53 @@ class EditProject(tk.Frame):
 
 
     def select_project(self,event):
-        """ Takes item selected from listbox and stores it as a global variable to be used in
-            Link resource window
-        """
         item = self.project_list.focus()
-        print(self.project_list.item(item))
 
         project = self.treeview_projects.item(item)
-        print(project)
 
         project_name = project['values'][0]
-        print(project_name)
-
         self.project_id = data.get_projectID(project_name)
-        # self.project_id = project_id[0]
-        print(type(self.project_id), self.project_id)
-
         self.project_name.set(project['values'][0])
         self.choices.set(project['values'][1])
-        # self.add_projecttype.set(project['values'][1])
         self.description.set(project['values'][2])
         self.start_date.set(project['values'][3])
         self.end_date.set(project['values'][4])
+        self.project_id = self.project_id[0]
 
         return self.project_id
 
     def update(self):
-        #update_project(projectID=None, project_name=None, project_category=None, description=None, date_start=None, date_end=None)
-        self.project_id = self.project_id[0]
 
-        print('ID = ', self.project_id)
-        name =  self.project_name.get()
-        choices = self.choices.get()
-        description = self.description.get()
-        start =self.start_date.get()
-        end = self.end_date.get()
+        data.update_project(self.project_id, self.project_name.get(), self.choices.get(),
+                            self.description.get(), self.start_date.get(), self.end_date.get())
 
-        print(name, choices, description, start, end)
-
-        data.update_project(self.project_id, name,choices, description, start, end)
-
-        # data.update_project(projectID=self.project_id, project_name=self.project_name.get(),
-        #                     project_category=self.choices.get(), description= self.description.get(),
-        #                     date_start=self.start_date.get(), date_end=self.end_date.get())
-
-        self.list_projects()
-        print(data.list_projects())
-
+        self.show_updated_project()
         self.update_widgets()
 
-    def list_projects(self):
-       for i in self.project_list.get_children():
+    def clear_projects(self):
+        for i in self.project_list.get_children():
             self.project_list.delete(i)
-       projects_list = data.list_projects()
 
-       for item in projects_list:
-           self.treeview_projects.insert('', 'end', values=item)
+    def show_updated_project(self):
+        project = data.get_project(self.project_id)
+        self.treeview_projects.insert('', 'end', values=project)
+        pass
+
+    def list_projects(self):
+        self.clear_projects()
+        projects_list = data.list_projects()
+
+        for item in projects_list:
+            self.treeview_projects.insert('', 'end', values=item)
 
     def search_projects(self):
-        for project in self.project_list.get_children():
-            self.project_list.delete(project)
+        self.clear_projects()
 
         projects = data.find_project(self.search_bar.get())
 
         for item in projects:
             self.treeview_projects.insert('', 'end', values=item)
-
-        
-
-
+        self.titlebox.delete(0, 'end')
 
     def update_widgets(self):
         self.project_name_entry.delete(0, 'end')
@@ -1687,18 +1670,17 @@ class EditProject(tk.Frame):
         self.choices.set('Choose project type:')
         self.project_category_options = data.list_project_category()
 
-    def save_project(self):
+    def delete(self):
 
-        if self.new_type.get() == 1:
-            self.category = self.add_projecttype.get()
-        else:
-            self.category = self.choices.get()
+        result = tkMessageBox.askquestion("Delete?", "Delete project?")
+        if result == 'yes':
+            if tkMessageBox.askokcancel("Confirm", "Really?\nThis cannot be undone!", icon='warning'):
+                data.delete_project(self.project_id)
+                print("Deleted")
+                tkMessageBox.showinfo('Deleted', "Project deleted.")
+                self.update_widgets()
+                self.clear_projects()
 
-        data.add_project(self.project_name.get(), self.category, self.description.get(),
-                         self.start_date.get(), self.end_date.get())
-
-        self.list_projects()
-        self.update_widgets()
 
 
 class EditResource(tk.Frame):

@@ -719,6 +719,10 @@ def get_projectID(project_name):
     # return results
     return c.fetchone()
 
+def get_project(projectID):
+    c.execute('''SELECT project_name, project_category, description, date_start, date_end 
+                FROM projects WHERE ID = ?''', (projectID,))
+    return c.fetchone()
 
 def list_projects():
     """ :return list of projects """
