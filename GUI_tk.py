@@ -1665,9 +1665,16 @@ class EditProject(tk.Frame):
            self.treeview_projects.insert('', 'end', values=item)
 
     def search_projects(self):
-        data.find_project(self.search_bar.get())
-        self.list_projects()
-        print()
+        for project in self.project_list.get_children():
+            self.project_list.delete(project)
+
+        projects = data.find_project(self.search_bar.get())
+
+        for item in projects:
+            self.treeview_projects.insert('', 'end', values=item)
+
+        
+
 
 
     def update_widgets(self):
