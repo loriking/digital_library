@@ -1632,6 +1632,7 @@ class EditProject(tk.Frame):
         data.update_project(self.project_id, self.project_name.get(), self.choices.get(),
                             self.description.get(), self.start_date.get(), self.end_date.get())
 
+        self.clear_projects()
         self.show_updated_project()
         self.update_widgets()
 
@@ -1642,7 +1643,7 @@ class EditProject(tk.Frame):
     def show_updated_project(self):
         project = data.get_project(self.project_id)
         self.treeview_projects.insert('', 'end', values=project)
-        pass
+
 
     def list_projects(self):
         self.clear_projects()

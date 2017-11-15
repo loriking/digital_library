@@ -715,13 +715,6 @@ def get_projectID(project_name):
     """ Returns the ID of a given project """
 
     c.execute('''SELECT ID FROM projects WHERE project_name = ?''', (project_name,))
-    # results = [i[0] for i in c.fetchall()]
-    # return results
-    return c.fetchone()
-
-def get_project(projectID):
-    c.execute('''SELECT project_name, project_category, description, date_start, date_end 
-                FROM projects WHERE ID = ?''', (projectID,))
     return c.fetchone()
 
 def list_projects():
@@ -736,13 +729,12 @@ def list_projects():
 
 def get_project(projectID):
 
-    c.execute('''SELECT project_name, category, description, date_start, date_end 
-                FROM projects JOIN project_category 
-                ON projects.project_category = project_category.ID 
+    c.execute('''SELECT project_name, category, description, date_start, date_end
+                FROM projects JOIN project_category
+                ON projects.project_category = project_category.ID
                 WHERE projects.ID = ? ''', (projectID,))
     project =  c.fetchall()
     results = [x for t in project for x in t]
-    results = ','.join(results)
     return results
 
 
