@@ -23,7 +23,7 @@ class ProjectLibrary(tk.Tk):
             self.frames[F] = frame
             frame.grid(row = 0, column = 0, sticky ='nsew')
 
-        self.show_frame(EditProject)
+        self.show_frame(HomePage)
         
     def show_frame(self, cont):
         frame = self.frames[cont]
@@ -695,7 +695,7 @@ class Projects(tk.Frame):
 
         self.project_type_label = tk.Label(self.topleftframe, text='Project Type')
         self.project_type_entry = tk.OptionMenu(self.topleftframe, self.choices,
-                                                *self.project_category_options)# if self.project_category_options else '0')
+                                                *self.project_category_options)
         self.project_type_entry.configure(width=20)
 
         self.new_projecttype_label = tk.Label(self.topleftframe, text='New Project Type')
@@ -724,12 +724,15 @@ class Projects(tk.Frame):
         self.finish_entry = ttk.Entry(self.toprightframe, width=55, textvariable=self.end_date)
 
         self.start_label.grid(column=0, row=1, sticky=tk.W)
-        self.start_entry.grid(column=1, row=1,  sticky=tk.W)
+        self.start_entry.grid(column=1, row=1,  columnspan=3, sticky=tk.W)
         self.finish_label.grid(column=0, row=2, sticky=tk.W)
-        self.finish_entry.grid(column=1, row=2, sticky=tk.W)
+        self.finish_entry.grid(column=1, row=2, columnspan=3, sticky=tk.W)
 
-        self.add_project = tk.Button(self.toprightframe, text='Add Project', command=lambda: self.save_project())
-        self.add_project.grid(column=1, row=6, padx=10,pady=12, sticky=tk.E)
+        self.refresh = tk.Button(self.toprightframe, text='Update list', width=12, command=lambda: self.list_projects())
+        self.refresh.grid(column=1, row=6)
+
+        self.add_project = tk.Button(self.toprightframe, text='Add Project',width=12, command=lambda: self.save_project())
+        self.add_project.grid(column=2, row=6, pady=12, sticky=tk.E)
 
         # Bottom Frame
 
@@ -1318,12 +1321,12 @@ class AddImages(AddMedia):
         else:
             media_name = 'Sprite'
         return media_name
-
+# add_images(title, creator, date, copywrite, website, dimensions, url, comments, image_type)
     def save_data(self):
         media_name = self.get_media_name()
 
         data.add_images(self.box1L.get(), self.box2L.get(), self.box3L.get(),
-                        self.box4L.get(), self.box1R.get(), self.box2R.get(),
+                        self.box4L.get(), self.box2R.get(), self.box1R.get(),
                         self.box3R.get(), self.box4R.get(), media_name)
 
         search_table = data.list_images()
