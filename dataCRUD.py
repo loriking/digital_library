@@ -399,7 +399,11 @@ def resources_by_type(media_type):
                 ON texts.mediaID = resource_medium.ID 
                 WHERE texts.mediaID = ?''', (media_type,))
 
-
+def update_resource_author(authorID, mediaID, resourceID):
+    c.execute('''UPDATE resource_author SET authorID = ?, 
+                        WHERE mediaID = ? AND  resourceID = ?''', (authorID, mediaID, resourceID))
+    db.commit()
+    
 # Web doc
 def get_website_id(title):
     c.execute('''SELECT ID FROM websites WHERE title = ?''', (title,))
@@ -873,7 +877,6 @@ def find_images(search_term):
                     OR resource_medium.medium LIKE ?
                     OR images.comments LIKE ?''',
               (search_term, search_term, search_term, search_term))
-
     return c.fetchall()
 
 def find_web(search_term):
@@ -897,6 +900,115 @@ def find_web(search_term):
 
     return c.fetchall()
 
+# Retrieve item
+def get_text(textID):
+    c.execute('''SELECT texts.title, authors.name, texts.year, texts.pages, languages.language, texts.notes
+                FROM texts JOIN languages JOIN resource_medium JOIN authors
+                JOIN resource_author JOIN subjects 
+                ON texts.mediaID = resource_medium.ID
+                AND texts.languageID =  languages.ID
+                AND authors.ID = resource_author.authorID
+                AND texts.ID = resource_author.resourceID
+                AND texts.mediaID = resource_author.mediaID
+                AND texts.subjectID = subjects.ID
+                WHERE texts.ID = ?''',(textID,))
+
+    return c.fetchall()
+
+def get_course(courseID):
+    c.execute('''SELECT courses.title, authors.name, courses.start_date, courses.duration_hours, 
+                    publishers.publisher, subjects.subject
+                FROM courses JOIN  resource_medium JOIN authors JOIN resource_author JOIN subjects JOIN publishers
+                ON courses.mediaID = resource_medium.ID 
+                AND authors.ID = resource_author.authorID 
+                AND courses.ID = resource_author.resourceID
+                AND courses.mediaID = resource_author.mediaID
+                AND courses.subjectID = subjects.ID
+                AND courses.platformID = publishers.ID
+                WHERE courses.ID = ?''',(courseID,))
+
+    return c.fetchall()
+
+
+def get_av(avID):
+    c.execute('''SELECT audio_video.title, authors.name, audio_video.year, resource_medium.medium, 
+                        audio_video.program, languages.language
+                    FROM audio_video JOIN  resource_medium JOIN authors 
+                    JOIN resource_author JOIN publishers JOIN languages
+                    ON audio_video.mediaID = resource_medium.ID 
+                    AND authors.ID = resource_author.authorID 
+                    AND audio_video.ID = resource_author.resourceID
+                    AND audio_video.mediaID = resource_author.mediaID
+                    AND audio_video.publisherID = publishers.ID
+                    AND audio_video.languageID = languages.ID
+                    WHERE audio_video.ID = ?''', (avID,))
+
+    return c.fetchall()
+
+def get_interactive(interactiveID):
+    c.execute('''SELECT interactive_media.title, authors.name, subjects.subject,
+                        publishers.publisher, resource_medium.medium, 
+                        interactive_media.comments
+                        FROM interactive_media JOIN resource_medium JOIN authors 
+                        JOIN resource_author JOIN publishers JOIN subjects
+                        ON interactive_media.typeID = resource_medium.ID 
+                        AND authors.ID = resource_author.authorID 
+                        AND interactive_media.ID = resource_author.resourceID
+                        AND interactive_media.typeID = resource_author.mediaID
+                        AND interactive_media.engineID = publishers.ID
+                        AND interactive_media.genreID = subjects.ID
+                        WHERE interactive_media.ID = ?''', (interactiveID,))
+
+    return c.fetchall()
+
+
+def get_image(imageID):
+    c.execute('''SELECT images.title, authors.name, resource_medium.medium,
+                        images.dimensions, images.date, images.comments
+                    FROM images JOIN resource_medium JOIN authors JOIN resource_author
+                    ON images.imagetypeID = resource_medium.ID 
+                    AND authors.ID = resource_author.authorID 
+                    AND images.ID = resource_author.resourceID
+                    AND images.imagetypeID = resource_author.mediaID
+                    WHERE images.ID = ?''', (imageID,))
+    return c.fetchall()
+
+def get_website(websiteID):
+
+    c.execute('''SELECT websites.title, authors.name, websites.creation_date, subjects.subject, 
+                publishers.publisher, websites.url, websites.access_date, websites.notes
+                    FROM websites JOIN resource_medium JOIN authors JOIN resource_author 
+                    JOIN publishers JOIN subjects
+                    ON websites.website_nameID = publishers.ID
+                    AND websites.mediaID = resource_medium.ID 
+                    AND authors.ID = resource_author.authorID 
+                    AND websites.ID = resource_author.resourceID
+                    AND websites.mediaID = resource_author.mediaID
+                    AND websites.subjectID = subjects.ID
+                    WHERE websites.ID = ?''', (websiteID,))
+    return c.fetchone()
+
+def update_media(websiteID = None, title=None, author=None, creation_date=None, subject=None, website_name=None,
+                 url=None, access_date=None,notes=None, medium=None):
+
+    add_subject(subject)
+    subjectID = get_subject_id(subject)
+    add_publisher(website_name)
+    website_nameID = get_publisher_id(website_name)
+
+    # add_resource_medium(medium)
+    # mediaID = get_resource_medium_id(medium)
+
+    c.execute('''UPDATE websites SET title = ?, creation_date = ?, website_nameID = ?, url = ?,
+                    access_date = ?, notes = ?, mediaID = ?, subjectID = ? 
+                WHERE ID = ?''', (title, creation_date, website_nameID, url, access_date,
+                                  notes, medium, subjectID, websiteID,))
+    db.commit()
+
+    add_author(author)
+    authorID = get_author_id(author)
+
+    update_resource_author(authorID, mediaID, websiteID)
 
 
 """
