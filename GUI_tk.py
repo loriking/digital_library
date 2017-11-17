@@ -159,7 +159,7 @@ class AddText(tk.Frame):
         buttonsframe.grid(column=0, row=4)
 
         self.label = tk.Label(header_frame, text='New Text')
-        self.label.grid(column=0, row=1)#, pady=5)
+        self.label.grid(column=0, row=1)
 
         self.title = tk.StringVar()
         self.author = tk.StringVar()
@@ -265,8 +265,12 @@ class AddText(tk.Frame):
         self.add_lang_flag.grid(column=2, row=4, sticky=tk.W)
         self.add_language_entry.grid(column=3, row=4, sticky=tk.N+tk.E)
 
+        self.updateextresource = tk.Button(middlerightframe, text='Update', command=lambda: self.save_text())
+        self.updateextresource.config(width=12, cursor='hand2')#
+        self.updateextresource.grid(column=3, row=0, padx=2, sticky=tk.W)
+
         self.addtextresource = tk.Button(middlerightframe, text='Save', command=lambda: self.save_text())
-        self.addtextresource.config(width=12, cursor='hand2')#
+        self.addtextresource.config(width=12, cursor='hand2')  #
         self.addtextresource.grid(column=4, row=0, padx=2, sticky=tk.E)
 
         self.level_label = tk.Label(middleframe, text='Level:')
@@ -281,7 +285,7 @@ class AddText(tk.Frame):
         self.text_type1 = tk.Radiobutton(middleleftframe, text='Book', variable=self.text_type, value=1)
         self.text_type2= tk.Radiobutton(middleleftframe, text='Short story', variable=self.text_type,
                                         value=2)
-        self.text_type3= tk.Radiobutton(middleleftframe, text='Other', variable=self.text_type, value=3)
+        self.text_type3= tk.Radiobutton(middleleftframe, text='Other text type', variable=self.text_type, value=3)
         self.text_type_label.grid(column=0, row=0, sticky=tk.W)
         self.text_type1.grid(column=1, row = 0, sticky= tk.W)
         self.text_type2.grid(column=2, row=0, sticky=tk.W)
@@ -320,8 +324,9 @@ class AddText(tk.Frame):
         self.resource_list.heading('4', text='Publisher', anchor='w')
         self.resource_list.heading('5', text='Language', anchor='w')
         self.resource_list.heading('6', text='Notes', anchor='w')
-
         self.treeview = self.resource_list
+        self.treeview.bind('<ButtonRelease-1>', self.select_text)
+
         self.list_resources()
         self.update_entry_widgets()
 
@@ -338,11 +343,17 @@ class AddText(tk.Frame):
         self.searchresource.config(width=15, cursor='hand2')
         self.searchresource.grid(column=2, row=0, padx=10, sticky=tk.E)
 
+
     def list_resources(self):
         for i in self.resource_list.get_children():
             self.resource_list.delete(i)
         resources = data.list_text_resources()
         for item in resources:
+            self.treeview.insert('', 'end', values=item)
+
+    def show_updated_resources(self):
+        updated = data.list_text_resources()
+        for item in updated:
             self.treeview.insert('', 'end', values=item)
 
     def update_entry_widgets(self):
@@ -393,6 +404,83 @@ class AddText(tk.Frame):
 
         self.list_resources()
         self.update_entry_widgets()
+
+    def select_text(self, event):
+        item = self.resource_list.focus()
+
+        project = self.treeview.item(item)
+
+        text_title = project['values'][0]
+        self.text_id = data.get_text_id(text_title)
+
+        text_info = data.get_full_text(self.text_id)
+        self.title.set(text_info[0][0])
+        self.author.set(text_info[0][1])
+        self.year.set(text_info[0][2])
+        self.pages.set(text_info[0][3])
+        self.subject.set(text_info[0][7])
+        self.notes.set(text_info[0][9])
+
+        self.publisher.set(text_info[0][5])
+
+        self.language.set(text_info[0][6])
+        self.language_options = data.list_languages()
+
+        self.level.set(text_info[0][4])
+        self.level_options = data.list_levels()
+
+        if text_info[0][8] == 'Book':
+            self.text_type.set(1)
+        elif text_info[0][8] == 'Short story':
+            self.text_type.set(2)
+        else:
+            self.text_type.set(3)
+
+        return self.text_id
+
+    def update_text(self):
+        # update_text(textID, title, author, year, pages, level, publisher, language, subject, medium, notes):
+        media_name = self.get_media_name()
+
+        if self.new_pub_flag.get() == 1:
+            self.thepublisher = self.new_pub.get()
+        else:
+            self.thepublisher = self.publisher.get()
+
+        if self.new_lang_flag.get() == 1:
+            self.thelanguage = self.new_lang.get()
+        else:
+            self.thelanguage = self.language.get()
+
+        data.update_text(self.text_id, self.title.get(), self.author.get(), self.year.get(),
+                          self.pages.get(), self.level.get(), self.thepublisher,
+                          self.thelanguage, self.subject.get(), media_name, self.notes.get() )
+
+        self.clear_texts()
+        self.show_updated_resources()
+
+    def clear_texts(self):
+        for i in self.resource_list.get_children():
+            self.resource_list.delete(i)
+
+    def show_updated_project(self):
+        text = data.get_text(self.text_id)
+        self.treeview.insert('', 'end', values=text)
+
+    def delete_text(self):
+        result = tkMessageBox.askquestion("Delete?", "Delete project?")
+        if result == 'yes':
+            if tkMessageBox.askokcancel("Confirm", "Really?\nThis cannot be undone!", icon='warning'):
+                # data.delete_project(self.project_id)
+                print("Deleted")
+                tkMessageBox.showinfo('Deleted', "Project deleted.")
+                # self.update_widgets()
+                # self.clear_projects()
+        pass
+
+
+
+
 
 class LinkResources(tk.Frame):
     def __init__(self, parent, controller):

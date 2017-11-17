@@ -356,6 +356,45 @@ def add_text(title, author, year, pages, level, publisher, language, subject, me
               (resourceID, authorID, mediaID))
     db.commit()
 
+def update_text(textID, title, author, year, pages, level, publisher, language, subject, medium, notes):
+    levelID = get_level_id(level)
+    print('Level ID is ', levelID)
+
+    add_publisher(publisher)
+    publisherID = get_publisher_id(publisher)
+    print('Pub ID =', publisherID)
+
+    add_language(language)
+    languageID = get_language_id(language)
+    print('Lang ID = ', languageID)
+
+    add_subject(subject)
+    subjectID = get_subject_id(subject)
+    print('Subject ID =', subjectID)
+
+    add_resource_medium(medium)
+    medium = medium.title()
+    mediaID = get_resource_medium_id(medium)
+    print('Text media ID = ', mediaID)
+
+    c.execute('''UPDATE texts
+                            SET title = ?, year= ?, pages = ?,  levelID = ?, publisherID = ?, 
+                                languageID = ?, subjectID = ?, mediaID = ?,notes = ?, 
+                     WHERE ID  = ?''',
+                  (title, year, pages, levelID, publisherID, languageID, subjectID, mediaID, notes, textID))
+    db.commit()
+
+    add_author(author)
+    authorID = get_author_id(author)
+    print('Author ID = ', authorID)
+
+    c.execute('''UPDATE resource_author SET authorID = ?, WHERE  mediaID = ? AND resourceID  =?''',
+              ( authorID, mediaID, textID,))
+
+
+    db.commit()
+
+
 
 def list_text_resources():
     """ Returns all the resources from database"""
@@ -915,6 +954,26 @@ def get_text(textID):
                 AND texts.ID = resource_author.resourceID
                 AND texts.mediaID = resource_author.mediaID
                 AND texts.subjectID = subjects.ID
+                WHERE texts.ID = ?''',(textID,))
+
+    return c.fetchall()
+
+def get_full_text(textID):
+    c.execute('''SELECT texts.title, authors.name,  texts.year, texts.pages, 
+                    levels.level, publishers.publisher, languages.language, subjects.subject, 
+                    resource_medium.medium, texts.notes
+
+                FROM texts JOIN levels JOIN publishers JOIN languages JOIN authors
+                JOIN subjects JOIN resource_medium JOIN resource_author
+
+                ON texts.mediaID = resource_medium.ID
+                AND texts.levelID = levels.ID
+                AND texts.publisherID = publishers.ID
+                AND texts.languageID = languages.ID
+                AND texts.subjectID = subjects.ID
+                AND texts.ID = resource_author.resourceID
+                AND texts.mediaID = resource_author.mediaID
+                AND authors.ID = resource_author.authorID
                 WHERE texts.ID = ?''',(textID,))
 
     return c.fetchall()
