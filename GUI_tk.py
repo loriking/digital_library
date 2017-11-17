@@ -1,5 +1,4 @@
 import tkinter as tk
-from tkinter.messagebox import showinfo
 import tkinter.messagebox as tkMessageBox
 from tkinter import ttk
 import dataCRUD as data
@@ -18,12 +17,12 @@ class ProjectLibrary(tk.Tk):
         self.frames = {}
 
         for F in (HomePage, Projects, LinkResources, AddResource, AddText, AddAudioVideo, AddCourse,
-                  AddInteractiveMedia, AddMedia, AddImages, SearchResource, EditProject, EditResource):
+                  AddInteractiveMedia, AddMedia, AddImages, SearchResource, EditProject):
             frame = F(main, self)
             self.frames[F] = frame
             frame.grid(row = 0, column = 0, sticky ='nsew')
 
-        self.show_frame(HomePage)
+        self.show_frame(AddMedia)
         
     def show_frame(self, cont):
         frame = self.frames[cont]
@@ -43,8 +42,6 @@ class HomePage(tk.Frame):
         self.firstframe.pack(side=tk.LEFT, anchor=tk.CENTER,expand=tk.TRUE, ipadx=10, ipady=10, padx=10,pady=10)
         self.middleframe.pack(side=tk.LEFT, anchor=tk.CENTER, expand=tk.TRUE, ipadx=10, ipady=10, padx=10,pady=20)
         self.secondframe.pack(side=tk.LEFT, anchor=tk.CENTER, expand=tk.TRUE, ipadx=10, ipady=10, padx=10,pady=10)
-
-
 
         self.wordcloud = tk.PhotoImage(file="smallwhitewordcloud.png")
 
@@ -73,7 +70,7 @@ class HomePage(tk.Frame):
         self.view_resources.config(height=5, width=13)
         self.view_resources.pack(pady=10)
 
-        self.edit_resource = tk.Button(self.secondframe, text='Edit Resource')
+        self.edit_resource = tk.Button(self.secondframe, text='About')
         self.edit_resource.config(height=5, width=13)
         self.edit_resource.pack(pady=10)
 
@@ -84,31 +81,51 @@ class AddResource(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
-        self.button_window = tk.LabelFrame(self, text='Resource Type')
-        self.button_window.grid(column=0, row=0, columnspan=4, sticky=tk.N+tk.S+tk.E+tk.W)
+        self.topframe = tk.LabelFrame(self, text='', borderwidth=0)
+        self.topframe.pack(expand=tk.TRUE, fill=tk.BOTH)
 
-        self.AddAudioVideoButton = tk.Button(self.button_window, text='Audio\n and Video', width=20,height=5,
+        self.firstframe = tk.LabelFrame(self.topframe, text='', borderwidth=0)
+        self.secondframe = tk.LabelFrame(self.topframe, text='', borderwidth=0)
+        self.thirdframe = tk.LabelFrame(self.topframe, borderwidth=0, text='')
+        self.fourthframe = tk.LabelFrame(self.topframe, borderwidth=0, text='')
+
+        self.firstframe.pack(side=tk.LEFT, anchor=tk.CENTER, expand=tk.TRUE, ipadx=10, ipady=10, padx=10, pady=10)
+        self.secondframe.pack(side=tk.LEFT, anchor=tk.CENTER, expand=tk.TRUE, ipadx=10, ipady=10, padx=10, pady=10)
+        self.thirdframe.pack(side=tk.LEFT, anchor=tk.CENTER, expand=tk.TRUE, ipadx=10, ipady=10, padx=10, pady=20)
+        self.fourthframe.pack(side=tk.LEFT, anchor=tk.CENTER, expand=tk.TRUE, ipadx=10, ipady=10, padx=10, pady=20)
+
+
+        self.AddAudioVideoButton = tk.Button(self.firstframe, text='Audio\n and Video', width=20,height=5,
                                         command=lambda: controller.show_frame(AddAudioVideo))
-        self.AddTextButton= tk.Button(self.button_window, text='Add Text', width=20,height=5,
-                                        command=lambda: controller.show_frame(AddText))
-        self.AddCourseButton= tk.Button(self.button_window, text='Courses', width=20,height=5,
-                                        command=lambda: controller.show_frame(AddCourse))
-        self.AddInteractiveMediaButton= tk.Button(self.button_window, text='Interactive\n Media',  width=20,height=5,
-                                        command=lambda: controller.show_frame(AddInteractiveMedia))
-        self.AddOnlineMediaButton= tk.Button(self.button_window, text='Websites', width=20,height=5,
-                                        command=lambda: controller.show_frame(AddMedia))
-        self.AddImagesButton= tk.Button(self.button_window, text='Images', width=20,height=5,
+        self.AddCourseButton = tk.Button(self.firstframe, text='Courses', width=20, height=5,
+                                         command=lambda: controller.show_frame(AddCourse))
+
+        self.AddImagesButton= tk.Button(self.secondframe, text='Clipart, Photos\nand Sprites', width=20,height=5,
                                         command=lambda: controller.show_frame(AddImages))
+        self.AddInteractiveMediaButton= tk.Button(self.secondframe, text='Interactive\n Media',  width=20,height=5,
+                                        command=lambda: controller.show_frame(AddInteractiveMedia))
+
+        self.AddTextButton= tk.Button(self.thirdframe, text='Books\n and Texts', width=20,height=5,
+                                        command=lambda: controller.show_frame(AddText))
+        self.AddWebsitesbutton= tk.Button(self.thirdframe, text='Websites', width=20,height=5,
+                                        command=lambda: controller.show_frame(AddMedia))
 
 
+        self.go_projects = tk.Button( self.fourthframe, text='View\nProjects', width=20, height=5,
+                                         command=lambda: controller.show_frame(Projects))
 
-        self.AddTextButton.grid(column=0, row=0)
-        self.AddOnlineMediaButton.grid(column=1, row=0)
-        self.AddAudioVideoButton.grid(column=2, row=0)
-        self.AddCourseButton.grid(column=1, row=1)
-        self.AddInteractiveMediaButton.grid(column=0, row=1)
-        self.AddImagesButton.grid(column=2, row=1)
+        self.go_home = tk.Button( self.fourthframe, text='Home', width=20, height=5,
+                                         command=lambda: controller.show_frame(HomePage))
 
+        self.AddAudioVideoButton.pack( pady=10)
+        self.AddCourseButton.pack( pady=10)
+        self.AddImagesButton.pack( pady=10)
+        self.go_projects.pack( pady=10)
+
+        self.AddInteractiveMediaButton.pack( pady=10)
+        self.AddTextButton.pack( pady=10)
+        self.AddWebsitesbutton.pack( pady=10)
+        self.go_home.pack( pady=10)
 
 class AddText(tk.Frame):
     def __init__(self, parent, controller):
@@ -376,7 +393,6 @@ class AddText(tk.Frame):
 
         self.list_resources()
         self.update_entry_widgets()
-
 
 class LinkResources(tk.Frame):
     def __init__(self, parent, controller):
@@ -672,6 +688,9 @@ class Projects(tk.Frame):
         self.bottomframe = tk.LabelFrame(self, text='', borderwidth=4)
         self.bottomframe.grid(column=0, row=5, columnspan=4)
 
+        self.button_frame = tk.LabelFrame(self, text='', borderwidth=0)
+        self.button_frame.grid(column=0, row=6, columnspan=2, sticky=tk.W)
+
         # VARIABLES
 
         self.project_name = tk.StringVar()
@@ -737,16 +756,17 @@ class Projects(tk.Frame):
         # Bottom Frame
 
         self.scollprojects = tk.Scrollbar(self.bottomframe)
-        self.scollprojects.grid(column=1, row=0, sticky=tk.N + tk.S)
+        self.scollprojects.grid(column=2, row=0, sticky=tk.N + tk.S)
 
-        self.project_list = ttk.Treeview(self.bottomframe, columns=('Name', 'Type','Description', 'Start date', 'End date'))
+        self.project_list = ttk.Treeview(self.bottomframe, height=12,
+                                         columns=('Name', 'Type','Description', 'Start date', 'End date'))
 
         self.scollprojects.configure(orient="vertical", command=self.project_list.yview)
         self.project_list.configure(yscrollcommand=self.scollprojects.set)
 
         self.project_list['columns'] = ('Name', 'Type','Description', 'Start date', 'End date')
         self.project_list.column('#0',minwidth=0, width=0)
-        self.project_list.grid(column=0, row=0,sticky=tk.E)
+        self.project_list.grid(column=0, row=0, columnspan=2, sticky=tk.E)
 
         self.project_list.heading('0',  text='Name', anchor='w')
         self.project_list.heading('1',text='Type', anchor='w')
@@ -762,9 +782,14 @@ class Projects(tk.Frame):
         self.treeview = self.project_list
 
 
-        self.home = tk.Button(self.bottomframe, text='Home', command=lambda: controller.show_frame(HomePage))
+        self.back = tk.Button(self.button_frame, text='Back', command=lambda: controller.show_frame(AddResource))
+        self.back.config(width=10)
+        self.back.grid(column=0, row=1, padx=20, pady=2, sticky=tk.W)
+
+        self.home = tk.Button(self.button_frame, text='Home', command=lambda: controller.show_frame(HomePage))
         self.home.config(width=10)
-        self.home.grid(column=0, row=1, padx=10, sticky=tk.W)
+        self.home.grid(column=1, row=1,sticky=tk.W)
+
         self.list_projects()
         self.update_widgets()
 
@@ -804,7 +829,6 @@ class Projects(tk.Frame):
 
         self.list_projects()
         self.update_widgets()
-
 
 class AddMedia(tk.Frame):
     def __init__(self, parent, controller, *args):
@@ -864,9 +888,19 @@ class AddMedia(tk.Frame):
         self.back_button.grid(column=1, row=2, padx=10, sticky=tk.W)
 
         # Save resource button
-        self.save_resource = ttk.Button(self.center_frame, text='Save', command=lambda: self.save_data())
+        self.save_resource = tk.Button(self.center_frame, text='Save',width=8, command=lambda: self.save_data())
         self.save_resource.config(cursor='hand2')
         self.save_resource.grid(column=4, row=0, sticky=tk.E)
+
+        self.update_resource = tk.Button(self.center_frame, text='Update', bg='green', width=8,
+                                        command=lambda: self.update())
+        self.update_resource.config(cursor='hand2')
+        self.update_resource.grid(column=5, row=0, padx=5, sticky=tk.E)
+
+        self.delete_resource = tk.Button(self.center_frame, text='Delete', bg='red', width=8)  # ,
+        # command=lambda: self.delete())
+        self.delete_resource.config(cursor='hand2')
+        self.delete_resource.grid(column=6, row=0, sticky=tk.W)
 
         self.create_values()
 
@@ -992,7 +1026,7 @@ class AddMedia(tk.Frame):
         scrollwebdocs = tk.Scrollbar(self.bottom_middleframe)
         scrollwebdocs.grid(column=1, row=1, sticky=tk.N + tk.S + tk.W)
 
-        self.webdocs_list = ttk.Treeview(self.bottom_middleframe,
+        self.webdocs_list = ttk.Treeview(self.bottom_middleframe, height=12,
                                          columns= (col1, col2, col3, col4, col5, col6))
 
         scrollwebdocs.configure(orient="vertical", command=self.webdocs_list.yview)
@@ -1016,6 +1050,8 @@ class AddMedia(tk.Frame):
         self.webdocs_list.heading('5', text=col6, anchor='w')
 
         self.treeview = self.webdocs_list
+        self.treeview.bind('<ButtonRelease-1>', self.select_document)
+
         return self.treeview, self.webdocs_list
 
 
@@ -1060,6 +1096,79 @@ class AddMedia(tk.Frame):
 
         self.media_buttons.set('?')
 
+
+#################################
+    def select_document(self,event):
+        item = self.webdocs_list.focus()
+
+        document = self.treeview.item(item)
+
+        document_name = document['values'][0]
+        print(document)
+        self.document_id = data.get_website_id(document_name)
+        print(self.document_id)
+
+        web_doc = data.get_website(self.document_id)
+        print(web_doc)
+
+        self.box1L.set(web_doc[0])
+        self.box2L.set(web_doc[1])
+        self.box3L.set(web_doc[2])
+        self.box4L.set(web_doc[3])
+        self.box1R.set(web_doc[4])
+        self.box2R.set(web_doc[5])
+        self.box3R.set(web_doc[6])
+        self.box4R.set(web_doc[7])
+        self.media_buttons.set('?')
+        # self.document_id = self.document_id[0]
+
+        return self.document_id
+
+#update_media(websiteID = None, title=None, author=None, creation_date=None, subject=None, website_name=None,
+                 # url=None, access_date=None,notes=None, medium=None):
+
+    def update(self):
+        media_name = self.get_media_name()
+        mediaID = data.get_resource_medium_id(media_name)
+
+        data.update_media(self.document_id, self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(),
+                          self.box1R.get(), self.box2R.get(), self.box3R.get(), self.box4R.get(), mediaID)
+
+        # self.clear_projects()
+        # self.show_updated_project()
+        self.update_entry_widgets()
+
+
+    def clear_projects(self):
+        for i in self.project_list.get_children():
+            self.project_list.delete(i)
+        pass
+
+    def show_updated_project(self):
+        project = data.get_project(self.project_id)
+        self.treeview_projects.insert('', 'end', values=project)
+        pass
+
+
+    def list_projects(self):
+        self.clear_projects()
+        projects_list = data.list_projects()
+
+        for item in projects_list:
+            self.treeview_projects.insert('', 'end', values=item)
+        pass
+
+    def delete(self):
+
+        result = tkMessageBox.askquestion("Delete?", "Delete project?")
+        if result == 'yes':
+            if tkMessageBox.askokcancel("Confirm", "Really?\nThis cannot be undone!", icon='warning'):
+                #data.delete_project(self.project_id)
+                print("Deleted")
+                tkMessageBox.showinfo('Deleted', "Project deleted.")
+                #self.update_widgets()
+                #self.clear_projects()
+
 class AddCourse(AddMedia):
     def __init__(self, parent, controller):
         AddMedia.__init__(self, parent, controller)
@@ -1073,9 +1182,9 @@ class AddCourse(AddMedia):
         self.level_label = tk.Label(self.center_frame, text='Level:')
         self.level_entry = tk.OptionMenu(self.center_frame, self.level,
                                             *self.level_options)
-        self.level_entry.configure(width=15)
+        self.level_entry.configure(width=8)
         self.level_label.grid(column=0, row=0, sticky=tk.W)
-        self.level_entry.grid(column=1, row=0, padx=10, sticky=tk.W)
+        self.level_entry.grid(column=1, row=0, padx=2, sticky=tk.W)
 
         self.create_values()
 
@@ -1149,10 +1258,10 @@ class AddAudioVideo(AddMedia):
 
         self.language_label = tk.Label(self.center_frame, text='Language:')
         self.language_entry = tk.OptionMenu(self.center_frame, self.language,
-                                            *self.language_options  if self.language_options else '0')
-        self.language_entry.configure(width=15)
+                                            *self.language_options)#  if self.language_options else '0')
+        self.language_entry.configure(width=8)
         self.language_label.grid(column=0, row=0, sticky=tk.W)
-        self.language_entry.grid(column=1, row=0,padx=10, sticky=tk.W)
+        self.language_entry.grid(column=1, row=0,padx=5, sticky=tk.W)
 
 
         self.create_values()
@@ -1280,7 +1389,9 @@ class AddImages(AddMedia):
     def __init__(self, parent, controller):
         AddMedia.__init__(self, parent, controller)
 
-        self.table = data.list_images()
+        self.search_table = data.list_images()
+
+
         self.create_values()
 
         self.display_resources(AddMedia.c1, AddMedia.c2, AddMedia.c3, AddMedia.c4,
@@ -1288,6 +1399,8 @@ class AddImages(AddMedia):
 
         self.create_top_frame_widgets(AddMedia.window_header, AddMedia.b2L, AddMedia.b3L, AddMedia.b4L, \
                                       AddMedia.b1R, AddMedia.b2R, AddMedia.b3R, AddMedia.b4R)
+
+        self.list_resources(self.search_table)
 
     def create_values(self):
         AddMedia.window_header = 'Images'
@@ -1313,6 +1426,7 @@ class AddImages(AddMedia):
                AddMedia.b2L, AddMedia.b3L, AddMedia.b4L, AddMedia.b1R, AddMedia.b2R, AddMedia.b3R, AddMedia.b4R, \
                AddMedia.media_choice1, AddMedia.media_choice2, AddMedia.media_choice3
 
+
     def get_media_name(self):
         if self.media_buttons.get() == 1:
             media_name = 'Photo'
@@ -1330,10 +1444,9 @@ class AddImages(AddMedia):
                         self.box3R.get(), self.box4R.get(), media_name)
 
         search_table = data.list_images()
-
-        self.update_entry_widgets()
+        print(search_table)
         self.list_resources(search_table)
-
+        self.update_entry_widgets()
 
 class SearchResource(tk.Frame):
     def __init__(self, parent, controller):
@@ -1396,7 +1509,7 @@ class SearchResource(tk.Frame):
         self.home.config(width=10, cursor='hand2')
         self.home.grid(column=0, row=10, padx=20, sticky=tk.E)
 
-        show_window(self.bottom, 15) # opens an empty window as a placeholder
+        show_window(self.bottom, 12) # opens an empty window as a placeholder
 
     def show_results(self):
         results = self.create_table_values()
@@ -1406,7 +1519,7 @@ class SearchResource(tk.Frame):
         self.scollresources = ttk.Scrollbar(self.bottom)
         self.scollresources.grid(column=2, row=2, sticky=tk.N + tk.S + tk.W)
 
-        self.resource_list = ttk.Treeview(self.bottom, height=15, selectmode='extended',
+        self.resource_list = ttk.Treeview(self.bottom, height=12, selectmode='extended',
                                               columns=column_names)
         self.resource_list.bind()
 
@@ -1475,7 +1588,6 @@ class SearchResource(tk.Frame):
             self.treeview_resources.insert('', 'end', values=item)
         self.search_bar_entry.delete(0, 'end')
 
-
 class EditProject(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -1512,7 +1624,6 @@ class EditProject(tk.Frame):
 
         self.bottomframe = tk.LabelFrame(self, text='', borderwidth=4)
         self.bottomframe.grid(column=0, row=5, columnspan=4)
-
 
         # SEARCH
         self.projectframe = tk.LabelFrame(self.main_frame, text='', borderwidth=4)
@@ -1577,12 +1688,11 @@ class EditProject(tk.Frame):
         self.delete_project.grid(column=2, row=6)
 
         # Bottom Frame
-    # def show_results(self):
 
         self.scollprojects = tk.Scrollbar(self.bottomframe)
         self.scollprojects.grid(column=1, row=0, sticky=tk.N + tk.S)
 
-        self.project_list = ttk.Treeview(self.bottomframe,selectmode='browse',
+        self.project_list = ttk.Treeview(self.bottomframe, height=10, selectmode='browse',
                                          columns=('Name', 'Type', 'Description', 'Start date', 'End date'))
 
         self.scollprojects.configure(orient="vertical", command=self.project_list.yview)
@@ -1687,10 +1797,6 @@ class EditProject(tk.Frame):
 
 
 
-class EditResource(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        pass
 
 if __name__ == "__main__":
     app = ProjectLibrary()
