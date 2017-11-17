@@ -403,7 +403,7 @@ def update_resource_author(authorID, mediaID, resourceID):
     c.execute('''UPDATE resource_author SET authorID = ?, 
                         WHERE mediaID = ? AND  resourceID = ?''', (authorID, mediaID, resourceID))
     db.commit()
-    
+
 # Web doc
 def get_website_id(title):
     c.execute('''SELECT ID FROM websites WHERE title = ?''', (title,))
@@ -788,11 +788,15 @@ def find_texts(search_term):
                 AND texts.ID = resource_author.resourceID
                 AND texts.mediaID = resource_author.mediaID
                 AND texts.subjectID = subjects.ID
+                AND texts.languageID = languages.ID
                 WHERE texts.title LIKE ?
                 OR subjects.subject LIKE ? 
                 OR authors.name LIKE ? 
                 OR texts.notes LIKE ?''',
               (search_term, search_term, search_term, search_term))
+
+    # c.execute('''
+    # ''')
 
     return c.fetchall()
 # Display: 'Title', 'Instructor', 'Start date', 'Duration', 'Platform', 'subject'
