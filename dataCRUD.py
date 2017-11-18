@@ -264,6 +264,28 @@ def delete_resource_medium(resource_medium_entry):
     db.commit()
 
 
+# Resource author media functions
+
+def add_resource_author(resourceID, authorID, mediaID):
+    c.execute('''INSERT OR IGNORE INTO resource_author(resourceID, authorID, mediaID) VALUES(?,?, ?)''',
+              (resourceID, authorID, mediaID))
+    db.commit()
+
+def change_resource_author(authorID, mediaID, resourceID):
+    c.execute('''UPDATE resource_author SET authorID = ? WHERE mediaID = ? AND  resourceID = ?''',
+              (authorID, mediaID, resourceID))
+    db.commit()
+
+def change_resource_media(authorID, mediaID, resourceID):
+    c.execute('''UPDATE resource_author SET mediaID = ? WHERE authorID = ? AND  resourceID = ?''',
+              (authorID, mediaID, resourceID))
+    db.commit()
+
+def delete_resource_author(resourceID, authorID, mediaID):
+    c.execute('''DELETE resource_author WHERE resourceID = ? AND authorID = ? AND mediaID = ?''',
+              (resourceID,authorID, mediaID))
+    db.commit()
+
 # subject CRUD FUNCTIONS
 
 def add_subject(subject_entry):
@@ -281,19 +303,14 @@ def list_subjects():
 
     return results
 
-
-
-
 def get_subject_id(subject):
     subject = subject.title()
     c.execute('''SELECT ID FROM subjects WHERE subject = ? ''', (subject,))
     return c.fetchone()[0]
 
-
 def get_subject(subject_id):
     c.execute('''SELECT subject FROM subjects WHERE ID = ?''', (subject_id,))
     return c.fetchall()[0]
-
 
 def update_subject(subject):
     subject = subject.title()
@@ -336,7 +353,7 @@ def add_text(title, author, year, pages, level, publisher, language, subject, me
     mediaID = get_resource_medium_id(medium)
     print('Text media ID = ', mediaID)
 
-    title = title.title()
+    # title = title.title()
     print('Title = ', title)
 
     c.execute('''INSERT OR IGNORE INTO texts(title, year, pages, levelID, publisherID, languageID, subjectID, 
@@ -344,17 +361,19 @@ def add_text(title, author, year, pages, level, publisher, language, subject, me
                  VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)''',
               (title, year, pages, levelID, publisherID, languageID, subjectID, mediaID, notes))
 
+    db.commit()
+
     resourceID = get_text_id(title)
     print('ResourceID = ', resourceID)
 
     add_author(author)
+    db.commit()
+
     authorID = get_author_id(author)
     print('Author ID = ', authorID)
 
+    add_resource_author(resourceID, authorID, mediaID)
 
-    c.execute('''INSERT OR IGNORE INTO resource_author(resourceID, authorID, mediaID) VALUES(?,?, ?)''',
-              (resourceID, authorID, mediaID))
-    db.commit()
 
 def update_text(textID, title, author, year, pages, level, publisher, language, subject, medium, notes):
     levelID = get_level_id(level)
@@ -388,8 +407,7 @@ def update_text(textID, title, author, year, pages, level, publisher, language, 
     authorID = get_author_id(author)
     print('Author ID = ', authorID)
 
-    c.execute('''UPDATE resource_author SET authorID = ?, WHERE  mediaID = ? AND resourceID  =?''',
-              ( authorID, mediaID, textID,))
+    change_resource_author(authorID, mediaID, textID)
 
 
     db.commit()
@@ -438,10 +456,6 @@ def resources_by_type(media_type):
                 ON texts.mediaID = resource_medium.ID 
                 WHERE texts.mediaID = ?''', (media_type,))
 
-def update_resource_author(authorID, mediaID, resourceID):
-    c.execute('''UPDATE resource_author SET authorID = ?, 
-                        WHERE mediaID = ? AND  resourceID = ?''', (authorID, mediaID, resourceID))
-    db.commit()
 
 # Web doc
 def get_website_id(title):
@@ -682,8 +696,6 @@ def list_images():
                     AND images.imagetypeID = resource_author.mediaID
                     AND images.imagetypeID = resource_medium.ID''')
     return c.fetchall()
-
-
 
 
 # PROJECT Category CRUD
@@ -1071,7 +1083,7 @@ def update_media(websiteID = None, title=None, author=None, creation_date=None, 
     add_author(author)
     authorID = get_author_id(author)
 
-    update_resource_author(authorID, mediaID, websiteID)
+    change_resource_author(authorID, mediaID, websiteID)
 
 
 """
