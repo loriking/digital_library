@@ -496,6 +496,10 @@ def add_website(title, author, creation_date, subject, website_name, url, access
               VALUES(?, ?, ?)''', (website_id, authorID, mediaID ))
     db.commit()
 
+def get_website_mediaID(resourceID):
+    c.execute('''SELECT mediaID FROM websites WHERE websites.ID = ?''', (resourceID,))
+    return c.fetchone()[0]
+
 def list_websites():
     """ Returns all the resources from database"""
 
@@ -555,6 +559,10 @@ def add_audio_video(title, author, duration,  year, program, url, language, medi
                   VALUES(?, ?, ?)''', (audio_video_id, authorID, mediaID))
     db.commit()
 
+def get_av_mediaID(resourceID):
+    c.execute('''SELECT mediaID FROM audio_video WHERE audio_video.ID = ?''', (resourceID,))
+    return c.fetchone()[0]
+
 def list_av():
     c.execute('''SELECT audio_video.title, authors.name, audio_video.year, resource_medium.medium, 
 	                audio_video.program, languages.language
@@ -608,6 +616,10 @@ def add_course(title, instructor, start_date, duration, url, comments, level, pl
                       VALUES(?, ?, ?)''', (courseID, authorID, mediaID))
     db.commit()
 
+def get_course_mediaID(resourceID):
+    c.execute('''SELECT mediaID FROM courses WHERE courses.ID = ?''', (resourceID,))
+    return c.fetchone()[0]
+
 def list_courses():
     c.execute('''SELECT courses.title, authors.name, courses.start_date, courses.duration_hours, 
                     publishers.publisher, courses.comments
@@ -651,6 +663,10 @@ def add_interactive_media(title, creator, year, platform, version, comments, eng
     db.commit()
 
 
+def get_media_interative_mediaID(resourceID):
+    c.execute('''SELECT typeID FROM interactive_media WHERE interactive_media.ID = ?''', (resourceID,))
+    return c.fetchone()[0]
+
 def list_interactive():
     c.execute('''SELECT interactive_media.title, authors.name, interactive_media.year, 
                     publishers.publisher, resource_medium.medium, interactive_media.comments
@@ -686,6 +702,10 @@ def add_images(title, creator, date, copywrite, website, dimensions, url, commen
     c.execute('''INSERT OR IGNORE INTO resource_author(resourceID, authorID, mediaID ) 
                       VALUES(?, ?, ?)''', (imageID, authorID, imagetypeID))
     db.commit()
+
+def get_image_mediaID(resourceID):
+    c.execute('''SELECT imagetypeID FROM images WHERE images.ID = ?''', (resourceID,))
+    return c.fetchone()[0]
 
 def list_images():
     c.execute('''SELECT images.title, authors.name, resource_medium.medium, images.dimensions, images.date, 
@@ -815,6 +835,7 @@ def link_to_resources(projectID, resourceID, mediaID):
               (projectID, resourceID, mediaID))
 
     db.commit()
+
 
 # SEARCHES
 def find_project(project_name):
@@ -1071,8 +1092,8 @@ def update_media(websiteID = None, title=None, author=None, creation_date=None, 
     add_publisher(website_name)
     website_nameID = get_publisher_id(website_name)
 
-    # add_resource_medium(medium)
-    # mediaID = get_resource_medium_id(medium)
+    add_resource_medium(medium)
+    mediaID = get_resource_medium_id(medium)
 
     c.execute('''UPDATE websites SET title = ?, creation_date = ?, website_nameID = ?, url = ?,
                     access_date = ?, notes = ?, mediaID = ?, subjectID = ? 
@@ -1091,7 +1112,7 @@ def init_db(filename=None):
     global db, c
     if not filename:
         filename = 'small_data.db'
-    try:
+    try: 
         db = sql.connect(filename)
         c = db.cursor()
         #c.execute('PRAGMA Foreign_Keys=True')

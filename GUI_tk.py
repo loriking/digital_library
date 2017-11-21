@@ -22,7 +22,7 @@ class ProjectLibrary(tk.Tk):
             self.frames[F] = frame
             frame.grid(row = 0, column = 0, sticky ='nsew')
 
-        self.show_frame(AddMedia)
+        self.show_frame(LinkResources)
         
     def show_frame(self, cont):
         frame = self.frames[cont]
@@ -356,7 +356,7 @@ class AddText(tk.Frame):
         for item in updated:
             self.treeview.insert('', 'end', values=item)
 
-    def update_entry_widgets(self):
+    def update_entry_widgets(self): # clears entry widgete
 
         self.title_entry.delete(0, 'end')
         self.author_entry.delete(0, 'end')
@@ -408,12 +408,13 @@ class AddText(tk.Frame):
     def select_text(self, event):
         item = self.resource_list.focus()
 
-        project = self.treeview.item(item)
+        text = self.treeview.item(item)
 
-        text_title = project['values'][0]
+        text_title = text['values'][0]
         self.text_id = data.get_text_id(text_title)
 
         text_info = data.get_full_text(self.text_id)
+
         self.title.set(text_info[0][0])
         self.author.set(text_info[0][1])
         self.year.set(text_info[0][2])
@@ -436,10 +437,13 @@ class AddText(tk.Frame):
         else:
             self.text_type.set(3)
 
+        print(self.text_id)
+
         return self.text_id
 
     def update_text(self):
         # update_text(textID, title, author, year, pages, level, publisher, language, subject, medium, notes):
+
         media_name = self.get_media_name()
 
         if self.new_pub_flag.get() == 1:
@@ -452,9 +456,17 @@ class AddText(tk.Frame):
         else:
             self.thelanguage = self.language.get()
 
+        ### NEED TO DELETE resource_author file if going to change data
+
+
         data.update_text(self.text_id, self.title.get(), self.author.get(), self.year.get(),
                           self.pages.get(), self.level.get(), self.thepublisher,
                           self.thelanguage, self.subject.get(), media_name, self.notes.get() )
+
+        print(self.text_id, self.title.get(), self.author.get(), self.year.get(),
+                          self.pages.get(), self.level.get(), self.thepublisher,
+                          self.thelanguage, self.subject.get(), media_name, self.notes.get())
+
 
         self.clear_texts()
         self.show_updated_resources()
@@ -462,8 +474,9 @@ class AddText(tk.Frame):
     def clear_texts(self):
         for i in self.resource_list.get_children():
             self.resource_list.delete(i)
+        print('Text cleared')
 
-    def show_updated_project(self):
+    def show_updated_resource(self, text_id):
         text = data.get_text(self.text_id)
         self.treeview.insert('', 'end', values=text)
 
@@ -487,6 +500,9 @@ class LinkResources(tk.Frame):
         tk.Frame.__init__(self, parent)
 
         self.project_id = None
+        self.resource_id = None
+        self.media_id = None
+
         self.resources = set()
 
         self.project_title = tk.StringVar()
@@ -620,7 +636,7 @@ class LinkResources(tk.Frame):
         self.scollresources = ttk.Scrollbar(self.resourceresults)
         self.scollresources.grid(column=2, row=2, sticky=tk.N + tk.S + tk.W)
 
-        self.resource_list = ttk.Treeview(self.resourceresults, height=4, selectmode='extended',
+        self.resource_list = ttk.Treeview(self.resourceresults, height=4, selectmode='browse', #changed from 'extended'
                                           columns=column_names )
 
         self.scollresources.configure(orient="vertical", command=self.resource_list.yview)
@@ -683,22 +699,49 @@ class LinkResources(tk.Frame):
         return column_names, resources
 
     def select_resources(self, event):
-        self.resources.clear()
 
         for item in self.treeview_resources.selection():
             item_text = self.treeview_resources.item(item)
 
             resource_name = item_text['values'][0]
+            print(resource_name)
 
-            resource_ids = data.get_text_id(resource_name)
-            resourceID = resource_ids[0][0]
-            mediaID = resource_ids[0][1]
-            print('Resource ID = ', resourceID)
-            print('Media ID = ', mediaID)
+            if self.media_type.get() == 1:
+                self.resource_id = data.get_audio_video_id(resource_name)
+                self.media_id = data.get_av_mediaID(self.resource_id)
+                print("AV ID =", self.resource_id)
+                print("AV mediaID",self.media_id )
 
-            self.resources.add((resourceID, mediaID))
+            if self.media_type.get() == 2:
+                self.resource_id = data.get_course_id(resource_name)
+                self.media_id = data.get_course_mediaID(self.resource_id)
+                print('Courses:', self.resource_id, self.media_id)
 
-        return self.resources
+            elif self.media_type.get() == 3:
+                self.resource_id = data.get_website_id(resource_name)
+                self.media_id = data.get_website_mediaID(self.resource_id)
+                print("Website ID =", self.resource_id)
+                print("Website mediaID", self.media_id)
+
+            elif self.media_type.get() == 4:
+                self.resource_id = data.get_image_id(resource_name)
+                self.media_id = data.get_image_mediaID(self.resource_id)
+                print("IMAGE ID =", self.resource_id)
+                print("IMAGE mediaID =", self.media_id)
+
+            elif self.media_type.get() == 5:
+                self.resource_id = data.get_interactive_id(resource_name)
+                self.media_id = data.get_media_interative_mediaID(self.resource_id)
+                print("IF ID =", self.resource_id)
+                print('IF mediaID = ', self.media_id)
+
+            elif self.media_type.get() == 6:
+                self.resource_id = data.get_text_id(resource_name)
+                self.media_id = data.get_text_id(self.resource_id)
+                print('Resource id =', self.resource_id)
+                print('Text mediaID =', self.media_id)
+
+            return self.resource_id, self.media_id
 
     def select_project(self, event):
         """ Takes item selected from listbox and stores it as a global variable to be used in
@@ -708,9 +751,11 @@ class LinkResources(tk.Frame):
         item = self.treeview_projects.selection()[0]
         project = self.treeview_projects.item(item)
         project_name = project['values'][0]
+        print(project_name)
 
         project = data.get_projectID(project_name)
         self.project_id = project[0]
+        print('Project ID =', self.project_id)
         return self.project_id
 
     def clear_selection(self):
@@ -720,10 +765,7 @@ class LinkResources(tk.Frame):
 
     def link_project_resources(self):
 
-        for resource_item, media_type in self.resources:
-            data.link_to_resources(self.project_id, resource_item, media_type)
-
-        self.clear_selection()
+        data.link_to_resources(self.project_id, self.resource_id, self.media_id)
 
         print("Added item(s)")
 
