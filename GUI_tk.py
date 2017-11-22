@@ -491,10 +491,6 @@ class AddText(tk.Frame):
                 # self.clear_projects()
         pass
 
-
-
-
-
 class LinkResources(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -1003,7 +999,7 @@ class AddMedia(tk.Frame):
         self.bottomleft.grid(column=0, row=4, sticky=tk.W + tk.E)
 
         self.bottomright = tk.LabelFrame(self.mainframe, text="", borderwidth=3)
-        self.bottomright.grid(column=1, row=5, sticky=tk.W + tk.E)
+        self.bottomright.grid(column=1, row=4, sticky=tk.E)
 
         self.bottom_middleframe = tk.LabelFrame(self.mainframe, text='', borderwidth=3)
         self.bottom_middleframe.grid(column=0, row=3, columnspan=2, sticky=tk.W + tk.E)
@@ -1027,10 +1023,10 @@ class AddMedia(tk.Frame):
         self.update_resource.config(cursor='hand2')
         self.update_resource.grid(column=5, row=0, padx=5, sticky=tk.E)
 
-        self.delete_resource = tk.Button(self.center_frame, text='Delete', bg='red', width=8)  # ,
+        self.delete_resource = tk.Button(self.bottomright, text='Delete', bg='red',width=15)  # ,
         # command=lambda: self.delete())
         self.delete_resource.config(cursor='hand2')
-        self.delete_resource.grid(column=6, row=0, sticky=tk.W)
+        self.delete_resource.grid(column=6, row=1, sticky=tk.W)
 
         self.create_values()
 
