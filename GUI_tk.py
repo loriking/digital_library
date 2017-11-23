@@ -22,7 +22,7 @@ class ProjectLibrary(tk.Tk):
             self.frames[F] = frame
             frame.grid(row = 0, column = 0, sticky ='nsew')
 
-        self.show_frame(LinkResources)
+        self.show_frame(AddMedia)
         
     def show_frame(self, cont):
         frame = self.frames[cont]
@@ -975,8 +975,10 @@ class AddMedia(tk.Frame):
         self.media_buttons = tk.IntVar()
         self.media_buttons.set('?')
 
-        self.treeview = None
-        self.webdocs_list = None
+        # self.treeview_docs = None
+        # self.webdocs_list = None
+
+        self.document_id = tk.IntVar() # For id of resource
 
         # Frames
 
@@ -993,7 +995,7 @@ class AddMedia(tk.Frame):
         self.center_leftframe.grid(column=0, row=2, columnspan=2,sticky=tk.W)
 
         self.center_frame = tk.LabelFrame(self.mainframe, text='', borderwidth=0)
-        self.center_frame.grid(column=1, row=2,columnspan=3, sticky=tk.W)
+        self.center_frame.grid(column=1, row=2,columnspan=3, sticky=tk.E)
 
         self.bottomleft = tk.LabelFrame(self.mainframe, text="", borderwidth=3)
         self.bottomleft.grid(column=0, row=4, sticky=tk.W + tk.E)
@@ -1016,12 +1018,18 @@ class AddMedia(tk.Frame):
         # Save resource button
         self.save_resource = tk.Button(self.center_frame, text='Save',width=8, command=lambda: self.save_data())
         self.save_resource.config(cursor='hand2')
-        self.save_resource.grid(column=4, row=0, sticky=tk.E)
+        self.save_resource.grid(column=6, row=0,  sticky=tk.E)
+
+        self.clear_boxes = tk.Button(self.center_frame, text='Clear',width=8,
+                                        command=lambda: self.update_entry_widgets())
+        self.clear_boxes.config(cursor='hand2')
+        self.clear_boxes.grid(column=4, row=0,padx=10, sticky=tk.E)
+
 
         self.update_resource = tk.Button(self.center_frame, text='Update', bg='green', width=8,
                                         command=lambda: self.update())
         self.update_resource.config(cursor='hand2')
-        self.update_resource.grid(column=5, row=0, padx=5, sticky=tk.E)
+        self.update_resource.grid(column=5, row=0, padx=10, sticky=tk.E)
 
         self.delete_resource = tk.Button(self.bottomright, text='Delete', bg='red',width=15)  # ,
         # command=lambda: self.delete())
@@ -1061,12 +1069,12 @@ class AddMedia(tk.Frame):
         self.c6 = 'Subject'
 
         self.media_choice1 = 'Documention'
-        self.media_choice2 = 'Q&A site'
-        self.media_choice3 = 'Other'
+        self.media_choice2 = 'Q&A Site'
+        self.media_choice3 = 'Website'
 
         return self.window_header, self.b2L, self.b3L, self.b4L, self.b1R, self.b2R, self.b3R, \
                self.b4R, self.c1, self.c2, self.c3, self.c4, self.c5, self.c6, self.media_choice1, \
-               self.media_choice2,
+               self.media_choice2
 
     def create_top_frame_widgets(self, window_header, box2L, box3L, box4L, box1R, box2R, box3R, box4R):
 
@@ -1175,10 +1183,10 @@ class AddMedia(tk.Frame):
         self.webdocs_list.heading('4', text=col5, anchor='w')
         self.webdocs_list.heading('5', text=col6, anchor='w')
 
-        self.treeview = self.webdocs_list
-        self.treeview.bind('<ButtonRelease-1>', self.select_document)
+        self.treeview_docs = self.webdocs_list
+        self.treeview_docs.bind('<ButtonRelease-1>', self.select_document)
 
-        return self.treeview, self.webdocs_list
+        return self.treeview_docs, self.webdocs_list
 
 
     def list_resources(self, data_table):
@@ -1186,7 +1194,7 @@ class AddMedia(tk.Frame):
             self.webdocs_list.delete(i)
         resources = data_table
         for item in resources:
-            self.treeview.insert('', 'end', values=item)
+            self.treeview_docs.insert('', 'end', values=item)
 
 
     def get_media_name(self):
@@ -1222,15 +1230,23 @@ class AddMedia(tk.Frame):
 
         self.media_buttons.set('?')
 
+        new_data = data.list_websites()
+
+        self.list_resources(new_data)
+
 
 #################################
-    def select_document(self,event):
+
+    def select_document(self, event):
+        self.media_buttons.set('?')
         item = self.webdocs_list.focus()
 
-        document = self.treeview.item(item)
+        document = self.treeview_docs.item(item)
 
         document_name = document['values'][0]
-        print(document)
+
+        print(document, document_name)
+
         self.document_id = data.get_website_id(document_name)
         print(self.document_id)
 
@@ -1245,8 +1261,15 @@ class AddMedia(tk.Frame):
         self.box2R.set(web_doc[5])
         self.box3R.set(web_doc[6])
         self.box4R.set(web_doc[7])
-        self.media_buttons.set('?')
-        # self.document_id = self.document_id[0]
+
+        media = web_doc[8].strip()
+
+        if media == self.media_choice1.strip():
+            self.media_buttons.set(1)
+        elif media == self.media_choice2.strip():
+            self.media_buttons.set(2)
+        elif media == self.media_choice3.strip():
+            self.media_buttons.set(3)
 
         return self.document_id
 
@@ -1255,34 +1278,36 @@ class AddMedia(tk.Frame):
 
     def update(self):
         media_name = self.get_media_name()
+        print('Media name = ', media_name)
+
         mediaID = data.get_resource_medium_id(media_name)
+        print('Media ID = ', mediaID)
 
         data.update_media(self.document_id, self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(),
                           self.box1R.get(), self.box2R.get(), self.box3R.get(), self.box4R.get(), mediaID)
 
-        # self.clear_projects()
-        # self.show_updated_project()
+        self.clear_resource()
+        self.show_updated_resource()
         self.update_entry_widgets()
 
 
-    def clear_projects(self):
-        for i in self.project_list.get_children():
-            self.project_list.delete(i)
-        pass
+    def clear_resource(self):
+        for i in self.webdocs_list.get_children():
+            self.webdocs_list.delete(i)
 
-    def show_updated_project(self):
-        project = data.get_project(self.project_id)
-        self.treeview_projects.insert('', 'end', values=project)
-        pass
+    def show_updated_resource(self):
+        resource = data.get_website(self.document_id)
+        self.treeview_docs.insert('', 'end', values=resource)
 
 
-    def list_projects(self):
-        self.clear_projects()
-        projects_list = data.list_projects()
 
-        for item in projects_list:
-            self.treeview_projects.insert('', 'end', values=item)
-        pass
+    def list_resource(self):
+        self.clear_resource()
+        resource_list = data.list_websites()
+
+        for item in resource_list:
+            self.treeview_docs.insert('', 'end', values=item)
+
 
     def delete(self):
 
@@ -1294,6 +1319,8 @@ class AddMedia(tk.Frame):
                 tkMessageBox.showinfo('Deleted', "Project deleted.")
                 #self.update_widgets()
                 #self.clear_projects()
+            else:
+                print("Not deleted")
 
 class AddCourse(AddMedia):
     def __init__(self, parent, controller):

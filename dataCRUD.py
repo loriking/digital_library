@@ -218,8 +218,8 @@ def delete_publisher(publisher_entry):
 
 # RESOURCE medium CRUD
 def add_resource_medium(medium_entry):
-    medium = medium_entry.title()
-    c.execute("INSERT OR IGNORE INTO resource_medium(medium) VALUES(?)", (medium,))
+    # medium = medium_entry.title()
+    c.execute("INSERT OR IGNORE INTO resource_medium(medium) VALUES(?)", (medium_entry,))
     db.commit()
 
 
@@ -1070,9 +1070,9 @@ def get_image(imageID):
     return c.fetchall()
 
 def get_website(websiteID):
-
+# DOESNT GET MEDIA MUST CHANGE
     c.execute('''SELECT websites.title, authors.name, websites.creation_date, subjects.subject, 
-                publishers.publisher, websites.url, websites.access_date, websites.notes
+                publishers.publisher, websites.url, websites.access_date, websites.notes,  resource_medium.medium
                     FROM websites JOIN resource_medium JOIN authors JOIN resource_author 
                     JOIN publishers JOIN subjects
                     ON websites.website_nameID = publishers.ID
@@ -1092,8 +1092,8 @@ def update_media(websiteID = None, title=None, author=None, creation_date=None, 
     add_publisher(website_name)
     website_nameID = get_publisher_id(website_name)
 
-    add_resource_medium(medium)
-    mediaID = get_resource_medium_id(medium)
+    # add_resource_medium(medium)
+    # mediaID = get_resource_medium_id(medium)
 
     c.execute('''UPDATE websites SET title = ?, creation_date = ?, website_nameID = ?, url = ?,
                     access_date = ?, notes = ?, mediaID = ?, subjectID = ? 
@@ -1104,7 +1104,7 @@ def update_media(websiteID = None, title=None, author=None, creation_date=None, 
     add_author(author)
     authorID = get_author_id(author)
 
-    change_resource_author(authorID, mediaID, websiteID)
+    # change_resource_author(authorID, mediaID, websiteID)
 
 
 """
