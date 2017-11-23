@@ -25,7 +25,7 @@ def get_level_id(level):
 
 def list_levels():
 
-    c.execute('''SELECT level FROM levels ORDER BY level''')
+    c.execute('''SELECT level FROM levels''')
     results = [i[0] for i in c.fetchall()]
     return results
 
@@ -233,8 +233,8 @@ def list_resource_medium():
 
 def get_resource_medium_id(medium_entry):
     """ Returns the ID (PK) of a given resource medium"""
-
-    medium_entry = medium_entry.title()
+    #
+    # medium_entry = medium_entry.title()
 
     c.execute('''SELECT ID FROM resource_medium WHERE medium = ? ''', (medium_entry,))
     return c.fetchone()[0]
@@ -348,8 +348,6 @@ def add_text(title, author, year, pages, level, publisher, language, subject, me
     subjectID = get_subject_id(subject)
     print('Subject ID =', subjectID)
 
-    add_resource_medium(medium)
-    medium = medium.title()
     mediaID = get_resource_medium_id(medium)
     print('Text media ID = ', mediaID)
 

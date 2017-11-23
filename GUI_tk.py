@@ -281,7 +281,8 @@ class AddText(tk.Frame):
         self.level_label.grid(column=0, row=0, padx=10, sticky=tk.W)
         self.level_entry.grid(column=1, row=0, padx=5, sticky=tk.W)
 
-        self.text_type_label = tk.Label(middleleftframe, text='Text type:')
+        self.text_type_label = tk.Label(middleleftframe, text='Select text type:')
+
         self.text_type1 = tk.Radiobutton(middleleftframe, text='Book', variable=self.text_type, value=1)
         self.text_type2= tk.Radiobutton(middleleftframe, text='Short story', variable=self.text_type,
                                         value=2)
@@ -379,8 +380,8 @@ class AddText(tk.Frame):
             media_name = 'Book'
         elif self.text_type.get() == 2:
             media_name = 'Short story'
-        else:
-            media_name = 'Other'
+        elif self.text_type.get() == 3:
+            media_name = 'Other text'
         return media_name
 
 
@@ -457,7 +458,6 @@ class AddText(tk.Frame):
             self.thelanguage = self.language.get()
 
         ### NEED TO DELETE resource_author file if going to change data
-
 
         data.update_text(self.text_id, self.title.get(), self.author.get(), self.year.get(),
                           self.pages.get(), self.level.get(), self.thepublisher,
