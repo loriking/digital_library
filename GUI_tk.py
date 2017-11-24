@@ -22,7 +22,7 @@ class ProjectLibrary(tk.Tk):
             self.frames[F] = frame
             frame.grid(row = 0, column = 0, sticky ='nsew')
 
-        self.show_frame(AddMedia)
+        self.show_frame(AddCourse)
         
     def show_frame(self, cont):
         frame = self.frames[cont]
@@ -975,9 +975,6 @@ class AddMedia(tk.Frame):
         self.media_buttons = tk.IntVar()
         self.media_buttons.set('?')
 
-        # self.treeview_docs = None
-        # self.webdocs_list = None
-
         self.document_id = tk.IntVar() # For id of resource
 
         # Frames
@@ -1216,6 +1213,10 @@ class AddMedia(tk.Frame):
         self.list_resources(search_table)
         self.update_entry_widgets()
 
+    def get_current_data(self):
+        current_data = data.list_websites()
+        return current_data
+
     def update_entry_widgets(self):
 
         self.title_entry.delete(0, 'end')
@@ -1230,9 +1231,9 @@ class AddMedia(tk.Frame):
 
         self.media_buttons.set('?')
 
-        new_data = data.list_websites()
+        current_data = self.get_current_data()
 
-        self.list_resources(new_data)
+        self.list_resources(current_data)
 
 
 #################################
@@ -1272,9 +1273,6 @@ class AddMedia(tk.Frame):
             self.media_buttons.set(3)
 
         return self.document_id
-
-#update_media(websiteID = None, title=None, author=None, creation_date=None, subject=None, website_name=None,
-                 # url=None, access_date=None,notes=None, medium=None):
 
     def update(self):
         media_name = self.get_media_name()
@@ -1329,13 +1327,14 @@ class AddCourse(AddMedia):
         self.level = tk.StringVar()
         self.level_options = data.list_levels()
         self.level.set('Select one')
+        self.document_id = None
 
         self.table = data.list_courses()
 
         self.level_label = tk.Label(self.center_frame, text='Level:')
         self.level_entry = tk.OptionMenu(self.center_frame, self.level,
                                             *self.level_options)
-        self.level_entry.configure(width=8)
+        self.level_entry.configure(width=15)
         self.level_label.grid(column=0, row=0, sticky=tk.W)
         self.level_entry.grid(column=1, row=0, padx=2, sticky=tk.W)
 
@@ -1369,9 +1368,9 @@ class AddCourse(AddMedia):
         AddMedia.c5 = 'Platform'
         AddMedia.c6 = 'Comments'
 
-        AddMedia.media_choice1 = 'Recordings'
-        AddMedia.media_choice2 = 'Web based'
-        AddMedia.media_choice3 = 'Blended Classroom'
+        AddMedia.media_choice1 = 'Audio only class'
+        AddMedia.media_choice2 = 'Web based class'
+        AddMedia.media_choice3 = 'Blended Class'
 
 
         return AddMedia.c1, AddMedia.c2, AddMedia.c3, AddMedia.c4, AddMedia.c5, AddMedia.c6, AddMedia.window_header, \
@@ -1380,24 +1379,89 @@ class AddCourse(AddMedia):
 
     def get_media_name(self):
         if self.media_buttons.get() == 1:
-            media_name = 'Recordings'
+            media_name = 'Audio only class'
         elif self.media_buttons.get() == 2:
-            media_name = 'Web based'
-        else:
-            media_name = 'Blended'
+            media_name = 'Web based class'
+        elif self.media_buttons.get() == 3:
+            media_name = 'Blended Class'
+        print('Media name = ', media_name)
         return media_name
+
+    def get_current_data(self):
+        current_data = data.list_courses()
+        return current_data
+
+    def select_document(self, event):
+        self.media_buttons.set('?')
+        item = self.webdocs_list.focus()
+
+        document = self.treeview_docs.item(item)
+
+        document_name = document['values'][0]
+
+        print('Document: ', document)
+        print('Doc name: ', document_name)
+
+        self.document_id = data.get_course_id(document_name)
+        print('course_id = ', self.document_id)
+
+        course = data.get_course_info(self.document_id)
+        print(course)
+
+        self.box1L.set(course[0])
+        self.box2L.set(course[1])
+        self.box3L.set(course[2])
+        self.box4L.set(course[3])
+        self.box1R.set(course[4])
+        self.box2R.set(course[5])
+        self.box3R.set(course[6])
+        self.box4R.set(course[7])
+
+        media = course[8].strip()
+        print(media)
+
+        if media == 'Audio only class':
+            self.media_buttons.set(1)
+        elif media == 'Web based class':
+            self.media_buttons.set(2)
+        elif media == 'Blended Class':
+            self.media_buttons.set(3)
+
+        return self.document_id
 
     def save_data(self):
         media_name = self.get_media_name()
-
+        print('Media name = ', media_name)
+            # add_course(title, instructor, start_date, duration, url, comments, level, platform, media, subject)
         data.add_course(self.box1L.get(), self.box2L.get(), self.box3L.get(),
                         self.box3R.get(), self.box2R.get(), self.box4R.get(),
-                        self.level.get(), self.box1R.get(), self.box4L.get(),
-                        media_name)
+                        self.level.get(), self.box1R.get(), media_name,
+                        self.box4L.get())
+
+        # search_table = data.list_courses()
+        #
+        # self.list_resources(search_table)
+        # self.update_entry_widgets()
+
+    # data.update_course(courseID = None, title= None, instructor= None, start_date= None, duration= None,
+    #                   url= None, comments= None, level= None, platform= None, media= None, subject= None)
+
+    def update(self):
+
+        media_name = self.get_media_name()
+        print('Media name = ', media_name)
+
+        data.update_course(self.document_id, self.box1L.get(), self.box2L.get(), self.box3L.get(),
+                        self.box3R.get(), self.box2R.get(), self.box4R.get(),
+                        self.level.get(), self.box1R.get(), media_name,
+                        self.box4L.get())
+
         search_table = data.list_courses()
 
         self.list_resources(search_table)
         self.update_entry_widgets()
+
+
 
 class AddAudioVideo(AddMedia):
     def __init__(self, parent, controller):
