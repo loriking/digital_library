@@ -88,7 +88,7 @@ def make_db():
         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
         title TEXT NOT NULL,
         start_date INTEGER NOT NULL,
-        duration_hours TEXT,
+        duration_weeks TEXT,
         url TEXT,
         comments TEXT,
         levelID INTEGER REFERENCES levels(ID),
@@ -158,9 +158,16 @@ def make_db():
 
 
     default_languages = ['English']
-    default_levels = ['Absolute Beginner', 'Beginner']
+    default_levels = ['Absolute Beginner', 'Beginner', 'Advanced Beginner', 'Low Intermediate', 'Intermediate',
+                      'Low Advanced', 'Advanced', 'Professional']
     default_project_type = ['Python App']
     default_publisher = ['Unpublished']
+    default_media_types = ['Music or Sound', 'Podcast', 'Video',
+                           'Book', 'Short story', 'Other text',
+                           'Audio only class', 'Web based class', 'Blended Class',
+                           'Photo', 'Clip art','Sprite',
+                           'Interactive Fiction', 'Video game', 'Other interactive',
+                           'Web documentation', 'Q&A Site', 'Other web type']
 
     for i in default_languages:
         c.execute('INSERT OR IGNORE INTO languages(language) VALUES(?)', (i,))
@@ -170,6 +177,9 @@ def make_db():
         c.execute('INSERT OR IGNORE INTO project_category(category) VALUES(?)', (i,))
     for i in default_publisher:
         c.execute('INSERT OR IGNORE INTO publishers(publisher) VALUES(?)', (i,))
+    for i in default_media_types:
+        c.execute('INSERT OR IGNORE INTO resource_medium(medium) VALUES(?)', (i,))
+
 
     db.commit()
     db.close()
