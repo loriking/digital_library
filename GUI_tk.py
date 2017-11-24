@@ -22,7 +22,7 @@ class ProjectLibrary(tk.Tk):
             self.frames[F] = frame
             frame.grid(row = 0, column = 0, sticky ='nsew')
 
-        self.show_frame(AddCourse)
+        self.show_frame(AddText)
         
     def show_frame(self, cont):
         frame = self.frames[cont]
@@ -189,6 +189,10 @@ class AddText(tk.Frame):
         self.level_options = data.list_levels()
         self.level.set('Select')
 
+        self.text_id = None
+        self.current_author = ''
+        self.current_media = ''
+
         # Top left frame
 
         self.title_label=tk.Label(topleftframe, text='Title')
@@ -265,7 +269,7 @@ class AddText(tk.Frame):
         self.add_lang_flag.grid(column=2, row=4, sticky=tk.W)
         self.add_language_entry.grid(column=3, row=4, sticky=tk.N+tk.E)
 
-        self.updateextresource = tk.Button(middlerightframe, text='Update', command=lambda: self.save_text())
+        self.updateextresource = tk.Button(middlerightframe, text='Update', command=lambda: self.update_text())
         self.updateextresource.config(width=12, cursor='hand2')#
         self.updateextresource.grid(column=3, row=0, padx=2, sticky=tk.W)
 
@@ -287,6 +291,7 @@ class AddText(tk.Frame):
         self.text_type2= tk.Radiobutton(middleleftframe, text='Short story', variable=self.text_type,
                                         value=2)
         self.text_type3= tk.Radiobutton(middleleftframe, text='Other text type', variable=self.text_type, value=3)
+
         self.text_type_label.grid(column=0, row=0, sticky=tk.W)
         self.text_type1.grid(column=1, row = 0, sticky= tk.W)
         self.text_type2.grid(column=2, row=0, sticky=tk.W)
@@ -416,6 +421,9 @@ class AddText(tk.Frame):
 
         text_info = data.get_full_text(self.text_id)
 
+        self.current_author = text_info[0][1]
+        self.current_media = text_info[0][8]
+
         self.title.set(text_info[0][0])
         self.author.set(text_info[0][1])
         self.year.set(text_info[0][2])
@@ -440,12 +448,32 @@ class AddText(tk.Frame):
 
         print(self.text_id)
 
-        return self.text_id
+        return self.text_id, self.current_author, self.current_media
 
     def update_text(self):
         # update_text(textID, title, author, year, pages, level, publisher, language, subject, medium, notes):
-
         media_name = self.get_media_name()
+        print("New media =", media_name)
+        author_name = self.author.get()
+        print('New name', author_name)
+        print('Details: ', self.text_id, self.current_media, self.current_author)
+
+
+        if media_name != self.current_media or author_name != self.current_author:
+            print('Difference found')
+            data. delete_resource_author(self.text_id, self.current_author, self.current_media)
+
+            print('Deleted resource author for ID', self.text_id)
+
+            data.add_author(author_name)
+
+            author_id = data.get_author_id(author_name)
+
+            media_id = data.get_resource_medium_id(media_name)
+            print('MediaID =', media_id)
+
+            data.add_resource_author(self.text_id, author_id, media_id)
+
 
         if self.new_pub_flag.get() == 1:
             self.thepublisher = self.new_pub.get()
@@ -457,17 +485,16 @@ class AddText(tk.Frame):
         else:
             self.thelanguage = self.language.get()
 
-        ### NEED TO DELETE resource_author file if going to change data
-
-        data.update_text(self.text_id, self.title.get(), self.author.get(), self.year.get(),
+        data.update_text(self.text_id, self.title.get(), self.year.get(),
                           self.pages.get(), self.level.get(), self.thepublisher,
                           self.thelanguage, self.subject.get(), media_name, self.notes.get() )
 
-        print(self.text_id, self.title.get(), self.author.get(), self.year.get(),
-                          self.pages.get(), self.level.get(), self.thepublisher,
-                          self.thelanguage, self.subject.get(), media_name, self.notes.get())
+        # print(self.text_id, self.title.get(), self.author.get(), self.year.get(),
+        #                   self.pages.get(), self.level.get(), self.thepublisher,
+        #                   self.thelanguage, self.subject.get(), media_name, self.notes.get())
 
 
+        self.update_entry_widgets()
         self.clear_texts()
         self.show_updated_resources()
 
@@ -976,6 +1003,8 @@ class AddMedia(tk.Frame):
         self.media_buttons.set('?')
 
         self.document_id = tk.IntVar() # For id of resource
+        self.current_author = ''
+        self.current_media = ''
 
         # Frames
 
@@ -1328,6 +1357,8 @@ class AddCourse(AddMedia):
         self.level_options = data.list_levels()
         self.level.set('Select one')
         self.document_id = None
+        self.current_author = ''
+        self.current_media = ''
 
         self.table = data.list_courses()
 
@@ -1408,6 +1439,11 @@ class AddCourse(AddMedia):
         course = data.get_course_info(self.document_id)
         print(course)
 
+        self.current_author = course[1]
+        self.current_media = course[8]
+        print('Author =', self.current_author)
+        print('Current media= ', self.current_media)
+
         self.box1L.set(course[0])
         self.box2L.set(course[1])
         self.box3L.set(course[2])
@@ -1427,11 +1463,12 @@ class AddCourse(AddMedia):
         elif media == 'Blended Class':
             self.media_buttons.set(3)
 
-        return self.document_id
+        return self.document_id, self.current_author, self.current_media
 
     def save_data(self):
         media_name = self.get_media_name()
         print('Media name = ', media_name)
+
             # add_course(title, instructor, start_date, duration, url, comments, level, platform, media, subject)
         data.add_course(self.box1L.get(), self.box2L.get(), self.box3L.get(),
                         self.box3R.get(), self.box2R.get(), self.box4R.get(),
@@ -1443,18 +1480,38 @@ class AddCourse(AddMedia):
         # self.list_resources(search_table)
         # self.update_entry_widgets()
 
-    # data.update_course(courseID = None, title= None, instructor= None, start_date= None, duration= None,
-    #                   url= None, comments= None, level= None, platform= None, media= None, subject= None)
-
     def update(self):
 
         media_name = self.get_media_name()
         print('Media name = ', media_name)
 
-        data.update_course(self.document_id, self.box1L.get(), self.box2L.get(), self.box3L.get(),
+        old_author_id = data.get_author_id(self.current_author)
+        print('Old author id= ', old_author_id)
+        old_media_id = data.get_resource_medium_id(self.current_media)
+        print('old media id', old_media_id)
+
+        author_name = self.box2L.get()
+
+        if self.current_author != author_name or self.current_media != media_name:
+            data.delete_resource_author(self.document_id, self.current_author, self.current_media)
+            print('Deleted resource author for ID', self.document_id)
+
+            data.add_author(author_name)
+
+            author_id = data.get_author_id(author_name)
+            print('Author ID', author_id)
+
+            media_id = data.get_resource_medium_id(media_name)
+            print('MediaID =', media_id)
+
+            data.add_resource_author(self.document_id, author_id, media_id)
+
+
+        data.update_course(self.document_id, self.box1L.get(), self.box3L.get(),
                         self.box3R.get(), self.box2R.get(), self.box4R.get(),
                         self.level.get(), self.box1R.get(), media_name,
                         self.box4L.get())
+
 
         search_table = data.list_courses()
 
