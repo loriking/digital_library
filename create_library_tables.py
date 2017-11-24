@@ -167,7 +167,7 @@ def make_db():
                            'Audio only class', 'Web based class', 'Blended Class',
                            'Photo', 'Clip art','Sprite',
                            'Interactive Fiction', 'Video game', 'Other interactive',
-                           'Web documentation', 'Q&A Site', 'Other web type']
+                           'Documentation', 'Q&A Site', 'Website']
 
     for i in default_languages:
         c.execute('INSERT OR IGNORE INTO languages(language) VALUES(?)', (i,))
