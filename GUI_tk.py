@@ -22,7 +22,7 @@ class ProjectLibrary(tk.Tk):
             self.frames[F] = frame
             frame.grid(row = 0, column = 0, sticky ='nsew')
 
-        self.show_frame(AddText)
+        self.show_frame(AddMedia)
         
     def show_frame(self, cont):
         frame = self.frames[cont]
@@ -451,29 +451,17 @@ class AddText(tk.Frame):
         return self.text_id, self.current_author, self.current_media
 
     def update_text(self):
-        # update_text(textID, title, author, year, pages, level, publisher, language, subject, medium, notes):
         media_name = self.get_media_name()
-        print("New media =", media_name)
         author_name = self.author.get()
-        print('New name', author_name)
-        print('Details: ', self.text_id, self.current_media, self.current_author)
-
 
         if media_name != self.current_media or author_name != self.current_author:
-            print('Difference found')
             data. delete_resource_author(self.text_id, self.current_author, self.current_media)
 
-            print('Deleted resource author for ID', self.text_id)
-
             data.add_author(author_name)
-
             author_id = data.get_author_id(author_name)
-
             media_id = data.get_resource_medium_id(media_name)
-            print('MediaID =', media_id)
 
             data.add_resource_author(self.text_id, author_id, media_id)
-
 
         if self.new_pub_flag.get() == 1:
             self.thepublisher = self.new_pub.get()
@@ -488,11 +476,6 @@ class AddText(tk.Frame):
         data.update_text(self.text_id, self.title.get(), self.year.get(),
                           self.pages.get(), self.level.get(), self.thepublisher,
                           self.thelanguage, self.subject.get(), media_name, self.notes.get() )
-
-        # print(self.text_id, self.title.get(), self.author.get(), self.year.get(),
-        #                   self.pages.get(), self.level.get(), self.thepublisher,
-        #                   self.thelanguage, self.subject.get(), media_name, self.notes.get())
-
 
         self.update_entry_widgets()
         self.clear_texts()
@@ -1094,7 +1077,7 @@ class AddMedia(tk.Frame):
         self.c5 = 'Access date'
         self.c6 = 'Subject'
 
-        self.media_choice1 = 'Documention'
+        self.media_choice1 = 'Documentation'
         self.media_choice2 = 'Q&A Site'
         self.media_choice3 = 'Website'
 
@@ -1264,9 +1247,6 @@ class AddMedia(tk.Frame):
 
         self.list_resources(current_data)
 
-
-#################################
-
     def select_document(self, event):
         self.media_buttons.set('?')
         item = self.webdocs_list.focus()
@@ -1278,10 +1258,12 @@ class AddMedia(tk.Frame):
         print(document, document_name)
 
         self.document_id = data.get_website_id(document_name)
+
         print(self.document_id)
 
         web_doc = data.get_website(self.document_id)
-        print(web_doc)
+        self.current_author = web_doc[1]
+        self.current_media = web_doc[8]
 
         self.box1L.set(web_doc[0])
         self.box2L.set(web_doc[1])
@@ -1301,17 +1283,26 @@ class AddMedia(tk.Frame):
         elif media == self.media_choice3.strip():
             self.media_buttons.set(3)
 
-        return self.document_id
+        return self.document_id, self.current_author, self.current_media
 
     def update(self):
         media_name = self.get_media_name()
-        print('Media name = ', media_name)
 
-        mediaID = data.get_resource_medium_id(media_name)
-        print('Media ID = ', mediaID)
+        media_id = data.get_resource_medium_id(media_name)
+
+        author_name = self.box2L.get()
+
+        if self.current_author != author_name or self.current_media != media_name:
+            data.delete_resource_author(self.document_id, self.current_author, self.current_media)
+
+            data.add_author(author_name)
+
+            author_id = data.get_author_id(author_name)
+
+            data.add_resource_author(self.document_id, author_id, media_id)
 
         data.update_media(self.document_id, self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(),
-                          self.box1R.get(), self.box2R.get(), self.box3R.get(), self.box4R.get(), mediaID)
+                          self.box1R.get(), self.box2R.get(), self.box3R.get(), self.box4R.get(), media_id)
 
         self.clear_resource()
         self.show_updated_resource()
