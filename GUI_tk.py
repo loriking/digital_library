@@ -22,7 +22,7 @@ class ProjectLibrary(tk.Tk):
             self.frames[F] = frame
             frame.grid(row = 0, column = 0, sticky ='nsew')
 
-        self.show_frame(AddAudioVideo)
+        self.show_frame(AddMedia)
         
     def show_frame(self, cont):
         frame = self.frames[cont]
@@ -389,6 +389,9 @@ class AddText(tk.Frame):
             media_name = 'Other text'
         return media_name
 
+    def update_windows(self):
+        self.list_resources()
+        self.update_entry_widgets()
 
     def save_text(self):
         media_name = self.get_media_name()
@@ -408,8 +411,7 @@ class AddText(tk.Frame):
                           self.pages.get(), self.level.get(), self.thepublisher,
                           self.thelanguage, self.subject.get(), media_name, self.notes.get())
 
-        self.list_resources()
-        self.update_entry_widgets()
+        self.update_windows()
 
     def select_text(self, event):
         item = self.resource_list.focus()
@@ -491,15 +493,19 @@ class AddText(tk.Frame):
         self.treeview.insert('', 'end', values=text)
 
     def delete_text(self):
-        result = tkMessageBox.askquestion("Delete?", "Delete project?")
+        media_name = self.title.get()
+        message = "Delete " + self.current_media + " '" + media_name + "'?"
+        print(self.current_media, self.current_author)
+
+        result = tkMessageBox.askquestion("Delete?", message)
+
         if result == 'yes':
             if tkMessageBox.askokcancel("Confirm", "Really?\nThis cannot be undone!", icon='warning'):
-                # data.delete_project(self.project_id)
+                # data.delete_text(self.text_id, self.current_author, self.current_media)
                 print("Deleted")
+                self.update_windows()
                 tkMessageBox.showinfo('Deleted', "Project deleted.")
-                # self.update_widgets()
-                # self.clear_projects()
-        pass
+
 
 class LinkResources(tk.Frame):
     def __init__(self, parent, controller):
@@ -1215,15 +1221,19 @@ class AddMedia(tk.Frame):
             media_name = self.media_choice3
         return media_name
 
+    def update_windows(self):
+        search_table = data.list_websites()
+        self.list_resources(search_table)
+        self.update_entry_widgets()
+
     def save_data(self):
         media_name = self.get_media_name()
 
         data.add_website(self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(), self.box1R.get(),
                               self.box2R.get(), self.box3R.get(), self.box4R.get(), media_name)
-        search_table = data.list_websites()
 
-        self.list_resources(search_table)
-        self.update_entry_widgets()
+        self.update_windows()
+
 
     def get_current_data(self):
         current_data = data.list_websites()
@@ -1309,8 +1319,6 @@ class AddMedia(tk.Frame):
         self.list_resources(search_table)
         self.update_entry_widgets()
 
-
-
     def clear_resource(self):
         for i in self.webdocs_list.get_children():
             self.webdocs_list.delete(i)
@@ -1327,15 +1335,17 @@ class AddMedia(tk.Frame):
             self.treeview_docs.insert('', 'end', values=item)
 
     def delete(self):
+        media_name = self.box1L.get()
+        message1 = "Delete " + self.current_media + " '" + media_name + "'?"
+        message2 = "'" + media_name + "' deleted."
 
-        result = tkMessageBox.askquestion("Delete?", "Delete project?")
+        result = tkMessageBox.askquestion("Delete?", message1)
         if result == 'yes':
             if tkMessageBox.askokcancel("Confirm", "Really?\nThis cannot be undone!", icon='warning'):
-                #data.delete_project(self.project_id)
-                print("Deleted")
-                tkMessageBox.showinfo('Deleted', "Project deleted.")
-                #self.update_widgets()
-                #self.clear_projects()
+                data.delete_website(self.document_id, self.current_author, self.current_media)
+                self.update_windows()
+                tkMessageBox.showinfo('Deleted', message2)
+
             else:
                 print("Not deleted")
 
@@ -1457,6 +1467,12 @@ class AddCourse(AddMedia):
 
         return self.document_id, self.current_author, self.current_media
 
+    def update_windows(self):
+
+        search_table = data.list_courses()
+        self.list_resources(search_table)
+        self.update_entry_widgets()
+
     def save_data(self):
         media_name = self.get_media_name()
         print('Media name = ', media_name)
@@ -1466,6 +1482,8 @@ class AddCourse(AddMedia):
                         self.box3R.get(), self.box2R.get(), self.box4R.get(),
                         self.level.get(), self.box1R.get(), media_name,
                         self.box4L.get())
+
+        self.update_windows()
 
         # search_table = data.list_courses()
         #
@@ -1504,11 +1522,27 @@ class AddCourse(AddMedia):
                         self.level.get(), self.box1R.get(), media_name,
                         self.box4L.get())
 
+        self.update_windows()
 
-        search_table = data.list_courses()
+        # search_table = data.list_courses()
+        #
+        # self.list_resources(search_table)
+        # self.update_entry_widgets()
 
-        self.list_resources(search_table)
-        self.update_entry_widgets()
+    def delete(self):
+        media_name = self.box1L.get()
+        message1 = "Delete " + self.current_media + " '" + media_name + "'?"
+        message2 = "'" + media_name + "' deleted."
+
+        result = tkMessageBox.askquestion("Delete?", message1)
+        if result == 'yes':
+            if tkMessageBox.askokcancel("Confirm", "Really?\nThis cannot be undone!", icon='warning'):
+                data.delete_course(self.document_id, self.current_author, self.current_media)
+                self.update_windows()
+                tkMessageBox.showinfo('Deleted', message2)
+
+            else:
+                print("Not deleted")
 
 class AddAudioVideo(AddMedia):
     def __init__(self, parent, controller):
@@ -1678,23 +1712,19 @@ class AddAudioVideo(AddMedia):
 
     def delete(self):
         media_name = self.box1L.get()
-        print(media_name)
-        print(self.current_author)
-        print(self.current_media)
-        message = 'Delete "' + media_name + '"?'
 
-        result = tkMessageBox.askquestion("Delete?", message)
+        message1 = "Delete " + self.current_media + " '" + media_name + "'?"
+        message2 = "'" + media_name + "' deleted."
+
+        result = tkMessageBox.askquestion("Delete?", message1)
         if result == 'yes':
             if tkMessageBox.askokcancel("Confirm", "Really?\nThis cannot be undone!", icon='warning'):
                 data.delete_av(self.document_id, self.current_author, self.current_media)
-                print("Deleted")
-                tkMessageBox.showinfo('Deleted', "Item deleted.")
                 self.update_windows()
-                #self.clear_projects()
+                tkMessageBox.showinfo('Deleted', message2)
+
             else:
                 print("Not deleted")
-
-
 
 class AddInteractiveMedia(AddMedia):
     def __init__(self, parent, controller):
@@ -1749,6 +1779,11 @@ class AddInteractiveMedia(AddMedia):
             media_name = 'Other interactive'
         return media_name
 
+    def update_windows(self):
+        search_table = data.list_interactive()
+        self.list_resources(search_table)
+        self.update_entry_widgets()
+
     def save_data(self):
         media_name = self.get_media_name()
 
@@ -1756,10 +1791,7 @@ class AddInteractiveMedia(AddMedia):
                                    self.box1R.get(), self.box3R.get(), self.box4R.get(),
                                    self.box2R.get(), media_name, self.box4L.get())
 
-        search_table = data.list_interactive()
-        self.list_resources(search_table)
-
-        self.update_entry_widgets()
+        self.update_windows()
 
     def select_document(self, event):
         item = self.webdocs_list.focus()
@@ -1831,10 +1863,22 @@ class AddInteractiveMedia(AddMedia):
         data.update_interactive(self.document_id, self.box1L.get(), self.box3L.get(), self.box1R.get(),
                                 self.box3R.get(), self.box4R.get(), self.box1R.get(), media_id, self.box4L.get())
 
-        search_table = data.list_interactive()
+        self.update_windows()
 
-        self.list_resources(search_table)
-        self.update_entry_widgets()
+    def delete(self):
+        media_name = self.box1L.get()
+        message1 = "Delete " + self.current_media + " '" + media_name + "'?"
+        message2 = "'" + media_name + "' deleted."
+
+        result = tkMessageBox.askquestion("Delete?", message1)
+        if result == 'yes':
+            if tkMessageBox.askokcancel("Confirm", "Really?\nThis cannot be undone!", icon='warning'):
+                data.delete_interactive(self.document_id, self.current_author, self.current_media)
+                self.update_windows()
+                tkMessageBox.showinfo('Deleted', message2)
+
+            else:
+                print("Not deleted")
 
 class AddImages(AddMedia):
     def __init__(self, parent, controller):
@@ -1890,6 +1934,12 @@ class AddImages(AddMedia):
             media_name = 'Sprite'
         return media_name
 
+    def update_windows(self):
+        search_table = data.list_images()
+
+        self.update_entry_widgets()
+        self.list_resources(search_table)
+
     def save_data(self):
         media_name = self.get_media_name()
 
@@ -1897,10 +1947,7 @@ class AddImages(AddMedia):
                         self.box4L.get(), self.box2R.get(), self.box1R.get(),
                         self.box3R.get(), self.box4R.get(), media_name)
 
-        search_table = data.list_images()
-        print(search_table)
-        self.list_resources(search_table)
-        self.update_entry_widgets()
+        self.update_windows()
 
     def select_document(self, event):
         item = self.webdocs_list.focus()
@@ -1973,10 +2020,22 @@ class AddImages(AddMedia):
                         self.box4L.get(), self.box2R.get(), self.box1R.get(),
                         self.box3R.get(), self.box4R.get(), media_name)
 
-        search_table = data.list_images()
+        self.update_windows()
 
-        self.list_resources(search_table)
-        self.update_entry_widgets()
+    def delete(self):
+        media_name = self.box1L.get()
+        message1 = "Delete " + self.current_media + " '" + media_name + "'?"
+        message2 = "'" + media_name + "' deleted."
+
+        result = tkMessageBox.askquestion("Delete?", message1)
+        if result == 'yes':
+            if tkMessageBox.askokcancel("Confirm", "Really?\nThis cannot be undone!", icon='warning'):
+                data.delete_image(self.document_id, self.current_author, self.current_media)
+                self.update_windows()
+                tkMessageBox.showinfo('Deleted', message2)
+
+            else:
+                print("Not deleted")
 
 class SearchResource(tk.Frame):
     def __init__(self, parent, controller):

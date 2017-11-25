@@ -421,8 +421,10 @@ def resources_by_type(media_type):
                 WHERE texts.mediaID = ?''', (media_type,))
     return c.fetchall()
 
-def delete_text(resource_id):
+def delete_text(resource_id, author, media):
     c.execute('''DELETE FROM texts WHERE texts.ID = ?''', (resource_id,))
+
+    delete_resource_author(resource_id, author, media)
     db.commit()
 
 # Web doc
@@ -485,8 +487,10 @@ def list_websites():
 def link_website():
     pass
 
-def delete_website(resource_id):
+def delete_website(resource_id, author, media):
     c.execute('''DELETE FROM websites WHERE websites.ID = ?''', (resource_id,))
+
+    delete_resource_author(resource_id, author, media)
     db.commit()
 
 # audio/video
@@ -683,8 +687,10 @@ def update_course(courseID = None, title= None, start_date= None, duration= None
 
     db.commit()
 
-def delete_course(resource_id):
-    c.execute('''DELETE FROM courses WHERE course.ID = ?''', (resource_id,))
+def delete_course(resource_id, author, media):
+    c.execute('''DELETE FROM courses WHERE courses.ID = ?''', (resource_id,))
+
+    delete_resource_author(resource_id, author, media)
     db.commit()
 
 # interactive media
@@ -771,8 +777,10 @@ def update_interactive(interactiveID, title, year, platform, version, comments, 
 
     db.commit()
 
-def delete_interactive(resource_id):
+def delete_interactive(resource_id, author, media):
     c.execute('''DELETE FROM interactive_media WHERE interactive_media.ID = ?''', (resource_id,))
+
+    delete_resource_author(resource_id, author, media)
     db.commit()
 
 # images
@@ -831,8 +839,10 @@ def update_image(resource_id, title, date, copywrite, website, dimensions, url, 
               (title, date, copywrite, website, dimensions, url, comments, imagetypeID, resource_id))
     db.commit()
 
-def delete_image(resource_id):
+def delete_image(resource_id, author, media):
     c.execute('''DELETE FROM images WHERE images.ID = ?''', (resource_id,))
+
+    delete_resource_author(resource_id, author, media)
     db.commit()
 
 # PROJECT Category CRUD
