@@ -1851,7 +1851,7 @@ class AddImages(AddMedia):
         AddMedia.c5 = 'Date'
         AddMedia.c6 = 'Comments'
         AddMedia.media_choice1 = 'Photo'
-        AddMedia.media_choice2 = 'Clipart'
+        AddMedia.media_choice2 = 'Clip art'
         AddMedia.media_choice3 = 'Sprite'
 
         return AddMedia.c1, AddMedia.c2, AddMedia.c3, AddMedia.c4, AddMedia.c5, AddMedia.c6, AddMedia.window_header, \
@@ -1863,7 +1863,7 @@ class AddImages(AddMedia):
         if self.media_buttons.get() == 1:
             media_name = 'Photo'
         elif self.media_buttons.get() == 2:
-            media_name = 'Clipart'
+            media_name = 'Clip art'
         else:
             media_name = 'Sprite'
         return media_name
@@ -1893,29 +1893,28 @@ class AddImages(AddMedia):
         self.document_id = data.get_image_id(document_name)
         print('Doc_id = ', self.document_id)
 
-        av = data.get_image_info(self.document_id)
-        print(av)
+        image = data.get_image_info(self.document_id)
+        print(image)
 
-        self.current_author = av[1]
-        self.current_media = av[9]
+        self.current_author = image[1]
+        self.current_media = image[8]
         print('Author =', self.current_author)
         print('Current media= ', self.current_media)
 
-        self.box1L.set(av[0])
-        self.box2L.set(av[1])
-        self.box3L.set(av[2])
-        self.box4L.set(av[3])
-        self.box1R.set(av[4])
-        self.box2R.set(av[5])
-        self.box3R.set(av[6])
-        self.box4R.set(av[7])
+        self.box1L.set(image[0])
+        self.box2L.set(image[1])
+        self.box3L.set(image[2])
+        self.box4L.set(image[3])
+        self.box1R.set(image[4])
+        self.box2R.set(image[5])
+        self.box3R.set(image[6])
+        self.box4R.set(image[7])
 
-
-        if self.current_media == 'Music or Sound':
+        if self.current_media == 'Photo':
             self.media_buttons.set(1)
-        elif self.current_media == 'Podcast':
+        elif self.current_media == 'Clip art':
             self.media_buttons.set(2)
-        elif self.current_media == 'Video':
+        elif self.current_media == 'Sprite':
             self.media_buttons.set(3)
 
         return self.document_id, self.current_author, self.current_media
@@ -1948,13 +1947,11 @@ class AddImages(AddMedia):
 
             data.add_resource_author(self.document_id, author_id, media_id)
 
-        # update_av(av_id, title, duration,  year, program, url, language, media, subject, publisher)
-        data.update_av(self.document_id, self.box1L.get(), self.box3L.get(),
-                        self.box2R.get(), self.box3R.get(), self.box4R.get(),
-                        self.language.get(), media_id, self.box4L.get(),
-                        self.box1R.get())
+        data.update_image(self.document_id, self.box1L.get(),  self.box3L.get(),
+                        self.box4L.get(), self.box2R.get(), self.box1R.get(),
+                        self.box3R.get(), self.box4R.get(), media_name)
 
-        search_table = data.list_av()
+        search_table = data.list_images()
 
         self.list_resources(search_table)
         self.update_entry_widgets()

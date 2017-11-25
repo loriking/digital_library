@@ -828,8 +828,25 @@ def list_images():
                     AND images.imagetypeID = resource_medium.ID''')
     return c.fetchall()
 
-def get_image_info():
-    pass
+def get_image_info(resource_id):
+    c.execute('''SELECT title, authors.name, date, copywrite, dimensions, website_name, url, 
+                    comments, resource_medium.medium 
+                FROM images JOIN authors JOIN resource_author JOIN resource_medium
+                ON images.ID = resource_author.resourceID 
+                AND authors.ID = resource_author.authorID
+                AND images.imagetypeID = resource_medium.ID
+                AND images.imagetypeID = resource_author.mediaID
+                WHERE images.ID = ?''', (resource_id,))
+    return c.fetchone()
+
+def update_image(resource_id, title, date, copywrite, website, dimensions, url, comments, image_type):
+    imagetypeID = get_resource_medium_id(image_type)
+
+    c.execute('''UPDATE images SET title = ?, date  = ?, copywrite = ?, website_name = ?, dimensions = ?, 
+                    url = ?, comments = ?, imagetypeID = ? WHERE images.ID  = ?''',
+              (title, date, copywrite, website, dimensions, url, comments, imagetypeID, resource_id))
+    db.commit()
+
 # PROJECT Category CRUD
 
 def add_project_category(project_category):
