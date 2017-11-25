@@ -22,7 +22,7 @@ class ProjectLibrary(tk.Tk):
             self.frames[F] = frame
             frame.grid(row = 0, column = 0, sticky ='nsew')
 
-        self.show_frame(AddInteractiveMedia)
+        self.show_frame(AddAudioVideo)
         
     def show_frame(self, cont):
         frame = self.frames[cont]
@@ -1040,8 +1040,8 @@ class AddMedia(tk.Frame):
         self.update_resource.config(cursor='hand2')
         self.update_resource.grid(column=5, row=0, padx=10, sticky=tk.E)
 
-        self.delete_resource = tk.Button(self.bottomright, text='Delete', bg='red',width=15)  # ,
-        # command=lambda: self.delete())
+        self.delete_resource = tk.Button(self.bottomright, text='Delete', bg='red',width=15,
+                                         command=lambda: self.delete())
         self.delete_resource.config(cursor='hand2')
         self.delete_resource.grid(column=6, row=1, sticky=tk.W)
 
@@ -1578,6 +1578,11 @@ class AddAudioVideo(AddMedia):
             media_name = 'Video'
         return media_name
 
+    def update_windows(self):
+        search_table = data.list_av()
+
+        self.update_entry_widgets()
+        self.list_resources(search_table)
 
     def save_data(self):
         media_name = self.get_media_name()
@@ -1587,10 +1592,7 @@ class AddAudioVideo(AddMedia):
                              self.language.get(), media_name, self.box4L.get(),
                              self.box1R.get())
 
-        search_table = data.list_av()
-
-        self.update_entry_widgets()
-        self.list_resources(search_table)
+        self.update_windows()
 
     def select_document(self, event):
         self.media_buttons.set('?')
@@ -1672,6 +1674,26 @@ class AddAudioVideo(AddMedia):
 
         self.list_resources(search_table)
         self.update_entry_widgets()
+
+
+    def delete(self):
+        media_name = self.box1L.get()
+        print(media_name)
+        print(self.current_author)
+        print(self.current_media)
+        message = 'Delete "' + media_name + '"?'
+
+        result = tkMessageBox.askquestion("Delete?", message)
+        if result == 'yes':
+            if tkMessageBox.askokcancel("Confirm", "Really?\nThis cannot be undone!", icon='warning'):
+                data.delete_av(self.document_id, self.current_author, self.current_media)
+                print("Deleted")
+                tkMessageBox.showinfo('Deleted', "Item deleted.")
+                self.update_windows()
+                #self.clear_projects()
+            else:
+                print("Not deleted")
+
 
 
 class AddInteractiveMedia(AddMedia):
