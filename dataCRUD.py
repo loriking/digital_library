@@ -281,11 +281,6 @@ def change_resource_media(authorID, mediaID, resourceID):
               (authorID, mediaID, resourceID))
     db.commit()
 
-def delete_resource_author(resourceID, authorID, mediaID):
-    c.execute('''DELETE resource_author WHERE resourceID = ? AND authorID = ? AND mediaID = ?''',
-              (resourceID,authorID, mediaID))
-    db.commit()
-
 # subject CRUD FUNCTIONS
 
 def add_subject(subject_entry):
@@ -547,6 +542,23 @@ def get_av_mediaID(resourceID):
     c.execute('''SELECT mediaID FROM audio_video WHERE audio_video.ID = ?''', (resourceID,))
     return c.fetchone()[0]
 
+def get_av_info(resourceID):
+    c.execute('''SELECT title, authors.name, duration_mins, subjects.subject, publishers.publisher,
+                    year, program, url, languages.language, resource_medium.medium                    
+                FROM audio_video JOIN authors JOIN languages JOIN resource_medium 
+                JOIN resource_author JOIN subjects JOIN publishers
+                ON audio_video.ID = resource_author.resourceID 
+                AND audio_video.publisherID = publishers.ID
+                AND audio_video.mediaID = resource_medium.ID
+                AND audio_video.mediaID = resource_author.mediaID
+                AND authors.ID = resource_author.authorID
+                AND audio_video.subjectID = subjects.ID
+                AND authors.ID = resource_author.authorID
+                AND resource_author.mediaID = resource_medium.ID
+                AND audio_video.languageID = languages.ID 
+                WHERE audio_video.ID = ?''', (resourceID,))
+    return c.fetchone()
+
 def list_av():
     c.execute('''SELECT audio_video.title, authors.name, audio_video.year, resource_medium.medium, 
 	                audio_video.program, languages.language
@@ -560,6 +572,20 @@ def list_av():
                 AND audio_video.languageID = languages.ID''')
     return c.fetchall()
 
+def update_av(av_id, title, duration,  year, program, url, language, media, subject, publisher):
+
+    language_id = get_language_id(language)
+    add_subject(subject)
+    subject_id = get_subject_id(subject)
+
+    add_publisher(publisher)
+    publisher_id = get_publisher_id(publisher)
+
+    c.execute('''UPDATE audio_video SET title = ?, duration_mins = ?,  year = ?, program  = ?,
+                    url = ?, languageID = ?, mediaID = ?, subjectID = ?, publisherID = ?
+                WHERE ID = ?''',
+              (title, duration, year, program, url, language_id, media, subject_id, publisher_id, av_id))
+    db.commit()
 # courses
 def get_course_id(title):
     c.execute('SELECT ID FROM courses WHERE title =?', (title,))
@@ -608,7 +634,7 @@ def get_course_mediaID(resourceID):
 def get_course_info(course_id):
     c.execute('''SELECT courses.title, authors.name, courses.start_date, subjects.subject,
                     publishers.publisher, courses.url, courses.duration_hours, courses.comments,
-                    resource_medium.medium
+                    resource_medium.medium, levels.level
                 FROM courses JOIN authors JOIN publishers JOIN resource_author 
                 JOIN resource_medium JOIN levels JOIN subjects
                 ON courses.ID = resource_author.resourceID 
@@ -730,6 +756,41 @@ def list_interactive():
                 ''')
     return c.fetchall()
 
+def get_interactive_info(resourceID):
+    c.execute('''SELECT interactive_media.title, authors.name, interactive_media.year, subjects.subject,
+                    interactive_media.platform, publishers.publisher, interactive_media.version,
+                    interactive_media.comments, resource_medium.medium
+                    
+                FROM interactive_media JOIN authors JOIN resource_medium 
+                JOIN resource_author JOIN subjects JOIN publishers
+                ON interactive_media.ID = resource_author.resourceID 
+                AND interactive_media.engineID = publishers.ID
+                AND interactive_media.typeID = resource_medium.ID
+                AND interactive_media.typeID = resource_author.mediaID
+                AND authors.ID = resource_author.authorID
+                AND interactive_media.genreID = subjects.ID
+                AND authors.ID = resource_author.authorID
+                AND resource_author.mediaID = resource_medium.ID
+                WHERE interactive_media.ID = ?''', (resourceID,))
+    return c.fetchone()
+
+
+def update_interactive(interactiveID, title, year, platform, version, comments, engine, media_id, genre):
+
+    genre_id = get_subject_id(genre)
+    print("Genre ID= ", genre_id)
+
+    add_publisher(engine)
+
+    engine_id = get_publisher_id(engine)
+    print('EngineID = ', engine_id)
+
+    c.execute('''UPDATE interactive_media SET title = ?, year = ?, platform = ?, version = ?, comments = ?, 
+                    engineID = ?, typeID = ?, genreID = ?  WHERE interactive_media.ID =?''',
+              (title, year, platform, version, comments, engine_id, media_id, genre_id, interactiveID))
+
+    db.commit()
+
 # images
 def get_image_id(title):
     c.execute('SELECT ID FROM images WHERE title =?', (title,))
@@ -767,7 +828,8 @@ def list_images():
                     AND images.imagetypeID = resource_medium.ID''')
     return c.fetchall()
 
-
+def get_image_info():
+    pass
 # PROJECT Category CRUD
 
 def add_project_category(project_category):

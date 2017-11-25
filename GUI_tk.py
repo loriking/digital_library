@@ -22,7 +22,7 @@ class ProjectLibrary(tk.Tk):
             self.frames[F] = frame
             frame.grid(row = 0, column = 0, sticky ='nsew')
 
-        self.show_frame(AddMedia)
+        self.show_frame(AddInteractiveMedia)
         
     def show_frame(self, cont):
         frame = self.frames[cont]
@@ -1243,9 +1243,9 @@ class AddMedia(tk.Frame):
 
         self.media_buttons.set('?')
 
-        current_data = self.get_current_data()
-
-        self.list_resources(current_data)
+        # current_data = self.get_current_data()
+        #
+        # self.list_resources(current_data)
 
     def select_document(self, event):
         self.media_buttons.set('?')
@@ -1304,9 +1304,11 @@ class AddMedia(tk.Frame):
         data.update_media(self.document_id, self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(),
                           self.box1R.get(), self.box2R.get(), self.box3R.get(), self.box4R.get(), media_id)
 
-        self.clear_resource()
-        self.show_updated_resource()
+        search_table = data.list_websites()
+
+        self.list_resources(search_table)
         self.update_entry_widgets()
+
 
 
     def clear_resource(self):
@@ -1317,15 +1319,12 @@ class AddMedia(tk.Frame):
         resource = data.get_website(self.document_id)
         self.treeview_docs.insert('', 'end', values=resource)
 
-
-
     def list_resource(self):
         self.clear_resource()
         resource_list = data.list_websites()
 
         for item in resource_list:
             self.treeview_docs.insert('', 'end', values=item)
-
 
     def delete(self):
 
@@ -1443,9 +1442,11 @@ class AddCourse(AddMedia):
         self.box2R.set(course[5])
         self.box3R.set(course[6])
         self.box4R.set(course[7])
+        self.level.set(course[9])
 
         media = course[8].strip()
         print(media)
+
 
         if media == 'Audio only class':
             self.media_buttons.set(1)
@@ -1509,13 +1510,14 @@ class AddCourse(AddMedia):
         self.list_resources(search_table)
         self.update_entry_widgets()
 
-
-
 class AddAudioVideo(AddMedia):
     def __init__(self, parent, controller):
         AddMedia.__init__(self, parent, controller)
 
         self.table = data.list_av()
+        self.document_id = None
+        self.current_author = ''
+        self.current_media = ''
 
         self.language = tk.StringVar()
         self.language_options = data.list_languages()
@@ -1527,6 +1529,8 @@ class AddAudioVideo(AddMedia):
         self.language_entry.configure(width=8)
         self.language_label.grid(column=0, row=0, sticky=tk.W)
         self.language_entry.grid(column=1, row=0,padx=5, sticky=tk.W)
+
+        self.table = data.list_av()
 
 
         self.create_values()
@@ -1588,11 +1592,96 @@ class AddAudioVideo(AddMedia):
         self.update_entry_widgets()
         self.list_resources(search_table)
 
+    def select_document(self, event):
+        self.media_buttons.set('?')
+
+        item = self.webdocs_list.focus()
+
+        document = self.treeview_docs.item(item)
+
+        document_name = document['values'][0]
+
+        print('Document: ', document)
+        print('Doc name: ', document_name)
+
+        self.document_id = data.get_audio_video_id(document_name)
+        print('Doc_id = ', self.document_id)
+
+        av = data.get_av_info(self.document_id)
+        print(av)
+
+        self.current_author = av[1]
+        self.current_media = av[9]
+        print('Author =', self.current_author)
+        print('Current media= ', self.current_media)
+
+        self.box1L.set(av[0])
+        self.box2L.set(av[1])
+        self.box3L.set(av[2])
+        self.box4L.set(av[3])
+        self.box1R.set(av[4])
+        self.box2R.set(av[5])
+        self.box3R.set(av[6])
+        self.box4R.set(av[7])
+        self.language.set(av[8])
+
+        if self.current_media == 'Music or Sound':
+            self.media_buttons.set(1)
+        elif self.current_media == 'Podcast':
+            self.media_buttons.set(2)
+        elif self.current_media == 'Video':
+            self.media_buttons.set(3)
+
+        return self.document_id, self.current_author, self.current_media
+
+    def update(self):
+
+        media_name = self.get_media_name()
+        print('Media name = ', media_name)
+
+        old_author_id = data.get_author_id(self.current_author)
+        print('Old author id= ', old_author_id)
+
+        old_media_id = data.get_resource_medium_id(self.current_media)
+        print('old media id', old_media_id)
+
+        author_name = self.box2L.get()
+
+        if self.current_author != author_name or self.current_media != media_name:
+            print('Difference found!')
+            data.delete_resource_author(self.document_id, self.current_author, self.current_media)
+            print('Deleted resource author for ID', self.document_id)
+
+            data.add_author(author_name)
+
+            author_id = data.get_author_id(author_name)
+            print('Author ID', author_id)
+
+            media_id = data.get_resource_medium_id(media_name)
+            print('MediaID =', media_id)
+
+            data.add_resource_author(self.document_id, author_id, media_id)
+
+        # update_av(av_id, title, duration,  year, program, url, language, media, subject, publisher)
+        data.update_av(self.document_id, self.box1L.get(), self.box3L.get(),
+                        self.box2R.get(), self.box3R.get(), self.box4R.get(),
+                        self.language.get(), media_id, self.box4L.get(),
+                        self.box1R.get())
+
+        search_table = data.list_av()
+
+        self.list_resources(search_table)
+        self.update_entry_widgets()
+
+
 class AddInteractiveMedia(AddMedia):
     def __init__(self, parent, controller):
         AddMedia.__init__(self, parent, controller)
 
         self.table = data.list_interactive()
+        self.document_id = None
+        self.current_author = ''
+        self.current_media = ''
 
         self.create_values()
 
@@ -1631,11 +1720,11 @@ class AddInteractiveMedia(AddMedia):
 
     def get_media_name(self):
         if self.media_buttons.get() == 1:
-            media_name = 'I.F.'
+            media_name = 'Interactive Fiction'
         elif self.media_buttons.get() == 2:
-            media_name = 'Videogame'
+            media_name = 'Video game'
         else:
-            media_name = 'Other'
+            media_name = 'Other interactive'
         return media_name
 
     def save_data(self):
@@ -1650,11 +1739,89 @@ class AddInteractiveMedia(AddMedia):
 
         self.update_entry_widgets()
 
+    def select_document(self, event):
+        item = self.webdocs_list.focus()
+
+        document = self.treeview_docs.item(item)
+
+        document_name = document['values'][0]
+
+        print('Document: ', document)
+        print('Doc name: ', document_name)
+
+        self.document_id = data.get_interactive_id(document_name)
+        print('Doc_id = ', self.document_id)
+
+        interactive = data.get_interactive_info(self.document_id)
+        print(interactive)
+
+        self.current_author = interactive[1]
+        self.current_media = interactive[8]
+        print('Author =', self.current_author)
+        print('Current media= ', self.current_media)
+
+        self.box1L.set(interactive[0])
+        self.box2L.set(interactive[1])
+        self.box3L.set(interactive[2])
+        self.box4L.set(interactive[3])
+        self.box1R.set(interactive[4])
+        self.box2R.set(interactive[5])
+        self.box3R.set(interactive[6])
+        self.box4R.set(interactive[7])
+
+        if self.current_media == 'Interactive Fiction':
+            self.media_buttons.set(1)
+        elif self.current_media == 'Video game':
+            self.media_buttons.set(2)
+        elif self.current_media == 'Other interactive':
+            self.media_buttons.set(3)
+
+        return self.document_id, self.current_author, self.current_media
+
+    def update(self):
+
+        media_name = self.get_media_name()
+        print('Media name = ', media_name)
+
+        old_author_id = data.get_author_id(self.current_author)
+        print('Old author id= ', old_author_id)
+
+        old_media_id = data.get_resource_medium_id(self.current_media)
+        print('old media id', old_media_id)
+
+        author_name = self.box2L.get()
+
+        author_id = data.get_author_id(author_name)
+        print('Author ID', author_id)
+
+        media_id = data.get_resource_medium_id(media_name)
+        print('MediaID =', media_id)
+
+        if self.current_author != author_name or self.current_media != media_name:
+            print('Difference found!')
+            data.delete_resource_author(self.document_id, self.current_author, self.current_media)
+            print('Deleted resource author for ID', self.document_id)
+
+            data.add_author(author_name)
+
+            data.add_resource_author(self.document_id, author_id, media_id)
+
+        data.update_interactive(self.document_id, self.box1L.get(), self.box3L.get(), self.box1R.get(),
+                                self.box3R.get(), self.box4R.get(), self.box1R.get(), media_id, self.box4L.get())
+
+        search_table = data.list_interactive()
+
+        self.list_resources(search_table)
+        self.update_entry_widgets()
+
 class AddImages(AddMedia):
     def __init__(self, parent, controller):
         AddMedia.__init__(self, parent, controller)
 
         self.search_table = data.list_images()
+        self.document_id = None
+        self.current_author = ''
+        self.current_media = ''
 
 
         self.create_values()
@@ -1700,7 +1867,7 @@ class AddImages(AddMedia):
         else:
             media_name = 'Sprite'
         return media_name
-# add_images(title, creator, date, copywrite, website, dimensions, url, comments, image_type)
+
     def save_data(self):
         media_name = self.get_media_name()
 
@@ -1710,6 +1877,85 @@ class AddImages(AddMedia):
 
         search_table = data.list_images()
         print(search_table)
+        self.list_resources(search_table)
+        self.update_entry_widgets()
+
+    def select_document(self, event):
+        item = self.webdocs_list.focus()
+
+        document = self.treeview_docs.item(item)
+
+        document_name = document['values'][0]
+
+        print('Document: ', document)
+        print('Doc name: ', document_name)
+
+        self.document_id = data.get_image_id(document_name)
+        print('Doc_id = ', self.document_id)
+
+        av = data.get_image_info(self.document_id)
+        print(av)
+
+        self.current_author = av[1]
+        self.current_media = av[9]
+        print('Author =', self.current_author)
+        print('Current media= ', self.current_media)
+
+        self.box1L.set(av[0])
+        self.box2L.set(av[1])
+        self.box3L.set(av[2])
+        self.box4L.set(av[3])
+        self.box1R.set(av[4])
+        self.box2R.set(av[5])
+        self.box3R.set(av[6])
+        self.box4R.set(av[7])
+
+
+        if self.current_media == 'Music or Sound':
+            self.media_buttons.set(1)
+        elif self.current_media == 'Podcast':
+            self.media_buttons.set(2)
+        elif self.current_media == 'Video':
+            self.media_buttons.set(3)
+
+        return self.document_id, self.current_author, self.current_media
+
+    def update(self):
+
+        media_name = self.get_media_name()
+        print('Media name = ', media_name)
+
+        old_author_id = data.get_author_id(self.current_author)
+        print('Old author id= ', old_author_id)
+
+        old_media_id = data.get_resource_medium_id(self.current_media)
+        print('old media id', old_media_id)
+
+        author_name = self.box2L.get()
+
+        if self.current_author != author_name or self.current_media != media_name:
+            print('Difference found!')
+            data.delete_resource_author(self.document_id, self.current_author, self.current_media)
+            print('Deleted resource author for ID', self.document_id)
+
+            data.add_author(author_name)
+
+            author_id = data.get_author_id(author_name)
+            print('Author ID', author_id)
+
+            media_id = data.get_resource_medium_id(media_name)
+            print('MediaID =', media_id)
+
+            data.add_resource_author(self.document_id, author_id, media_id)
+
+        # update_av(av_id, title, duration,  year, program, url, language, media, subject, publisher)
+        data.update_av(self.document_id, self.box1L.get(), self.box3L.get(),
+                        self.box2R.get(), self.box3R.get(), self.box4R.get(),
+                        self.language.get(), media_id, self.box4L.get(),
+                        self.box1R.get())
+
+        search_table = data.list_av()
+
         self.list_resources(search_table)
         self.update_entry_widgets()
 
