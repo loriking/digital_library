@@ -22,7 +22,7 @@ class ProjectLibrary(tk.Tk):
             self.frames[F] = frame
             frame.grid(row = 0, column = 0, sticky ='nsew')
 
-        self.show_frame(AddMedia)
+        self.show_frame(AddText)
         
     def show_frame(self, cont):
         frame = self.frames[cont]
@@ -229,7 +229,6 @@ class AddText(tk.Frame):
         self.subject_label = tk.Label(topleftframe, text='Subject')
         self.subject_entry = ttk.Entry(topleftframe, width=61, textvariable=self.subject)
 
-
         # Place widgets
         self.title_label.grid(column=0, row=0, sticky=tk.W)
         self.title_entry.grid(columnspan=3, column=1, row=0, sticky=tk.E)
@@ -241,9 +240,6 @@ class AddText(tk.Frame):
         self.year_entry.grid(columnspan=1, column=1, row=2, sticky=tk.W)
         self.pages_label.grid(columnspan=1, column=2, row=2)
         self.pages_entry.grid(columnspan=1,column=3, row=2, sticky=tk.E)
-
-        #self.select_label.grid(column=0, row=3, sticky=tk.W)
-
 
         self.notes_label.grid(columnspan=1, column=0, row=1, sticky=tk.W)
         self.notes_entry.grid(columnspan=3, column=1, row=1, sticky=tk.W)
@@ -348,6 +344,10 @@ class AddText(tk.Frame):
                                      command=lambda: controller.show_frame(SearchResource))
         self.searchresource.config(width=15, cursor='hand2')
         self.searchresource.grid(column=2, row=0, padx=10, sticky=tk.E)
+
+        self.delete_button = tk.Button(buttonsframe, text='Delete Text', bg='red', command=lambda: self.delete_text())
+        self.delete_button.config(width=15, cursor='hand2')
+        self.delete_button.grid(column=3, row=0, padx=10, sticky=tk.W)
 
 
     def list_resources(self):
@@ -494,18 +494,18 @@ class AddText(tk.Frame):
 
     def delete_text(self):
         media_name = self.title.get()
-        message = "Delete " + self.current_media + " '" + media_name + "'?"
+        message1 = "Delete " + self.current_media + " '" + media_name + "'?"
+        message2 = "'" + media_name + "' deleted."
+
         print(self.current_media, self.current_author)
 
-        result = tkMessageBox.askquestion("Delete?", message)
+        result = tkMessageBox.askquestion("Delete?", message1)
 
         if result == 'yes':
             if tkMessageBox.askokcancel("Confirm", "Really?\nThis cannot be undone!", icon='warning'):
-                # data.delete_text(self.text_id, self.current_author, self.current_media)
-                print("Deleted")
+                data.delete_text(self.text_id, self.current_author, self.current_media)
                 self.update_windows()
-                tkMessageBox.showinfo('Deleted', "Project deleted.")
-
+                tkMessageBox.showinfo('Deleted', message2)
 
 class LinkResources(tk.Frame):
     def __init__(self, parent, controller):
