@@ -960,11 +960,6 @@ class Projects(tk.Frame):
         for item in projects:
             self.treeview.insert('', 'end', values=item)
 
-
-    def link_to_resource(self):
-        # will link project to resources:self.controller.show_frame(LinkResources)
-        pass
-
     def update_widgets(self):
         self.project_name_entry.delete(0, 'end')
         self.description_entry.delete(0, 'end')
@@ -1083,7 +1078,6 @@ class AddMedia(tk.Frame):
         self.list_resources(self.table)
         self.update_entry_widgets()
 
-
     def create_values(self):
         self.window_header = 'Websites'
         self.b2L = 'Author'
@@ -1170,7 +1164,6 @@ class AddMedia(tk.Frame):
         self.box_4_R.grid(column=0, row=3, sticky=tk.W)
         self.box_4_R_entry.grid(column=1, row=3, sticky=tk.W)
 
-
     def add_radio_buttons(self, media_type1, media_type2, media_type3 ):
 
         self.media_label = tk.Label(self.center_leftframe, text='Select type: ')
@@ -1187,7 +1180,6 @@ class AddMedia(tk.Frame):
         self.media_other = tk.Radiobutton(self.center_leftframe, text=media_type3, variable=self.media_buttons,
                                           value=3)
         self.media_other.grid(column=3, row=0)
-
 
     def display_resources(self, col1, col2, col3, col4, col5, col6):
         scrollwebdocs = tk.Scrollbar(self.bottom_middleframe)
@@ -1221,14 +1213,12 @@ class AddMedia(tk.Frame):
 
         return self.treeview_docs, self.webdocs_list
 
-
     def list_resources(self, data_table):
         for i in self.webdocs_list.get_children():
             self.webdocs_list.delete(i)
         resources = data_table
         for item in resources:
             self.treeview_docs.insert('', 'end', values=item)
-
 
     def get_media_name(self):
         if self.media_buttons.get() == 1:
@@ -1251,7 +1241,6 @@ class AddMedia(tk.Frame):
                               self.box2R.get(), self.box3R.get(), self.box4R.get(), media_name)
 
         self.update_windows()
-
 
     def get_current_data(self):
         current_data = data.list_websites()
@@ -1281,37 +1270,40 @@ class AddMedia(tk.Frame):
 
         document = self.treeview_docs.item(item)
 
-        document_name = document['values'][0]
+        try:
+            document_name = document['values'][0]
 
-        print(document, document_name)
+            self.document_id = data.get_website_id(document_name)
 
-        self.document_id = data.get_website_id(document_name)
+            web_doc = data.get_website(self.document_id)
+            self.current_author = web_doc[1]
+            self.current_media = web_doc[8]
 
-        print(self.document_id)
+            self.box1L.set(web_doc[0])
+            self.box2L.set(web_doc[1])
+            self.box3L.set(web_doc[2])
+            self.box4L.set(web_doc[3])
+            self.box1R.set(web_doc[4])
+            self.box2R.set(web_doc[5])
+            self.box3R.set(web_doc[6])
+            self.box4R.set(web_doc[7])
 
-        web_doc = data.get_website(self.document_id)
-        self.current_author = web_doc[1]
-        self.current_media = web_doc[8]
+            media = web_doc[8].strip()
+        except IndexError:
+            pass
 
-        self.box1L.set(web_doc[0])
-        self.box2L.set(web_doc[1])
-        self.box3L.set(web_doc[2])
-        self.box4L.set(web_doc[3])
-        self.box1R.set(web_doc[4])
-        self.box2R.set(web_doc[5])
-        self.box3R.set(web_doc[6])
-        self.box4R.set(web_doc[7])
+        try:
 
-        media = web_doc[8].strip()
+            if media == self.media_choice1.strip():
+                self.media_buttons.set(1)
+            elif media == self.media_choice2.strip():
+                self.media_buttons.set(2)
+            elif media == self.media_choice3.strip():
+                self.media_buttons.set(3)
 
-        if media == self.media_choice1.strip():
-            self.media_buttons.set(1)
-        elif media == self.media_choice2.strip():
-            self.media_buttons.set(2)
-        elif media == self.media_choice3.strip():
-            self.media_buttons.set(3)
-
-        return self.document_id, self.current_author, self.current_media
+            return self.document_id, self.current_author, self.current_media
+        except UnboundLocalError:
+            pass
 
     def update(self):
         media_name = self.get_media_name()
@@ -1444,44 +1436,43 @@ class AddCourse(AddMedia):
 
         document = self.treeview_docs.item(item)
 
-        document_name = document['values'][0]
+        try:
+            document_name = document['values'][0]
 
-        print('Document: ', document)
-        print('Doc name: ', document_name)
+            self.document_id = data.get_course_id(document_name)
 
-        self.document_id = data.get_course_id(document_name)
-        print('course_id = ', self.document_id)
+            course = data.get_course_info(self.document_id)
 
-        course = data.get_course_info(self.document_id)
-        print(course)
+            self.current_author = course[1]
+            self.current_media = course[8]
 
-        self.current_author = course[1]
-        self.current_media = course[8]
-        print('Author =', self.current_author)
-        print('Current media= ', self.current_media)
+            self.box1L.set(course[0])
+            self.box2L.set(course[1])
+            self.box3L.set(course[2])
+            self.box4L.set(course[3])
+            self.box1R.set(course[4])
+            self.box2R.set(course[5])
+            self.box3R.set(course[6])
+            self.box4R.set(course[7])
+            self.level.set(course[9])
 
-        self.box1L.set(course[0])
-        self.box2L.set(course[1])
-        self.box3L.set(course[2])
-        self.box4L.set(course[3])
-        self.box1R.set(course[4])
-        self.box2R.set(course[5])
-        self.box3R.set(course[6])
-        self.box4R.set(course[7])
-        self.level.set(course[9])
+            media = course[8].strip()
 
-        media = course[8].strip()
-        print(media)
+        except IndexError:
+            pass
 
+        try:
+            if media == 'Audio only class':
+                self.media_buttons.set(1)
+            elif media == 'Web based class':
+                self.media_buttons.set(2)
+            elif media == 'Blended Class':
+                self.media_buttons.set(3)
 
-        if media == 'Audio only class':
-            self.media_buttons.set(1)
-        elif media == 'Web based class':
-            self.media_buttons.set(2)
-        elif media == 'Blended Class':
-            self.media_buttons.set(3)
+            return self.document_id, self.current_author, self.current_media
 
-        return self.document_id, self.current_author, self.current_media
+        except UnboundLocalError:
+            pass
 
     def update_windows(self):
 
@@ -1820,39 +1811,48 @@ class AddInteractiveMedia(AddMedia):
 
         document = self.treeview_docs.item(item)
 
-        document_name = document['values'][0]
+        try:
 
-        print('Document: ', document)
-        print('Doc name: ', document_name)
+            document_name = document['values'][0]
 
-        self.document_id = data.get_interactive_id(document_name)
-        print('Doc_id = ', self.document_id)
+            print('Document: ', document)
+            print('Doc name: ', document_name)
 
-        interactive = data.get_interactive_info(self.document_id)
-        print(interactive)
+            self.document_id = data.get_interactive_id(document_name)
+            print('Doc_id = ', self.document_id)
 
-        self.current_author = interactive[1]
-        self.current_media = interactive[8]
-        print('Author =', self.current_author)
-        print('Current media= ', self.current_media)
+            interactive = data.get_interactive_info(self.document_id)
+            print(interactive)
 
-        self.box1L.set(interactive[0])
-        self.box2L.set(interactive[1])
-        self.box3L.set(interactive[2])
-        self.box4L.set(interactive[3])
-        self.box1R.set(interactive[4])
-        self.box2R.set(interactive[5])
-        self.box3R.set(interactive[6])
-        self.box4R.set(interactive[7])
+            self.current_author = interactive[1]
+            self.current_media = interactive[8]
+            print('Author =', self.current_author)
+            print('Current media= ', self.current_media)
 
-        if self.current_media == 'Interactive Fiction':
-            self.media_buttons.set(1)
-        elif self.current_media == 'Video game':
-            self.media_buttons.set(2)
-        elif self.current_media == 'Other interactive':
-            self.media_buttons.set(3)
+            self.box1L.set(interactive[0])
+            self.box2L.set(interactive[1])
+            self.box3L.set(interactive[2])
+            self.box4L.set(interactive[3])
+            self.box1R.set(interactive[4])
+            self.box2R.set(interactive[5])
+            self.box3R.set(interactive[6])
+            self.box4R.set(interactive[7])
 
-        return self.document_id, self.current_author, self.current_media
+        except IndexError:
+            pass
+
+        try:
+            if self.current_media == 'Interactive Fiction':
+                self.media_buttons.set(1)
+            elif self.current_media == 'Video game':
+                self.media_buttons.set(2)
+            elif self.current_media == 'Other interactive':
+                self.media_buttons.set(3)
+
+            return self.document_id, self.current_author, self.current_media
+
+        except UnboundLocalError:
+            pass
 
     def update(self):
 
@@ -1973,39 +1973,48 @@ class AddImages(AddMedia):
 
         document = self.treeview_docs.item(item)
 
-        document_name = document['values'][0]
+        try:
 
-        print('Document: ', document)
-        print('Doc name: ', document_name)
+            document_name = document['values'][0]
 
-        self.document_id = data.get_image_id(document_name)
-        print('Doc_id = ', self.document_id)
+            print('Document: ', document)
+            print('Doc name: ', document_name)
 
-        image = data.get_image_info(self.document_id)
-        print(image)
+            self.document_id = data.get_image_id(document_name)
+            print('Doc_id = ', self.document_id)
 
-        self.current_author = image[1]
-        self.current_media = image[8]
-        print('Author =', self.current_author)
-        print('Current media= ', self.current_media)
+            image = data.get_image_info(self.document_id)
+            print(image)
 
-        self.box1L.set(image[0])
-        self.box2L.set(image[1])
-        self.box3L.set(image[2])
-        self.box4L.set(image[3])
-        self.box1R.set(image[4])
-        self.box2R.set(image[5])
-        self.box3R.set(image[6])
-        self.box4R.set(image[7])
+            self.current_author = image[1]
+            self.current_media = image[8]
+            print('Author =', self.current_author)
+            print('Current media= ', self.current_media)
 
-        if self.current_media == 'Photo':
-            self.media_buttons.set(1)
-        elif self.current_media == 'Clip art':
-            self.media_buttons.set(2)
-        elif self.current_media == 'Sprite':
-            self.media_buttons.set(3)
+            self.box1L.set(image[0])
+            self.box2L.set(image[1])
+            self.box3L.set(image[2])
+            self.box4L.set(image[3])
+            self.box1R.set(image[4])
+            self.box2R.set(image[5])
+            self.box3R.set(image[6])
+            self.box4R.set(image[7])
+        except IndexError:
+            pass
 
-        return self.document_id, self.current_author, self.current_media
+        try:
+
+            if self.current_media == 'Photo':
+                self.media_buttons.set(1)
+            elif self.current_media == 'Clip art':
+                self.media_buttons.set(2)
+            elif self.current_media == 'Sprite':
+                self.media_buttons.set(3)
+
+            return self.document_id, self.current_author, self.current_media
+
+        except UnboundLocalError:
+            pass
 
     def update(self):
 
