@@ -55,12 +55,12 @@ class HomePage(tk.Frame):
         self.view_project.config(height=5,width=13)
         self.view_project.pack( pady=10)
 
-        self.edit_project = tk.Button(self.firstframe, text='Edit Project',
+        self.edit_project = tk.Button(self.firstframe, text='Edit Projects',
                                       command=lambda: controller.show_frame(EditProject))
         self.edit_project.config(height=5, width=13)
         self.edit_project.pack( pady=10)
 
-        self.new_resources = tk.Button(self.secondframe, text='Add Resource',
+        self.new_resources = tk.Button(self.secondframe, text='Add or Edit\nResources',
                                    command=lambda: controller.show_frame(AddResource))
         self.new_resources.config(height=5, width=13)
         self.new_resources.pack( pady=10)
@@ -70,9 +70,9 @@ class HomePage(tk.Frame):
         self.view_resources.config(height=5, width=13)
         self.view_resources.pack(pady=10)
 
-        self.edit_resource = tk.Button(self.secondframe, text='About')
-        self.edit_resource.config(height=5, width=13)
-        self.edit_resource.pack(pady=10)
+        self.show_project_resources = tk.Button(self.secondframe, text="Show Project's\nResources")
+        self.show_project_resources.config(height=5, width=13)
+        self.show_project_resources.pack(pady=10)
 
         button1 = ttk.Button(self.middleframe, text = "", image=self.wordcloud, compound="center")
         button1.pack(anchor=tk.CENTER)
@@ -163,8 +163,8 @@ class AddText(tk.Frame):
 
         self.title = tk.StringVar()
         self.author = tk.StringVar()
-        self.year = tk.IntVar()
-        self.pages = tk.IntVar()
+        self.year = tk.StringVar()
+        self.pages = tk.StringVar()
         self.subject = tk.StringVar()
         self.notes = tk.StringVar()
 
@@ -379,14 +379,18 @@ class AddText(tk.Frame):
         self.level.set('Select: ')
         self.text_type.set('?')
 
-
     def get_media_name(self):
-        if self.text_type.get() == 1:
-            media_name = 'Book'
-        elif self.text_type.get() == 2:
-            media_name = 'Short story'
-        elif self.text_type.get() == 3:
-            media_name = 'Other text'
+        try:
+            self.text_type.get() != '?'
+        except ValueError:
+            tkMessageBox.showinfo('Alert', 'Please Choose Media Type', icon='warning')
+        else:
+            if self.text_type.get() == 1:
+                media_name = 'Book'
+            elif self.text_type.get() == 2:
+                media_name = 'Short story'
+            elif self.text_type.get() == 3:
+                media_name = 'Other text'
         return media_name
 
     def update_windows(self):
@@ -394,7 +398,6 @@ class AddText(tk.Frame):
         self.update_entry_widgets()
 
     def save_text(self):
-        media_name = self.get_media_name()
 
         if self.new_pub_flag.get() == 1:
             self.thepublisher = self.new_pub.get()
@@ -406,51 +409,68 @@ class AddText(tk.Frame):
         else:
             self.thelanguage = self.language.get()
 
+        try:
+            media_name = self.get_media_name()
+        except UnboundLocalError:
+            tkMessageBox.showinfo('Alert', 'Please Choose Media Type', icon='warning')
 
-        data.add_text(self.title.get(), self.author.get(), self.year.get(),
+        try:
+            data.get_level_id(self.level.get())
+        except TypeError:
+            tkMessageBox.showinfo('Alert', 'Please Choose Level', icon='warning')
+
+        else:
+            data.add_text(self.title.get(), self.author.get(), self.year.get(),
                           self.pages.get(), self.level.get(), self.thepublisher,
                           self.thelanguage, self.subject.get(), media_name, self.notes.get())
 
-        self.update_windows()
+            self.update_windows()
 
     def select_text(self, event):
+
         item = self.resource_list.focus()
 
         text = self.treeview.item(item)
 
-        text_title = text['values'][0]
-        self.text_id = data.get_text_id(text_title)
+        try:
+            text_title = text['values'][0]
+            self.text_id = data.get_text_id(text_title)
 
-        text_info = data.get_full_text(self.text_id)
+            text_info = data.get_full_text(self.text_id)
 
-        self.current_author = text_info[0][1]
-        self.current_media = text_info[0][8]
+            self.current_author = text_info[0][1]
+            self.current_media = text_info[0][8]
 
-        self.title.set(text_info[0][0])
-        self.author.set(text_info[0][1])
-        self.year.set(text_info[0][2])
-        self.pages.set(text_info[0][3])
-        self.subject.set(text_info[0][7])
-        self.notes.set(text_info[0][9])
+            self.title.set(text_info[0][0])
+            self.author.set(text_info[0][1])
+            self.year.set(text_info[0][2])
+            self.pages.set(text_info[0][3])
+            self.subject.set(text_info[0][7])
+            self.notes.set(text_info[0][9])
 
-        self.publisher.set(text_info[0][5])
+            self.publisher.set(text_info[0][5])
 
-        self.language.set(text_info[0][6])
-        self.language_options = data.list_languages()
+            self.language.set(text_info[0][6])
+            self.language_options = data.list_languages()
 
-        self.level.set(text_info[0][4])
-        self.level_options = data.list_levels()
+            self.level.set(text_info[0][4])
+            self.level_options = data.list_levels()
+        except IndexError:
+            pass
 
-        if text_info[0][8] == 'Book':
-            self.text_type.set(1)
-        elif text_info[0][8] == 'Short story':
-            self.text_type.set(2)
-        else:
-            self.text_type.set(3)
+        try:
 
-        print(self.text_id)
+            if text_info[0][8] == 'Book':
+                self.text_type.set(1)
+            elif text_info[0][8] == 'Short story':
+                self.text_type.set(2)
+            else:
+                self.text_type.set(3)
 
-        return self.text_id, self.current_author, self.current_media
+            return self.text_id, self.current_author, self.current_media
+
+        except UnboundLocalError:
+            pass
 
     def update_text(self):
         media_name = self.get_media_name()
@@ -486,7 +506,6 @@ class AddText(tk.Frame):
     def clear_texts(self):
         for i in self.resource_list.get_children():
             self.resource_list.delete(i)
-        print('Text cleared')
 
     def show_updated_resource(self, text_id):
         text = data.get_text(self.text_id)
@@ -494,18 +513,15 @@ class AddText(tk.Frame):
 
     def delete_text(self):
         media_name = self.title.get()
-        message1 = "Delete " + self.current_media + " '" + media_name + "'?"
+        message1 = "Delete " + self.current_media + " '" + media_name + "'?\nThis cannot be undone!"
         message2 = "'" + media_name + "' deleted."
 
-        print(self.current_media, self.current_author)
+        result = tkMessageBox.askokcancel("Delete?", message1, icon='warning')
 
-        result = tkMessageBox.askquestion("Delete?", message1)
-
-        if result == 'yes':
-            if tkMessageBox.askokcancel("Confirm", "Really?\nThis cannot be undone!", icon='warning'):
-                data.delete_text(self.text_id, self.current_author, self.current_media)
-                self.update_windows()
-                tkMessageBox.showinfo('Deleted', message2)
+        if result == True:
+            data.delete_text(self.text_id, self.current_author, self.current_media)
+            self.update_windows()
+            tkMessageBox.showinfo('Deleted', message2)
 
 class LinkResources(tk.Frame):
     def __init__(self, parent, controller):
@@ -923,13 +939,13 @@ class Projects(tk.Frame):
         self.project_list.column('4', width=100,anchor='w')
         self.treeview = self.project_list
 
-
-        self.back = tk.Button(self.button_frame, text='Back', command=lambda: controller.show_frame(AddResource))
-        self.back.config(width=10)
-        self.back.grid(column=0, row=1, padx=20, pady=2, sticky=tk.W)
+        self.search_resources = tk.Button(self.button_frame, text='Search Resources',
+                              command=lambda: controller.show_frame(SearchResource))
+        self.search_resources.config(width=13)
+        self.search_resources.grid(column=0, row=1, padx=20, pady=2, sticky=tk.W)
 
         self.home = tk.Button(self.button_frame, text='Home', command=lambda: controller.show_frame(HomePage))
-        self.home.config(width=10)
+        self.home.config(width=13)
         self.home.grid(column=1, row=1,sticky=tk.W)
 
         self.list_projects()
@@ -1336,18 +1352,16 @@ class AddMedia(tk.Frame):
 
     def delete(self):
         media_name = self.box1L.get()
-        message1 = "Delete " + self.current_media + " '" + media_name + "'?"
+
+        message1 = "Delete " + self.current_media + " '" + media_name + "'?\nThis cannot be undone!"
         message2 = "'" + media_name + "' deleted."
 
-        result = tkMessageBox.askquestion("Delete?", message1)
-        if result == 'yes':
-            if tkMessageBox.askokcancel("Confirm", "Really?\nThis cannot be undone!", icon='warning'):
-                data.delete_website(self.document_id, self.current_author, self.current_media)
-                self.update_windows()
-                tkMessageBox.showinfo('Deleted', message2)
+        result = tkMessageBox.askokcancel("Delete?", message1, icon='warning')
 
-            else:
-                print("Not deleted")
+        if result == True:
+            data.delete_website(self.document_id, self.current_author, self.current_media)
+            self.update_windows()
+            tkMessageBox.showinfo('Deleted', message2, icon='info')
 
 class AddCourse(AddMedia):
     def __init__(self, parent, controller):
@@ -1531,18 +1545,16 @@ class AddCourse(AddMedia):
 
     def delete(self):
         media_name = self.box1L.get()
-        message1 = "Delete " + self.current_media + " '" + media_name + "'?"
+
+        message1 = "Delete " + self.current_media + " '" + media_name + "'?\nThis cannot be undone!"
         message2 = "'" + media_name + "' deleted."
 
-        result = tkMessageBox.askquestion("Delete?", message1)
-        if result == 'yes':
-            if tkMessageBox.askokcancel("Confirm", "Really?\nThis cannot be undone!", icon='warning'):
-                data.delete_course(self.document_id, self.current_author, self.current_media)
-                self.update_windows()
-                tkMessageBox.showinfo('Deleted', message2)
+        result = tkMessageBox.askokcancel("Delete?", message1, icon='warning')
 
-            else:
-                print("Not deleted")
+        if result == True:
+            data.delete_course(self.document_id, self.current_author, self.current_media)
+            self.update_windows()
+            tkMessageBox.showinfo('Deleted', message2, icon='info')
 
 class AddAudioVideo(AddMedia):
     def __init__(self, parent, controller):
@@ -1713,18 +1725,15 @@ class AddAudioVideo(AddMedia):
     def delete(self):
         media_name = self.box1L.get()
 
-        message1 = "Delete " + self.current_media + " '" + media_name + "'?"
+        message1 = "Delete " + self.current_media + " '" + media_name + "'?\nThis cannot be undone!"
         message2 = "'" + media_name + "' deleted."
 
-        result = tkMessageBox.askquestion("Delete?", message1)
-        if result == 'yes':
-            if tkMessageBox.askokcancel("Confirm", "Really?\nThis cannot be undone!", icon='warning'):
-                data.delete_av(self.document_id, self.current_author, self.current_media)
-                self.update_windows()
-                tkMessageBox.showinfo('Deleted', message2)
+        result = tkMessageBox.askokcancel("Delete?", message1, icon='warning')
 
-            else:
-                print("Not deleted")
+        if result == True:
+            data.delete_av(self.document_id, self.current_author, self.current_media)
+            self.update_windows()
+            tkMessageBox.showinfo('Deleted', message2, icon='info')
 
 class AddInteractiveMedia(AddMedia):
     def __init__(self, parent, controller):
@@ -1867,18 +1876,15 @@ class AddInteractiveMedia(AddMedia):
 
     def delete(self):
         media_name = self.box1L.get()
-        message1 = "Delete " + self.current_media + " '" + media_name + "'?"
+        message1 = "Delete " + self.current_media + " '" + media_name + "'?\nThis cannot be undone!"
         message2 = "'" + media_name + "' deleted."
 
-        result = tkMessageBox.askquestion("Delete?", message1)
-        if result == 'yes':
-            if tkMessageBox.askokcancel("Confirm", "Really?\nThis cannot be undone!", icon='warning'):
-                data.delete_interactive(self.document_id, self.current_author, self.current_media)
-                self.update_windows()
-                tkMessageBox.showinfo('Deleted', message2)
+        result = tkMessageBox.askokcancel("Delete?", message1, icon='warning')
 
-            else:
-                print("Not deleted")
+        if result == True:
+            data.delete_interactive(self.document_id, self.current_author, self.current_media)
+            self.update_windows()
+            tkMessageBox.showinfo('Deleted', message2, icon='info')
 
 class AddImages(AddMedia):
     def __init__(self, parent, controller):
@@ -2024,18 +2030,16 @@ class AddImages(AddMedia):
 
     def delete(self):
         media_name = self.box1L.get()
-        message1 = "Delete " + self.current_media + " '" + media_name + "'?"
+
+        message1 = "Delete " + self.current_media + " '" + media_name + "'?\nThis cannot be undone!"
         message2 = "'" + media_name + "' deleted."
 
-        result = tkMessageBox.askquestion("Delete?", message1)
-        if result == 'yes':
-            if tkMessageBox.askokcancel("Confirm", "Really?\nThis cannot be undone!", icon='warning'):
-                data.delete_image(self.document_id, self.current_author, self.current_media)
-                self.update_windows()
-                tkMessageBox.showinfo('Deleted', message2)
+        result = tkMessageBox.askokcancel("Delete?", message1, icon='warning')
 
-            else:
-                print("Not deleted")
+        if result == True:
+            data.delete_image(self.document_id, self.current_author, self.current_media)
+            self.update_windows()
+            tkMessageBox.showinfo('Deleted', message2, icon='info')
 
 class SearchResource(tk.Frame):
     def __init__(self, parent, controller):
@@ -2094,9 +2098,24 @@ class SearchResource(tk.Frame):
 
         self.search_button.grid(column=4, row=1, sticky=tk.W)
 
-        self.home = ttk.Button(self.bottom, text='Back', command=lambda: controller.show_frame(HomePage))
-        self.home.config(width=10, cursor='hand2')
+        self.home = ttk.Button(self.bottom, text='Home', command=lambda: controller.show_frame(HomePage))
+        self.home.config(width=13, cursor='hand2')
         self.home.grid(column=0, row=10, padx=20, sticky=tk.E)
+
+        self.go_to_resources = ttk.Button(self.bottom, text='Add Resource',
+                                         command=lambda: controller.show_frame(AddResource))
+        self.go_to_resources.config(width=13, cursor='hand2')
+        self.go_to_resources.grid(column=0, row=11, padx=20, sticky=tk.E)
+
+        self.view_projects = ttk.Button(self.bottom, text='View Projects',
+                                              command=lambda: controller.show_frame(Projects))
+        self.view_projects.config(width=13, cursor='hand2')
+        self.view_projects.grid(column=0, row=12, padx=20, sticky=tk.E)
+
+        self.go_to_link_projects = ttk.Button(self.bottom, text='Link Projects',
+                                          command=lambda: controller.show_frame(LinkResources))
+        self.go_to_link_projects.config(width=13, cursor='hand2')
+        self.go_to_link_projects.grid(column=0, row=13, padx=20, sticky=tk.E)
 
         show_window(self.bottom, 12) # opens an empty window as a placeholder
 
@@ -2137,8 +2156,6 @@ class SearchResource(tk.Frame):
 
         self.search_resources(resources)
 
-
-
     def create_table_values(self):
 
         if self.media_type.get() == 1:
@@ -2166,7 +2183,6 @@ class SearchResource(tk.Frame):
             resources = data.find_texts(self.search_bar.get())
 
         return column_names, resources
-
 
     def search_resources(self, resources):
 
@@ -2375,14 +2391,12 @@ class EditProject(tk.Frame):
 
     def delete(self):
 
-        result = tkMessageBox.askquestion("Delete?", "Delete project?")
-        if result == 'yes':
-            if tkMessageBox.askokcancel("Confirm", "Really?\nThis cannot be undone!", icon='warning'):
-                data.delete_project(self.project_id)
-                print("Deleted")
-                tkMessageBox.showinfo('Deleted', "Project deleted.")
-                self.update_widgets()
-                self.clear_projects()
+        result =  tkMessageBox.askokcancel("Confirm", "Really?\nThis cannot be undone!", icon='warning')
+        if result == True:
+            data.delete_project(self.project_id)
+            self.update_widgets()
+            self.clear_projects()
+            tkMessageBox.showinfo('Deleted', "Project deleted.")
 
 
 

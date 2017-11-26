@@ -438,17 +438,13 @@ def add_website(title, author, creation_date, subject, website_name, url, access
 
     add_publisher(website_name)
     website_nameID = get_publisher_id(website_name)
-    print('Website name ID =', website_nameID)
 
     add_resource_medium(medium)
     medium = medium.title()
     mediaID = get_resource_medium_id(medium)
-    print('Website type = ', mediaID)
 
     add_subject(subject)
     subjectID = get_subject_id(subject)
-    print('Subject ID =', subjectID)
-
 
     c.execute('''INSERT OR IGNORE INTO websites (title, creation_date, website_nameID, url, access_date, 
                 notes, mediaID, subjectID) VALUES(?,?,?,?,?,?,?,?)''',
@@ -457,10 +453,8 @@ def add_website(title, author, creation_date, subject, website_name, url, access
 
 
     authorID = get_author_id(author)
-    print('Author ID = ', authorID)
 
     website_id= get_website_id(title)
-    print('Website ID', website_id)
 
     c.execute('''INSERT OR IGNORE INTO resource_author(resourceID, authorID, mediaID ) 
               VALUES(?, ?, ?)''', (website_id, authorID, mediaID ))
@@ -484,8 +478,8 @@ def list_websites():
                 ''')
     return c.fetchall()
 
-def link_website():
-    pass
+# def link_website():
+#     pass
 
 def delete_website(resource_id, author, media):
     c.execute('''DELETE FROM websites WHERE websites.ID = ?''', (resource_id,))
@@ -503,16 +497,13 @@ def add_audio_video(title, author, duration,  year, program, url, language, medi
 
     add_language(language)
     languageID = get_language_id(language)
-    print('Language ID is ', languageID)
 
     add_resource_medium(media)
     media = media.title()
     mediaID = get_resource_medium_id(media)
-    print('Audio/Video ID = ', mediaID)
 
     add_subject(subject)
     subjectID = get_subject_id(subject)
-    print('Subject ID =', subjectID)
 
     add_publisher(publisher)
     publisherID = get_publisher_id(publisher)
@@ -524,10 +515,8 @@ def add_audio_video(title, author, duration,  year, program, url, language, medi
     db.commit()
 
     authorID = get_author_id(author)
-    print('Author ID = ', authorID)
 
     audio_video_id = get_audio_video_id(title)
-    print('Audio/video ID', audio_video_id)
 
     c.execute('''INSERT OR IGNORE INTO resource_author(resourceID, authorID, mediaID ) 
                   VALUES(?, ?, ?)''', (audio_video_id, authorID, mediaID))
