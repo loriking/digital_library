@@ -226,6 +226,7 @@ def list_resource_medium():
 
 def get_resource_medium_id(medium_entry):
     """ Returns the ID (PK) of a given resource medium"""
+
     c.execute('''SELECT ID FROM resource_medium WHERE medium = ? ''', (medium_entry,))
     return c.fetchone()[0]
 
@@ -317,7 +318,7 @@ def get_text_id(text_title):
     return c.fetchone()[0]
 
 
-def add_text(title, author, year, pages, level, publisher, language, subject, medium, notes):
+def add_text(title, author, year, pages, level, publisher, language, subject, mediaID, notes):
 
     levelID = get_level_id(level)
 
@@ -330,7 +331,7 @@ def add_text(title, author, year, pages, level, publisher, language, subject, me
     add_subject(subject)
     subjectID = get_subject_id(subject)
 
-    mediaID = get_resource_medium_id(medium)
+    # mediaID = get_resource_medium_id(medium)
 
     c.execute('''INSERT OR IGNORE INTO texts(title, year, pages, levelID, publisherID, languageID, subjectID, 
                     mediaID, notes) 
@@ -343,7 +344,6 @@ def add_text(title, author, year, pages, level, publisher, language, subject, me
     print('ResourceID = ', resourceID)
 
     add_author(author)
-    db.commit()
 
     authorID = get_author_id(author)
     print('Author ID = ', authorID)
@@ -498,9 +498,7 @@ def add_audio_video(title, author, duration,  year, program, url, language, medi
     add_language(language)
     languageID = get_language_id(language)
 
-    add_resource_medium(media)
-    media = media.title()
-    mediaID = get_resource_medium_id(media)
+    # mediaID = get_resource_medium_id(media)
 
     add_subject(subject)
     subjectID = get_subject_id(subject)
@@ -511,7 +509,7 @@ def add_audio_video(title, author, duration,  year, program, url, language, medi
     c.execute('''INSERT OR IGNORE INTO audio_video(title, duration_mins, year, 
                 program, url, languageID, mediaID, subjectID, publisherID)
                 VALUES (?,?,?,?,?,?,?,?,?)''',
-              (title, duration, year, program, url, languageID, mediaID, subjectID, publisherID ))
+              (title, duration, year, program, url, languageID, media, subjectID, publisherID ))
     db.commit()
 
     authorID = get_author_id(author)
@@ -519,7 +517,7 @@ def add_audio_video(title, author, duration,  year, program, url, language, medi
     audio_video_id = get_audio_video_id(title)
 
     c.execute('''INSERT OR IGNORE INTO resource_author(resourceID, authorID, mediaID ) 
-                  VALUES(?, ?, ?)''', (audio_video_id, authorID, mediaID))
+                  VALUES(?, ?, ?)''', (audio_video_id, authorID, media))
     db.commit()
 
 def get_av_mediaID(resourceID):

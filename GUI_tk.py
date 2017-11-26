@@ -22,7 +22,7 @@ class ProjectLibrary(tk.Tk):
             self.frames[F] = frame
             frame.grid(row = 0, column = 0, sticky ='nsew')
 
-        self.show_frame(AddText)
+        self.show_frame(AddAudioVideo)
         
     def show_frame(self, cont):
         frame = self.frames[cont]
@@ -411,11 +411,13 @@ class AddText(tk.Frame):
 
         try:
             media_name = self.get_media_name()
+
         except UnboundLocalError:
             tkMessageBox.showinfo('Alert', 'Please Choose Media Type', icon='warning')
 
         try:
             data.get_level_id(self.level.get())
+
         except TypeError:
             tkMessageBox.showinfo('Alert', 'Please Choose Level', icon='warning')
 
@@ -1571,7 +1573,7 @@ class AddAudioVideo(AddMedia):
 
         self.language_label = tk.Label(self.center_frame, text='Language:')
         self.language_entry = tk.OptionMenu(self.center_frame, self.language,
-                                            *self.language_options)#  if self.language_options else '0')
+                                            *self.language_options)
         self.language_entry.configure(width=8)
         self.language_label.grid(column=0, row=0, sticky=tk.W)
         self.language_entry.grid(column=1, row=0,padx=5, sticky=tk.W)
@@ -1616,6 +1618,7 @@ class AddAudioVideo(AddMedia):
 
 
     def get_media_name(self):
+
         if self.media_buttons.get() == 1:
             media_name = 'Music/Sound'
         elif self.media_buttons.get() == 2:
@@ -1631,56 +1634,66 @@ class AddAudioVideo(AddMedia):
         self.list_resources(search_table)
 
     def save_data(self):
-        media_name = self.get_media_name()
 
-        data.add_audio_video(self.box1L.get(), self.box2L.get(), self.box3L.get(),
+        try:
+            media_name = self.get_media_name()
+
+        except ValueError:
+            tkMessageBox.showinfo('Alert', 'Please choose media type', icon='warning')
+
+        else:
+            mediaID = data.get_resource_medium_id(media_name)
+
+            data.add_audio_video(self.box1L.get(), self.box2L.get(), self.box3L.get(),
                              self.box2R.get(), self.box3R.get(), self.box4R.get(),
-                             self.language.get(), media_name, self.box4L.get(),
+                             self.language.get(), mediaID, self.box4L.get(),
                              self.box1R.get())
 
-        self.update_windows()
+            self.update_windows()
 
     def select_document(self, event):
         self.media_buttons.set('?')
 
         item = self.webdocs_list.focus()
 
-        document = self.treeview_docs.item(item)
+        try:
 
-        document_name = document['values'][0]
+            document = self.treeview_docs.item(item)
 
-        print('Document: ', document)
-        print('Doc name: ', document_name)
+            document_name = document['values'][0]
 
-        self.document_id = data.get_audio_video_id(document_name)
-        print('Doc_id = ', self.document_id)
+            self.document_id = data.get_audio_video_id(document_name)
 
-        av = data.get_av_info(self.document_id)
-        print(av)
+            av = data.get_av_info(self.document_id)
 
-        self.current_author = av[1]
-        self.current_media = av[9]
-        print('Author =', self.current_author)
-        print('Current media= ', self.current_media)
+            self.current_author = av[1]
+            self.current_media = av[9]
 
-        self.box1L.set(av[0])
-        self.box2L.set(av[1])
-        self.box3L.set(av[2])
-        self.box4L.set(av[3])
-        self.box1R.set(av[4])
-        self.box2R.set(av[5])
-        self.box3R.set(av[6])
-        self.box4R.set(av[7])
-        self.language.set(av[8])
+            self.box1L.set(av[0])
+            self.box2L.set(av[1])
+            self.box3L.set(av[2])
+            self.box4L.set(av[3])
+            self.box1R.set(av[4])
+            self.box2R.set(av[5])
+            self.box3R.set(av[6])
+            self.box4R.set(av[7])
+            self.language.set(av[8])
+        except IndexError:
+            pass
 
-        if self.current_media == 'Music or Sound':
-            self.media_buttons.set(1)
-        elif self.current_media == 'Podcast':
-            self.media_buttons.set(2)
-        elif self.current_media == 'Video':
-            self.media_buttons.set(3)
+        try:
 
-        return self.document_id, self.current_author, self.current_media
+            if self.current_media == 'Music or Sound':
+                self.media_buttons.set(1)
+            elif self.current_media == 'Podcast':
+                self.media_buttons.set(2)
+            elif self.current_media == 'Video':
+                self.media_buttons.set(3)
+
+            return self.document_id, self.current_author, self.current_media
+
+        except UnboundLocalError:
+            pass
 
     def update(self):
 
