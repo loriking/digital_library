@@ -341,12 +341,10 @@ def add_text(title, author, year, pages, level, publisher, language, subject, me
     db.commit()
 
     resourceID = get_text_id(title)
-    print('ResourceID = ', resourceID)
 
     add_author(author)
 
     authorID = get_author_id(author)
-    print('Author ID = ', authorID)
 
     add_resource_author(resourceID, authorID, mediaID)
 

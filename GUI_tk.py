@@ -22,7 +22,7 @@ class ProjectLibrary(tk.Tk):
             self.frames[F] = frame
             frame.grid(row = 0, column = 0, sticky ='nsew')
 
-        self.show_frame(AddAudioVideo)
+        self.show_frame(Projects)
         
     def show_frame(self, cont):
         frame = self.frames[cont]
@@ -266,11 +266,11 @@ class AddText(tk.Frame):
         self.add_language_entry.grid(column=3, row=4, sticky=tk.N+tk.E)
 
         self.updateextresource = tk.Button(middlerightframe, text='Update', command=lambda: self.update_text())
-        self.updateextresource.config(width=12, cursor='hand2')#
+        self.updateextresource.config(width=12, cursor='hand2')
         self.updateextresource.grid(column=3, row=0, padx=2, sticky=tk.W)
 
         self.addtextresource = tk.Button(middlerightframe, text='Save', command=lambda: self.save_text())
-        self.addtextresource.config(width=12, cursor='hand2')  #
+        self.addtextresource.config(width=12, cursor='hand2')
         self.addtextresource.grid(column=4, row=0, padx=2, sticky=tk.E)
 
         self.level_label = tk.Label(middleframe, text='Level:')
@@ -739,37 +739,26 @@ class LinkResources(tk.Frame):
             if self.media_type.get() == 1:
                 self.resource_id = data.get_audio_video_id(resource_name)
                 self.media_id = data.get_av_mediaID(self.resource_id)
-                print("AV ID =", self.resource_id)
-                print("AV mediaID",self.media_id )
 
             if self.media_type.get() == 2:
                 self.resource_id = data.get_course_id(resource_name)
                 self.media_id = data.get_course_mediaID(self.resource_id)
-                print('Courses:', self.resource_id, self.media_id)
 
             elif self.media_type.get() == 3:
                 self.resource_id = data.get_website_id(resource_name)
                 self.media_id = data.get_website_mediaID(self.resource_id)
-                print("Website ID =", self.resource_id)
-                print("Website mediaID", self.media_id)
 
             elif self.media_type.get() == 4:
                 self.resource_id = data.get_image_id(resource_name)
                 self.media_id = data.get_image_mediaID(self.resource_id)
-                print("IMAGE ID =", self.resource_id)
-                print("IMAGE mediaID =", self.media_id)
 
             elif self.media_type.get() == 5:
                 self.resource_id = data.get_interactive_id(resource_name)
                 self.media_id = data.get_media_interative_mediaID(self.resource_id)
-                print("IF ID =", self.resource_id)
-                print('IF mediaID = ', self.media_id)
 
             elif self.media_type.get() == 6:
                 self.resource_id = data.get_text_id(resource_name)
                 self.media_id = data.get_text_id(self.resource_id)
-                print('Resource id =', self.resource_id)
-                print('Text mediaID =', self.media_id)
 
             return self.resource_id, self.media_id
 
@@ -781,11 +770,9 @@ class LinkResources(tk.Frame):
         item = self.treeview_projects.selection()[0]
         project = self.treeview_projects.item(item)
         project_name = project['values'][0]
-        print(project_name)
 
         project = data.get_projectID(project_name)
         self.project_id = project[0]
-        print('Project ID =', self.project_id)
         return self.project_id
 
     def clear_selection(self):
@@ -796,8 +783,8 @@ class LinkResources(tk.Frame):
     def link_project_resources(self):
 
         data.link_to_resources(self.project_id, self.resource_id, self.media_id)
+        tkMessageBox.showinfo('Confirm', "Added item to\nproject bibliography!")
 
-        print("Added item(s)")
 
 
     def search_projects(self):
@@ -907,10 +894,12 @@ class Projects(tk.Frame):
         self.finish_label.grid(column=0, row=2, sticky=tk.W)
         self.finish_entry.grid(column=1, row=2, columnspan=3, sticky=tk.W)
 
-        self.refresh = tk.Button(self.toprightframe, text='Update list', width=12, command=lambda: self.list_projects())
+        self.refresh = tk.Button(self.toprightframe, text='Update list', width=12,
+                                 command=lambda: self.list_projects())
         self.refresh.grid(column=1, row=6)
 
-        self.add_project = tk.Button(self.toprightframe, text='Add Project',width=12, command=lambda: self.save_project())
+        self.add_project = tk.Button(self.toprightframe, text='Add Project',width=12,
+                                     command=lambda: self.save_project())
         self.add_project.grid(column=2, row=6, pady=12, sticky=tk.E)
 
         # Bottom Frame
@@ -950,6 +939,11 @@ class Projects(tk.Frame):
         self.home.config(width=13)
         self.home.grid(column=1, row=1,sticky=tk.W)
 
+        self.link = tk.Button(self.button_frame, text='Link Resources',
+                              command=lambda: controller.show_frame(LinkResources))
+        self.link.config(width=13)
+        self.link.grid(column=2, row=1, sticky=tk.W)
+
         self.list_projects()
         self.update_widgets()
 
@@ -968,7 +962,10 @@ class Projects(tk.Frame):
         self.new_projecttype.delete(0, 'end')
         self.new_type.set(0)
         self.choices.set('Choose project type:')
+
+    def update_project_type_list(self):
         self.project_category_options = data.list_project_category()
+        return self.project_category_options
 
 
     def save_project(self):
@@ -984,6 +981,7 @@ class Projects(tk.Frame):
 
         self.list_projects()
         self.update_widgets()
+        self.update_project_type_list()
 
 class AddMedia(tk.Frame):
     def __init__(self, parent, controller, *args):
