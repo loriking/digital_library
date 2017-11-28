@@ -895,7 +895,7 @@ class Projects(tk.Frame):
         self.finish_entry.grid(column=1, row=2, columnspan=3, sticky=tk.W)
 
         self.refresh = tk.Button(self.toprightframe, text='Update list', width=12,
-                                 command=lambda: self.list_projects())
+                                 command=lambda: self.update_project_type_list())
         self.refresh.grid(column=1, row=6)
 
         self.add_project = tk.Button(self.toprightframe, text='Add Project',width=12,
@@ -964,8 +964,14 @@ class Projects(tk.Frame):
         self.choices.set('Choose project type:')
 
     def update_project_type_list(self):
+        menu = self.project_type_entry.children["menu"]
+
+        menu.delete(0, "end")
+
         self.project_category_options = data.list_project_category()
-        return self.project_category_options
+        for i in self.project_category_options:
+            menu.add_command(label=i, command=lambda value=i: self.add_projecttype.set(value))
+        self.choices.set('Choose project type:')
 
 
     def save_project(self):
@@ -982,6 +988,7 @@ class Projects(tk.Frame):
         self.list_projects()
         self.update_widgets()
         self.update_project_type_list()
+
 
 class AddMedia(tk.Frame):
     def __init__(self, parent, controller, *args):
