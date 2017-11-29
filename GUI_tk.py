@@ -442,9 +442,10 @@ class AddText(tk.Frame):
             tkMessageBox.showinfo('Alert', 'Please Choose Level', icon='warning')
 
         else:
+            media_id = data.get_resource_medium_id(media_name)
             data.add_text(self.title.get(), self.author.get(), self.year.get(),
                           self.pages.get(), self.level.get(), self.thepublisher,
-                          self.thelanguage, self.subject.get(), media_name, self.notes.get())
+                          self.thelanguage, self.subject.get(), media_id, self.notes.get())
 
             self.update_windows()
             self.update_publisher_menu()
@@ -754,6 +755,7 @@ class LinkResources(tk.Frame):
 
         for item in self.treeview_resources.selection():
             item_text = self.treeview_resources.item(item)
+            print(item_text)
 
             resource_name = item_text['values'][0]
             print(resource_name)
@@ -776,11 +778,11 @@ class LinkResources(tk.Frame):
 
             elif self.media_type.get() == 5:
                 self.resource_id = data.get_interactive_id(resource_name)
-                self.media_id = data.get_media_interative_mediaID(self.resource_id)
+                self.media_id = data.get_interactive_mediaID(self.resource_id)
 
             elif self.media_type.get() == 6:
                 self.resource_id = data.get_text_id(resource_name)
-                self.media_id = data.get_text_id(self.resource_id)
+                self.media_id = data.get_text_mediaID(self.resource_id)
 
             return self.resource_id, self.media_id
 

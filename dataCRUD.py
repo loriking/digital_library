@@ -314,9 +314,13 @@ def delete_subject(subject_id):
 # TEXTS
 def get_text_id(text_title):
     #resource_title = resource_title_entry.title()
+
     c.execute('''SELECT ID FROM texts WHERE title = ?''', (text_title,))
     return c.fetchone()[0]
 
+def get_text_mediaID(text_id):
+    c.execute('''SELECT mediaID FROM texts WHERE ID = ?''', (text_id,))
+    return c.fetchone()[0]
 
 def add_text(title, author, year, pages, level, publisher, language, subject, mediaID, notes):
 
@@ -330,8 +334,6 @@ def add_text(title, author, year, pages, level, publisher, language, subject, me
 
     add_subject(subject)
     subjectID = get_subject_id(subject)
-
-    # mediaID = get_resource_medium_id(medium)
 
     c.execute('''INSERT OR IGNORE INTO texts(title, year, pages, levelID, publisherID, languageID, subjectID, 
                     mediaID, notes) 
@@ -710,7 +712,7 @@ def add_interactive_media(title, creator, year, platform, version, comments, eng
     db.commit()
 
 
-def get_media_interactive_mediaID(resourceID):
+def get_interactive_mediaID(resourceID):
     c.execute('''SELECT typeID FROM interactive_media WHERE interactive_media.ID = ?''', (resourceID,))
     return c.fetchone()[0]
 
