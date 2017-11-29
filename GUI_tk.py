@@ -362,6 +362,26 @@ class AddText(tk.Frame):
         for item in updated:
             self.treeview.insert('', 'end', values=item)
 
+    def update_language_menu(self):
+        menu = self.language_entry.children["menu"]
+
+        menu.delete(0, "end")
+
+        self.language_options = data.list_languages()
+        for i in self.language_options:
+            menu.add_command(label=i, command=lambda value=i: self.add_language_entry.set(value))
+        self.language.set('Choose project type:')
+
+    def update_publisher_menu(self):
+        menu = self.publisher_entry.children["menu"]
+
+        menu.delete(0, "end")
+
+        self.publisher_options = data.list_publishers()
+        for i in self.publisher_options:
+            menu.add_command(label=i, command=lambda value=i: self.add_publisher_entry.set(value))
+        self.publisher.set('Choose project type:')
+
     def update_entry_widgets(self): # clears entry widgete
 
         self.title_entry.delete(0, 'end')
@@ -427,6 +447,8 @@ class AddText(tk.Frame):
                           self.thelanguage, self.subject.get(), media_name, self.notes.get())
 
             self.update_windows()
+            self.update_publisher_menu()
+            self.update_language_menu()
 
     def select_text(self, event):
 
