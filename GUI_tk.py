@@ -22,7 +22,7 @@ class ProjectLibrary(tk.Tk):
             self.frames[F] = frame
             frame.grid(row = 0, column = 0, sticky ='nsew')
 
-        self.show_frame(Projects)
+        self.show_frame(AddText)
         
     def show_frame(self, cont):
         frame = self.frames[cont]
@@ -170,11 +170,11 @@ class AddText(tk.Frame):
 
         self.publisher = tk.StringVar()
         self.publisher_options = data.list_publishers()
-        self.publisher.set('Select:')
+        self.publisher.set('Select one:')
 
         self.language = tk.StringVar()
         self.language_options = data.list_languages()
-        self.language.set('Select:')
+        self.language.set('Select one:')
 
         self.new_lang = tk.StringVar()
         self.new_pub = tk.StringVar()
@@ -187,7 +187,7 @@ class AddText(tk.Frame):
 
         self.level = tk.StringVar()
         self.level_options = data.list_levels()
-        self.level.set('Select')
+        self.level.set('Select one')
 
         self.text_id = None
         self.current_author = ''
@@ -370,7 +370,7 @@ class AddText(tk.Frame):
         self.language_options = data.list_languages()
         for i in self.language_options:
             menu.add_command(label=i, command=lambda value=i: self.add_language_entry.set(value))
-        self.language.set('Choose project type:')
+        self.language.set('Select one:')
 
     def update_publisher_menu(self):
         menu = self.publisher_entry.children["menu"]
@@ -380,7 +380,7 @@ class AddText(tk.Frame):
         self.publisher_options = data.list_publishers()
         for i in self.publisher_options:
             menu.add_command(label=i, command=lambda value=i: self.add_publisher_entry.set(value))
-        self.publisher.set('Choose project type:')
+        self.publisher.set('Select one:')
 
     def update_entry_widgets(self): # clears entry widgete
 
@@ -394,9 +394,9 @@ class AddText(tk.Frame):
         self.add_publisher_entry.delete(0, 'end')
         self.new_lang_flag.set(0)
         self.new_pub_flag.set(0)
-        self.publisher.set('Select:')
-        self.language.set('Select:')
-        self.level.set('Select: ')
+        self.publisher.set('Select one:')
+        self.language.set('Select one:')
+        self.level.set('Select one: ')
         self.text_type.set('?')
 
     def get_media_name(self):
@@ -1636,6 +1636,15 @@ class AddAudioVideo(AddMedia):
                AddMedia.b2L, AddMedia.b3L, AddMedia.b4L, AddMedia.b1R, AddMedia.b2R, AddMedia.b3R, AddMedia.b4R, \
                AddMedia.media_choice1, AddMedia.media_choice2, AddMedia.media_choice3
 
+    def update_language_menu(self):
+        menu = self.language_entry.children["menu"]
+
+        menu.delete(0, "end")
+
+        self.language_options = data.list_languages()
+        for i in self.language_options:
+            menu.add_command(label=i, command=lambda value=i: self.add_language_entry.set(value))
+        self.language.set('Select one:')
 
     def get_media_name(self):
 
@@ -1670,6 +1679,7 @@ class AddAudioVideo(AddMedia):
                              self.box1R.get())
 
             self.update_windows()
+            # self.update_language_menu()
 
     def select_document(self, event):
         self.media_buttons.set('?')
