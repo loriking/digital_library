@@ -8,7 +8,7 @@ author: lak
 import sqlite3 
 
 def make_db():
-    db = sqlite3.connect('library_data.db')
+    db = sqlite3.connect('learning_stack.db')
     c = db.cursor()
 
     c.executescript('''
@@ -44,69 +44,101 @@ def make_db():
         medium TEXT UNIQUE
         );
     
+    CREATE TABLE IF NOT EXISTS game_engine(
+        ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+        name TEXT UNIQUE  
+        );
+        
+    CREATE TABLE IF NOT EXISTS platform (
+        ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+        name TEXT UNIQUE  
+        );
+        
+    CREATE TABLE IF NOT EXISTS website_name (
+        ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+        name TEXT UNIQUE  
+        );
+        
+    CREATE TABLE IF NOT EXISTS producers(
+        ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+        name TEXT NOT NULL
+        );
+    
+    
     CREATE TABLE IF NOT EXISTS texts (
         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
         title TEXT NOT NULL UNIQUE,
         year INTEGER,
         pages INTEGER,
-        levelID INTEGER REFERENCES levels(ID),
+        subjectID INTEGER REFERENCES subjects(ID),
+        notes TEXT,
         publisherID INTEGER REFERENCES publishers(ID),
         languageID INTEGER REFERENCES languages(ID),
-        subjectID INTEGER REFERENCES subjects(ID),
         mediaID INTEGER REFERENCES resource_medium(ID),
-        notes TEXT
+        levelID INTEGER REFERENCES levels(ID)
         );
     
     CREATE TABLE IF NOT EXISTS websites (
         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
         title TEXT NOT NULL,
         creation_date INTEGER,
-        website_nameID INTEGER REFERENCES publishers(ID),
+        subjectID INTEGER REFERENCES subjects(ID),
+        website_nameID INTEGER REFERENCES website_name(ID),
         url TEXT,
         access_date INTEGER,
         notes TEXT,
-        mediaID INTEGER REFERENCES resource_medium(ID),
-        subjectID INTEGER REFERENCES subjects(ID)
+        mediaID INTEGER REFERENCES resource_medium(ID)
         );
             
-        
-    CREATE TABLE IF NOT EXISTS audio_video (
+    CREATE TABLE IF NOT EXISTS audio (
         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
         title TEXT NOT NULL,
         duration_mins INTEGER NOT NULL,
+        subjectID INTEGER REFERENCES subjects(ID),
+        producerID INTEGER REFERENCES producers(ID),
         year INTEGER,
         program TEXT,
         url TEXT,
-        languageID INTEGER REFERENCES languages(ID),
         mediaID INTEGER REFERENCES resource_medium(ID),
-        subjectID INTEGER REFERENCES subjects(ID),
-        publisherID INTEGER REFERENCES publishers(ID)
+        languageID INTEGER REFERENCES languages(ID)
         );
-        
+             
+    CREATE TABLE IF NOT EXISTS video (
+        ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+        title TEXT NOT NULL,
+        duration_mins INTEGER NOT NULL,
+        subjectID INTEGER REFERENCES subjects(ID),
+        producerID INTEGER REFERENCES producers(ID),
+        year INTEGER,
+        program TEXT,
+        url TEXT,
+        mediaID INTEGER REFERENCES resource_medium(ID),
+        languageID INTEGER REFERENCES languages(ID)
+        );   
     
     CREATE TABLE IF NOT EXISTS courses (
         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
         title TEXT NOT NULL,
+        platformID INTEGER REFERENCES publishers(ID),
+        url TEXT,
+        subjectID INTEGER REFERENCES subjects(ID),
         start_date INTEGER NOT NULL,
         duration_weeks TEXT,
-        url TEXT,
         comments TEXT,
-        levelID INTEGER REFERENCES levels(ID),
-        platformID INTEGER REFERENCES publishers(ID),
         mediaID INTEGER REFERENCES resource_medium(ID),
-        subjectID INTEGER REFERENCES subjects(ID)
+        levelID INTEGER REFERENCES levels(ID)
         );
         
     CREATE TABLE IF NOT EXISTS interactive_media(
         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
         title TEXT NOT NULL,
         year INTEGER,
-        platform TEXT,
+        subjectID INTEGER REFERENCES subjects(ID),
+        platformID INTEGER REFERENCES platform(ID),
+        engineID INTEGER REFERENCES game_engine(ID),
         version INTEGER,
         comments TEXT,
-        engineID INTEGER REFERENCES publishers(ID),
-        typeID INTEGER REFERENCES resource_medium(ID),
-        genreID INTEGER REFERENCES subjects(ID)
+        mediaID INTEGER REFERENCES resource_medium(ID)        
         );
         
     CREATE TABLE IF NOT EXISTS images(
@@ -114,13 +146,12 @@ def make_db():
         title TEXT NOT NULL,
         date INTEGER,
         copywrite TEXT,
-        website_name TEXT,
         dimensions TEXT,
+        website_nameID INTEGER REFERENCES website_name(ID),
         url TEXT,
         comments TEXT,       
-        imagetypeID INTEGER REFERENCES resource_medium(ID)
+        mediaID INTEGER REFERENCES resource_medium(ID)
         );
-        
         
     CREATE TABLE IF NOT EXISTS resource_author(  
         resourceID INTEGER,
@@ -162,12 +193,13 @@ def make_db():
                       'Low Advanced', 'Advanced', 'Professional']
     default_project_type = ['Python App']
     default_publisher = ['Unpublished']
-    default_media_types = ['Music or Sound', 'Podcast', 'Video',
-                           'Book', 'Short story', 'Other text',
-                           'Audio only class', 'Web based class', 'Blended Class',
+    default_media_types = ['Book', 'Short story', 'Other text',
+                           'Music', 'Sound', 'Podcast',
+                           'Feature Film', 'Documentary', 'Other video',
+                           'Audio only', 'MOOC', 'Blended Class',
                            'Photo', 'Clip art','Sprite',
                            'Interactive Fiction', 'Video game', 'Other interactive',
-                           'Documentation', 'Q&A Site', 'Website']
+                           'Website', 'Documentation', 'Q&A Site']
 
     for i in default_languages:
         c.execute('INSERT OR IGNORE INTO languages(language) VALUES(?)', (i,))
