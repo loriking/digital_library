@@ -16,13 +16,13 @@ class ProjectLibrary(tk.Tk):
 
         self.frames = {}
 
-        for F in (HomePage, Projects, LinkResources, AddResource, AddText, AddAudioVideo, AddCourse,
+        for F in (HomePage, Projects, LinkResources, AddResource, AddText, AddAudio, AddVideo, AddCourse,
                   AddInteractiveMedia, AddMedia, AddImages, SearchResource, EditProject):
             frame = F(main, self)
             self.frames[F] = frame
             frame.grid(row = 0, column = 0, sticky ='nsew')
 
-        self.show_frame(AddText)
+        self.show_frame(AddResource)
         
     def show_frame(self, cont):
         frame = self.frames[cont]
@@ -83,49 +83,55 @@ class AddResource(tk.Frame):
 
         self.topframe = tk.LabelFrame(self, text='', borderwidth=0)
         self.topframe.pack(expand=tk.TRUE, fill=tk.BOTH)
+        # self.topframe.config(bg='purple2')
 
         self.firstframe = tk.LabelFrame(self.topframe, text='', borderwidth=0)
         self.secondframe = tk.LabelFrame(self.topframe, text='', borderwidth=0)
         self.thirdframe = tk.LabelFrame(self.topframe, borderwidth=0, text='')
-        self.fourthframe = tk.LabelFrame(self.topframe, borderwidth=0, text='')
 
-        self.firstframe.pack(side=tk.LEFT, anchor=tk.CENTER, expand=tk.TRUE, ipadx=10, ipady=10, padx=10, pady=10)
-        self.secondframe.pack(side=tk.LEFT, anchor=tk.CENTER, expand=tk.TRUE, ipadx=10, ipady=10, padx=10, pady=10)
-        self.thirdframe.pack(side=tk.LEFT, anchor=tk.CENTER, expand=tk.TRUE, ipadx=10, ipady=10, padx=10, pady=20)
-        self.fourthframe.pack(side=tk.LEFT, anchor=tk.CENTER, expand=tk.TRUE, ipadx=10, ipady=10, padx=10, pady=20)
+        self.firstframe.pack(side=tk.LEFT, anchor=tk.CENTER, expand=tk.TRUE)#, ipadx=10, ipady=10, padx=10, pady=10)
+        self.secondframe.pack(side=tk.LEFT, anchor=tk.CENTER, expand=tk.TRUE)#, ipadx=10, ipady=10, padx=10, pady=10)
+        self.thirdframe.pack(side=tk.LEFT, anchor=tk.CENTER, expand=tk.TRUE)#, ipadx=10, ipady=10, padx=10, pady=20)
 
+        self.AddAudioButton = tk.Button(self.firstframe, text='Audio', width=20,height=5,bg='gray85',
+                                        command=lambda: controller.show_frame(AddAudio))
 
-        self.AddAudioVideoButton = tk.Button(self.firstframe, text='Audio\n and Video', width=20,height=5,
-                                        command=lambda: controller.show_frame(AddAudioVideo))
-        self.AddCourseButton = tk.Button(self.firstframe, text='Courses', width=20, height=5,
+        self.AddBooksButton = tk.Button(self.secondframe, text='Books\n and Texts', width=20, height=5,bg='gray85',
+                                        command=lambda: controller.show_frame(AddText))
+
+        self.AddCourseButton = tk.Button(self.thirdframe, text='Courses', width=20, height=5,bg='gray85',
                                          command=lambda: controller.show_frame(AddCourse))
 
-        self.AddImagesButton= tk.Button(self.secondframe, text='Clipart, Photos\nand Sprites', width=20,height=5,
-                                        command=lambda: controller.show_frame(AddImages))
-        self.AddInteractiveMediaButton= tk.Button(self.secondframe, text='Interactive\n Media',  width=20,height=5,
-                                        command=lambda: controller.show_frame(AddInteractiveMedia))
 
-        self.AddTextButton= tk.Button(self.thirdframe, text='Books\n and Texts', width=20,height=5,
-                                        command=lambda: controller.show_frame(AddText))
-        self.AddWebsitesbutton= tk.Button(self.thirdframe, text='Websites', width=20,height=5,
+        self.AddImagesButton= tk.Button(self.firstframe, text='Images', width=20,height=5,bg='gray85',
+                                        command=lambda: controller.show_frame(AddImages))
+
+        self.AddInteractiveMediaButton= tk.Button(self.secondframe, text='Interactive\n Media', width=20,height=5,
+                                          bg='gray85', command=lambda: controller.show_frame(AddInteractiveMedia))
+
+        self.AddVideoButton = tk.Button(self.thirdframe, text='Video', width=20, height=5,bg='gray85',
+                                        command=lambda: controller.show_frame(AddVideo))
+
+        self.AddWebsitesbutton= tk.Button(self.firstframe, text='Websites', width=20,height=5,bg='gray85',
                                         command=lambda: controller.show_frame(AddMedia))
 
+        self.about = tk.Button(self.secondframe, text='About', width=20, height=5,bg='gray85',)#,
+                                        # command=lambda: controller.show_frame(About))
 
-        self.go_projects = tk.Button( self.fourthframe, text='View\nProjects', width=20, height=5,
-                                         command=lambda: controller.show_frame(Projects))
-
-        self.go_home = tk.Button( self.fourthframe, text='Home', width=20, height=5,
+        self.go_home = tk.Button( self.thirdframe, text='Home', width=20, height=5,
                                          command=lambda: controller.show_frame(HomePage))
 
-        self.AddAudioVideoButton.pack( pady=10)
-        self.AddCourseButton.pack( pady=10)
-        self.AddImagesButton.pack( pady=10)
-        self.go_projects.pack( pady=10)
+        self.AddAudioButton.pack()
+        self.AddBooksButton.pack()
+        self.AddCourseButton.pack()
+        self.AddVideoButton.pack()
 
-        self.AddInteractiveMediaButton.pack( pady=10)
-        self.AddTextButton.pack( pady=10)
-        self.AddWebsitesbutton.pack( pady=10)
-        self.go_home.pack( pady=10)
+
+        self.AddImagesButton.pack()
+        self.AddInteractiveMediaButton.pack()
+        self.AddWebsitesbutton.pack()
+        self.about.pack()
+        self.go_home.pack()
 
 class AddText(tk.Frame):
     def __init__(self, parent, controller):
@@ -1013,7 +1019,6 @@ class Projects(tk.Frame):
         self.update_widgets()
         self.update_project_type_list()
 
-
 class AddMedia(tk.Frame):
     def __init__(self, parent, controller, *args):
         tk.Frame.__init__(self, parent)
@@ -1124,9 +1129,9 @@ class AddMedia(tk.Frame):
         self.c5 = 'Access date'
         self.c6 = 'Subject'
 
-        self.media_choice1 = 'Documentation'
-        self.media_choice2 = 'Q&A Site'
-        self.media_choice3 = 'Website'
+        self.media_choice1 = 'Website'
+        self.media_choice2 = 'Documentation'
+        self.media_choice3 = 'Q&A Site'
 
         return self.window_header, self.b2L, self.b3L, self.b4L, self.b1R, self.b2R, self.b3R, \
                self.b4R, self.c1, self.c2, self.c3, self.c4, self.c5, self.c6, self.media_choice1, \
@@ -1421,12 +1426,12 @@ class AddCourse(AddMedia):
     def create_values(self):
         AddMedia.window_header = 'Online Courses'
         AddMedia.b2L = 'Instructor'
-        AddMedia.b3L = 'Start date'
-        AddMedia.b4L = 'Subject'
+        AddMedia.b3L = 'Platform'
+        AddMedia.b4L = 'URL'
 
-        AddMedia.b1R = 'Platform'
-        AddMedia.b2R = 'URL'
-        AddMedia.b3R = 'Length (hrs)'
+        AddMedia.b1R = 'Subject'
+        AddMedia.b2R = 'Start date'
+        AddMedia.b3R = 'Length (wks)'
         AddMedia.b4R = 'Comments'
 
         AddMedia.c1 = 'Title'
@@ -1437,7 +1442,7 @@ class AddCourse(AddMedia):
         AddMedia.c6 = 'Comments'
 
         AddMedia.media_choice1 = 'Audio only class'
-        AddMedia.media_choice2 = 'Web based class'
+        AddMedia.media_choice2 = 'MOOC'
         AddMedia.media_choice3 = 'Blended Class'
 
 
@@ -1449,7 +1454,7 @@ class AddCourse(AddMedia):
         if self.media_buttons.get() == 1:
             media_name = 'Audio only class'
         elif self.media_buttons.get() == 2:
-            media_name = 'Web based class'
+            media_name = 'MOOC'
         elif self.media_buttons.get() == 3:
             media_name = 'Blended Class'
         print('Media name = ', media_name)
@@ -1493,7 +1498,7 @@ class AddCourse(AddMedia):
         try:
             if media == 'Audio only class':
                 self.media_buttons.set(1)
-            elif media == 'Web based class':
+            elif media == 'MOOC':
                 self.media_buttons.set(2)
             elif media == 'Blended Class':
                 self.media_buttons.set(3)
@@ -1512,12 +1517,11 @@ class AddCourse(AddMedia):
     def save_data(self):
         media_name = self.get_media_name()
         print('Media name = ', media_name)
+        media_id = data.get_resource_medium_id(media_name)
 
-            # add_course(title, instructor, start_date, duration, url, comments, level, platform, media, subject)
-        data.add_course(self.box1L.get(), self.box2L.get(), self.box3L.get(),
-                        self.box3R.get(), self.box2R.get(), self.box4R.get(),
-                        self.level.get(), self.box1R.get(), media_name,
-                        self.box4L.get())
+        data.add_course(self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(),
+                        self.box1R.get(), self.box2R.get(), self.box3R.get(), self.box4R.get(),
+                        media_id, self.level.get())
 
         self.update_windows()
 
@@ -1550,13 +1554,10 @@ class AddCourse(AddMedia):
             media_id = data.get_resource_medium_id(media_name)
             print('MediaID =', media_id)
 
-            data.add_resource_author(self.document_id, author_id, media_id)
-
-
-        data.update_course(self.document_id, self.box1L.get(), self.box3L.get(),
-                        self.box3R.get(), self.box2R.get(), self.box4R.get(),
-                        self.level.get(), self.box1R.get(), media_name,
-                        self.box4L.get())
+        data.update_course(self.document_id, self.box1L.get(),  self.box3L.get(), self.box4L.get(),
+                            self.box1R.get(), self.box2R.get(), self.box3R.get(), self.box4R.get(),
+                            media_id, self.level.get())
+        data.add_resource_author(self.document_id, author_id, media_id)
 
         self.update_windows()
 
@@ -1578,11 +1579,11 @@ class AddCourse(AddMedia):
             self.update_windows()
             tkMessageBox.showinfo('Deleted', message2, icon='info')
 
-class AddAudioVideo(AddMedia):
+class AddAudio(AddMedia):
     def __init__(self, parent, controller):
         AddMedia.__init__(self, parent, controller)
 
-        self.table = data.list_av()
+        self.table = data.list_audio()
         self.document_id = None
         self.current_author = ''
         self.current_media = ''
@@ -1598,7 +1599,7 @@ class AddAudioVideo(AddMedia):
         self.language_label.grid(column=0, row=0, sticky=tk.W)
         self.language_entry.grid(column=1, row=0,padx=5, sticky=tk.W)
 
-        self.table = data.list_av()
+        self.table = data.list_audio()
 
 
         self.create_values()
@@ -1613,9 +1614,9 @@ class AddAudioVideo(AddMedia):
 
 
     def create_values(self):
-        AddMedia.window_header = 'Audio and Video'
+        AddMedia.window_header = 'Music, Sounds and Podcasts'
         AddMedia.b2L = 'Artist'
-        AddMedia.b3L = 'Duration (mins)'
+        AddMedia.b3L = 'Duration (secs)'
         AddMedia.b4L = 'Subject'
         AddMedia.b1R = 'Producer'
         AddMedia.b2R = 'Date'
@@ -1628,9 +1629,9 @@ class AddAudioVideo(AddMedia):
         AddMedia.c4 = 'Type'
         AddMedia.c5 = 'Program'
         AddMedia.c6 = 'Language'
-        AddMedia.media_choice1 = 'Music or Sound'
-        AddMedia.media_choice2 = 'Podcast'
-        AddMedia.media_choice3 = 'Video'
+        AddMedia.media_choice1 = 'Music'
+        AddMedia.media_choice2 = 'Sound'
+        AddMedia.media_choice3 = 'Podcast'
 
         return AddMedia.c1, AddMedia.c2, AddMedia.c3, AddMedia.c4, AddMedia.c5, AddMedia.c6, AddMedia.window_header, \
                AddMedia.b2L, AddMedia.b3L, AddMedia.b4L, AddMedia.b1R, AddMedia.b2R, AddMedia.b3R, AddMedia.b4R, \
@@ -1643,21 +1644,21 @@ class AddAudioVideo(AddMedia):
 
         self.language_options = data.list_languages()
         for i in self.language_options:
-            menu.add_command(label=i, command=lambda value=i: self.add_language_entry.set(value))
+            menu.add_command(label=i, command=lambda value=i: self.language.set(value))
         self.language.set('Select one:')
 
     def get_media_name(self):
 
         if self.media_buttons.get() == 1:
-            media_name = 'Music/Sound'
+            media_name = 'Music'
         elif self.media_buttons.get() == 2:
-            media_name = 'Podcast'
+            media_name = 'Sound'
         else:
-            media_name = 'Video'
+            media_name = 'Podcast'
         return media_name
 
     def update_windows(self):
-        search_table = data.list_av()
+        search_table = data.list_audio()
 
         self.update_entry_widgets()
         self.list_resources(search_table)
@@ -1673,10 +1674,9 @@ class AddAudioVideo(AddMedia):
         else:
             mediaID = data.get_resource_medium_id(media_name)
 
-            data.add_audio_video(self.box1L.get(), self.box2L.get(), self.box3L.get(),
-                             self.box2R.get(), self.box3R.get(), self.box4R.get(),
-                             self.language.get(), mediaID, self.box4L.get(),
-                             self.box1R.get())
+            data.add_audio(self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(),
+                           self.box1R.get(), self.box2R.get(), self.box3R.get(), self.box4R.get(),
+                            mediaID, self.language.get())
 
             self.update_windows()
             # self.update_language_menu()
@@ -1692,22 +1692,22 @@ class AddAudioVideo(AddMedia):
 
             document_name = document['values'][0]
 
-            self.document_id = data.get_audio_video_id(document_name)
+            self.document_id = data.get_audio_id(document_name)
 
-            av = data.get_av_info(self.document_id)
+            audio = data.get_audio_info(self.document_id)
 
-            self.current_author = av[1]
-            self.current_media = av[9]
+            self.current_author = audio[1]
+            self.current_media = audio[9]
 
-            self.box1L.set(av[0])
-            self.box2L.set(av[1])
-            self.box3L.set(av[2])
-            self.box4L.set(av[3])
-            self.box1R.set(av[4])
-            self.box2R.set(av[5])
-            self.box3R.set(av[6])
-            self.box4R.set(av[7])
-            self.language.set(av[8])
+            self.box1L.set(audio[0])
+            self.box2L.set(audio[1])
+            self.box3L.set(audio[2])
+            self.box4L.set(audio[3])
+            self.box1R.set(audio[4])
+            self.box2R.set(audio[5])
+            self.box3R.set(audio[6])
+            self.box4R.set(audio[7])
+            self.language.set(audio[8])
         except IndexError:
             pass
 
@@ -1751,15 +1751,213 @@ class AddAudioVideo(AddMedia):
             media_id = data.get_resource_medium_id(media_name)
             print('MediaID =', media_id)
 
+        # update_audio(audio_id, title, duration,  subject, producer, year, program, url, media_id, language)
+        data.update_audio(self.document_id, self.box1L.get(), self.box3L.get(), self.box4L.get(),
+                            self.box1R.get(), self.box2R.get(), self.box3R.get(), self.box4R.get(),
+                            media_id, self.language.get())
+
+        data.add_resource_author(self.document_id, author_id, media_id)
+
+        search_table = data.list_audio()
+
+        self.list_resources(search_table)
+        self.update_entry_widgets()
+
+    def delete(self):
+        media_name = self.box1L.get()
+
+        message1 = "Delete " + self.current_media + " '" + media_name + "'?\nThis cannot be undone!"
+        message2 = "'" + media_name + "' deleted."
+
+        result = tkMessageBox.askokcancel("Delete?", message1, icon='warning')
+
+        if result == True:
+            data.delete_av(self.document_id, self.current_author, self.current_media)
+            self.update_windows()
+            tkMessageBox.showinfo('Deleted', message2, icon='info')
+
+class AddVideo(AddMedia):
+    def __init__(self, parent, controller):
+        AddMedia.__init__(self, parent, controller)
+
+        self.table = data.list_video()
+        self.document_id = None
+        self.current_author = ''
+        self.current_media = ''
+
+        self.language = tk.StringVar()
+        self.language_options = data.list_languages()
+        self.language.set('Select one')
+
+        self.language_label = tk.Label(self.center_frame, text='Language:')
+        self.language_entry = tk.OptionMenu(self.center_frame, self.language,
+                                            *self.language_options)
+        self.language_entry.configure(width=8)
+        self.language_label.grid(column=0, row=0, sticky=tk.W)
+        self.language_entry.grid(column=1, row=0,padx=5, sticky=tk.W)
+
+        self.table = data.list_video()
+
+
+        self.create_values()
+
+        self.display_resources(AddMedia.c1, AddMedia.c2, AddMedia.c3, AddMedia.c4,
+                               AddMedia.c5, AddMedia.c6)
+
+        self.create_top_frame_widgets(AddMedia.window_header, AddMedia.b2L, AddMedia.b3L, AddMedia.b4L, \
+                                      AddMedia.b1R, AddMedia.b2R, AddMedia.b3R, AddMedia.b4R)
+
+        self.list_resources(self.table)
+
+
+    def create_values(self):
+        AddMedia.window_header = 'Films and Video'
+        AddMedia.b2L = 'Artist'
+        AddMedia.b3L = 'Duration (mins)'
+        AddMedia.b4L = 'Subject'
+        AddMedia.b1R = 'Producer'
+        AddMedia.b2R = 'Date'
+        AddMedia.b3R = 'Program'
+        AddMedia.b4R = 'URL'
+
+        AddMedia.c1 = 'Title'
+        AddMedia.c2 = 'Artist'
+        AddMedia.c3 = 'Date'
+        AddMedia.c4 = 'Type'
+        AddMedia.c5 = 'Program'
+        AddMedia.c6 = 'Language'
+        AddMedia.media_choice1 = 'Feature film'
+        AddMedia.media_choice2 = 'Documentary'
+        AddMedia.media_choice3 = 'Other video'
+
+        return AddMedia.c1, AddMedia.c2, AddMedia.c3, AddMedia.c4, AddMedia.c5, AddMedia.c6, AddMedia.window_header, \
+               AddMedia.b2L, AddMedia.b3L, AddMedia.b4L, AddMedia.b1R, AddMedia.b2R, AddMedia.b3R, AddMedia.b4R, \
+               AddMedia.media_choice1, AddMedia.media_choice2, AddMedia.media_choice3
+
+    def update_language_menu(self):
+        menu = self.language_entry.children["menu"]
+
+        menu.delete(0, "end")
+
+        self.language_options = data.list_languages()
+        for i in self.language_options:
+            menu.add_command(label=i, command=lambda value=i: self.language.set(value))
+        self.language.set('Select one:')
+
+    def get_media_name(self):
+
+        if self.media_buttons.get() == 1:
+            media_name = 'Feature Film'
+        elif self.media_buttons.get() == 2:
+            media_name = 'Documentary'
+        else:
+            media_name = 'Other video'
+        return media_name
+
+    def update_windows(self):
+        search_table = data.list_video()
+
+        self.update_entry_widgets()
+        self.list_resources(search_table)
+
+    def save_data(self):
+
+        try:
+            media_name = self.get_media_name()
+
+        except ValueError:
+            tkMessageBox.showinfo('Alert', 'Please choose media type', icon='warning')
+
+        else:
+            mediaID = data.get_resource_medium_id(media_name)
+
+            data.add_video(self.box1L.get(), self.box2L.get(), self.box3L.get(),
+                             self.box2R.get(), self.box3R.get(), self.box4R.get(),
+                             self.language.get(), mediaID, self.box4L.get(),
+                             self.box1R.get())
+
+            self.update_windows()
+            # self.update_language_menu()
+
+    def select_document(self, event):
+        self.media_buttons.set('?')
+
+        item = self.webdocs_list.focus()
+
+        try:
+
+            document = self.treeview_docs.item(item)
+
+            document_name = document['values'][0]
+
+            self.document_id = data.get_video_id(document_name)
+
+            video = data.get_video_info(self.document_id)
+
+            self.current_author = video[1]
+            self.current_media = video[9]
+
+            self.box1L.set(video[0])
+            self.box2L.set(video[1])
+            self.box3L.set(video[2])
+            self.box4L.set(video[3])
+            self.box1R.set(video[4])
+            self.box2R.set(video[5])
+            self.box3R.set(video[6])
+            self.box4R.set(video[7])
+            self.language.set(video[8])
+        except IndexError:
+            pass
+
+        try:
+
+            if self.current_media == 'Feature film':
+                self.media_buttons.set(1)
+            elif self.current_media == 'Documentary':
+                self.media_buttons.set(2)
+            elif self.current_media == 'Video':
+                self.media_buttons.set(3)
+
+            return self.document_id, self.current_author, self.current_media
+
+        except UnboundLocalError:
+            pass
+
+    def update(self):
+
+        media_name = self.get_media_name()
+        print('Media name = ', media_name)
+
+        old_author_id = data.get_author_id(self.current_author)
+        print('Old author id= ', old_author_id)
+
+        old_media_id = data.get_resource_medium_id(self.current_media)
+        print('old media id', old_media_id)
+
+        author_name = self.box2L.get()
+
+        if self.current_author != author_name or self.current_media != media_name:
+            print('Difference found!')
+            data.delete_resource_author(self.document_id, self.current_author, self.current_media)
+            print('Deleted resource author for ID', self.document_id)
+
+            data.add_author(author_name)
+
+            author_id = data.get_author_id(author_name)
+            print('Author ID', author_id)
+
+            media_id = data.get_resource_medium_id(media_name)
+            print('MediaID =', media_id)
+
             data.add_resource_author(self.document_id, author_id, media_id)
 
-        # update_av(av_id, title, duration,  year, program, url, language, media, subject, publisher)
-        data.update_av(self.document_id, self.box1L.get(), self.box3L.get(),
+        # update_video(av_id, title, duration,  year, program, url, language, media, subject, publisher)
+        data.update_video(self.document_id, self.box1L.get(), self.box3L.get(),
                         self.box2R.get(), self.box3R.get(), self.box4R.get(),
                         self.language.get(), media_id, self.box4L.get(),
                         self.box1R.get())
 
-        search_table = data.list_av()
+        search_table = data.list_video()
 
         self.list_resources(search_table)
         self.update_entry_widgets()
@@ -1774,7 +1972,7 @@ class AddAudioVideo(AddMedia):
         result = tkMessageBox.askokcancel("Delete?", message1, icon='warning')
 
         if result == True:
-            data.delete_av(self.document_id, self.current_author, self.current_media)
+            data.delete_video(self.document_id, self.current_author, self.current_media)
             self.update_windows()
             tkMessageBox.showinfo('Deleted', message2, icon='info')
 
