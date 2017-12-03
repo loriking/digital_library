@@ -253,7 +253,6 @@ class AddText(tk.Frame):
         self.subject_label.grid(column=0, row=3, sticky=tk.W)
         self.subject_entry.grid(columnspan=3, column=1, row=3, sticky=tk.W)
 
-
         # Top right frame
 
         self.add_pub_flag = tk.Checkbutton(topcenterframe,  text='Add new',
@@ -299,8 +298,7 @@ class AddText(tk.Frame):
         self.text_type2.grid(column=2, row=0, sticky=tk.W)
         self.text_type3.grid(column=3, row=0, sticky=tk.W)
 
-
-        # Bottom frame
+       # Bottom frame
 
         self.scrollresources = tk.Scrollbar(bottomframe)
         self.scrollresources.grid(column=1,row=1, sticky=tk.N+tk.S+tk.W)
@@ -316,19 +314,19 @@ class AddText(tk.Frame):
         self.resource_list['columns'] = ('Title', 'Author', 'Year', 'Pages',
                           'Publisher', 'Language', 'Notes')
         self.resource_list.column('#0',minwidth=0, width=0)
-        self.resource_list.column('0', width=180, anchor='w')
-        self.resource_list.column('1', width=150, anchor='w')
-        self.resource_list.column('2', width=75, anchor='w')
-        self.resource_list.column('3', width=60, anchor='w')
-        self.resource_list.column('4', width=100, anchor='w')
+        self.resource_list.column('0', width=195, anchor='w')
+        self.resource_list.column('1', width=160, anchor='w')
+        self.resource_list.column('2', width=60, anchor='c')
+        self.resource_list.column('3', width=60, anchor='e')
+        self.resource_list.column('4', width=95, anchor='w')
         self.resource_list.column('5', width=90, anchor='w')
         self.resource_list.column('6', width=200, anchor='w')
         self.resource_list.grid(column=0, row=1, sticky=tk.E)
 
         self.resource_list.heading('0', text='Title', anchor='w')
         self.resource_list.heading('1', text='Author(s)', anchor='w')
-        self.resource_list.heading('2', text='Year', anchor='w')
-        self.resource_list.heading('3', text='Pages', anchor='w')
+        self.resource_list.heading('2', text='Year')#, anchor='w')
+        self.resource_list.heading('3', text='Pages')#, anchor='w')
         self.resource_list.heading('4', text='Publisher', anchor='w')
         self.resource_list.heading('5', text='Language', anchor='w')
         self.resource_list.heading('6', text='Notes', anchor='w')
@@ -402,7 +400,7 @@ class AddText(tk.Frame):
         self.new_pub_flag.set(0)
         self.publisher.set('Select one:')
         self.language.set('Select one:')
-        self.level.set('Select one: ')
+        self.level.set('Select one:')
         self.text_type.set('?')
 
     def get_media_name(self):
@@ -1227,8 +1225,8 @@ class AddMedia(tk.Frame):
 
         self.webdocs_list['columns'] = (col1, col2, col3, col4, col5, col6)
         self.webdocs_list.column('#0', minwidth=0, width=0)
-        self.webdocs_list.column('0', width=200, anchor='w')
-        self.webdocs_list.column('1', width=160, anchor='w')
+        self.webdocs_list.column('0', width=220, anchor='w')
+        self.webdocs_list.column('1', width=140, anchor='w')
         self.webdocs_list.column('2', width=95, anchor='w')
         self.webdocs_list.column('3', width=75, anchor='w')
         self.webdocs_list.column('4', width=75, anchor='w')
@@ -1426,7 +1424,7 @@ class AddCourse(AddMedia):
     def create_values(self):
         AddMedia.window_header = 'Online Courses'
         AddMedia.b2L = 'Instructor'
-        AddMedia.b3L = 'Platform'
+        AddMedia.b3L = 'Provider'
         AddMedia.b4L = 'URL'
 
         AddMedia.b1R = 'Subject'
@@ -1438,7 +1436,7 @@ class AddCourse(AddMedia):
         AddMedia.c2 = 'Instructor'
         AddMedia.c3 = 'Start date'
         AddMedia.c4 = 'Duration'
-        AddMedia.c5 = 'Platform'
+        AddMedia.c5 = 'Provider'
         AddMedia.c6 = 'Comments'
 
         AddMedia.media_choice1 = 'Audio only class'
@@ -1548,11 +1546,11 @@ class AddCourse(AddMedia):
 
             data.add_author(author_name)
 
-            author_id = data.get_author_id(author_name)
-            print('Author ID', author_id)
+        author_id = data.get_author_id(author_name)
+        print('Author ID', author_id)
 
-            media_id = data.get_resource_medium_id(media_name)
-            print('MediaID =', media_id)
+        media_id = data.get_resource_medium_id(media_name)
+        print('MediaID =', media_id)
 
         data.update_course(self.document_id, self.box1L.get(),  self.box3L.get(), self.box4L.get(),
                             self.box1R.get(), self.box2R.get(), self.box3R.get(), self.box4R.get(),
@@ -1601,7 +1599,6 @@ class AddAudio(AddMedia):
 
         self.table = data.list_audio()
 
-
         self.create_values()
 
         self.display_resources(AddMedia.c1, AddMedia.c2, AddMedia.c3, AddMedia.c4,
@@ -1612,6 +1609,20 @@ class AddAudio(AddMedia):
 
         self.list_resources(self.table)
 
+    def update_entry_widgets(self):
+
+        self.title_entry.delete(0, 'end')
+        self.box_2_L_entry.delete(0, 'end')
+        self.box_3_L_entry.delete(0, 'end')
+        self.box_4_L_entry.delete(0, 'end')
+
+        self.box_1_R_entry.delete(0, 'end')
+        self.box_2_R_entry.delete(0, 'end')
+        self.box_3_R_entry.delete(0, 'end')
+        self.box_4_R_entry.delete(0, 'end')
+
+        self.media_buttons.set('?')
+        # self.language.set('Select one')
 
     def create_values(self):
         AddMedia.window_header = 'Music, Sounds and Podcasts'
@@ -1627,8 +1638,8 @@ class AddAudio(AddMedia):
         AddMedia.c2 = 'Artist'
         AddMedia.c3 = 'Date'
         AddMedia.c4 = 'Type'
-        AddMedia.c5 = 'Program'
-        AddMedia.c6 = 'Language'
+        AddMedia.c5 = 'Language'
+        AddMedia.c6 = 'Program'
         AddMedia.media_choice1 = 'Music'
         AddMedia.media_choice2 = 'Sound'
         AddMedia.media_choice3 = 'Podcast'
@@ -1674,11 +1685,19 @@ class AddAudio(AddMedia):
         else:
             mediaID = data.get_resource_medium_id(media_name)
 
-            data.add_audio(self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(),
-                           self.box1R.get(), self.box2R.get(), self.box3R.get(), self.box4R.get(),
-                            mediaID, self.language.get())
+            if self.language.get() == 'Select one':
+                tkMessageBox.showinfo('Alert', 'Please choose language', icon='warning')
 
-            self.update_windows()
+            elif self.language.get() != 'Select one':
+
+                data.add_audio(self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(),
+                               self.box1R.get(), self.box2R.get(), self.box3R.get(), self.box4R.get(),
+                                mediaID, self.language.get())
+
+                self.update_windows()
+                self.language.set('Select one')
+                print('Data added!')
+
             # self.update_language_menu()
 
     def select_document(self, event):
@@ -1713,12 +1732,14 @@ class AddAudio(AddMedia):
 
         try:
 
-            if self.current_media == 'Music or Sound':
+            if self.current_media == 'Music':
                 self.media_buttons.set(1)
-            elif self.current_media == 'Podcast':
+            elif self.current_media == 'Sound':
                 self.media_buttons.set(2)
-            elif self.current_media == 'Video':
+            elif self.current_media == 'Podcast':
                 self.media_buttons.set(3)
+
+            print(self.document_id, self.current_author, self.current_media)
 
             return self.document_id, self.current_author, self.current_media
 
@@ -1743,13 +1764,14 @@ class AddAudio(AddMedia):
             data.delete_resource_author(self.document_id, self.current_author, self.current_media)
             print('Deleted resource author for ID', self.document_id)
 
-            data.add_author(author_name)
+            if self.current_author != author_name:
+                data.add_author(author_name)
 
-            author_id = data.get_author_id(author_name)
-            print('Author ID', author_id)
+        author_id = data.get_author_id(author_name)
+        print('Author ID', author_id)
 
-            media_id = data.get_resource_medium_id(media_name)
-            print('MediaID =', media_id)
+        media_id = data.get_resource_medium_id(media_name)
+        print('MediaID =', media_id)
 
         # update_audio(audio_id, title, duration,  subject, producer, year, program, url, media_id, language)
         data.update_audio(self.document_id, self.box1L.get(), self.box3L.get(), self.box4L.get(),
@@ -1762,6 +1784,7 @@ class AddAudio(AddMedia):
 
         self.list_resources(search_table)
         self.update_entry_widgets()
+        self.language.set('Select one')
 
     def delete(self):
         media_name = self.box1L.get()
@@ -1798,7 +1821,6 @@ class AddVideo(AddMedia):
 
         self.table = data.list_video()
 
-
         self.create_values()
 
         self.display_resources(AddMedia.c1, AddMedia.c2, AddMedia.c3, AddMedia.c4,
@@ -1817,15 +1839,15 @@ class AddVideo(AddMedia):
         AddMedia.b4L = 'Subject'
         AddMedia.b1R = 'Producer'
         AddMedia.b2R = 'Date'
-        AddMedia.b3R = 'Program'
-        AddMedia.b4R = 'URL'
+        AddMedia.b3R = 'URL'
+        AddMedia.b4R = 'Comments'
 
         AddMedia.c1 = 'Title'
         AddMedia.c2 = 'Artist'
         AddMedia.c3 = 'Date'
         AddMedia.c4 = 'Type'
-        AddMedia.c5 = 'Program'
-        AddMedia.c6 = 'Language'
+        AddMedia.c5 = 'Language'
+        AddMedia.c6 = 'Comments'
         AddMedia.media_choice1 = 'Feature film'
         AddMedia.media_choice2 = 'Documentary'
         AddMedia.media_choice3 = 'Other video'
@@ -1871,12 +1893,12 @@ class AddVideo(AddMedia):
         else:
             mediaID = data.get_resource_medium_id(media_name)
 
-            data.add_video(self.box1L.get(), self.box2L.get(), self.box3L.get(),
-                             self.box2R.get(), self.box3R.get(), self.box4R.get(),
-                             self.language.get(), mediaID, self.box4L.get(),
-                             self.box1R.get())
+            data.add_video(self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(),
+                            self.box1R.get(), self.box2R.get(), self.box3R.get(), self.box4R.get(),
+                            mediaID, self.language.get())
 
-            self.update_windows()
+        self.update_windows()
+        self.language.set('Select one')
             # self.update_language_menu()
 
     def select_document(self, event):
@@ -1961,6 +1983,7 @@ class AddVideo(AddMedia):
 
         self.list_resources(search_table)
         self.update_entry_widgets()
+        self.language.set('Select one')
 
 
     def delete(self):
@@ -1974,6 +1997,7 @@ class AddVideo(AddMedia):
         if result == True:
             data.delete_video(self.document_id, self.current_author, self.current_media)
             self.update_windows()
+            self.language.set('Select one')
             tkMessageBox.showinfo('Deleted', message2, icon='info')
 
 class AddInteractiveMedia(AddMedia):
@@ -2008,9 +2032,9 @@ class AddInteractiveMedia(AddMedia):
         AddMedia.c1 = 'Title'
         AddMedia.c2 = 'Creator'
         AddMedia.c3 = 'Year'
-        AddMedia.c4 = 'Engine'
-        AddMedia.c5 = 'Type'
-        AddMedia.c6 = 'Comments'
+        AddMedia.c4 = 'Platform'
+        AddMedia.c5 = 'Engine'
+        AddMedia.c6 = 'Type'
         AddMedia.media_choice1 = 'Interactive Fiction'
         AddMedia.media_choice2 = 'Video game'
         AddMedia.media_choice3 = 'Other'
@@ -2051,9 +2075,6 @@ class AddInteractiveMedia(AddMedia):
         try:
 
             document_name = document['values'][0]
-
-            print('Document: ', document)
-            print('Doc name: ', document_name)
 
             self.document_id = data.get_interactive_id(document_name)
             print('Doc_id = ', self.document_id)
