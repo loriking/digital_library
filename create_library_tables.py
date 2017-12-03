@@ -63,6 +63,11 @@ def make_db():
         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
         name TEXT NOT NULL
         );
+        
+    CREATE TABLE IF NOT EXISTS provider(
+        ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+        name TEXT NOT NULL
+        );
     
     
     CREATE TABLE IF NOT EXISTS texts (
@@ -93,7 +98,7 @@ def make_db():
     CREATE TABLE IF NOT EXISTS audio (
         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
         title TEXT NOT NULL,
-        duration_mins INTEGER NOT NULL,
+        duration_secs INTEGER NOT NULL,
         subjectID INTEGER REFERENCES subjects(ID),
         producerID INTEGER REFERENCES producers(ID),
         year INTEGER,
@@ -110,8 +115,8 @@ def make_db():
         subjectID INTEGER REFERENCES subjects(ID),
         producerID INTEGER REFERENCES producers(ID),
         year INTEGER,
-        program TEXT,
         url TEXT,
+        comments TEXT,
         mediaID INTEGER REFERENCES resource_medium(ID),
         languageID INTEGER REFERENCES languages(ID)
         );   
@@ -119,11 +124,11 @@ def make_db():
     CREATE TABLE IF NOT EXISTS courses (
         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
         title TEXT NOT NULL,
-        platformID INTEGER REFERENCES publishers(ID),
+        providerID INTEGER REFERENCES provider(ID),
         url TEXT,
         subjectID INTEGER REFERENCES subjects(ID),
-        start_date INTEGER NOT NULL,
-        duration_weeks TEXT,
+        start_date TEXT NOT NULL,
+        duration_weeks INTEGER,
         comments TEXT,
         mediaID INTEGER REFERENCES resource_medium(ID),
         levelID INTEGER REFERENCES levels(ID)
@@ -136,7 +141,7 @@ def make_db():
         subjectID INTEGER REFERENCES subjects(ID),
         platformID INTEGER REFERENCES platform(ID),
         engineID INTEGER REFERENCES game_engine(ID),
-        version INTEGER,
+        version REAL,
         comments TEXT,
         mediaID INTEGER REFERENCES resource_medium(ID)        
         );
