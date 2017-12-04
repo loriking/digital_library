@@ -2356,25 +2356,30 @@ class SearchResource(tk.Frame):
         # SEARCH
         self.sort_label = tk.Label(self.top, text='Resource type:')
 
-        self.audiovideo_rb = tk.Radiobutton(self.topmiddle, text='Audio and Video',
+        self.audio_rb = tk.Radiobutton(self.topmiddle, text='Audio',
                                             variable=self.media_type, value=1)
         self.courses_rb = tk.Radiobutton(self.topmiddle, text='Courses', variable=self.media_type, value=2)
         self.websites_rb = tk.Radiobutton(self.topmiddle, text='Websites', variable=self.media_type, value=3)
         self.images_rb = tk.Radiobutton(self.topmiddle, text='Images', variable=self.media_type, value=4)
-        self.interactive_rb = tk.Radiobutton(self.topmiddle, text='Interactive Media',
+        self.interactive_rb = tk.Radiobutton(self.topmiddle, text='Interactive',
                                              variable=self.media_type, value=5)
-        self.texts_rb = tk.Radiobutton(self.topmiddle, text='Books and Texts', variable=self.media_type, value=6)
+        self.books_rb = tk.Radiobutton(self.topmiddle, text='Books', variable=self.media_type, value=6)
+        self.video_rb = tk.Radiobutton(self.topmiddle, text='Videos', variable=self.media_type, value=7)
+        self.all_rb = tk.Radiobutton(self.topmiddle, text='Search All', variable=self.media_type, value=8)
 
         self.search_bar_label.grid(column=0, row=1)
         self.search_bar_entry.grid(column=1, row=1)
         self.sort_label.grid(column=2, row=1, padx=5, sticky=tk.E)
 
-        self.audiovideo_rb.grid(column=3, row=1, sticky=tk.W)
-        self.texts_rb.grid(column=4, row=1, sticky=tk.W)
+        self.audio_rb.grid(column=3, row=1, sticky=tk.W)
+        self.books_rb.grid(column=4, row=1, sticky=tk.W)
         self.courses_rb.grid(column=5, row=1, sticky=tk.W)
-        self.websites_rb.grid(column=3, row=2, sticky=tk.W)
-        self.images_rb.grid(column=4, row=2, sticky=tk.W)
-        self.interactive_rb.grid(column=5, row=2, sticky=tk.W)
+        self.images_rb.grid(column=6, row=1, sticky=tk.W)
+
+        self.interactive_rb.grid(column=3, row=2, sticky=tk.W)
+        self.video_rb.grid(column=4, row=2, sticky=tk.W)
+        self.websites_rb.grid(column=5, row=2, sticky=tk.W)
+        self.all_rb.grid(column=6, row=2, sticky=tk.W)
 
         self.search_button.grid(column=4, row=1, sticky=tk.W)
 
@@ -2439,8 +2444,8 @@ class SearchResource(tk.Frame):
     def create_table_values(self):
 
         if self.media_type.get() == 1:
-            column_names = ('Title', 'Artist', 'Year', 'Type', 'Program', 'Language')
-            resources = data.find_av(self.search_bar.get())
+            column_names = ('Title', 'Artist', 'Date', 'Type', 'Language', 'Program')
+            resources = data.find_audio(self.search_bar.get())
 
         if self.media_type.get() == 2:
             column_names = ('Title', 'Instructor', 'Start date', 'Duration', 'Platform', 'Subject')
@@ -2455,12 +2460,20 @@ class SearchResource(tk.Frame):
             resources = data.find_images(self.search_bar.get())
 
         elif self.media_type.get() == 5:
-            column_names = ('Title', 'Creator', 'Genre', 'Engine', 'Type', 'Comments')
+            column_names = ('Title', 'Creator', 'Year', 'Platform','Engine', 'Type')
             resources = data.find_interactive(self.search_bar.get())
 
         elif self.media_type.get() == 6:
             column_names = ('Title', 'Author', 'Year', 'Pages', 'Language', 'Notes')
             resources = data.find_texts(self.search_bar.get())
+
+        elif self.media_type.get() == 7:
+            column_names = ('Title', 'Author', 'Year', 'Type', 'Language', 'Comments')
+            resources = data.find_video(self.search_bar.get())
+
+        elif self.media_type.get() == 8:
+            column_names = ('Title', 'Author', 'Year', 'Subject', 'Language', 'Notes')
+            resources = data.find_all(self.search_bar.get())
 
         return column_names, resources
 

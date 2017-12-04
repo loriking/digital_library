@@ -1082,16 +1082,16 @@ def find_texts(search_term):
 
 def find_courses(search_term):
     search_term = "%" + search_term + "%"
-
-    c.execute('''SELECT courses.title, authors.name, courses.start_date, courses.duration_hours, 
-                    publishers.publisher, subjects.subject
-                FROM courses JOIN  resource_medium JOIN authors JOIN resource_author JOIN subjects JOIN publishers
+    # Results desired: 'Title', 'Instructor', 'Start date', 'Duration', 'Platform', 'Subject'
+    c.execute('''SELECT courses.title, authors.name, courses.start_date, courses.duration_weeks, 
+                    provider.name, subjects.subject
+                FROM courses JOIN  resource_medium JOIN authors JOIN resource_author JOIN subjects JOIN provider
                 ON courses.mediaID = resource_medium.ID 
                 AND authors.ID = resource_author.authorID 
                 AND courses.ID = resource_author.resourceID
                 AND courses.mediaID = resource_author.mediaID
                 AND courses.subjectID = subjects.ID
-                AND courses.platformID = publishers.ID
+                AND courses.providerID = provider.ID
                 WHERE courses.title LIKE ?
                 OR subjects.subject LIKE ?
                 OR courses.comments LIKE ?''',
@@ -1102,17 +1102,16 @@ def find_courses(search_term):
 
 def find_audio(search_term):
     search_term = "%" + search_term + "%"
-    # RESULTS WANTED: 'Title', 'Artist', 'Year', 'Type', 'Program' 'Language'
+    # RESULTS WANTED: 'Title', 'Artist', 'Date', 'Type', 'Language', 'Program',
 
     c.execute('''SELECT audio.title, authors.name, audio.year, resource_medium.medium, 
-                        audio.program, languages.language
+                        languages.language, audio.program
                     FROM audio JOIN  resource_medium JOIN authors 
-                    JOIN resource_author JOIN publishers JOIN languages
+                    JOIN resource_author JOIN languages
                     ON audio.mediaID = resource_medium.ID 
                     AND authors.ID = resource_author.authorID 
                     AND audio.ID = resource_author.resourceID
                     AND audio.mediaID = resource_author.mediaID
-                    AND audio.publisherID = publishers.ID
                     AND audio.languageID = languages.ID
                     WHERE audio.title LIKE ?
                     OR authors.name LIKE ?''',
@@ -1123,17 +1122,16 @@ def find_audio(search_term):
 
 def find_video(search_term):
     search_term = "%" + search_term + "%"
-    # RESULTS WANTED: 'Title', 'Artist', 'Year', 'Type', 'Program' 'Language'
+    # RESULTS WANTED: 'Title', 'Author', 'Year', 'Type', 'Language', 'Comments'
 
     c.execute('''SELECT video.title, authors.name, video.year, resource_medium.medium, 
-                        video.program, languages.language
+                        languages.language, video.comments
                     FROM video JOIN resource_medium JOIN authors 
-                    JOIN resource_author JOIN publishers JOIN languages
+                    JOIN resource_author JOIN languages
                     ON video.mediaID = resource_medium.ID 
                     AND authors.ID = resource_author.authorID 
                     AND video.ID = resource_author.resourceID
                     AND video.mediaID = resource_author.mediaID
-                    AND video.publisherID = publishers.ID
                     AND video.languageID = languages.ID
                     WHERE video.title LIKE ?
                     OR authors.name LIKE ?''',
@@ -1145,24 +1143,25 @@ def find_video(search_term):
 def find_interactive(search_term):
     # Wanted 'Title', 'Creator', 'Genre', 'Engine', 'Type', 'Comments'
     search_term = "%" + search_term + "%"
-
-    c.execute('''SELECT interactive_media.title, authors.name, subjects.subject,
-                        publishers.publisher, resource_medium.medium, 
-                        interactive_media.comments
+    # 'Title', 'Creator', 'Year', 'Platform','Engine', 'Type'
+    c.execute('''SELECT interactive_media.title, authors.name, year, 
+                        platform.name, game_engine.name, resource_medium.medium
+                        
                         FROM interactive_media JOIN resource_medium JOIN authors 
-                        JOIN resource_author JOIN publishers JOIN subjects
-                        ON interactive_media.typeID = resource_medium.ID 
+                        JOIN resource_author JOIN platform JOIN game_engine
+                        ON interactive_media.mediaID = resource_medium.ID 
                         AND authors.ID = resource_author.authorID 
                         AND interactive_media.ID = resource_author.resourceID
-                        AND interactive_media.typeID = resource_author.mediaID
-                        AND interactive_media.engineID = publishers.ID
-                        AND interactive_media.genreID = subjects.ID
+                        AND interactive_media.mediaID = resource_author.mediaID
+                        AND interactive_media.engineID =game_engine.ID
+                        AND interactive_media.platformID = platform.ID
+    
                         WHERE interactive_media.title LIKE ?
                         OR authors.name LIKE ?
-                        OR subjects.subject LIKE ?
-                        OR interactive_media.comments LIKE ?
-                        OR publishers.publisher LIKE ? ''',
-              (search_term, search_term, search_term, search_term, search_term))
+                        OR game_engine.name LIKE ?
+                        OR platform.name LIKE ?''',
+
+              (search_term, search_term, search_term, search_term))
 
     return c.fetchall()
 
@@ -1173,10 +1172,10 @@ def find_images(search_term):
     c.execute('''SELECT images.title, authors.name, resource_medium.medium,
                         images.dimensions, images.date, images.comments
                     FROM images JOIN resource_medium JOIN authors JOIN resource_author
-                    ON images.imagetypeID = resource_medium.ID 
+                    ON images.mediaID = resource_medium.ID 
                     AND authors.ID = resource_author.authorID 
                     AND images.ID = resource_author.resourceID
-                    AND images.imagetypeID = resource_author.mediaID
+                    AND images.mediaID = resource_author.mediaID
                     WHERE images.title LIKE ?
                     OR authors.name LIKE ? 
                     OR resource_medium.medium LIKE ?
@@ -1205,6 +1204,9 @@ def find_web(search_term):
 
     return c.fetchall()
 
+
+def find_all(search_term):
+    pass
 # Retrieve item
 def get_text(textID):
     c.execute('''SELECT texts.title, authors.name, texts.year, texts.pages, languages.language, texts.notes
