@@ -180,7 +180,36 @@ def make_db():
         mediaID INTEGER,
         PRIMARY KEY (projectID, resourceID, mediaID) 
         );
-    ''')
+    CREATE VIEW all_resources AS 
+    SELECT texts.ID, texts.title, subjects.subject, resource_medium.medium 
+    FROM texts, resource_medium, subjects
+    WHERE texts.mediaID = resource_medium.ID AND texts.subjectID = subjects.ID
+    
+    UNION SELECT audio.ID, audio.title, subjects.subject, resource_medium.medium 
+    FROM audio, resource_medium, subjects
+    WHERE audio.mediaID = resource_medium.ID AND audio.subjectID = subjects.ID
+    
+    UNION SELECT courses.ID, courses.title, subjects.subject, resource_medium.medium 
+    FROM courses, resource_medium, subjects
+    WHERE courses.mediaID = resource_medium.ID AND courses.subjectID = subjects.ID
+    
+    UNION SELECT images.ID, images.title, subjects.subject, resource_medium.medium 
+    FROM images, resource_medium, subjects
+    WHERE images.mediaID = resource_medium.ID AND images.subjectID = subjects.ID
+    
+    UNION SELECT interactive_media.ID, interactive_media.title, subjects.subject, resource_medium.medium 
+    FROM interactive_media, resource_medium, subjects
+    WHERE interactive_media.mediaID = resource_medium.ID AND interactive_media.subjectID = subjects.ID
+    
+    UNION SELECT video.ID, video.title, subjects.subject, resource_medium.medium 
+    FROM video, resource_medium, subjects
+    WHERE video.mediaID = resource_medium.ID AND video.subjectID = subjects.ID
+    
+    UNION SELECT websites.ID, websites.title, subjects.subject, resource_medium.medium 
+    FROM websites, resource_medium, subjects
+    WHERE websites.mediaID = resource_medium.ID AND websites.subjectID = subjects.ID;
+
+        ''')
 
 
     db.commit()
@@ -217,7 +246,21 @@ def make_db():
     db.commit()
     db.close()
 
+# def make_views():
+#     db = sqlite3.connect('test.db')
+#     c = db.cursor()
+#
+#     c.executescript(
+#         '''PRAGMA Foreign_Keys=True;
+#
+#          ''')
+#
+#
+#     db.commit()
+#     db.close()
+#
 
 
 if __name__ == '__main__':
     make_db()
+    # make_views()
