@@ -8,7 +8,7 @@ author: lak
 import sqlite3 
 
 def make_db():
-    db = sqlite3.connect('learning_stack.db')
+    db = sqlite3.connect('test.db')
     c = db.cursor()
 
     c.executescript('''
@@ -31,7 +31,7 @@ def make_db():
     
     CREATE TABLE IF NOT EXISTS subjects (
         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-        subject TEXT UNIQUE
+        subject TEXT UNIQUE NOT NULL
         );
         
     CREATE TABLE IF NOT EXISTS levels (
@@ -41,123 +41,116 @@ def make_db():
 
     CREATE TABLE IF NOT EXISTS resource_medium (
         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-        medium TEXT UNIQUE
+        medium TEXT UNIQUE NOT NULL
         );
     
     CREATE TABLE IF NOT EXISTS game_engine(
         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-        name TEXT UNIQUE  
+        name TEXT UNIQUE NOT NULL
         );
         
     CREATE TABLE IF NOT EXISTS platform (
         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-        name TEXT UNIQUE  
+        name TEXT UNIQUE  NOT NULL
         );
         
     CREATE TABLE IF NOT EXISTS website_name (
         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-        name TEXT UNIQUE  
+        name TEXT UNIQUE NOT NULL
         );
-        
-    CREATE TABLE IF NOT EXISTS producers(
-        ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-        name TEXT NOT NULL
-        );
-        
+                
     CREATE TABLE IF NOT EXISTS provider(
         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-        name TEXT NOT NULL
+        name TEXT UNIQUE NOT NULL
         );
-    
+        
+    CREATE TABLE IF NOT EXISTS copyright(
+        ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+        status TEXT UNIQUE NULL
+        );       
     
     CREATE TABLE IF NOT EXISTS texts (
         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-        title TEXT NOT NULL UNIQUE,
+        title TEXT UNIQUE NOT NULL,
         year INTEGER,
         pages INTEGER,
         subjectID INTEGER REFERENCES subjects(ID),
-        notes TEXT,
         publisherID INTEGER REFERENCES publishers(ID),
         languageID INTEGER REFERENCES languages(ID),
         mediaID INTEGER REFERENCES resource_medium(ID),
         levelID INTEGER REFERENCES levels(ID)
         );
     
-    CREATE TABLE IF NOT EXISTS websites (
-        ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-        title TEXT NOT NULL,
-        creation_date INTEGER,
-        subjectID INTEGER REFERENCES subjects(ID),
-        website_nameID INTEGER REFERENCES website_name(ID),
-        url TEXT,
-        access_date INTEGER,
-        notes TEXT,
-        mediaID INTEGER REFERENCES resource_medium(ID)
-        );
             
     CREATE TABLE IF NOT EXISTS audio (
         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-        title TEXT NOT NULL,
-        duration_secs INTEGER NOT NULL,
+        title TEXT UNIQUE NOT NULL,
+        duration TEXT NOT NULL,
         subjectID INTEGER REFERENCES subjects(ID),
-        producerID INTEGER REFERENCES producers(ID),
-        year INTEGER,
         program TEXT,
+        date TEXT,
         url TEXT,
         mediaID INTEGER REFERENCES resource_medium(ID),
         languageID INTEGER REFERENCES languages(ID)
         );
-             
-    CREATE TABLE IF NOT EXISTS video (
-        ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-        title TEXT NOT NULL,
-        duration_mins INTEGER NOT NULL,
-        subjectID INTEGER REFERENCES subjects(ID),
-        producerID INTEGER REFERENCES producers(ID),
-        year INTEGER,
-        url TEXT,
-        comments TEXT,
-        mediaID INTEGER REFERENCES resource_medium(ID),
-        languageID INTEGER REFERENCES languages(ID)
-        );   
     
     CREATE TABLE IF NOT EXISTS courses (
         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-        title TEXT NOT NULL,
+        title TEXT UNIQUE NOT NULL,
+        subjectID INTEGER REFERENCES subjects(ID),
+        duration_weeks INTEGER,
         providerID INTEGER REFERENCES provider(ID),
         url TEXT,
-        subjectID INTEGER REFERENCES subjects(ID),
-        start_date TEXT NOT NULL,
-        duration_weeks INTEGER,
-        comments TEXT,
+        notes TEXT,
         mediaID INTEGER REFERENCES resource_medium(ID),
         levelID INTEGER REFERENCES levels(ID)
         );
         
+    CREATE TABLE IF NOT EXISTS images(
+        ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+        title TEXT UNIQUE NOT NULL,
+        date_created INTEGER,
+        date_accessed INTEGER,
+        url TEXT,
+        subjectID INTEGER REFERENCES subjects(ID),
+        copyrightID INTEGER REFERENCES copyright(ID),       
+        mediaID INTEGER REFERENCES resource_medium(ID)
+        );
+
     CREATE TABLE IF NOT EXISTS interactive_media(
         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-        title TEXT NOT NULL,
+        title TEXT UNIQUE NOT NULL,
         year INTEGER,
         subjectID INTEGER REFERENCES subjects(ID),
         platformID INTEGER REFERENCES platform(ID),
         engineID INTEGER REFERENCES game_engine(ID),
         version REAL,
-        comments TEXT,
         mediaID INTEGER REFERENCES resource_medium(ID)        
         );
-        
-    CREATE TABLE IF NOT EXISTS images(
+                             
+    CREATE TABLE IF NOT EXISTS video (
         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-        title TEXT NOT NULL,
-        date INTEGER,
-        copywrite TEXT,
-        dimensions TEXT,
-        website_nameID INTEGER REFERENCES website_name(ID),
+        title TEXT UNIQUE NOT NULL,
+        duration TEXT NOT NULL,
+        subjectID INTEGER REFERENCES subjects(ID),
+        producer TEXT,
+        year INTEGER,
         url TEXT,
-        comments TEXT,       
+        mediaID INTEGER REFERENCES resource_medium(ID),
+        languageID INTEGER REFERENCES languages(ID)
+        );   
+
+    CREATE TABLE IF NOT EXISTS websites (
+        ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+        title TEXT UNIQUE NOT NULL,
+        subjectID INTEGER REFERENCES subjects(ID),     
+        url TEXT,
+        date_created TEXT,
+        date_accessed TEXT,
+        notes TEXT,
         mediaID INTEGER REFERENCES resource_medium(ID)
         );
-        
+
     CREATE TABLE IF NOT EXISTS resource_author(  
         resourceID INTEGER,
         authorID INTEGER,
@@ -200,11 +193,12 @@ def make_db():
     default_publisher = ['Unpublished']
     default_media_types = ['Book', 'Short story', 'Other text',
                            'Music', 'Sound', 'Podcast',
-                           'Feature Film', 'Documentary', 'Other video',
+                           'Video Clip', 'Documentary', 'Other Video',
                            'Audio only', 'MOOC', 'Blended Class',
-                           'Photo', 'Clip art','Sprite',
+                           'Photo', 'Clipart/Sprite','Other image',
                            'Interactive Fiction', 'Video game', 'Other interactive',
                            'Website', 'Documentation', 'Q&A Site']
+    default_copyright = ['Public Domain', 'Creative Commons', 'Copyrighted']
 
     for i in default_languages:
         c.execute('INSERT OR IGNORE INTO languages(language) VALUES(?)', (i,))
@@ -216,6 +210,8 @@ def make_db():
         c.execute('INSERT OR IGNORE INTO publishers(publisher) VALUES(?)', (i,))
     for i in default_media_types:
         c.execute('INSERT OR IGNORE INTO resource_medium(medium) VALUES(?)', (i,))
+    for i in default_copyright:
+        c.execute('INSERT OR IGNORE INTO copyright(status) VALUES(?)', (i,))
 
 
     db.commit()

@@ -9,7 +9,7 @@ Created on Sep 15, 2017
 
 import sqlite3 as sql
 
-db = sql.connect('learning_stack.db')
+db = sql.connect('test.db')
 c = db.cursor()
 
 # level
@@ -172,13 +172,10 @@ def get_website_name_id(website_name):
     c.execute('SELECT ID FROM website_name WHERE name = ?', (website_name,))
     return c.fetchone()[0]
 
-# PRODUCER
-def add_producer(name):
-    c.execute('INSERT OR IGNORE INTO producers(name) VALUES(?)', (name,))
-    db.commit()
 
-def get_producer_id(name):
-    c.execute('SELECT ID FROM producers WHERE name = ?', (name,))
+# COPYRIGHT
+def get_copyright_id(status):
+    c.execute('SELECT ID FROM copyright WHERE status = ?', (status,))
     return c.fetchone()[0]
 
 # PUBLISHER CRUD FUNCTIONS
@@ -196,10 +193,7 @@ def list_publishers():
     results = [i[0] for i in c.fetchall()]
     return results
 
-def get_publisher_id(publisher_entry):
-    """ Returns the ID (PK) of a given publisher"""
-    publisher = publisher_entry.title()
-
+def get_publisher_id(publisher):
     c.execute('''SELECT ID FROM publishers WHERE publisher = ? ''', (publisher,))
 
     return c.fetchone()[0]
@@ -296,8 +290,8 @@ def delete_resource_author(resource_id, author, media):
 
 # subject CRUD FUNCTIONS
 
-def add_subject(subject_entry):
-    subject = subject_entry.title()
+def add_subject(subject):
+
     c.execute('''INSERT OR IGNORE INTO subjects(subject) VALUES(?)''', (subject,))
     db.commit()
 
@@ -312,7 +306,7 @@ def list_subjects():
     return results
 
 def get_subject_id(subject):
-    subject = subject.title()
+
     c.execute('''SELECT ID FROM subjects WHERE subject = ? ''', (subject,))
     return c.fetchone()[0]
 
@@ -321,7 +315,7 @@ def get_subject(subject_id):
     return c.fetchall()[0]
 
 def update_subject(subject):
-    subject = subject.title()
+
     subject_id = get_subject_id(subject)
     c.execute('''UPDATE subjects SET subject = ? WHERE ID =?''', (subject, subject_id))
     db.commit()
@@ -343,33 +337,14 @@ def get_text_mediaID(text_id):
     c.execute('''SELECT mediaID FROM texts WHERE ID = ?''', (text_id,))
     return c.fetchone()[0]
 
-def add_text(title, author, year, pages, level, publisher, language, subject, mediaID, notes):
-
-    levelID = get_level_id(level)
-
-    add_publisher(publisher)
-    publisherID = get_publisher_id(publisher)
-
-    add_language(language)
-    languageID = get_language_id(language)
-
-    add_subject(subject)
-    subjectID = get_subject_id(subject)
+def add_text_to_db(title, year, pages, level_id, publisher_id, language_id, subject_id, media_id):
 
     c.execute('''INSERT OR IGNORE INTO texts(title, year, pages, levelID, publisherID, languageID, subjectID, 
-                    mediaID, notes) 
-                 VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)''',
-              (title, year, pages, levelID, publisherID, languageID, subjectID, mediaID, notes))
+                    mediaID) 
+                 VALUES(?, ?, ?, ?, ?, ?, ?, ?)''',
+              (title, year, pages, level_id, publisher_id, language_id, subject_id, media_id))
 
     db.commit()
-
-    resourceID = get_text_id(title)
-
-    add_author(author)
-
-    authorID = get_author_id(author)
-
-    add_resource_author(resourceID, authorID, mediaID)
 
 def update_text(textID, title, year, pages, level, publisher, language, subject, medium, notes):
     levelID = get_level_id(level)
@@ -400,13 +375,16 @@ def update_text(textID, title, year, pages, level, publisher, language, subject,
 def list_text_resources():
     """ Returns all the resources from database"""
 
-    c.execute('''SELECT texts.title, authors.name, texts.year, texts.pages, 
-                publishers.publisher, languages.language, texts.notes
-                FROM texts JOIN languages JOIN publishers JOIN authors JOIN resource_author
+    c.execute('''SELECT texts.title, authors.name, texts.year, texts.pages, languages.language, 
+                    resource_medium.medium, levels.level
+                FROM texts JOIN languages JOIN authors JOIN resource_author
+                    JOIN resource_medium JOIN levels
                 ON texts.languageID = languages.ID
-                AND texts.publisherID = publishers.ID AND authors.ID = resource_author.authorID 
+                AND authors.ID = resource_author.authorID 
                 AND texts.ID = resource_author.resourceID
                 AND texts.mediaID = resource_author.mediaID
+                AND texts.levelID = levels.ID
+                AND texts.mediaID = resource_medium.ID
                 ''')
 
     return c.fetchall()
@@ -452,54 +430,41 @@ def get_website_id(title):
     c.execute('''SELECT ID FROM websites WHERE title = ?''', (title,))
     return c.fetchone()[0]
 
-def add_website(title, author, creation_date, subject, website_name, url, access_date, notes, medium):
-
-    add_author(author)
-
-    add_website_name(website_name)
-    website_nameID = get_website_name_id(website_name)
-
-    mediaID = get_resource_medium_id(medium)
-
-    add_subject(subject)
-    subjectID = get_subject_id(subject)
-
-    c.execute('''INSERT OR IGNORE INTO websites (title, creation_date, website_nameID, url, access_date, 
-                notes, mediaID, subjectID) VALUES(?,?,?,?,?,?,?,?)''',
-              (title, creation_date, website_nameID, url, access_date, notes, mediaID, subjectID))
-    db.commit()
-
-
-    authorID = get_author_id(author)
-
-    website_id= get_website_id(title)
-
-    c.execute('''INSERT OR IGNORE INTO resource_author(resourceID, authorID, mediaID ) 
-              VALUES(?, ?, ?)''', (website_id, authorID, mediaID ))
+def add_website_to_db(title, subject_id, url, date_created, date_accessed, notes, media_id):
+    c.execute('''INSERT OR IGNORE INTO websites (title, subjectID, url,  date_created, date_accessed,
+                    notes, mediaID) 
+                VALUES(?,?,?,?,?,?,?)''',
+              (title, subject_id, url,  date_created, date_accessed, notes, media_id))
     db.commit()
 
 def get_website_mediaID(resourceID):
     c.execute('''SELECT mediaID FROM websites WHERE websites.ID = ?''', (resourceID,))
     return c.fetchone()[0]
 
+def get_website_details(title):
+    c.execute('''SELECT websites.ID, websites.mediaID, resource_author.authorID
+        FROM websites JOIN resource_author
+        ON websites.ID = resource_author.resourceID
+        AND websites.mediaID = resource_author.mediaID
+        WHERE title = ?''', (title,))
+    return c.fetchall()
+
 def list_websites():
     """ Returns all the resources from database"""
 
-    c.execute('''SELECT websites.title, authors.name, publishers.publisher, 
-                websites.creation_date, websites.access_date, subjects.subject
-                FROM websites JOIN publishers JOIN authors JOIN resource_author JOIN subjects
-                ON websites.website_nameID = publishers.ID 
-				AND authors.ID = resource_author.authorID 
+    c.execute('''SELECT websites.title, authors.name, websites.date_created, websites.date_accessed, 
+                    resource_medium.medium, subjects.subject
+                FROM websites JOIN authors JOIN resource_author JOIN subjects JOIN resource_medium
+                ON authors.ID = resource_author.authorID 
                 AND websites.ID = resource_author.resourceID
 				AND websites.mediaID = resource_author.mediaID
 				AND websites.subjectID = subjects.ID
+				AND websites.mediaID = resource_medium.ID
                 ''')
     return c.fetchall()
 
-def delete_website(resource_id, author, media):
+def delete_website(resource_id):
     c.execute('''DELETE FROM websites WHERE websites.ID = ?''', (resource_id,))
-
-    delete_resource_author(resource_id, author, media)
     db.commit()
 
 # audio
@@ -507,43 +472,25 @@ def get_audio_id(title):
     c.execute('SELECT ID FROM audio WHERE title =?', (title,))
     return c.fetchone()[0]
 
-def add_audio(title, author, duration, subject, producer, year, program, url, media_id, language):
+def add_audio_to_db(title,  duration, subjectID, program, date, url, mediaID, languageID):
 
-    add_author(author)
-
-    add_language(language)
-    language_id = get_language_id(language)
-
-    add_subject(subject)
-    subject_id = get_subject_id(subject)
-
-    add_producer(producer)
-    producer_id = get_producer_id(producer)
-
-    c.execute('''INSERT OR IGNORE INTO audio (title, duration_secs, subjectID, 
-                producerID, year, program, url, mediaID, languageID)
-                VALUES (?,?,?,?,?,?,?,?,?)''',
-              (title, duration, subject_id, producer_id, year, program, url, media_id, language_id))
+    c.execute('''INSERT OR IGNORE INTO audio (title, duration, subjectID, program, date, url,  
+                    mediaID, languageID)
+                VALUES (?,?,?,?,?,?,?,?)''',
+              (title, duration, subjectID, program,  date, url, mediaID, languageID))
     db.commit()
 
-    author_id = get_author_id(author)
-
-    audio_id = get_audio_id(title)
-
-    add_resource_author(audio_id, author_id, media_id)
-    db.commit()
 
 def get_audio_mediaID(resourceID):
     c.execute('''SELECT mediaID FROM audio WHERE audio.ID = ?''', (resourceID,))
     return c.fetchone()[0]
 
 def get_audio_info(resourceID):
-    c.execute('''SELECT title, authors.name, duration_secs, subjects.subject, producers.name,
-                    year, program, url, languages.language, resource_medium.medium                    
+    c.execute('''SELECT title, authors.name, duration, subjects.subject, program,
+                    date, url, resource_medium.medium, languages.language                   
                 FROM audio JOIN authors JOIN languages JOIN resource_medium 
-                JOIN resource_author JOIN subjects JOIN producers
+                JOIN resource_author JOIN subjects 
                 ON audio.ID = resource_author.resourceID 
-                AND audio.producerID = producers.ID
                 AND audio.mediaID = resource_medium.ID
                 AND audio.mediaID = resource_author.mediaID
                 AND authors.ID = resource_author.authorID
@@ -555,44 +502,42 @@ def get_audio_info(resourceID):
     return c.fetchone()
 
 def list_audio():
-    c.execute('''SELECT audio.title, authors.name, audio.year, resource_medium.medium, 
-	                languages.language, audio.program
-                FROM audio JOIN producers JOIN authors JOIN resource_author 
-                JOIN resource_medium JOIN languages
-                ON audio.producerID = producers.ID 
-                AND authors.ID = resource_author.authorID 
+    c.execute('''SELECT audio.title, authors.name, audio.date,  languages.language, subjects.subject,
+                resource_medium.medium   
+                FROM audio JOIN authors JOIN resource_author 
+                JOIN resource_medium JOIN languages JOIN subjects
+                ON authors.ID = resource_author.authorID 
                 AND audio.ID = resource_author.resourceID
                 AND audio.mediaID = resource_author.mediaID
                 AND audio.mediaID = resource_medium.ID
-                AND audio.languageID = languages.ID''')
+                AND audio.languageID = languages.ID
+                AND audio.subjectID = subjects.ID''')
     return c.fetchall()
 
-def update_audio(audio_id, title, duration,  subject, producer, year, program, url, media_id, language):
-
-    language_id = get_language_id(language)
-    print('Language ID is ', language_id)
-
-    add_subject(subject)
-    subject_id = get_subject_id(subject)
-
-    add_producer(producer)
-    producer_id = get_producer_id(producer)
-
-    c.execute('''UPDATE audio SET title = ?, duration_secs = ?,  subjectID = ?, producerID = ?, year = ?, 
-                    program  = ?, url = ?, mediaID = ?,  languageID = ?
-                WHERE ID = ?''',
-              (title, duration,  subject_id, producer_id, year, program, url, media_id, language_id, audio_id))
-
-
-    db.commit()
-
-def delete_audio(resource_id, author, media):
-
-    c.execute('''DELETE FROM audio  WHERE audio.ID = ?''', (resource_id,))
-
-    delete_resource_author(resource_id, author, media)
-
-    db.commit()
+# def update_audio(audio_id, title, duration,  subject, year, program, url, media_id, language):
+#
+#     language_id = get_language_id(language)
+#     print('Language ID is ', language_id)
+#
+#     add_subject(subject)
+#     subject_id = get_subject_id(subject)
+#
+#
+#     c.execute('''UPDATE audio SET title = ?, duration_secs = ?,  subjectID = ?, year = ?,
+#                     program  = ?, url = ?, mediaID = ?,  languageID = ?
+#                 WHERE ID = ?''',
+#               (title, duration,  subject_id, year, program, url, media_id, language_id, audio_id))
+#
+#
+#     db.commit()
+#
+# def delete_audio(resource_id, author, media):
+#
+#     c.execute('''DELETE FROM audio  WHERE audio.ID = ?''', (resource_id,))
+#
+#     delete_resource_author(resource_id, author, media)
+#
+#     db.commit()
 
 
 # video
@@ -600,29 +545,12 @@ def get_video_id(title):
     c.execute('SELECT ID FROM video WHERE title =?', (title,))
     return c.fetchone()[0]
 
-def add_video(title, author, duration,  subject, producer, year, url, comments, media_id, language):
-    add_author(author)
+def add_video_to_db(title, duration, subject_id, producer, year, url, media_id, language_id):
 
-    add_language(language)
-    language_id = get_language_id(language)
-
-    add_subject(subject)
-    subject_id = get_subject_id(subject)
-
-    add_producer(producer)
-    producer_id = get_producer_id(producer)
-
-    c.execute('''INSERT OR IGNORE INTO video (title, duration_mins, subjectID, producerID, year, 
-                    url, comments mediaID, languageID)
-                VALUES (?,?,?,?,?,?,?,?,?)''',
-              (title, duration, subject_id, producer_id, year, url, comments, media_id, language_id ))
-    db.commit()
-
-    author_id = get_author_id(author)
-
-    video_id = get_video_id(title)
-
-    add_resource_author(video_id, author_id, media_id)
+    c.execute('''INSERT OR IGNORE INTO video (title, duration, subjectID, producer, year, 
+                    url,  mediaID, languageID)
+                VALUES (?,?,?,?,?,?,?,?)''',
+              (title, duration, subject_id, producer, year, url, media_id, language_id ))
     db.commit()
 
 def get_video_mediaID(resourceID):
@@ -630,12 +558,11 @@ def get_video_mediaID(resourceID):
     return c.fetchone()[0]
 
 def get_video_info(resourceID):
-    c.execute('''SELECT title, authors.name, duration_mins, subjects.subject, producers.name,
-                    year, url, comments, languages.language, resource_medium.medium                    
+    c.execute('''SELECT title, authors.name, duration, subjects.subject, 
+                    producer, year, url, resource_medium.medium, languages.language                    
                 FROM video JOIN authors JOIN languages JOIN resource_medium 
-                JOIN resource_author JOIN subjects JOIN producers
+                JOIN resource_author JOIN subjects 
                 ON video.ID = resource_author.resourceID 
-                AND video.producerID = producers.ID
                 AND video.mediaID = resource_medium.ID
                 AND video.mediaID = resource_author.mediaID
                 AND authors.ID = resource_author.authorID
@@ -647,32 +574,29 @@ def get_video_info(resourceID):
     return c.fetchone()
 
 def list_video():
-    c.execute('''SELECT video.title, authors.name, video.year, resource_medium.medium, 
-	                languages.language, video.comments
-                FROM video JOIN producers JOIN authors JOIN resource_author 
-                JOIN resource_medium JOIN languages
-                ON video.producerID = producers.ID 
-                AND authors.ID = resource_author.authorID 
+    c.execute('''SELECT video.title, authors.name, video.year, languages.language, 
+	               subjects.subject, resource_medium.medium
+                FROM video JOIN authors JOIN resource_author 
+                JOIN resource_medium JOIN languages JOIN subjects
+                ON authors.ID = resource_author.authorID 
                 AND video.ID = resource_author.resourceID
                 AND video.mediaID = resource_author.mediaID
                 AND video.mediaID = resource_medium.ID
-                AND video.languageID = languages.ID''')
+                AND video.languageID = languages.ID
+                AND video.subjectID = subjects.ID''')
     return c.fetchall()
 
-def update_video(video_id, title, duration, subject, producer, year, url, comments, media_id, language):
+def update_video(video_id, title, duration, subject,  year, url, comments, media_id, language):
 
     language_id = get_language_id(language)
 
     add_subject(subject)
     subject_id = get_subject_id(subject)
 
-    add_producer(producer)
-    producer_id = get_producer_id(producer)
-
-    c.execute('''UPDATE video SET title = ?, duration_mins = ?,  subjectID = ?, producerID = ?, year = ?, 
+    c.execute('''UPDATE video SET title = ?, duration_mins = ?,  subjectID = ?,  year = ?, 
                     url = ?, comments = ?, mediaID = ?, languageID = ?
                 WHERE ID = ?''',
-              (title, duration, subject_id, producer_id, year, url, comments, media_id, language_id, video_id))
+              (title, duration, subject_id,  year, url, comments, media_id, language_id, video_id))
     db.commit()
 
 def delete_video(resource_id, author, media):
@@ -688,41 +612,23 @@ def get_course_id(title):
     c.execute('SELECT ID FROM courses WHERE title =?', (title,))
     return c.fetchone()[0]
 
-def add_course(title, instructor, provider, url, subject, start_date, duration, comments, media_id, level):
+def add_course_to_db(title, subject_id, duration, provider_id, url, notes, media_id, level_id):
 
-    level_id = get_level_id(level)
-    print('Level ID is ', level_id)
-
-    add_subject(subject)
-    subject_id = get_subject_id(subject)
-    print('Subject ID =', subject_id)
-
-    add_provider(provider)
-    provider_id = get_provider_id(provider)
-    print('Provider ID', provider_id)
-
-    c.execute('''INSERT OR IGNORE INTO courses(title, providerID, url, subjectID, start_date, duration_weeks, 
-                    comments, mediaID, levelID) VALUES(?,?,?,?,?,?,?,?, ?)''',
-              (title, provider_id, url, subject_id, start_date, duration, comments, media_id, level_id))
+    c.execute('''INSERT OR IGNORE INTO courses(title, subjectID, duration_weeks, providerID, 
+                        url, notes, mediaID, levelID) 
+                VALUES(?,?,?,?,?,?,?,?)''',
+              (title, subject_id, duration, provider_id, url, notes, media_id, level_id))
 
     db.commit()
 
-    courseID = get_course_id(title)
-
-    add_author(instructor)
-    authorID = get_author_id(instructor)
-
-    add_resource_author(courseID, authorID, media_id)
-    db.commit()
 
 def get_course_mediaID(resourceID):
     c.execute('''SELECT mediaID FROM courses WHERE courses.ID = ?''', (resourceID,))
     return c.fetchone()[0]
 
 def get_course_info(course_id):
-    c.execute('''SELECT courses.title, authors.name, provider.name, courses.url, subjects.subject, 
-                    courses.start_date, courses.duration_weeks, courses.comments,
-                    resource_medium.medium, levels.level
+    c.execute('''SELECT courses.title, authors.name, subjects.subject, courses.duration_weeks,
+                    provider.name, courses.url, courses.notes, resource_medium.medium, levels.level
                 FROM courses JOIN authors JOIN provider JOIN resource_author 
                 JOIN resource_medium JOIN levels JOIN subjects
                 ON courses.ID = resource_author.resourceID 
@@ -738,14 +644,15 @@ def get_course_info(course_id):
     return c.fetchone()
 
 def list_courses():
-    c.execute('''SELECT courses.title, authors.name, courses.start_date, courses.duration_weeks, 
-                    provider.name, courses.comments
-                FROM courses JOIN provider JOIN authors JOIN resource_author JOIN resource_medium
-                ON courses.providerID = provider.ID 
+    c.execute('''SELECT courses.title, authors.name, courses.duration_weeks, subjects.subject, 
+                    resource_medium.medium, levels.level 
+                FROM courses JOIN authors JOIN resource_author JOIN resource_medium JOIN subjects JOIN levels
+                ON courses.levelID = levels.ID 
                 AND authors.ID = resource_author.authorID 
                 AND courses.ID = resource_author.resourceID
                 AND courses.mediaID = resource_author.mediaID
-                AND courses.mediaID = resource_medium.ID''')
+                AND courses.mediaID = resource_medium.ID
+                AND courses.subjectID = subjects.ID''')
     return c.fetchall()
 
 def update_course(courseID, title, provider, url, subject, start_date, duration, comments, media_id, level):
@@ -776,32 +683,11 @@ def get_interactive_id(title):
     c.execute('SELECT ID FROM interactive_media WHERE title =?', (title,))
     return c.fetchone()[0]
 
-def add_interactive_media(title, creator, year, platform, version, comments, engine, medium, genre):
-    add_subject(genre)
-    subject_id = get_subject_id(genre)
-
-    add_engine(engine)
-    engine_id = get_engine_id(engine)
-
-    platform_id = get_platform_id(platform)
-
-    mediaID = get_resource_medium_id(medium)
-
-    c.execute('''INSERT INTO interactive_media(title, year, subjectID, platformID, engineID, version,  
-                    comments, mediaID)
-                VALUES(?,?,?,?,?,?,?,?)''',
-              (title, year, subject_id, platform_id, engine_id, version, comments, mediaID))
+def add_interactive_media_to_db(title, year, subject_id, platform_id, engine_id, version, media_id):
+    c.execute('''INSERT INTO interactive_media(title, year, subjectID, platformID, engineID, version, mediaID)
+                 VALUES(?,?,?,?,?,?,?)''',
+              (title, year, subject_id, platform_id, engine_id, version, media_id))
     db.commit()
-
-    interactiveID = get_interactive_id(title)
-
-    add_author(creator)
-    authorID = get_author_id(creator)
-
-    c.execute('''INSERT OR IGNORE INTO resource_author(resourceID, authorID, mediaID ) 
-                      VALUES(?, ?, ?)''', (interactiveID, authorID, mediaID))
-    db.commit()
-
 
 def get_interactive_mediaID(resourceID):
     c.execute('''SELECT typeID FROM interactive_media WHERE interactive_media.ID = ?''', (resourceID,))
@@ -809,23 +695,22 @@ def get_interactive_mediaID(resourceID):
 
 def list_interactive():
     c.execute('''SELECT interactive_media.title, authors.name, interactive_media.year, 
-                    platform.name, game_engine.name, resource_medium.medium
+                    subjects.subject, game_engine.name, resource_medium.medium
                 FROM interactive_media JOIN platform JOIN authors JOIN resource_author
-                JOIN resource_medium JOIN game_engine
+                JOIN resource_medium JOIN game_engine JOIN subjects
                 ON interactive_media.engineID = game_engine.ID 
                 AND interactive_media.platformID = platform.ID
                 AND authors.ID = resource_author.authorID 
                 AND interactive_media.ID = resource_author.resourceID
                 AND interactive_media.mediaID = resource_medium.ID
                 AND interactive_media.mediaID = resource_author.mediaID
+                AND interactive_media.subjectID = subjects.ID
                 ''')
     return c.fetchall()
 
 def get_interactive_info(resourceID):
     c.execute('''SELECT interactive_media.title, authors.name, interactive_media.year, subjects.subject,
-                    platform.name,  game_engine.name,  interactive_media.version,
-                    interactive_media.comments, resource_medium.medium
-                    
+                    platform.name,  game_engine.name,  interactive_media.version, resource_medium.medium  
                 FROM interactive_media JOIN authors JOIN resource_medium JOIN game_engine
                 JOIN resource_author JOIN subjects JOIN platform
                 ON interactive_media.ID = resource_author.resourceID 
@@ -838,7 +723,6 @@ def get_interactive_info(resourceID):
                 AND resource_author.mediaID = resource_medium.ID
                 WHERE interactive_media.ID = ?''', (resourceID,))
     return c.fetchone()
-
 
 def update_interactive(interactiveID, title, year, platform, version, comments, engine, media_id, genre):
 
@@ -867,24 +751,11 @@ def get_image_id(title):
     c.execute('SELECT ID FROM images WHERE title =?', (title,))
     return c.fetchone()[0]
 
-def add_images(title, creator, date, copywrite, website, dimensions, url, comments, image_type):
+def add_images_to_database(title, date_created, date_accessed,  subject_id, url, copyright_id, media_id):
 
-    mediaID = get_resource_medium_id(image_type)
-
-    website_nameID = get_website_name_id(website)
-
-    c.execute('''INSERT OR IGNORE INTO images(title, date, copywrite, website_name, dimensions, url, comments,
-                imagetypeID) VALUES(?,?,?,?,?,?,?,?)''',
-              (title, date, copywrite, website_nameID, dimensions, url, comments, mediaID))
-    db.commit()
-
-    imageID = get_image_id(title)
-
-    add_author(creator)
-    authorID = get_author_id(creator)
-
-    c.execute('''INSERT OR IGNORE INTO resource_author(resourceID, authorID, mediaID ) 
-                      VALUES(?, ?, ?)''', (imageID, authorID, mediaID))
+    c.execute('''INSERT OR IGNORE INTO images(title, date_created, date_accessed, subjectID,  url, copyrightID, mediaID) 
+                VALUES(?,?,?,?,?,?,?)''',
+              (title, date_created, date_accessed,subject_id, url,  copyright_id, media_id))
     db.commit()
 
 def get_image_mediaID(resourceID):
@@ -892,23 +763,29 @@ def get_image_mediaID(resourceID):
     return c.fetchone()[0]
 
 def list_images():
-    c.execute('''SELECT images.title, authors.name, resource_medium.medium, images.dimensions, images.date, 
-                        images.comments
-                    FROM images JOIN  authors JOIN resource_author JOIN resource_medium
+    c.execute('''SELECT images.title, authors.name,  images.date_created, subjects.subject, 
+                       resource_medium.medium, copyright.status
+                    FROM images JOIN  authors JOIN resource_author JOIN resource_medium 
+                    JOIN copyright JOIN subjects
                     ON authors.ID = resource_author.authorID 
                     AND images.ID = resource_author.resourceID
                     AND images.mediaID = resource_author.mediaID
-                    AND images.mediaID = resource_medium.ID''')
+                    AND images.mediaID = resource_medium.ID
+                    AND images.subjectID = subjects.ID
+                    AND copyright.ID = images.copyrightID ''')
     return c.fetchall()
 
 def get_image_info(resource_id):
-    c.execute('''SELECT title, authors.name, date, copywrite, dimensions, website_name, url, 
-                    comments, resource_medium.medium 
-                FROM images JOIN authors JOIN resource_author JOIN resource_medium
+    c.execute('''SELECT title, authors.name, date_created, date_accessed, subjects.subject, url, 
+                    copyright.status, resource_medium.medium 
+                FROM images JOIN authors JOIN resource_author JOIN resource_medium 
+                JOIN subjects JOIN copyright
                 ON images.ID = resource_author.resourceID 
                 AND authors.ID = resource_author.authorID
-                AND images.imagetypeID = resource_medium.ID
-                AND images.imagetypeID = resource_author.mediaID
+                AND images.mediaID = resource_medium.ID
+                AND images.mediaID = resource_author.mediaID
+                AND images.copyrightID = copyright.ID
+                AND images.subjectID = subjects.ID
                 WHERE images.ID = ?''', (resource_id,))
     return c.fetchone()
 
@@ -1094,7 +971,7 @@ def find_courses(search_term):
                 AND courses.providerID = provider.ID
                 WHERE courses.title LIKE ?
                 OR subjects.subject LIKE ?
-                OR courses.comments LIKE ?''',
+                OR courses.notes LIKE ?''',
               (search_term, search_term, search_term))
 
     return c.fetchall()
@@ -1102,9 +979,9 @@ def find_courses(search_term):
 
 def find_audio(search_term):
     search_term = "%" + search_term + "%"
-    # RESULTS WANTED: 'Title', 'Artist', 'Date', 'Type', 'Language', 'Program',
+    # RESULTS WANTED: 'Title', 'Artist', 'Year', 'Type', 'Program', 'Language'
 
-    c.execute('''SELECT audio.title, authors.name, audio.year, resource_medium.medium, 
+    c.execute('''SELECT audio.title, authors.name, audio.date, resource_medium.medium, 
                         languages.language, audio.program
                     FROM audio JOIN  resource_medium JOIN authors 
                     JOIN resource_author JOIN languages
@@ -1122,20 +999,21 @@ def find_audio(search_term):
 
 def find_video(search_term):
     search_term = "%" + search_term + "%"
-    # RESULTS WANTED: 'Title', 'Author', 'Year', 'Type', 'Language', 'Comments'
+    # RESULTS WANTED: 'Title', 'Author', 'Date', 'Length', 'Type', 'Subject'
 
-    c.execute('''SELECT video.title, authors.name, video.year, resource_medium.medium, 
-                        languages.language, video.comments
+    c.execute('''SELECT video.title, authors.name, video.year, video.duration, resource_medium.medium, 
+                        subjects.subject
                     FROM video JOIN resource_medium JOIN authors 
-                    JOIN resource_author JOIN languages
+                    JOIN resource_author JOIN subjects
                     ON video.mediaID = resource_medium.ID 
                     AND authors.ID = resource_author.authorID 
                     AND video.ID = resource_author.resourceID
                     AND video.mediaID = resource_author.mediaID
-                    AND video.languageID = languages.ID
+                    AND video.subjectID = subjects.ID
                     WHERE video.title LIKE ?
-                    OR authors.name LIKE ?''',
-              (search_term, search_term))
+                    OR authors.name LIKE ?
+                    OR subjects.subject LIKE ?''',
+              (search_term, search_term,  search_term))
 
     return c.fetchall()
 
@@ -1167,10 +1045,10 @@ def find_interactive(search_term):
 
 
 def find_images(search_term):
-    #'Title', 'Creator', 'Type', 'Dimensions', 'Date', 'Comments'
+    #'Title', 'Author', 'Date', 'Dimensions', 'Type', 'Copywrite'
     search_term = "%" + search_term + "%"
-    c.execute('''SELECT images.title, authors.name, resource_medium.medium,
-                        images.dimensions, images.date, images.comments
+    c.execute('''SELECT images.title, authors.name, images.date, images.dimensions, resource_medium.medium,
+                         images.copywrite
                     FROM images JOIN resource_medium JOIN authors JOIN resource_author
                     ON images.mediaID = resource_medium.ID 
                     AND authors.ID = resource_author.authorID 
@@ -1179,26 +1057,25 @@ def find_images(search_term):
                     WHERE images.title LIKE ?
                     OR authors.name LIKE ? 
                     OR resource_medium.medium LIKE ?
-                    OR images.comments LIKE ?''',
+                    OR images.notes LIKE ?''',
               (search_term, search_term, search_term, search_term))
     return c.fetchall()
 
 def find_web(search_term):
-    # RESULTS DESIRED 'Title', 'Author', 'Website', 'Date', 'Access date', 'URL'
+    # RESULTS DESIRED 'Title', 'Author', 'Created', 'Accessed', 'Type', 'Subject'
     search_term = "%" + search_term + "%"
-    c.execute('''SELECT websites.title, authors.name, publishers.publisher, websites.creation_date,
-                            websites.access_date, subjects.subject
-                    FROM websites JOIN resource_medium JOIN authors JOIN resource_author 
-                    JOIN publishers JOIN subjects
-                    ON websites.website_nameID = publishers.ID
-                    AND websites.mediaID = resource_medium.ID 
+    c.execute('''SELECT websites.title, authors.name, websites.date_created,
+                            websites.date_accessed, resource_medium.medium, subjects.subject
+                    FROM websites JOIN resource_medium JOIN authors JOIN resource_author JOIN subjects
+                    ON websites.mediaID = resource_medium.ID 
                     AND authors.ID = resource_author.authorID 
                     AND websites.ID = resource_author.resourceID
                     AND websites.mediaID = resource_author.mediaID
                     AND websites.subjectID = subjects.ID
+                    AND websites.mediaID = resource_medium.ID
                     WHERE websites.title LIKE ?
-                    OR authors.name LIKE ? 
-                    OR publishers.publisher LIKE ? 
+                    OR authors.name LIKE ?  
+                    OR subjects.subject LIKE ?
                     OR websites.notes LIKE ?''',
               (search_term, search_term, search_term, search_term))
 
@@ -1317,12 +1194,10 @@ def get_image(imageID):
 
 def get_website(websiteID):
 # DOESNT GET MEDIA MUST CHANGE
-    c.execute('''SELECT websites.title, authors.name, websites.creation_date, subjects.subject, 
-                publishers.publisher, websites.url, websites.access_date, websites.notes,  resource_medium.medium
-                    FROM websites JOIN resource_medium JOIN authors JOIN resource_author 
-                    JOIN publishers JOIN subjects
-                    ON websites.website_nameID = publishers.ID
-                    AND websites.mediaID = resource_medium.ID 
+    c.execute('''SELECT websites.title, authors.name, subjects.subject,  websites.url, websites.date_created,  
+                        websites.date_accessed, websites.notes,  resource_medium.medium
+                    FROM websites JOIN resource_medium JOIN authors JOIN resource_author JOIN subjects
+                    ON websites.mediaID = resource_medium.ID 
                     AND authors.ID = resource_author.authorID 
                     AND websites.ID = resource_author.resourceID
                     AND websites.mediaID = resource_author.mediaID
