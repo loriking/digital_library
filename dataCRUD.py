@@ -937,7 +937,7 @@ def find_project(project_name):
 
 def find_texts(search_term):
     search_term =  "%" + search_term + "%"
-    c.execute('''SELECT texts.title, authors.name, texts.year, texts.pages, languages.language, texts.notes
+    c.execute('''SELECT texts.title, authors.name, texts.year, texts.pages, languages.language, subjects.subject
                 FROM texts JOIN languages JOIN resource_medium JOIN authors
                 JOIN resource_author JOIN subjects 
                 ON texts.mediaID = resource_medium.ID
@@ -948,9 +948,8 @@ def find_texts(search_term):
                 AND texts.languageID = languages.ID
                 WHERE texts.title LIKE ?
                 OR subjects.subject LIKE ? 
-                OR authors.name LIKE ? 
-                OR texts.notes LIKE ?''',
-              (search_term, search_term, search_term, search_term))
+                OR authors.name LIKE ?''',
+              (search_term, search_term, search_term))
 
     # c.execute('''
     # ''')
@@ -959,16 +958,17 @@ def find_texts(search_term):
 
 def find_courses(search_term):
     search_term = "%" + search_term + "%"
-    # Results desired: 'Title', 'Instructor', 'Start date', 'Duration', 'Platform', 'Subject'
-    c.execute('''SELECT courses.title, authors.name, courses.start_date, courses.duration_weeks, 
-                    provider.name, subjects.subject
-                FROM courses JOIN  resource_medium JOIN authors JOIN resource_author JOIN subjects JOIN provider
+    # Results desired: 'Title', 'Instructor', 'Duration', 'Level', 'Subject', 'Medium'
+    c.execute('''SELECT courses.title, authors.name,  courses.duration_weeks, resource_medium.medium,
+                    subjects.subject,  levels.level
+                FROM courses JOIN  resource_medium JOIN authors JOIN resource_author JOIN subjects JOIN levels
                 ON courses.mediaID = resource_medium.ID 
                 AND authors.ID = resource_author.authorID 
                 AND courses.ID = resource_author.resourceID
                 AND courses.mediaID = resource_author.mediaID
                 AND courses.subjectID = subjects.ID
-                AND courses.providerID = provider.ID
+                AND courses.levelID = levels.ID
+    
                 WHERE courses.title LIKE ?
                 OR subjects.subject LIKE ?
                 OR courses.notes LIKE ?''',
@@ -1047,18 +1047,18 @@ def find_interactive(search_term):
 def find_images(search_term):
     #'Title', 'Author', 'Date', 'Dimensions', 'Type', 'Copywrite'
     search_term = "%" + search_term + "%"
-    c.execute('''SELECT images.title, authors.name, images.date, images.dimensions, resource_medium.medium,
-                         images.copywrite
-                    FROM images JOIN resource_medium JOIN authors JOIN resource_author
+    c.execute('''SELECT images.title, authors.name, images.date_created,  images.date_accessed, resource_medium.medium,
+                         copyright.status
+                    FROM images JOIN resource_medium JOIN authors JOIN resource_author JOIN copyright
                     ON images.mediaID = resource_medium.ID 
                     AND authors.ID = resource_author.authorID 
                     AND images.ID = resource_author.resourceID
                     AND images.mediaID = resource_author.mediaID
+                    AND images.copyrightID = copyright.ID
                     WHERE images.title LIKE ?
                     OR authors.name LIKE ? 
-                    OR resource_medium.medium LIKE ?
-                    OR images.notes LIKE ?''',
-              (search_term, search_term, search_term, search_term))
+                    OR resource_medium.medium LIKE ?''',
+              (search_term, search_term, search_term))
     return c.fetchall()
 
 def find_web(search_term):
@@ -1083,7 +1083,16 @@ def find_web(search_term):
 
 
 def find_all(search_term):
-    pass
+    search_term = "%" + search_term + "%"
+    c.execute('''SELECT title, name, subject, medium, ID FROM all_resources 
+                WHERE title LIKE ?
+                    OR name LIKE ?
+                    OR subject LIKE ?
+                ORDER BY medium''',
+              (search_term, search_term, search_term))
+    return c.fetchall()
+
+
 # Retrieve item
 def get_text(textID):
     c.execute('''SELECT texts.title, authors.name, texts.year, texts.pages, languages.language, texts.notes

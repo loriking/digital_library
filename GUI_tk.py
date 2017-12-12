@@ -2527,7 +2527,7 @@ class SearchResource(tk.Frame):
             resources = data.find_audio(self.search_bar.get())
 
         if self.media_type.get() == 2:
-            column_names = ('Title', 'Instructor', 'Start date', 'Duration', 'Platform', 'Subject')
+            column_names = ('Title', 'Instructor', 'Duration',  'Type', 'Subject','Level')
             resources = data.find_courses(self.search_bar.get())
 
         elif self.media_type.get() == 3:
@@ -2535,7 +2535,7 @@ class SearchResource(tk.Frame):
             resources = data.find_web(self.search_bar.get())
 
         elif self.media_type.get() == 4:
-            column_names = ('Title', 'Creator', 'Type', 'Dimensions', 'Date', 'Comments')
+            column_names = ('Title', 'Creator', 'Created', 'Accessed', 'Type', 'Copyright')
             resources = data.find_images(self.search_bar.get())
 
         elif self.media_type.get() == 5:
@@ -2543,15 +2543,15 @@ class SearchResource(tk.Frame):
             resources = data.find_interactive(self.search_bar.get())
 
         elif self.media_type.get() == 6:
-            column_names = ('Title', 'Author', 'Year', 'Pages', 'Language', 'Notes')
+            column_names = ('Title', 'Author', 'Year', 'Pages', 'Language', 'Subject')
             resources = data.find_texts(self.search_bar.get())
 
         elif self.media_type.get() == 7:
-            column_names = ('Title', 'Author', 'Year', 'Type', 'Language', 'Comments')
+            column_names = ('Title', 'Author', 'Year', 'Duration', 'Type', 'Subject')
             resources = data.find_video(self.search_bar.get())
 
         elif self.media_type.get() == 8:
-            column_names = ('Title', 'Author', 'Year', 'Subject', 'Language', 'Notes')
+            column_names = ('Title', 'Author', 'Subject', 'Medium', 'ID', '')
             resources = data.find_all(self.search_bar.get())
 
         return column_names, resources

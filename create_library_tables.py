@@ -180,35 +180,63 @@ def make_db():
         mediaID INTEGER,
         PRIMARY KEY (projectID, resourceID, mediaID) 
         );
+    
     CREATE VIEW all_resources AS 
-    SELECT texts.ID, texts.title, subjects.subject, resource_medium.medium 
-    FROM texts, resource_medium, subjects
-    WHERE texts.mediaID = resource_medium.ID AND texts.subjectID = subjects.ID
-    
-    UNION SELECT audio.ID, audio.title, subjects.subject, resource_medium.medium 
-    FROM audio, resource_medium, subjects
-    WHERE audio.mediaID = resource_medium.ID AND audio.subjectID = subjects.ID
-    
-    UNION SELECT courses.ID, courses.title, subjects.subject, resource_medium.medium 
-    FROM courses, resource_medium, subjects
-    WHERE courses.mediaID = resource_medium.ID AND courses.subjectID = subjects.ID
-    
-    UNION SELECT images.ID, images.title, subjects.subject, resource_medium.medium 
-    FROM images, resource_medium, subjects
-    WHERE images.mediaID = resource_medium.ID AND images.subjectID = subjects.ID
-    
-    UNION SELECT interactive_media.ID, interactive_media.title, subjects.subject, resource_medium.medium 
-    FROM interactive_media, resource_medium, subjects
-    WHERE interactive_media.mediaID = resource_medium.ID AND interactive_media.subjectID = subjects.ID
-    
-    UNION SELECT video.ID, video.title, subjects.subject, resource_medium.medium 
-    FROM video, resource_medium, subjects
-    WHERE video.mediaID = resource_medium.ID AND video.subjectID = subjects.ID
-    
-    UNION SELECT websites.ID, websites.title, subjects.subject, resource_medium.medium 
-    FROM websites, resource_medium, subjects
-    WHERE websites.mediaID = resource_medium.ID AND websites.subjectID = subjects.ID;
-
+        SELECT texts.ID, texts.title, authors.name, subjects.subject, resource_medium.medium 
+        FROM texts, authors, resource_author, resource_medium, subjects
+        WHERE texts.mediaID = resource_medium.ID 
+        AND texts.subjectID = subjects.ID
+        AND texts.ID = resource_author.resourceID
+        AND texts.mediaID = resource_author.mediaID
+        AND authors.ID = resource_author.authorID
+        
+        UNION SELECT audio.ID, audio.title, authors.name, subjects.subject, resource_medium.medium 
+        FROM audio, authors, resource_author, resource_medium, subjects
+        WHERE audio.mediaID = resource_medium.ID
+        AND audio.subjectID = subjects.ID
+        AND audio.ID = resource_author.resourceID
+        AND audio.mediaID = resource_author.mediaID
+        AND authors.ID = resource_author.authorID
+        
+        UNION SELECT courses.ID, courses.title, authors.name, subjects.subject, resource_medium.medium 
+        FROM courses, authors, resource_author, resource_medium, subjects
+        WHERE courses.mediaID = resource_medium.ID
+        AND courses.subjectID = subjects.ID
+        AND courses.ID = resource_author.resourceID
+        AND courses.mediaID = resource_author.mediaID
+        AND authors.ID = resource_author.authorID
+        
+        UNION SELECT images.ID, images.title, authors.name, subjects.subject, resource_medium.medium 
+        FROM images, authors, resource_author, resource_medium, subjects
+        WHERE images.mediaID = resource_medium.ID 
+        AND images.subjectID = subjects.ID
+        AND images.ID = resource_author.resourceID
+        AND images.mediaID = resource_author.mediaID
+        AND authors.ID = resource_author.authorID
+        
+        UNION SELECT interactive_media.ID, interactive_media.title, authors.name, subjects.subject, resource_medium.medium 
+        FROM interactive_media, authors, resource_author, resource_medium, subjects
+        WHERE interactive_media.mediaID = resource_medium.ID 
+        AND interactive_media.subjectID = subjects.ID
+        AND interactive_media.ID = resource_author.resourceID
+        AND interactive_media.mediaID = resource_author.mediaID
+        AND authors.ID = resource_author.authorID
+        
+        UNION SELECT video.ID, video.title, authors.name, subjects.subject, resource_medium.medium 
+        FROM video, authors, resource_author, resource_medium, subjects
+        WHERE video.mediaID = resource_medium.ID 
+        AND video.subjectID = subjects.ID
+        AND video.ID = resource_author.resourceID
+        AND video.mediaID = resource_author.mediaID
+        AND authors.ID = resource_author.authorID
+        
+        UNION SELECT websites.ID, websites.title, authors.name, subjects.subject, resource_medium.medium 
+        FROM websites, authors, resource_author, resource_medium, subjects
+        WHERE websites.mediaID = resource_medium.ID 
+        AND websites.subjectID = subjects.ID
+        AND websites.ID = resource_author.resourceID
+        AND websites.mediaID = resource_author.mediaID
+        AND authors.ID = resource_author.authorID;
         ''')
 
 
