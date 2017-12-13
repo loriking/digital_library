@@ -182,7 +182,8 @@ def make_db():
         );
     
     CREATE VIEW all_resources AS 
-        SELECT texts.ID, texts.title, authors.name, subjects.subject, resource_medium.medium 
+        SELECT texts.ID, texts.title, authors.name, subjects.subject, resource_medium.medium, 
+            texts.mediaID
         FROM texts, authors, resource_author, resource_medium, subjects
         WHERE texts.mediaID = resource_medium.ID 
         AND texts.subjectID = subjects.ID
@@ -190,7 +191,8 @@ def make_db():
         AND texts.mediaID = resource_author.mediaID
         AND authors.ID = resource_author.authorID
         
-        UNION SELECT audio.ID, audio.title, authors.name, subjects.subject, resource_medium.medium 
+        UNION SELECT audio.ID, audio.title, authors.name, subjects.subject, resource_medium.medium, 
+            audio.mediaID 
         FROM audio, authors, resource_author, resource_medium, subjects
         WHERE audio.mediaID = resource_medium.ID
         AND audio.subjectID = subjects.ID
@@ -198,7 +200,8 @@ def make_db():
         AND audio.mediaID = resource_author.mediaID
         AND authors.ID = resource_author.authorID
         
-        UNION SELECT courses.ID, courses.title, authors.name, subjects.subject, resource_medium.medium 
+        UNION SELECT courses.ID, courses.title, authors.name, subjects.subject, resource_medium.medium, 
+            courses.mediaID
         FROM courses, authors, resource_author, resource_medium, subjects
         WHERE courses.mediaID = resource_medium.ID
         AND courses.subjectID = subjects.ID
@@ -206,7 +209,8 @@ def make_db():
         AND courses.mediaID = resource_author.mediaID
         AND authors.ID = resource_author.authorID
         
-        UNION SELECT images.ID, images.title, authors.name, subjects.subject, resource_medium.medium 
+        UNION SELECT images.ID, images.title, authors.name, subjects.subject, resource_medium.medium, 
+            images.mediaID 
         FROM images, authors, resource_author, resource_medium, subjects
         WHERE images.mediaID = resource_medium.ID 
         AND images.subjectID = subjects.ID
@@ -214,7 +218,8 @@ def make_db():
         AND images.mediaID = resource_author.mediaID
         AND authors.ID = resource_author.authorID
         
-        UNION SELECT interactive_media.ID, interactive_media.title, authors.name, subjects.subject, resource_medium.medium 
+        UNION SELECT interactive_media.ID, interactive_media.title, authors.name, subjects.subject, resource_medium.medium, 
+			interactive_media.mediaID
         FROM interactive_media, authors, resource_author, resource_medium, subjects
         WHERE interactive_media.mediaID = resource_medium.ID 
         AND interactive_media.subjectID = subjects.ID
@@ -222,7 +227,8 @@ def make_db():
         AND interactive_media.mediaID = resource_author.mediaID
         AND authors.ID = resource_author.authorID
         
-        UNION SELECT video.ID, video.title, authors.name, subjects.subject, resource_medium.medium 
+        UNION SELECT video.ID, video.title, authors.name, subjects.subject, resource_medium.medium, 
+            video.mediaID
         FROM video, authors, resource_author, resource_medium, subjects
         WHERE video.mediaID = resource_medium.ID 
         AND video.subjectID = subjects.ID
@@ -230,7 +236,8 @@ def make_db():
         AND video.mediaID = resource_author.mediaID
         AND authors.ID = resource_author.authorID
         
-        UNION SELECT websites.ID, websites.title, authors.name, subjects.subject, resource_medium.medium 
+        UNION SELECT websites.ID, websites.title, authors.name, subjects.subject, resource_medium.medium, 
+            websites.mediaID 
         FROM websites, authors, resource_author, resource_medium, subjects
         WHERE websites.mediaID = resource_medium.ID 
         AND websites.subjectID = subjects.ID
@@ -251,7 +258,7 @@ def make_db():
     default_media_types = ['Book', 'Short story', 'Other text',
                            'Music', 'Sound', 'Podcast',
                            'Video Clip', 'Documentary', 'Other Video',
-                           'Audio only', 'MOOC', 'Blended Class',
+                           'Blended', 'Lectures', 'MOOC',
                            'Photo', 'Clipart/Sprite','Other image',
                            'Interactive Fiction', 'Video game', 'Other interactive',
                            'Website', 'Documentation', 'Q&A Site']
@@ -274,21 +281,7 @@ def make_db():
     db.commit()
     db.close()
 
-# def make_views():
-#     db = sqlite3.connect('test.db')
-#     c = db.cursor()
-#
-#     c.executescript(
-#         '''PRAGMA Foreign_Keys=True;
-#
-#          ''')
-#
-#
-#     db.commit()
-#     db.close()
-#
 
 
 if __name__ == '__main__':
     make_db()
-    # make_views()

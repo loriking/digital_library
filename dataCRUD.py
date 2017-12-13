@@ -411,13 +411,6 @@ def resources_by_language(language):
               ON texts.languageID = languages.ID 
               WHERE language = ?''', (language,))
     return c. fetchall()
-    
-def resources_by_type(media_type):
-    c.execute('''SELECT texts.title, texts.year, texts.mediaID
-                FROM texts JOIN resource_medium
-                ON texts.mediaID = resource_medium.ID 
-                WHERE texts.mediaID = ?''', (media_type,))
-    return c.fetchall()
 
 def delete_text(resource_id, author, media):
     c.execute('''DELETE FROM texts WHERE texts.ID = ?''', (resource_id,))
@@ -948,19 +941,17 @@ def find_texts(search_term):
                 AND texts.languageID = languages.ID
                 WHERE texts.title LIKE ?
                 OR subjects.subject LIKE ? 
-                OR authors.name LIKE ?''',
+                OR authors.name LIKE ?
+                ORDER BY resource_medium.medium''',
               (search_term, search_term, search_term))
-
-    # c.execute('''
-    # ''')
 
     return c.fetchall()
 
 def find_courses(search_term):
     search_term = "%" + search_term + "%"
     # Results desired: 'Title', 'Instructor', 'Duration', 'Level', 'Subject', 'Medium'
-    c.execute('''SELECT courses.title, authors.name,  courses.duration_weeks, resource_medium.medium,
-                    subjects.subject,  levels.level
+    c.execute('''SELECT courses.title, authors.name,  courses.duration_weeks, 
+                    subjects.subject, resource_medium.medium, levels.level
                 FROM courses JOIN  resource_medium JOIN authors JOIN resource_author JOIN subjects JOIN levels
                 ON courses.mediaID = resource_medium.ID 
                 AND authors.ID = resource_author.authorID 
@@ -971,7 +962,8 @@ def find_courses(search_term):
     
                 WHERE courses.title LIKE ?
                 OR subjects.subject LIKE ?
-                OR courses.notes LIKE ?''',
+                OR courses.notes LIKE ?
+                ORDER BY resource_medium.medium''',
               (search_term, search_term, search_term))
 
     return c.fetchall()
@@ -991,7 +983,8 @@ def find_audio(search_term):
                     AND audio.mediaID = resource_author.mediaID
                     AND audio.languageID = languages.ID
                     WHERE audio.title LIKE ?
-                    OR authors.name LIKE ?''',
+                    OR authors.name LIKE ?
+                    ORDER BY resource_medium.medium''',
               (search_term, search_term))
 
     return c.fetchall()
@@ -1012,7 +1005,8 @@ def find_video(search_term):
                     AND video.subjectID = subjects.ID
                     WHERE video.title LIKE ?
                     OR authors.name LIKE ?
-                    OR subjects.subject LIKE ?''',
+                    OR subjects.subject LIKE ?
+                    ORDER BY resource_medium.medium''',
               (search_term, search_term,  search_term))
 
     return c.fetchall()
@@ -1037,7 +1031,8 @@ def find_interactive(search_term):
                         WHERE interactive_media.title LIKE ?
                         OR authors.name LIKE ?
                         OR game_engine.name LIKE ?
-                        OR platform.name LIKE ?''',
+                        OR platform.name LIKE ?
+                        ORDER BY resource_medium.medium''',
 
               (search_term, search_term, search_term, search_term))
 
@@ -1057,7 +1052,8 @@ def find_images(search_term):
                     AND images.copyrightID = copyright.ID
                     WHERE images.title LIKE ?
                     OR authors.name LIKE ? 
-                    OR resource_medium.medium LIKE ?''',
+                    OR resource_medium.medium LIKE ?
+                    ORDER BY resource_medium.medium''',
               (search_term, search_term, search_term))
     return c.fetchall()
 
@@ -1084,11 +1080,11 @@ def find_web(search_term):
 
 def find_all(search_term):
     search_term = "%" + search_term + "%"
-    c.execute('''SELECT title, name, subject, medium, ID FROM all_resources 
+    c.execute('''SELECT title, name,  medium, subject FROM all_resources 
                 WHERE title LIKE ?
                     OR name LIKE ?
                     OR subject LIKE ?
-                ORDER BY medium''',
+                ORDER BY mediaID''',
               (search_term, search_term, search_term))
     return c.fetchall()
 

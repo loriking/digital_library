@@ -23,7 +23,7 @@ class ProjectLibrary(tk.Tk):
             self.frames[F] = frame
             frame.grid(row = 0, column = 0, sticky ='nsew')
 
-        self.show_frame(AddText)
+        self.show_frame(SearchResource)
         
     def show_frame(self, cont):
         frame = self.frames[cont]
@@ -311,13 +311,13 @@ class AddText(tk.Frame):
         self.resource_list['columns'] = ('Title', 'Author', 'Year', 'Pages',
                           'Publisher', 'Language', 'Notes')
         self.resource_list.column('#0',minwidth=0, width=0)
-        self.resource_list.column('0', width=195, anchor='w')
-        self.resource_list.column('1', width=160, anchor='w')
+        self.resource_list.column('0', width=310, anchor='w')
+        self.resource_list.column('1', width=140, anchor='w')
         self.resource_list.column('2', width=60, anchor='c')
         self.resource_list.column('3', width=60, anchor='e')
         self.resource_list.column('4', width=95, anchor='w')
-        self.resource_list.column('5', width=90, anchor='w')
-        self.resource_list.column('6', width=200, anchor='w')
+        self.resource_list.column('5', width=70, anchor='w')
+        self.resource_list.column('6', width=125, anchor='w')
         self.resource_list.grid(column=0, row=1, sticky=tk.E)
 
         self.resource_list.heading('0', text='Title', anchor='w')
@@ -573,14 +573,14 @@ class LinkResources(tk.Frame):
         self.resource_id = None
         self.media_id = None
 
-        self.resources = set()
+        # self.resources = set()
 
         self.project_title = tk.StringVar()
         self.project_type = tk.StringVar()
         self.resource_subject = tk.StringVar()
 
         self.media_type = tk.IntVar()
-        self.media_type.set("?")
+        self.media_type.set(1)
 
         self.searchheader = ttk.Label(self, text='Find Projects')
         self.searchheader.grid(column=0, row=0)
@@ -714,7 +714,7 @@ class LinkResources(tk.Frame):
         self.scollresources = ttk.Scrollbar(self.resourceresults)
         self.scollresources.grid(column=2, row=2, sticky=tk.N + tk.S + tk.W)
 
-        self.resource_list = ttk.Treeview(self.resourceresults, height=4, selectmode='browse', #changed from 'extended'
+        self.resource_list = ttk.Treeview(self.resourceresults, height=4, selectmode='browse',
                                           columns=column_names )
 
         self.scollresources.configure(orient="vertical", command=self.resource_list.yview)
@@ -723,12 +723,12 @@ class LinkResources(tk.Frame):
         self.resource_list['columns'] = column_names
 
         self.resource_list.column('#0', minwidth=0, width=0)
-        self.resource_list.column('0', width=240, anchor='w')
-        self.resource_list.column('1', width=150, anchor='w')
-        self.resource_list.column('2', width=75, anchor='w')
-        self.resource_list.column('3', width=75, anchor='w')
-        self.resource_list.column('4', width=100, anchor='w')
-        self.resource_list.column('5', width=200, anchor='w')
+        self.resource_list.column('0', width=310, anchor='w')
+        self.resource_list.column('1', width=120, anchor='w')
+        self.resource_list.column('2', width=115, anchor='w')
+        self.resource_list.column('3', width=125, anchor='w')
+        self.resource_list.column('4', width=65, anchor='w')
+        self.resource_list.column('5', width=125, anchor='w')
         self.resource_list.grid(column=0, row=2, sticky=tk.W + tk.N + tk.E)
 
         self.resource_list.heading('0', anchor='w', text=column_names[0])
@@ -750,19 +750,19 @@ class LinkResources(tk.Frame):
     def create_table_values(self):
 
         if self.media_type.get() == 1:
-            column_names = ('Title', 'Author', 'Year', 'Type', 'Subject', 'Language')
+            column_names = ('Title', 'Author', 'Type', 'Subject', '', '')
             resources = data.find_all(self.resource_subject.get())
 
         elif self.media_type.get()== 2:
-            column_names = ('Title', 'Artist', 'Year', 'Type', 'Language', 'Program')
+            column_names = ('Title', 'Author', 'Date', 'Type', 'Language', 'Program')
             resources = data.find_audio(self.resource_subject.get())
 
         elif self.media_type.get() == 3:
-            column_names = ('Title', 'Author', 'Year', 'Pages', 'Language', 'Notes')
+            column_names = ('Title', 'Author', 'Year', 'Pages', 'Language', 'Subject')
             resources = data.find_texts(self.resource_subject.get())
 
         elif self.media_type.get() == 4:
-            column_names = ('Title', 'Instructor', 'Provider', 'Duration', 'Level', 'Subject')
+            column_names = ('Title', 'Instructor', 'Duration', 'Subject', 'Type', 'Level')
             resources = data.find_courses(self.resource_subject.get())
 
         elif self.media_type.get() == 5:
@@ -837,11 +837,8 @@ class LinkResources(tk.Frame):
 
 
     def link_project_resources(self):
-
         data.link_to_resources(self.project_id, self.resource_id, self.media_id)
         tkMessageBox.showinfo('Confirm', "Added item to\nproject bibliography!")
-
-
 
     def search_projects(self):
         for i in self.project_list.get_children():
@@ -860,15 +857,15 @@ class LinkResources(tk.Frame):
             self.treeview_resources.insert('', 'end', values=item)
         self.subjectbox.delete(0, 'end')
 
-    def limit_resources(self):
-        for i in self.resource_list.get_children():
-            self.resource_list.delete(i)
-
-        resources_sorted = data.resources_by_type(self.media_type.get())
-
-        for item in resources_sorted:
-            self.treeview_resources.insert('', 'end', values=item)
-        self.subjectbox.delete(0, 'end')
+    # def limit_resources(self):
+    #     for i in self.resource_list.get_children():
+    #         self.resource_list.delete(i)
+    #
+    #     resources_sorted = data.resources_by_type(self.media_type.get())
+    #
+    #     for item in resources_sorted:
+    #         self.treeview_resources.insert('', 'end', values=item)
+    #     self.subjectbox.delete(0, 'end')
 
 class Projects(tk.Frame):
     def __init__(self, parent, controller):
@@ -1258,12 +1255,12 @@ class AddMedia(tk.Frame):
 
         self.webdocs_list['columns'] = (col1, col2, col3, col4, col5, col6)
         self.webdocs_list.column('#0', minwidth=0, width=0)
-        self.webdocs_list.column('0', width=220, anchor='w')
-        self.webdocs_list.column('1', width=140, anchor='w')
-        self.webdocs_list.column('2', width=95, anchor='w')
-        self.webdocs_list.column('3', width=75, anchor='w')
-        self.webdocs_list.column('4', width=100, anchor='w')
-        self.webdocs_list.column('5', width=230, anchor='w')
+        self.webdocs_list.column('0', width=310, anchor='w')
+        self.webdocs_list.column('1', width=120, anchor='w')
+        self.webdocs_list.column('2', width=115, anchor='w')
+        self.webdocs_list.column('3', width=125, anchor='w')
+        self.webdocs_list.column('4', width=65, anchor='w')
+        self.webdocs_list.column('5', width=125, anchor='w')
         self.webdocs_list.grid(column=0, row=1)
 
         self.webdocs_list.heading('0', text=col1, anchor='w')
@@ -1703,9 +1700,9 @@ class AddCourse(AddMedia):
         AddMedia.c5 = 'Type'
         AddMedia.c6 = 'Level'
 
-        AddMedia.media_choice1 = 'Audio only'
-        AddMedia.media_choice2 = 'MOOC'
-        AddMedia.media_choice3 = 'Blended Class'
+        AddMedia.media_choice1 = 'Blended or Flipped'
+        AddMedia.media_choice2 = 'Lecture notes'
+        AddMedia.media_choice3 = 'MOOC'
 
 
         return AddMedia.c1, AddMedia.c2, AddMedia.c3, AddMedia.c4, AddMedia.c5, AddMedia.c6, AddMedia.window_header, \
@@ -1714,11 +1711,11 @@ class AddCourse(AddMedia):
 
     def get_media_name(self):
         if self.media_buttons.get() == 1:
-            media_name = 'Audio only'
+            media_name = 'Blended'
         elif self.media_buttons.get() == 2:
-            media_name = 'MOOC'
+            media_name = 'Lectures'
         elif self.media_buttons.get() == 3:
-            media_name = 'Blended Class'
+            media_name = 'MOOC'
         print('Media name = ', media_name)
         return media_name
 
@@ -1758,11 +1755,11 @@ class AddCourse(AddMedia):
             pass
 
         try:
-            if media == 'Audio only':
+            if media == 'Blended':
                 self.media_buttons.set(1)
-            elif media == 'MOOC':
+            elif media == 'Lectures':
                 self.media_buttons.set(2)
-            elif media == 'Blended Class':
+            elif media == 'MOOC':
                 self.media_buttons.set(3)
 
             return self.document_id, self.current_author, self.current_media
@@ -1780,9 +1777,6 @@ class AddCourse(AddMedia):
     def save_data(self):
         media_name = self.get_media_name()
         print('Media name = ', media_name)
-        #media_id = data.get_resource_medium_id(media_name)
-
-        #lg.add_course(title, instructor, subject, duration, provider, url, notes, medium, level)
 
         lg.add_course(self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(),
                       self.box1R.get(), self.box2R.get(), self.box3R.get(), media_name,
@@ -1791,11 +1785,6 @@ class AddCourse(AddMedia):
         print("Course Added")
 
         self.update_windows()
-
-        # search_table = data.list_courses()
-        #
-        # self.list_resources(search_table)
-        # self.update_entry_widgets()
 
     def update(self):
 
@@ -1827,10 +1816,6 @@ class AddCourse(AddMedia):
 
         self.update_windows()
 
-        # search_table = data.list_courses()
-        #
-        # self.list_resources(search_table)
-        # self.update_entry_widgets()
 
     def delete(self):
         media_name = self.box1L.get()
@@ -2406,7 +2391,7 @@ class SearchResource(tk.Frame):
 
         self.search_bar = tk.StringVar()
         self.media_type = tk.IntVar()
-        self.media_type.set('?')
+        self.media_type.set(8)
         self.column_names = ()
         self.resources = None
 
@@ -2450,15 +2435,15 @@ class SearchResource(tk.Frame):
         self.search_bar_entry.grid(column=1, row=1)
         self.sort_label.grid(column=2, row=1, padx=5, sticky=tk.E)
 
-        self.audio_rb.grid(column=3, row=1, sticky=tk.W)
-        self.books_rb.grid(column=4, row=1, sticky=tk.W)
-        self.courses_rb.grid(column=5, row=1, sticky=tk.W)
-        self.images_rb.grid(column=6, row=1, sticky=tk.W)
+        self.all_rb.grid(column=3, row=1, sticky=tk.W)
+        self.audio_rb.grid(column=4, row=1, sticky=tk.W)
+        self.books_rb.grid(column=5, row=1, sticky=tk.W)
+        self.courses_rb.grid(column=6, row=1, sticky=tk.W)
 
-        self.interactive_rb.grid(column=3, row=2, sticky=tk.W)
-        self.video_rb.grid(column=4, row=2, sticky=tk.W)
-        self.websites_rb.grid(column=5, row=2, sticky=tk.W)
-        self.all_rb.grid(column=6, row=2, sticky=tk.W)
+        self.images_rb.grid(column=3, row=2, sticky=tk.W)
+        self.interactive_rb.grid(column=4, row=2, sticky=tk.W)
+        self.video_rb.grid(column=5, row=2, sticky=tk.W)
+        self.websites_rb.grid(column=6, row=2, sticky=tk.W)
 
         self.search_button.grid(column=4, row=1, sticky=tk.W)
 
@@ -2501,12 +2486,12 @@ class SearchResource(tk.Frame):
         self.resource_list['columns'] = column_names
 
         self.resource_list.column('#0', minwidth=0, width=0)
-        self.resource_list.column('0', width=240, anchor='w')
-        self.resource_list.column('1', width=150, anchor='w')
-        self.resource_list.column('2', width=75, anchor='w')
-        self.resource_list.column('3', width=75, anchor='w')
-        self.resource_list.column('4', width=100, anchor='w')
-        self.resource_list.column('5', width=220, anchor='w')
+        self.resource_list.column('0', width=310, anchor='w')
+        self.resource_list.column('1', width=120, anchor='w')
+        self.resource_list.column('2', width=115, anchor='w')
+        self.resource_list.column('3', width=125, anchor='w')
+        self.resource_list.column('4', width=65, anchor='w')
+        self.resource_list.column('5', width=125, anchor='w')
         self.resource_list.grid(column=0, row=2, sticky=tk.W + tk.N + tk.E)
 
         self.resource_list.heading('0', anchor='w', text=column_names[0])
@@ -2527,7 +2512,7 @@ class SearchResource(tk.Frame):
             resources = data.find_audio(self.search_bar.get())
 
         if self.media_type.get() == 2:
-            column_names = ('Title', 'Instructor', 'Duration',  'Type', 'Subject','Level')
+            column_names = ('Title', 'Instructor', 'Duration', 'Subject','Type','Level')
             resources = data.find_courses(self.search_bar.get())
 
         elif self.media_type.get() == 3:
@@ -2551,7 +2536,7 @@ class SearchResource(tk.Frame):
             resources = data.find_video(self.search_bar.get())
 
         elif self.media_type.get() == 8:
-            column_names = ('Title', 'Author', 'Subject', 'Medium', 'ID', '')
+            column_names = ('Title', 'Author', 'Medium', 'Subject', '', '')
             resources = data.find_all(self.search_bar.get())
 
         return column_names, resources
