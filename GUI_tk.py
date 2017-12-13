@@ -1023,7 +1023,7 @@ class Projects(tk.Frame):
 
         self.project_category_options = data.list_project_category()
         for i in self.project_category_options:
-            menu.add_command(label=i, command=lambda value=i: self.add_projecttype.set(value))
+            menu.add_command(label=i, command=lambda value=i: self.choices.set(value))
         self.choices.set('Choose project type:')
 
 
