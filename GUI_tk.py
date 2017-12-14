@@ -23,7 +23,7 @@ class ProjectLibrary(tk.Tk):
             self.frames[F] = frame
             frame.grid(row = 0, column = 0, sticky ='nsew')
 
-        self.show_frame(SearchResource)
+        self.show_frame(AddText)
         
     def show_frame(self, cont):
         frame = self.frames[cont]
@@ -160,7 +160,7 @@ class AddText(tk.Frame):
         middleframe.grid(columnspan=5, column=4, row=2, sticky=tk.W)
 
         middlerightframe = tk.LabelFrame(mainframe, text='', borderwidth=0)
-        middlerightframe.grid(columnspan=3, column=2, row=2,  sticky=tk.E)# change column from 6 to 2
+        middlerightframe.grid(columnspan=3, column=2, row=2,  sticky=tk.E)
 
         bottomframe = tk.LabelFrame(self, text="", borderwidth=4)
         bottomframe.grid(column=0, row=3, pady=5)
@@ -283,7 +283,7 @@ class AddText(tk.Frame):
         self.level_label.grid(column=0, row=5, sticky=tk.W)
         self.level_entry.grid(column=1, row=5, sticky=tk.W)
 
-        self.text_type_label = tk.Label(middleleftframe, text='Select text type:') # was middleleftframe
+        self.text_type_label = tk.Label(middleleftframe, text='Select text type:')
 
         self.text_type1 = tk.Radiobutton(middleleftframe, text='Book', variable=self.text_type, value=1)
         self.text_type2= tk.Radiobutton(middleleftframe, text='Short story', variable=self.text_type,
@@ -300,7 +300,7 @@ class AddText(tk.Frame):
         self.scrollresources = tk.Scrollbar(bottomframe)
         self.scrollresources.grid(column=1,row=1, sticky=tk.N+tk.S+tk.W)
 
-        self.resource_list = ttk.Treeview(bottomframe,
+        self.resource_list = ttk.Treeview(bottomframe, height=12,
                                          columns=('Title', 'Author','Year',
                                                   'Pages','Publisher',
                                                   'Language', 'Notes'))
@@ -793,28 +793,38 @@ class LinkResources(tk.Frame):
             print(resource_name)
 
             if self.media_type.get() == 1:
-                self.resource_id = data.get_audio_video_id(resource_name)
-                self.media_id = data.get_av_mediaID(self.resource_id)
+               self.resource_id = data.get_id(resource_name)
 
-            if self.media_type.get() == 2:
+            elif self.media_type.get() == 2:
+               self.resource_id = data.get_audio_id(resource_name)
+               self.media_id = data.get_audio_mediaID(self.resource_id)
+
+
+            elif self.media_type.get() == 3:
+                self.resource_id = data.get_text_id(resource_name)
+                self.media_id = data.get_text_mediaID(self.resource_id)
+
+            elif self.media_type.get() == 4:
                 self.resource_id = data.get_course_id(resource_name)
                 self.media_id = data.get_course_mediaID(self.resource_id)
 
-            elif self.media_type.get() == 3:
-                self.resource_id = data.get_website_id(resource_name)
-                self.media_id = data.get_website_mediaID(self.resource_id)
 
-            elif self.media_type.get() == 4:
+            elif self.media_type.get() == 5:
                 self.resource_id = data.get_image_id(resource_name)
                 self.media_id = data.get_image_mediaID(self.resource_id)
 
-            elif self.media_type.get() == 5:
+
+            elif self.media_type.get() == 6:
                 self.resource_id = data.get_interactive_id(resource_name)
                 self.media_id = data.get_interactive_mediaID(self.resource_id)
 
-            elif self.media_type.get() == 6:
-                self.resource_id = data.get_text_id(resource_name)
-                self.media_id = data.get_text_mediaID(self.resource_id)
+            elif self.media_type.get() == 7:
+                self.resource_id = data.get_video_id(resource_name)
+                self.media_id = data.get_video_mediaID(self.resource_id)
+
+            elif self.media_type.get() == 8:
+                self.resource_id = data.get_website_id(resource_name)
+                self.media_id = data.get_website_mediaID(self.resource_id)
 
             return self.resource_id, self.media_id
 
@@ -2406,8 +2416,11 @@ class SearchResource(tk.Frame):
         self.topmiddle.grid(column=1, row=2)
         self.topright.grid(column=2, row=2, sticky=tk.E)
 
-        self.bottom = tk.LabelFrame(self.mainframe, text='', borderwidth=3)
+        self.bottom = tk.LabelFrame(self.mainframe, text='', borderwidth=1)
         self.bottom.grid(column=0, row=5, columnspan=20)
+
+        self.buttons_frame = tk.LabelFrame(self.mainframe, text='')
+        self.buttons_frame.grid(column=0, row=6, columnspan=40 )
 
         self.title = tk.Label(self, text='Find Resources')
         self.title.grid(column=0, row=0)
@@ -2447,26 +2460,26 @@ class SearchResource(tk.Frame):
 
         self.search_button.grid(column=4, row=1, sticky=tk.W)
 
-        self.home = ttk.Button(self.bottom, text='Home', command=lambda: controller.show_frame(HomePage))
+        self.home = ttk.Button(self.buttons_frame, text='Home', command=lambda: controller.show_frame(HomePage))
         self.home.config(width=13, cursor='hand2')
-        self.home.grid(column=0, row=10, padx=20, sticky=tk.E)
+        self.home.grid(column=0, row=0, padx=20, sticky=tk.E)
 
-        self.go_to_resources = ttk.Button(self.bottom, text='Add Resource',
+        self.go_to_resources = ttk.Button(self.buttons_frame, text='Add Resource',
                                          command=lambda: controller.show_frame(AddResource))
         self.go_to_resources.config(width=13, cursor='hand2')
-        self.go_to_resources.grid(column=0, row=11, padx=20, sticky=tk.E)
+        self.go_to_resources.grid(column=1, row=0, padx=20, sticky=tk.E)
 
-        self.view_projects = ttk.Button(self.bottom, text='View Projects',
+        self.view_projects = ttk.Button(self.buttons_frame, text='View Projects',
                                               command=lambda: controller.show_frame(Projects))
         self.view_projects.config(width=13, cursor='hand2')
-        self.view_projects.grid(column=0, row=12, padx=20, sticky=tk.E)
+        self.view_projects.grid(column=2, row=0, padx=20, sticky=tk.E)
 
         self.go_to_link_projects = ttk.Button(self.bottom, text='Link Projects',
                                           command=lambda: controller.show_frame(LinkResources))
         self.go_to_link_projects.config(width=13, cursor='hand2')
         self.go_to_link_projects.grid(column=0, row=13, padx=20, sticky=tk.E)
 
-        show_window(self.bottom, 12) # opens an empty window as a placeholder
+        show_window(self.bottom, 15) # opens an empty window as a placeholder
 
     def show_results(self):
         results = self.create_table_values()
@@ -2476,7 +2489,7 @@ class SearchResource(tk.Frame):
         self.scollresources = ttk.Scrollbar(self.bottom)
         self.scollresources.grid(column=2, row=2, sticky=tk.N + tk.S + tk.W)
 
-        self.resource_list = ttk.Treeview(self.bottom, height=12, selectmode='extended',
+        self.resource_list = ttk.Treeview(self.bottom, height=15, selectmode='extended',
                                               columns=column_names)
         self.resource_list.bind()
 
