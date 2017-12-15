@@ -18,12 +18,12 @@ class ProjectLibrary(tk.Tk):
         self.frames = {}
 
         for F in (HomePage, Projects, LinkResources, AddResource, AddText, AddAudio, AddVideo, AddCourse,
-                  AddInteractiveMedia, AddMedia, AddImages, SearchResource, EditProject):
+                  AddInteractiveMedia, AddMedia, AddImages, SearchResource, EditProject, ViewProjectReferences):
             frame = F(main, self)
             self.frames[F] = frame
             frame.grid(row = 0, column = 0, sticky ='nsew')
 
-        self.show_frame(AddText)
+        self.show_frame(ViewProjectReferences)
         
     def show_frame(self, cont):
         frame = self.frames[cont]
@@ -71,7 +71,8 @@ class HomePage(tk.Frame):
         self.view_resources.config(height=5, width=13)
         self.view_resources.pack(pady=10)
 
-        self.show_project_resources = tk.Button(self.secondframe, text="Show Project's\nResources")
+        self.show_project_resources = tk.Button(self.secondframe, text="Show Project's\nResources",
+                                                command=lambda: controller.show_frame(ViewProjectReferences))
         self.show_project_resources.config(height=5, width=13)
         self.show_project_resources.pack(pady=10)
 
@@ -572,8 +573,7 @@ class LinkResources(tk.Frame):
         self.project_id = None
         self.resource_id = None
         self.media_id = None
-
-        # self.resources = set()
+        self.resource_name = None
 
         self.project_title = tk.StringVar()
         self.project_type = tk.StringVar()
@@ -787,46 +787,46 @@ class LinkResources(tk.Frame):
 
         for item in self.treeview_resources.selection():
             item_text = self.treeview_resources.item(item)
-            print(item_text)
+            print('Item =', item_text)
 
-            resource_name = item_text['values'][0]
-            print(resource_name)
+            self.resource_name = item_text['values'][0]
+            print(self.resource_name)
 
             if self.media_type.get() == 1:
-               self.resource_id = data.get_id(resource_name)
+                media_name = item_text['values'][2]
+
+                self.resource_id = data.get_id(self.resource_name, media_name)
+                self.media_id = data.get_resource_medium_id(media_name)
 
             elif self.media_type.get() == 2:
-               self.resource_id = data.get_audio_id(resource_name)
-               self.media_id = data.get_audio_mediaID(self.resource_id)
-
+                self.resource_id = data.get_audio_id(self.resource_name)
+                self.media_id = data.get_audio_mediaID(self.resource_id)
 
             elif self.media_type.get() == 3:
-                self.resource_id = data.get_text_id(resource_name)
+                self.resource_id = data.get_text_id(self.resource_name)
                 self.media_id = data.get_text_mediaID(self.resource_id)
 
             elif self.media_type.get() == 4:
-                self.resource_id = data.get_course_id(resource_name)
+                self.resource_id = data.get_course_id(self.resource_name)
                 self.media_id = data.get_course_mediaID(self.resource_id)
 
-
             elif self.media_type.get() == 5:
-                self.resource_id = data.get_image_id(resource_name)
+                self.resource_id = data.get_image_id(self.resource_name)
                 self.media_id = data.get_image_mediaID(self.resource_id)
 
-
             elif self.media_type.get() == 6:
-                self.resource_id = data.get_interactive_id(resource_name)
+                self.resource_id = data.get_interactive_id(self.resource_name)
                 self.media_id = data.get_interactive_mediaID(self.resource_id)
 
             elif self.media_type.get() == 7:
-                self.resource_id = data.get_video_id(resource_name)
+                self.resource_id = data.get_video_id(self.resource_name)
                 self.media_id = data.get_video_mediaID(self.resource_id)
 
             elif self.media_type.get() == 8:
-                self.resource_id = data.get_website_id(resource_name)
+                self.resource_id = data.get_website_id(self.resource_name)
                 self.media_id = data.get_website_mediaID(self.resource_id)
 
-            return self.resource_id, self.media_id
+            return self.resource_id, self.media_id #, self.resource_name
 
     def select_project(self, event):
         """ Takes item selected from listbox and stores it as a global variable to be used in
@@ -847,7 +847,7 @@ class LinkResources(tk.Frame):
 
 
     def link_project_resources(self):
-        data.link_to_resources(self.project_id, self.resource_id, self.media_id)
+        data.link_to_resources(self.project_id,  self.resource_id,self.media_id # self.resource_name)
         tkMessageBox.showinfo('Confirm', "Added item to\nproject bibliography!")
 
     def search_projects(self):
@@ -866,16 +866,6 @@ class LinkResources(tk.Frame):
         for item in resources:
             self.treeview_resources.insert('', 'end', values=item)
         self.subjectbox.delete(0, 'end')
-
-    # def limit_resources(self):
-    #     for i in self.resource_list.get_children():
-    #         self.resource_list.delete(i)
-    #
-    #     resources_sorted = data.resources_by_type(self.media_type.get())
-    #
-    #     for item in resources_sorted:
-    #         self.treeview_resources.insert('', 'end', values=item)
-    #     self.subjectbox.delete(0, 'end')
 
 class Projects(tk.Frame):
     def __init__(self, parent, controller):
@@ -2767,6 +2757,83 @@ class EditProject(tk.Frame):
             self.update_widgets()
             self.clear_projects()
             tkMessageBox.showinfo('Deleted', "Project deleted.")
+
+class ViewProjectReferences(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+
+        self.search_bar = tk.StringVar()
+        self.project_name = tk.StringVar()
+
+        mainframe = tk.LabelFrame(self, text='', borderwidth=4)
+        mainframe.grid(column=0, row=0, columnspan=10, sticky=tk.W + tk.E + tk.N + tk.S)
+
+        self.label = tk.Label(mainframe, text='Project References')
+        self.label.grid(column=0, row=0, columnspan=10)
+
+        self.projectframe = tk.LabelFrame(mainframe, text='', borderwidth=0)
+        self.projectframe.grid(column=0, row=1, sticky=tk.W)
+
+        self.resource_frame = tk.LabelFrame(mainframe, text='Associated References', borderwidth=0)
+        self.resource_frame.grid(column=0, row=2,  pady=5)
+
+        self.home = tk.Button(mainframe, text='Home', command=lambda: controller.show_frame(HomePage))
+        self.home.config(width=10)
+        self.home.grid(column=0, row=4, padx=10, sticky=tk.W)
+
+        self.display_project()
+        self.display_resources()
+
+    def search_projects(self):
+        pass
+
+    def display_project(self):
+        self.titlebox_label = tk.Label(self.projectframe, text='Enter search keyword')
+        self.titlebox_label.grid(column=0, row=0, sticky=tk.W)
+        self.titlebox = tk.Entry(self.projectframe, width=32, textvariable=self.search_bar)
+        self.titlebox.grid(column=1, row=0, sticky=tk.W)
+
+        self.searchbutton = ttk.Button(self.projectframe, text='Search', command=lambda: self.search_projects())
+        self.searchbutton.config(width=10, cursor='hand2')
+        self.searchbutton.grid(column=2, row=0, padx=5, pady=5, sticky=tk.E)
+
+        self.projectlabel = tk.Label(self.projectframe, text='Project Name: ')
+        self.projectlabel.grid(column = 0, row=1, sticky=tk.W)
+
+        self.projectname = tk.Label(self.projectframe, textvariable = self.project_name)
+        self.projectname.grid(column=1, row=1, sticky=tk.W)
+
+
+    def display_resources(self):
+        self.scollreferences = tk.Scrollbar(self.resource_frame)
+        self.scollreferences.grid(column=1, row=0, pady=5, sticky=tk.N + tk.S)
+
+        self.references = ttk.Treeview(self.resource_frame, height=10, selectmode='browse',
+                                         columns=('Resource Type', 'Title', 'Author', 'Topic'))
+
+        self.scollreferences.configure(orient="vertical", command=self.references.yview)
+        self.references.configure(yscrollcommand=self.scollreferences.set)
+
+        self.references['columns'] = ('Resource Type', 'Title', 'Author', 'Topic')
+        self.references.column('#0', minwidth=0, width=0)
+        self.references.grid(column=0, row=0,  pady=5, sticky=tk.E)
+
+        self.references.heading('0', text='Resource Type', anchor='c')
+        self.references.heading('1', text='Title', anchor='c')
+        self.references.heading('2', text='Author', anchor='c')
+        self.references.heading('3', text='Topic', anchor='c')
+
+        self.references.column('0', width=150, anchor='w')
+        self.references.column('1', width=340, anchor='w')
+        self.references.column('2', width=220, anchor='w')
+        self.references.column('3', width=150, anchor='w')
+
+        self.treeview_references = self.references
+        self.treeview_references.bind('<ButtonRelease-1>', self.select_reference)
+
+    def select_reference(self):
+        pass
+
 
 
 
