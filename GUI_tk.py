@@ -847,7 +847,7 @@ class LinkResources(tk.Frame):
 
 
     def link_project_resources(self):
-        data.link_to_resources(self.project_id,  self.resource_id,self.media_id # self.resource_name)
+        data.link_to_resources(self.project_id,  self.resource_id,self.media_id) # self.resource_name)
         tkMessageBox.showinfo('Confirm', "Added item to\nproject bibliography!")
 
     def search_projects(self):
@@ -2762,8 +2762,12 @@ class ViewProjectReferences(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
+        # VARIABLES
         self.search_bar = tk.StringVar()
         self.project_name = tk.StringVar()
+        self.project_id = tk.IntVar()
+
+        # FRANES
 
         mainframe = tk.LabelFrame(self, text='', borderwidth=4)
         mainframe.grid(column=0, row=0, columnspan=10, sticky=tk.W + tk.E + tk.N + tk.S)
@@ -2771,44 +2775,115 @@ class ViewProjectReferences(tk.Frame):
         self.label = tk.Label(mainframe, text='Project References')
         self.label.grid(column=0, row=0, columnspan=10)
 
-        self.projectframe = tk.LabelFrame(mainframe, text='', borderwidth=0)
-        self.projectframe.grid(column=0, row=1, sticky=tk.W)
+        self.firstframe = tk.LabelFrame(mainframe, text='', borderwidth=0)
+        self.firstframe.grid(columnspan=10, column=0, row=1, sticky=tk.W)
 
-        self.resource_frame = tk.LabelFrame(mainframe, text='Associated References', borderwidth=0)
-        self.resource_frame.grid(column=0, row=2,  pady=5)
+        self.secondframe = tk.LabelFrame(mainframe, text='', borderwidth=0)
+        self.secondframe.grid(columnspan=10, column=0, row=2,sticky=tk.W + tk.E + tk.N + tk.S)
+
+        self.thirdframe = tk.LabelFrame(mainframe, text='', borderwidth=0)
+        self.thirdframe.grid(columnspan=10, column=0, row=3, pady=7, sticky=tk.W)
+
+        self.fourthframe = tk.LabelFrame(mainframe, text='Associated References', borderwidth=0)
+        self.fourthframe.grid(column=0, row=4,  pady=5, sticky=tk.W + tk.E + tk.N + tk.S)
 
         self.home = tk.Button(mainframe, text='Home', command=lambda: controller.show_frame(HomePage))
         self.home.config(width=10)
-        self.home.grid(column=0, row=4, padx=10, sticky=tk.W)
+        self.home.grid(column=0, row=5, padx=10, sticky=tk.W)
 
         self.display_project()
         self.display_resources()
 
+    def clear_projects(self):
+        for i in self.project_list.get_children():
+            self.project_list.delete(i)
+
+    def clear_references(self):
+        for i in self.references.get_children():
+            self.references.delete(i)
+
+
     def search_projects(self):
-        pass
+        self.clear_projects()
+        self.project_name.set('')
+
+        projects = data.find_project(self.search_bar.get())
+
+        for item in projects:
+            self.treeview_projects.insert('', 'end', values=item)
+        self.titlebox.delete(0, 'end')
+
+    def view_resources(self, event):
+        self.clear_references()
+        item = self.project_list.focus()
+
+        project = self.treeview_projects.item(item)
+
+        self.project_id = data.get_projectID(project['values'][0])
+        self.project_name.set(project['values'][0])
+
+        self.project_id = self.project_id[0]
+
+        resources = lg.view_project_references(self.project_id)
+
+        for resource in resources:
+            self.treeview_references.insert('', 'end', values=resource)
+
+        return self.project_id
+
 
     def display_project(self):
-        self.titlebox_label = tk.Label(self.projectframe, text='Enter search keyword')
+        self.titlebox_label = tk.Label(self.firstframe, text='Enter search keyword')
         self.titlebox_label.grid(column=0, row=0, sticky=tk.W)
-        self.titlebox = tk.Entry(self.projectframe, width=32, textvariable=self.search_bar)
+
+        self.titlebox = tk.Entry(self.firstframe, width=32, textvariable=self.search_bar)
         self.titlebox.grid(column=1, row=0, sticky=tk.W)
 
-        self.searchbutton = ttk.Button(self.projectframe, text='Search', command=lambda: self.search_projects())
+        self.searchbutton = ttk.Button(self.firstframe, text='Search', command=lambda: self.search_projects())
         self.searchbutton.config(width=10, cursor='hand2')
         self.searchbutton.grid(column=2, row=0, padx=5, pady=5, sticky=tk.E)
 
-        self.projectlabel = tk.Label(self.projectframe, text='Project Name: ')
+        ######################
+        self.scrollresults = tk.Scrollbar(self.secondframe)
+        self.scrollresults.grid(column=1, row=4, sticky=tk.N + tk.S + tk.W)
+
+        self.project_list = ttk.Treeview(self.secondframe, height=2, selectmode='browse',
+                                         columns=('Name', 'Type', 'Description', 'Start date', 'End date'))
+
+        self.scrollresults.configure(orient="vertical", command=self.project_list.yview)
+        self.project_list.configure(yscrollcommand=self.scrollresults.set)
+
+        self.project_list['columns'] = ('Name', 'Type', 'Description', 'Start date', 'End date')
+        self.project_list.column('#0', minwidth=0, width=0)
+        self.project_list.grid(column=0, row=4, sticky=tk.W + tk.E)
+
+        self.project_list.heading('0', text='Name', anchor='w')
+        self.project_list.heading('1', text='Type', anchor='w')
+        self.project_list.heading('2', text='Description', anchor='w')
+        self.project_list.heading('3', text='Start date', anchor='w')
+        self.project_list.heading('4', text='End date', anchor='w')
+
+        self.project_list.column('0', width=250, anchor='w')
+        self.project_list.column('1', width=110, anchor='w')
+        self.project_list.column('2', width=280, anchor='w')
+        self.project_list.column('3', width=100, anchor='w')
+        self.project_list.column('4', width=120, anchor='w')
+        self.treeview_projects = self.project_list
+        self.treeview_projects.bind('<ButtonRelease-1>', self.view_resources)
+
+        ####################
+        self.projectlabel = tk.Label(self.thirdframe, text='Project Name: ')
         self.projectlabel.grid(column = 0, row=1, sticky=tk.W)
 
-        self.projectname = tk.Label(self.projectframe, textvariable = self.project_name)
+        self.projectname = tk.Label(self.thirdframe, textvariable = self.project_name)
         self.projectname.grid(column=1, row=1, sticky=tk.W)
 
 
     def display_resources(self):
-        self.scollreferences = tk.Scrollbar(self.resource_frame)
+        self.scollreferences = tk.Scrollbar(self.fourthframe)
         self.scollreferences.grid(column=1, row=0, pady=5, sticky=tk.N + tk.S)
 
-        self.references = ttk.Treeview(self.resource_frame, height=10, selectmode='browse',
+        self.references = ttk.Treeview(self.fourthframe, height=10, selectmode='browse',
                                          columns=('Resource Type', 'Title', 'Author', 'Topic'))
 
         self.scollreferences.configure(orient="vertical", command=self.references.yview)

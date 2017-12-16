@@ -182,3 +182,20 @@ def add_video(title, author, duration,  subject, producer, year, url, medium, la
     video_id = data.get_video_id(title)
 
     data.add_resource_author(video_id, author_id, media_id)
+
+
+
+# Project references
+def view_project_references(project_id):
+    items = []
+    references = data.get_project_references(project_id)
+    for item in references:
+        results = data.get_reference_details(item[0], item[1] )
+
+        for reference in results:
+            items.append(reference)
+
+    if len(items) == 0:
+        items.append('None')
+
+    return items
