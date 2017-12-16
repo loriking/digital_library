@@ -1,4 +1,4 @@
-import sqlite3 as sql
+import operator
 import dataCRUD as data
 
 
@@ -194,6 +194,8 @@ def view_project_references(project_id):
 
         for reference in results:
             items.append(reference)
+
+    items = sorted(items, key=operator.itemgetter(0))
 
     if len(items) == 0:
         items.append('None')
