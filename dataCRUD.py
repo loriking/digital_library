@@ -507,30 +507,21 @@ def list_audio():
                 AND audio.subjectID = subjects.ID''')
     return c.fetchall()
 
-# def update_audio(audio_id, title, duration,  subject, year, program, url, media_id, language):
-#
-#     language_id = get_language_id(language)
-#     print('Language ID is ', language_id)
-#
-#     add_subject(subject)
-#     subject_id = get_subject_id(subject)
-#
-#
-#     c.execute('''UPDATE audio SET title = ?, duration_secs = ?,  subjectID = ?, year = ?,
-#                     program  = ?, url = ?, mediaID = ?,  languageID = ?
-#                 WHERE ID = ?''',
-#               (title, duration,  subject_id, year, program, url, media_id, language_id, audio_id))
-#
-#
-#     db.commit()
-#
-# def delete_audio(resource_id, author, media):
-#
-#     c.execute('''DELETE FROM audio  WHERE audio.ID = ?''', (resource_id,))
-#
-#     delete_resource_author(resource_id, author, media)
-#
-#     db.commit()
+def update_audio_data(audioID, title, duration, subjectID, program, date, url, mediaID, languageID):
+
+    c.execute('''UPDATE audio
+                        SET title = ?, duration = ?, subjectID = ?,  program = ?, date = ?, 
+                            url = ?, mediaID = ?,languageID = ?
+                        WHERE ID  = ?''',
+              (title, duration, subjectID, program, date, url, mediaID, languageID, audioID))
+    db.commit()
+
+
+def delete_audio_from_db(resource_id):
+
+    c.execute('''DELETE FROM audio WHERE audio.ID = ?''', (resource_id,))
+
+    db.commit()
 
 
 # video

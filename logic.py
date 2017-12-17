@@ -26,6 +26,23 @@ def add_audio(title, author, duration, subject,  program, url, date, media_id, l
 
     data.add_resource_author(audio_id, author_id, media_id)
     
+def edit_audio(audio_id, title, author, duration, subject, program, date, url, media, language):
+    data.add_author(author)
+    data.add_subject(subject)
+    data.add_language(language)
+
+    author_id = data.get_author_id(author)
+    subject_id = data.get_subject_id(subject)
+    language_id = data.get_language_id(language)
+    media_id = data.get_resource_medium_id(media)
+
+    data.update_audio_data(audio_id, title, duration, subject_id, program, date, url, media_id, language_id)
+
+    data.add_resource_author(audio_id, author_id, media_id)
+
+def delete_audio(audio_id, author, media):
+    data.delete_audio_from_db(audio_id)
+    data.delete_resource_author(audio_id, author, media)
 
 # BOOKS
 def add_text(title, author, year, pages, level, publisher, language, subject, media):

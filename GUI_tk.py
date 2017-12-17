@@ -1094,6 +1094,10 @@ class AddMedia(tk.Frame):
         self.current_author = ''
         self.current_media = ''
 
+        self.edit_resource = tk.IntVar()
+
+        self.language = tk.StringVar()
+
         # Frames
 
         self.mainframe = tk.LabelFrame(self, text='', borderwidth=4)
@@ -1348,6 +1352,7 @@ class AddMedia(tk.Frame):
         self.box_3_R_entry.delete(0, 'end')
 
         self.media_buttons.set('?')
+        self.save_resource.config(state="normal")
 
 
     def select_document(self, event):
@@ -1406,8 +1411,8 @@ class AddMedia(tk.Frame):
 
             data.add_resource_author(self.document_id, author_id, media_id)
 
-        data.update_media(self.document_id, self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(),
-                          self.box1R.get(), self.box2R.get(), self.box3R.get(), self.box4R.get(), media_id)
+        # data.update_media(self.document_id, self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(),
+        #                   self.box1R.get(), self.box2R.get(), self.box3R.get(), self.box4R.get(), media_id)
 
         search_table = data.list_websites()
 
@@ -1464,6 +1469,8 @@ class AddAudio(AddMedia):
 
         self.language_entry.grid(columnspan=1, column=1, row=0, sticky=tk.W)
 
+        self.edit_audio = tk.IntVar()
+
         # CODE FOR ADDING NEW LANGUAGE
         self.new_lang_flag = tk.IntVar(self, value=0)
         self.new_lang = tk.StringVar()
@@ -1487,6 +1494,7 @@ class AddAudio(AddMedia):
         self.list_resources(self.table)
 
     def update_entry_widgets(self):
+        self.language.set('Select one')
 
         self.title_entry.delete(0, 'end')
         self.box_2_L_entry.delete(0, 'end')
@@ -1498,7 +1506,7 @@ class AddAudio(AddMedia):
         self.box_3_R_entry.delete(0, 'end')
 
         self.media_buttons.set('?')
-        # self.language.set('Select one')
+        self.save_resource.config(state="normal")
 
     def create_values(self):
         AddMedia.window_header = 'Music, Sounds and Podcasts'
@@ -1551,7 +1559,6 @@ class AddAudio(AddMedia):
         self.list_resources(search_table)
 
     def save_data(self):
-
         if self.new_lang_flag.get() == 1:
             thelanguage = self.new_lang.get()
             data.add_language(self.new_lang.get())
@@ -1583,6 +1590,7 @@ class AddAudio(AddMedia):
 
     def select_document(self, event):
         self.media_buttons.set('?')
+        self.save_resource.config(state='disabled')
 
         item = self.webdocs_list.focus()
 
@@ -1639,33 +1647,24 @@ class AddAudio(AddMedia):
         print('old media id', old_media_id)
 
         author_name = self.box2L.get()
+        print('Author name:',  author_name)
 
         if self.current_author != author_name or self.current_media != media_name:
             print('Difference found!')
             data.delete_resource_author(self.document_id, self.current_author, self.current_media)
             print('Deleted resource author for ID', self.document_id)
 
-            if self.current_author != author_name:
-                data.add_author(author_name)
-
-        author_id = data.get_author_id(author_name)
-        print('Author ID', author_id)
-
-        media_id = data.get_resource_medium_id(media_name)
-        print('MediaID =', media_id)
-
-        # update_audio(audio_id, title, duration,  subject, producer, year, program, url, media_id, language)
-        data.update_audio(self.document_id, self.box1L.get(), self.box3L.get(), self.box4L.get(),
-                            self.box1R.get(), self.box2R.get(), self.box3R.get(), self.box4R.get(),
-                            media_id, self.language.get())
-
-        data.add_resource_author(self.document_id, author_id, media_id)
+        lg.edit_audio(self.document_id, self.box1L.get(), self.box2L.get(), self.box3L.get(),
+                            self.box4L.get(), self.box1R.get(), self.box2R.get(), self.box3R.get(),
+                            self.get_media_name(), self.language.get())
 
         search_table = data.list_audio()
 
         self.list_resources(search_table)
         self.update_entry_widgets()
         self.language.set('Select one')
+        self.edit_audio.set(0)
+        self.save_resource.config(state="normal")
 
     def delete(self):
         media_name = self.box1L.get()
@@ -1676,7 +1675,7 @@ class AddAudio(AddMedia):
         result = tkMessageBox.askokcancel("Delete?", message1, icon='warning')
 
         if result == True:
-            data.delete_audio(self.document_id, self.current_author, self.current_media)
+            lg.delete_audio(self.document_id, self.current_author, self.current_media)
             self.update_windows()
             tkMessageBox.showinfo('Deleted', message2, icon='info')
 
