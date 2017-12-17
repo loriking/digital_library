@@ -47,9 +47,9 @@ class HomePage(tk.Frame):
         self.secondframe = tk.LabelFrame(self.topframe, text='', borderwidth=0)
         self.middleframe = tk.LabelFrame(self.topframe, borderwidth=0, text='')
 
-        self.firstframe.pack(anchor=tk.CENTER,expand=tk.TRUE, ipadx=10,  padx=10,pady=10)#(side=tk.LEFT, )
-        self.middleframe.pack(anchor=tk.CENTER,expand=tk.TRUE, ipadx=10, padx=10,pady=10)#(side=tk.LEFT, )
-        self.secondframe.pack(anchor=tk.CENTER,expand=tk.TRUE, ipadx=10, padx=10,pady=10)#(side=tk.LEFT,)
+        self.firstframe.pack(anchor=tk.CENTER,expand=tk.TRUE, ipadx=10,  padx=10,pady=10)
+        self.middleframe.pack(anchor=tk.CENTER,expand=tk.TRUE, ipadx=10, padx=10,pady=10)
+        self.secondframe.pack(anchor=tk.CENTER,expand=tk.TRUE, ipadx=10, padx=10,pady=10)
 
         self.add_edit_project = tk.Button(self.firstframe, text='Add or Edit\nProject', image = self.addeditproject,
                                       compound='top', command=lambda: controller.show_frame(AddEditProject))
@@ -97,17 +97,14 @@ class AddEditProject(tk.Frame):
 
         self.back = tk.Button(self.buttons, text='Home', image=self.home_img, compound="top",
                               command=lambda: controller.show_frame(HomePage))
-        # self.back.config(height=10, width=13)
         self.back.pack(side=tk.LEFT, padx=10)
 
         self.add_project = tk.Button(self.buttons, text='Add Project', image=self.project_img, compound="top",
                                      command=lambda: controller.show_frame(Projects))
-        # self.add_project.config(height=5, width=13)
         self.add_project.pack(side=tk.LEFT, padx=10)
 
         self.edit_project = tk.Button(self.buttons, text='Edit Projects', image = self.edit_img, compound="top",
                                       command=lambda: controller.show_frame(EditProject))
-        # self.edit_project.config(height=5, width=13)
         self.edit_project.pack(side=tk.LEFT, padx=10)
 
 
@@ -1458,7 +1455,7 @@ class AddAudio(AddMedia):
         self.language_options = data.list_languages()
         self.language.set('Select one')
 
-        self.language_label = tk.Label(self.center_frame2, text='Language') #self.center_frame
+        self.language_label = tk.Label(self.center_frame2, text='Language')
         self.language_entry = tk.OptionMenu(self.center_frame2, self.language,
                                             *self.language_options)
         self.language_entry.configure(width=8)
@@ -1515,8 +1512,8 @@ class AddAudio(AddMedia):
         AddMedia.c1 = 'Title'
         AddMedia.c2 = 'Author'
         AddMedia.c3 = 'Date'
-        AddMedia.c4 = 'Language'
-        AddMedia.c5 = 'Subject'
+        AddMedia.c4 = 'Subject'
+        AddMedia.c5 = 'Language'
         AddMedia.c6 = 'Type'
 
         AddMedia.media_choice1 = 'Music'
@@ -1565,7 +1562,7 @@ class AddAudio(AddMedia):
             media_name = self.get_media_name()
 
         except ValueError:
-            tkMessageBox.showinfo('Alert', 'Please choose media type', icon='warning')
+            tkMessageBox.showerror('Alert', 'Please choose media type', icon='warning')
 
         else:
             mediaID = data.get_resource_medium_id(media_name)
@@ -1580,7 +1577,7 @@ class AddAudio(AddMedia):
                 self.update_windows()
                 self.language.set('Select one')
                 self.new_lang_flag.set(value=0)
-                print('Data added!')
+                tkMessageBox.showinfo('Information', 'Data Added')
 
             # self.update_language_menu()
 

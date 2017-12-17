@@ -495,7 +495,7 @@ def get_audio_info(resourceID):
     return c.fetchone()
 
 def list_audio():
-    c.execute('''SELECT audio.title, authors.name, audio.date,  languages.language, subjects.subject,
+    c.execute('''SELECT audio.title, authors.name, audio.date,  subjects.subject,languages.language,
                 resource_medium.medium   
                 FROM audio JOIN authors JOIN resource_author 
                 JOIN resource_medium JOIN languages JOIN subjects
