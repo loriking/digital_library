@@ -17,13 +17,13 @@ class ProjectLibrary(tk.Tk):
 
         self.frames = {}
 
-        for F in (HomePage, Projects, LinkResources, AddResource, AddText, AddAudio, AddVideo, AddCourse,
+        for F in (HomePage, AddEditProject, Projects, LinkResources, AddResource, AddText, AddAudio, AddVideo, AddCourse,
                   AddInteractiveMedia, AddMedia, AddImages, SearchResource, EditProject, ViewProjectReferences):
             frame = F(main, self)
             self.frames[F] = frame
             frame.grid(row = 0, column = 0, sticky ='nsew')
 
-        self.show_frame(ViewProjectReferences)
+        self.show_frame(HomePage)
         
     def show_frame(self, cont):
         frame = self.frames[cont]
@@ -33,6 +33,13 @@ class HomePage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
+        self.addeditproject = tk.PhotoImage(file="project.png")
+        self.addmedia= tk.PhotoImage(file="addmedia.png")
+        self.link = tk.PhotoImage(file="linkresources.png")
+        self.list = tk.PhotoImage(file="listresources.png")
+        self.search = tk.PhotoImage(file="search.png")
+        self.edit = tk.PhotoImage(file="settings.png")
+
         self.topframe = tk.LabelFrame(self, text='', borderwidth=0)
         self.topframe.pack(expand=tk.TRUE, fill=tk.BOTH)
 
@@ -40,44 +47,69 @@ class HomePage(tk.Frame):
         self.secondframe = tk.LabelFrame(self.topframe, text='', borderwidth=0)
         self.middleframe = tk.LabelFrame(self.topframe, borderwidth=0, text='')
 
-        self.firstframe.pack(side=tk.LEFT, anchor=tk.CENTER,expand=tk.TRUE, ipadx=10, ipady=10, padx=10,pady=10)
-        self.middleframe.pack(side=tk.LEFT, anchor=tk.CENTER, expand=tk.TRUE, ipadx=10, ipady=10, padx=10,pady=20)
-        self.secondframe.pack(side=tk.LEFT, anchor=tk.CENTER, expand=tk.TRUE, ipadx=10, ipady=10, padx=10,pady=10)
+        self.firstframe.pack(anchor=tk.CENTER,expand=tk.TRUE, ipadx=10,  padx=10,pady=10)#(side=tk.LEFT, )
+        self.middleframe.pack(anchor=tk.CENTER,expand=tk.TRUE, ipadx=10, padx=10,pady=10)#(side=tk.LEFT, )
+        self.secondframe.pack(anchor=tk.CENTER,expand=tk.TRUE, ipadx=10, padx=10,pady=10)#(side=tk.LEFT,)
 
-        self.wordcloud = tk.PhotoImage(file="smallwhitewordcloud.png")
+        self.add_edit_project = tk.Button(self.firstframe, text='Add or Edit\nProject', image = self.addeditproject,
+                                      compound='top', command=lambda: controller.show_frame(AddEditProject))
+        self.add_edit_project.pack( side=tk.LEFT, padx=10)
 
-        self.new_projects = tk.Button(self.firstframe, text='Add Project',
-                                      command=lambda: controller.show_frame(Projects))
-        self.new_projects.config(height=5, width=13)
-        self.new_projects.pack( pady=10)
-
-        self.view_project = tk.Button(self.firstframe, text='Link Resources\n to Projects',
+        self.link_project_resources = tk.Button(self.firstframe, text='Link Resources\n to Projects',
+                                        image = self.link, compound='top',
                                       command=lambda: controller.show_frame(LinkResources))
-        self.view_project.config(height=5,width=13)
-        self.view_project.pack( pady=10)
+        self.link_project_resources.pack(side=tk.LEFT, padx=10)
 
-        self.edit_project = tk.Button(self.firstframe, text='Edit Projects',
-                                      command=lambda: controller.show_frame(EditProject))
-        self.edit_project.config(height=5, width=13)
-        self.edit_project.pack( pady=10)
-
-        self.new_resources = tk.Button(self.secondframe, text='Add or Edit\nResources',
-                                   command=lambda: controller.show_frame(AddResource))
-        self.new_resources.config(height=5, width=13)
-        self.new_resources.pack( pady=10)
-
-        self.view_resources = tk.Button(self.secondframe, text='Search Resources',
-                                        command=lambda: controller.show_frame(SearchResource))
-        self.view_resources.config(height=5, width=13)
-        self.view_resources.pack(pady=10)
-
-        self.show_project_resources = tk.Button(self.secondframe, text="Show Project's\nResources",
+        self.show_project_resources = tk.Button(self.firstframe, text="Show Project's\nResources",
+                                                image = self.list, compound='top',
                                                 command=lambda: controller.show_frame(ViewProjectReferences))
-        self.show_project_resources.config(height=5, width=13)
         self.show_project_resources.pack(pady=10)
 
-        button1 = ttk.Button(self.middleframe, text = "", image=self.wordcloud, compound="center")
-        button1.pack(anchor=tk.CENTER)
+        self.search_resources = tk.Button(self.secondframe, text='Search\nResources',
+                                          image = self.search, compound='top',
+                                        command=lambda: controller.show_frame(SearchResource))
+        self.search_resources.pack(side=tk.LEFT, padx=10)
+
+        self.add_resources = tk.Button(self.secondframe, text='Add or Edit\nResources',
+                                       image = self.addmedia, compound='top',
+                                   command=lambda: controller.show_frame(AddResource))
+        self.add_resources.pack(side=tk.LEFT, padx=10)
+
+        self.settings = tk.Button(self.secondframe, text='Adjust\nSettings',
+                                  image=self.edit, compound='top',
+                                  command=lambda: controller.show_frame(EditProject))
+        self.settings.pack(side=tk.LEFT, padx=10)
+
+
+class AddEditProject(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+
+        self.project_img = tk.PhotoImage(file="project1.png")
+        self.home_img = tk.PhotoImage(file="home1.png")
+        self.edit_img = tk.PhotoImage(file="edit1.png")
+
+        self.frame = tk.LabelFrame(self, text='', borderwidth=0)
+        self.frame.pack(expand=tk.TRUE, fill=tk.BOTH)
+
+        self.buttons = tk.LabelFrame(self.frame, text='', borderwidth=0)
+        self.buttons.pack(side=tk.LEFT, anchor=tk.CENTER,expand=tk.TRUE, ipadx=10, ipady=10, padx=10,pady=10)
+
+        self.back = tk.Button(self.buttons, text='Home', image=self.home_img, compound="top",
+                              command=lambda: controller.show_frame(HomePage))
+        # self.back.config(height=10, width=13)
+        self.back.pack(side=tk.LEFT, padx=10)
+
+        self.add_project = tk.Button(self.buttons, text='Add Project', image=self.project_img, compound="top",
+                                     command=lambda: controller.show_frame(Projects))
+        # self.add_project.config(height=5, width=13)
+        self.add_project.pack(side=tk.LEFT, padx=10)
+
+        self.edit_project = tk.Button(self.buttons, text='Edit Projects', image = self.edit_img, compound="top",
+                                      command=lambda: controller.show_frame(EditProject))
+        # self.edit_project.config(height=5, width=13)
+        self.edit_project.pack(side=tk.LEFT, padx=10)
+
 
 class AddResource(tk.Frame):
     def __init__(self, parent, controller):
@@ -302,29 +334,29 @@ class AddText(tk.Frame):
         self.scrollresources.grid(column=1,row=1, sticky=tk.N+tk.S+tk.W)
 
         self.resource_list = ttk.Treeview(bottomframe, height=12,
-                                         columns=('Title', 'Author','Year',
-                                                  'Pages','Publisher',
+                                         columns=('Title', 'Author','Pages',
+                                                  'Year','Publisher',
                                                   'Language', 'Notes'))
 
         self.scrollresources.configure(orient="vertical", command=self.resource_list.yview)
         self.resource_list.configure(yscrollcommand=self.scrollresources.set)
 
-        self.resource_list['columns'] = ('Title', 'Author', 'Year', 'Pages',
+        self.resource_list['columns'] = ('Title', 'Author', 'Pages','Year',
                           'Publisher', 'Language', 'Notes')
         self.resource_list.column('#0',minwidth=0, width=0)
         self.resource_list.column('0', width=310, anchor='w')
         self.resource_list.column('1', width=140, anchor='w')
-        self.resource_list.column('2', width=60, anchor='c')
-        self.resource_list.column('3', width=60, anchor='e')
+        self.resource_list.column('2', width=60, anchor='e')
+        self.resource_list.column('3', width=60, anchor='c')
         self.resource_list.column('4', width=95, anchor='w')
         self.resource_list.column('5', width=70, anchor='w')
         self.resource_list.column('6', width=125, anchor='w')
         self.resource_list.grid(column=0, row=1, sticky=tk.E)
 
         self.resource_list.heading('0', text='Title', anchor='w')
-        self.resource_list.heading('1', text='Author(s)', anchor='w')
-        self.resource_list.heading('2', text='Year')#, anchor='w')
-        self.resource_list.heading('3', text='Pages')#, anchor='w')
+        self.resource_list.heading('1', text='Author', anchor='w')
+        self.resource_list.heading('2', text='Pages')#, anchor='w')
+        self.resource_list.heading('3', text='Year')#, anchor='w')
         self.resource_list.heading('4', text='Language', anchor='w')
         self.resource_list.heading('5', text='Type', anchor='w')
         self.resource_list.heading('6', text='Level', anchor='w')
@@ -2843,7 +2875,6 @@ class ViewProjectReferences(tk.Frame):
         self.searchbutton.config(width=10, cursor='hand2')
         self.searchbutton.grid(column=2, row=0, padx=5, pady=5, sticky=tk.E)
 
-        ######################
         self.scrollresults = tk.Scrollbar(self.secondframe)
         self.scrollresults.grid(column=1, row=4, sticky=tk.N + tk.S + tk.W)
 
@@ -2871,7 +2902,6 @@ class ViewProjectReferences(tk.Frame):
         self.treeview_projects = self.project_list
         self.treeview_projects.bind('<ButtonRelease-1>', self.view_resources)
 
-        ####################
         self.projectlabel = tk.Label(self.thirdframe, text='Project Name: ')
         self.projectlabel.grid(column = 0, row=1, sticky=tk.W)
 
@@ -2904,7 +2934,7 @@ class ViewProjectReferences(tk.Frame):
         self.references.column('3', width=150, anchor='w')
 
         self.treeview_references = self.references
-        self.treeview_references.bind('<ButtonRelease-1>', self.select_reference)
+        # self.treeview_references.bind('<ButtonRelease-1>', self.select_reference)
 
     def select_reference(self):
         pass
@@ -2917,7 +2947,7 @@ if __name__ == "__main__":
     app = ProjectLibrary()
     app.title('Project Library')
     app.iconbitmap('project.ico')
-    app.maxsize(890,750)
+    app.maxsize(890,745)
     app.mainloop()
 
 

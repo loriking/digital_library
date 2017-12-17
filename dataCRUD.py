@@ -375,7 +375,7 @@ def update_text(textID, title, year, pages, level, publisher, language, subject,
 def list_text_resources():
     """ Returns all the resources from database"""
 
-    c.execute('''SELECT texts.title, authors.name, texts.year, texts.pages, languages.language, 
+    c.execute('''SELECT texts.title, authors.name,  texts.pages, texts.year, languages.language, 
                     resource_medium.medium, levels.level
                 FROM texts JOIN languages JOIN authors JOIN resource_author
                     JOIN resource_medium JOIN levels
