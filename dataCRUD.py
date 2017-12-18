@@ -459,6 +459,13 @@ def list_websites():
                 ''')
     return c.fetchall()
 
+def update_website(website_id, title, subject_id, url, date_created, date_accessed, notes, media_id):
+    c.execute('''UPDATE websites SET title = ?,subjectID = ?,  url = ?,  date_created = ?, 
+                        date_accessed = ?, notes = ?, mediaID = ?  WHERE ID = ?''',
+              (title, subject_id, url, date_created, date_accessed, notes, media_id, website_id))
+    db.commit()
+
+
 def delete_website(resource_id):
     c.execute('''DELETE FROM websites WHERE websites.ID = ?''', (resource_id,))
     db.commit()

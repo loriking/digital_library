@@ -196,6 +196,7 @@ def edit_interactive_media(im_id,title, author, year, subject, platform, engine,
 
     data.update_interactive(im_id, title, year, subject_id, platform_id, engine_id, version, media_id)
     data.add_resource_author(im_id, author_id, media_id)
+
 # WEBSITES
 def add_website(title, author, subject, url, date_created, date_accessed, notes, medium):
 
@@ -212,6 +213,16 @@ def add_website(title, author, subject, url, date_created, date_accessed, notes,
 
     data.add_resource_author(resource_id, author_id, media_id)
 
+def edit_website(website_id, title, author, subject, url, date_created, date_accessed, notes, medium):
+    data.add_author(author)
+    data.add_subject(subject)
+
+    author_id = data.get_author_id(author)
+    subject_id = data.get_subject_id(subject)
+    media_id = data.get_resource_medium_id(medium)
+
+    data.update_website(website_id, title, subject_id, url, date_created, date_accessed, notes, media_id)
+    data.add_resource_author(website_id, author_id, media_id)
 
 def remove_website(title):
     resource =  data.get_website_details(title)
@@ -249,14 +260,11 @@ def edit_video(video_id, title, author, duration, subject, producer, year, url, 
     subject_id = data.get_subject_id(subject)
     media_id = data.get_resource_medium_id(medium)
     language_id = data.get_language_id(language)
-    print(author_id, "\nsubject id type:", type(subject_id))
-    print('media id tyoe', media_id)
-    print('language id type:', language_id)
-    print('producer type:', type(producer), producer)
-    print('Year type: ',  type(year), year )
 
     data.update_video(video_id, title, duration, subject_id,  producer, year, url, media_id, language_id)
     data.add_resource_author(video_id, author_id, media_id)
+
+
 
 
 # Project references

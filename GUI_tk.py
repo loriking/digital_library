@@ -1356,6 +1356,7 @@ class AddMedia(tk.Frame):
     def select_document(self, event):
         self.media_buttons.set('?')
         item = self.webdocs_list.focus()
+        self.save_resource.config(state='disabled')
 
         document = self.treeview_docs.item(item)
 
@@ -1365,6 +1366,7 @@ class AddMedia(tk.Frame):
             self.document_id = data.get_website_id(document_name)
 
             web_doc = data.get_website(self.document_id)
+            print(web_doc)
             self.current_author = web_doc[1]
             self.current_media = web_doc[7]
 
@@ -1394,23 +1396,13 @@ class AddMedia(tk.Frame):
             pass
 
     def update(self):
-        media_name = self.get_media_name()
-
-        media_id = data.get_resource_medium_id(media_name)
-
-        author_name = self.box2L.get()
-
-        if self.current_author != author_name or self.current_media != media_name:
-            data.delete_resource_author(self.document_id, self.current_author, self.current_media)
-
-            data.add_author(author_name)
-
-            author_id = data.get_author_id(author_name)
-
-            data.add_resource_author(self.document_id, author_id, media_id)
-
-        # data.update_media(self.document_id, self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(),
-        #                   self.box1R.get(), self.box2R.get(), self.box3R.get(), self.box4R.get(), media_id)
+        # media_name = self.get_media_name()
+        #
+        # media_id = data.get_resource_medium_id(media_name)
+        data.delete_resource_author(self.document_id, self.current_author, self.current_media)
+        # edit_website(website_id, title, author, subject, url, date_created, date_accessed, notes, medium)
+        lg.edit_website(self.document_id, self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(),
+                           self.box1R.get(), self.box2R.get(), self.box3R.get(), self.get_media_name())
 
         search_table = data.list_websites()
 
@@ -1420,6 +1412,7 @@ class AddMedia(tk.Frame):
     def clear_resource(self):
         for i in self.webdocs_list.get_children():
             self.webdocs_list.delete(i)
+        self.save_resource.config(state='normal')
 
     def show_updated_resource(self):
         resource = data.get_website(self.document_id)
@@ -1441,9 +1434,11 @@ class AddMedia(tk.Frame):
         result = tkMessageBox.askokcancel("Delete?", message1, icon='warning')
 
         if result == True:
-            data.delete_website(self.document_id, self.current_author, self.current_media)
+            data.delete_website(self.document_id)
+            data.delete_resource_author(self.document_id, self.current_author, self.current_media)
             self.update_windows()
             tkMessageBox.showinfo('Deleted', message2, icon='info')
+        self.save_resource.config(state='normal')
 
 class AddAudio(AddMedia):
     def __init__(self, parent, controller):
@@ -2256,9 +2251,10 @@ class AddVideo(AddMedia):
     def select_document(self, event):
 
         self.save_resource.config(state='disabled')
+
         item = self.webdocs_list.focus()
+
         document = self.treeview_docs.item(item)
-        # print(document)
 
         try:
 
@@ -2268,7 +2264,6 @@ class AddVideo(AddMedia):
             self.document_id = data.get_video_id(document_name)
 
             video = data.get_video_info(self.document_id)
-            # print(video)
 
             self.current_author = video[1]
 
@@ -2301,47 +2296,11 @@ class AddVideo(AddMedia):
             pass
 
     def update(self):
-        #
-        # media_name = self.get_media_name()
-        # print('Media name = ', media_name)
-        #
-        # old_author_id = data.get_author_id(self.current_author)
-        # print('Old author id= ', old_author_id)
-        #
-        # old_media_id = data.get_resource_medium_id(self.current_media)
-        # print('old media id', old_media_id)
-        #
-        # author_name = self.box2L.get()
-        #
-        # if self.current_author != author_name or self.current_media != media_name:
-        #     print('Difference found!')
-        #     data.delete_resource_author(self.document_id, self.current_author, self.current_media)
-        #     print('Deleted resource author for ID', self.document_id)
-        #
-        #     data.add_author(author_name)
-        #
-        #     author_id = data.get_author_id(author_name)
-        #     print('Author ID', author_id)
-        #
-        #     media_id = data.get_resource_medium_id(media_name)
-        #     print('MediaID =', media_id)
-        #
-        #     data.add_resource_author(self.document_id, author_id, media_id)
 
-        #
-        #edit_video(video_id, title, author, duration, subject, producer, year, url, media, language)
-        print(self.document_id, self.current_author, self.current_media)
         data.delete_resource_author(self.document_id, self.current_author, self.current_media)
 
         lg.edit_video(self.document_id, self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(),
                       self.box1R.get(), self.box2R.get(), self.box3R.get(), self.get_media_name(), self.language.get())
-
-
-        print(self.box2R.get())
-        print(self.get_media_name())
-
-        year = self.box2R.get()
-        print('year ', year)
 
         search_table = data.list_video()
 
