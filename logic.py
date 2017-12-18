@@ -86,6 +86,22 @@ def add_course(title, instructor, subject, duration, provider, url, notes, mediu
     data.add_resource_author(resource_id, author_id, media_id)
 
 
+def edit_course(course_id, title, instructor, subject, duration_weeks, provider, url, notes, media, level):
+    data.add_author(instructor)
+    data.add_subject(subject)
+    data.add_provider(provider)
+
+    author_id = data.get_author_id(instructor)
+    subject_id = data.get_subject_id(subject)
+    provider_id = data.get_provider_id(provider)
+    media_id = data.get_resource_medium_id(media)
+    level_id = data.get_level_id(level)
+
+    # update_course(course_id, title, subject_id, duration_weeks, provider_id, url, notes, media_id, level_id)
+    data.update_course(course_id, title, subject_id, duration_weeks, provider_id, url, notes, media_id, level_id)
+
+    data.add_resource_author(course_id, author_id, media_id)
+
 # IMAGES
 def get_image_type(status):
     if status == 1:

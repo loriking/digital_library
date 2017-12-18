@@ -38,7 +38,7 @@ class HomePage(tk.Frame):
         self.link = tk.PhotoImage(file="linkresources.png")
         self.list = tk.PhotoImage(file="listresources.png")
         self.search = tk.PhotoImage(file="search.png")
-        self.edit = tk.PhotoImage(file="settings.png")
+        self.about = tk.PhotoImage(file="about.png")
 
         self.topframe = tk.LabelFrame(self, text='', borderwidth=0)
         self.topframe.pack(expand=tk.TRUE, fill=tk.BOTH)
@@ -65,18 +65,18 @@ class HomePage(tk.Frame):
                                                 command=lambda: controller.show_frame(ViewProjectReferences))
         self.show_project_resources.pack(pady=10)
 
-        self.search_resources = tk.Button(self.secondframe, text='Search\nResources',
-                                          image = self.search, compound='top',
-                                        command=lambda: controller.show_frame(SearchResource))
-        self.search_resources.pack(side=tk.LEFT, padx=10)
-
         self.add_resources = tk.Button(self.secondframe, text='Add or Edit\nResources',
                                        image = self.addmedia, compound='top',
                                    command=lambda: controller.show_frame(AddResource))
         self.add_resources.pack(side=tk.LEFT, padx=10)
 
-        self.settings = tk.Button(self.secondframe, text='Adjust\nSettings',
-                                  image=self.edit, compound='top',
+        self.search_resources = tk.Button(self.secondframe, text='Search\nResources',
+                                          image=self.search, compound='top',
+                                          command=lambda: controller.show_frame(SearchResource))
+        self.search_resources.pack(side=tk.LEFT, padx=10)
+
+        self.settings = tk.Button(self.secondframe, text='About\n',
+                                  image=self.about, compound='top',
                                   command=lambda: controller.show_frame(EditProject))
         self.settings.pack(side=tk.LEFT, padx=10)
 
@@ -107,14 +107,12 @@ class AddEditProject(tk.Frame):
                                       command=lambda: controller.show_frame(EditProject))
         self.edit_project.pack(side=tk.LEFT, padx=10)
 
-
 class AddResource(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
         self.topframe = tk.LabelFrame(self, text='', borderwidth=0)
         self.topframe.pack(expand=tk.TRUE, fill=tk.BOTH)
-        # self.topframe.config(bg='purple2')
 
         self.firstframe = tk.LabelFrame(self.topframe, text='', borderwidth=0)
         self.secondframe = tk.LabelFrame(self.topframe, text='', borderwidth=0)
@@ -1753,6 +1751,7 @@ class AddCourse(AddMedia):
 
     def select_document(self, event):
         self.media_buttons.set('?')
+        self.save_resource.config(state='disabled')
         item = self.webdocs_list.focus()
 
         document = self.treeview_docs.item(item)
@@ -1830,19 +1829,12 @@ class AddCourse(AddMedia):
             data.delete_resource_author(self.document_id, self.current_author, self.current_media)
             print('Deleted resource author for ID', self.document_id)
 
-            data.add_author(author_name)
 
-        author_id = data.get_author_id(author_name)
-        print('Author ID', author_id)
-
-        media_id = data.get_resource_medium_id(media_name)
-        print('MediaID =', media_id)
-
-        data.update_course(self.document_id, self.box1L.get(),  self.box3L.get(), self.box4L.get(),
-                            self.box1R.get(), self.box2R.get(), self.box3R.get(), media_id, self.level.get())
-        data.add_resource_author(self.document_id, author_id, media_id)
+        lg.edit_course(self.document_id, self.box1L.get(),self.box2L.get(), self.box3L.get(), self.box4L.get(),
+                       self.box1R.get(), self.box2R.get(), self.box3R.get(), self.get_media_name(),self.level.get())
 
         self.update_windows()
+        self.save_resource.config(state='normal')
 
 
     def delete(self):
@@ -1914,6 +1906,7 @@ class AddInteractiveMedia(AddMedia):
 
     def select_document(self, event):
         item = self.webdocs_list.focus()
+        self.save_resource.config(state='disabled')
 
         document = self.treeview_docs.item(item)
 

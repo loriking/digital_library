@@ -639,19 +639,11 @@ def list_courses():
                 AND courses.subjectID = subjects.ID''')
     return c.fetchall()
 
-def update_course(courseID, title, provider, url, subject, start_date, duration, comments, media_id, level):
+def update_course(course_id, title, subject_id, duration_weeks, provider_id, url, notes, media_id, level_id):
 
-    add_provider(provider)
-    provider_id = get_provider_id(provider)
-
-    level_id = get_level_id(level)
-
-    add_subject(subject)
-    subject_id = get_subject_id(subject)
-
-    c.execute('''UPDATE courses SET title = ?, providerID = ?, url = ?, subjectID = ?, start_date= ?, duration_weeks = ?,  
-                    comments = ?, mediaID = ?, levelID = ?  WHERE ID = ?''',
-              (title, provider_id, url, subject_id, start_date, duration, comments, media_id, level_id, courseID))
+    c.execute('''UPDATE courses SET title = ?,subjectID = ?,  duration_weeks= ?, providerID = ?, url = ?,   
+                        notes = ?, mediaID = ?, levelID = ?  WHERE ID = ?''',
+              (title, subject_id, duration_weeks, provider_id, url, notes, media_id, level_id, course_id))
 
     db.commit()
 
