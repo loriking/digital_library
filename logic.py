@@ -241,6 +241,23 @@ def add_video(title, author, duration,  subject, producer, year, url, medium, la
     data.add_resource_author(video_id, author_id, media_id)
 
 
+def edit_video(video_id, title, author, duration, subject, producer, year, url, medium, language):
+    data.add_author(author)
+    data.add_subject(subject)
+
+    author_id = data.get_author_id(author)
+    subject_id = data.get_subject_id(subject)
+    media_id = data.get_resource_medium_id(medium)
+    language_id = data.get_language_id(language)
+    print(author_id, "\nsubject id type:", type(subject_id))
+    print('media id tyoe', media_id)
+    print('language id type:', language_id)
+    print('producer type:', type(producer), producer)
+    print('Year type: ',  type(year), year )
+
+    data.update_video(video_id, title, duration, subject_id,  producer, year, url, media_id, language_id)
+    data.add_resource_author(video_id, author_id, media_id)
+
 
 # Project references
 def view_project_references(project_id):

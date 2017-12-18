@@ -1652,6 +1652,7 @@ class AddAudio(AddMedia):
             data.delete_resource_author(self.document_id, self.current_author, self.current_media)
             print('Deleted resource author for ID', self.document_id)
 
+
         lg.edit_audio(self.document_id, self.box1L.get(), self.box2L.get(), self.box3L.get(),
                             self.box4L.get(), self.box1R.get(), self.box2R.get(), self.box3R.get(),
                             self.get_media_name(), self.language.get())
@@ -2148,7 +2149,6 @@ class AddVideo(AddMedia):
     def __init__(self, parent, controller):
         AddMedia.__init__(self, parent, controller)
 
-
         self.table = data.list_video()
         self.document_id = None
         self.current_author = ''
@@ -2254,22 +2254,25 @@ class AddVideo(AddMedia):
 
 
     def select_document(self, event):
-        self.media_buttons.set('?')
 
+        self.save_resource.config(state='disabled')
         item = self.webdocs_list.focus()
+        document = self.treeview_docs.item(item)
+        # print(document)
 
         try:
 
-            document = self.treeview_docs.item(item)
-
             document_name = document['values'][0]
+
 
             self.document_id = data.get_video_id(document_name)
 
             video = data.get_video_info(self.document_id)
+            # print(video)
 
             self.current_author = video[1]
-            self.current_media = video[9]
+
+            self.current_media = video[7]
 
             self.box1L.set(video[0])
             self.box2L.set(video[1])
@@ -2285,11 +2288,11 @@ class AddVideo(AddMedia):
 
         try:
 
-            if self.current_media == 'Feature film':
+            if self.current_media == 'Video Clip':
                 self.media_buttons.set(1)
             elif self.current_media == 'Documentary':
                 self.media_buttons.set(2)
-            elif self.current_media == 'Video':
+            elif self.current_media == 'Other Video':
                 self.media_buttons.set(3)
 
             return self.document_id, self.current_author, self.current_media
@@ -2298,38 +2301,47 @@ class AddVideo(AddMedia):
             pass
 
     def update(self):
+        #
+        # media_name = self.get_media_name()
+        # print('Media name = ', media_name)
+        #
+        # old_author_id = data.get_author_id(self.current_author)
+        # print('Old author id= ', old_author_id)
+        #
+        # old_media_id = data.get_resource_medium_id(self.current_media)
+        # print('old media id', old_media_id)
+        #
+        # author_name = self.box2L.get()
+        #
+        # if self.current_author != author_name or self.current_media != media_name:
+        #     print('Difference found!')
+        #     data.delete_resource_author(self.document_id, self.current_author, self.current_media)
+        #     print('Deleted resource author for ID', self.document_id)
+        #
+        #     data.add_author(author_name)
+        #
+        #     author_id = data.get_author_id(author_name)
+        #     print('Author ID', author_id)
+        #
+        #     media_id = data.get_resource_medium_id(media_name)
+        #     print('MediaID =', media_id)
+        #
+        #     data.add_resource_author(self.document_id, author_id, media_id)
 
-        media_name = self.get_media_name()
-        print('Media name = ', media_name)
+        #
+        #edit_video(video_id, title, author, duration, subject, producer, year, url, media, language)
+        print(self.document_id, self.current_author, self.current_media)
+        data.delete_resource_author(self.document_id, self.current_author, self.current_media)
 
-        old_author_id = data.get_author_id(self.current_author)
-        print('Old author id= ', old_author_id)
+        lg.edit_video(self.document_id, self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(),
+                      self.box1R.get(), self.box2R.get(), self.box3R.get(), self.get_media_name(), self.language.get())
 
-        old_media_id = data.get_resource_medium_id(self.current_media)
-        print('old media id', old_media_id)
 
-        author_name = self.box2L.get()
+        print(self.box2R.get())
+        print(self.get_media_name())
 
-        if self.current_author != author_name or self.current_media != media_name:
-            print('Difference found!')
-            data.delete_resource_author(self.document_id, self.current_author, self.current_media)
-            print('Deleted resource author for ID', self.document_id)
-
-            data.add_author(author_name)
-
-            author_id = data.get_author_id(author_name)
-            print('Author ID', author_id)
-
-            media_id = data.get_resource_medium_id(media_name)
-            print('MediaID =', media_id)
-
-            data.add_resource_author(self.document_id, author_id, media_id)
-
-        # update_video(av_id, title, duration,  year, program, url, language, media, subject, publisher)
-        data.update_video(self.document_id, self.box1L.get(), self.box2L.get(),
-                        self.box3L.get(), self.box4L.get(), self.box1R.get(),
-                        self.box2R, self.language.get(), media_id, self.box4L.get(),
-                        self.box1R.get())
+        year = self.box2R.get()
+        print('year ', year)
 
         search_table = data.list_video()
 

@@ -134,7 +134,7 @@ def make_db():
         duration TEXT NOT NULL,
         subjectID INTEGER REFERENCES subjects(ID),
         producer TEXT,
-        year INTEGER,
+        year TEXT,
         url TEXT,
         mediaID INTEGER REFERENCES resource_medium(ID),
         languageID INTEGER REFERENCES languages(ID)

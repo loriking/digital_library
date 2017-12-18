@@ -573,17 +573,12 @@ def list_video():
                 AND video.subjectID = subjects.ID''')
     return c.fetchall()
 
-def update_video(video_id, title, duration, subject,  year, url, comments, media_id, language):
+def update_video(video_id, title, duration, subject_id,  producer, year, url, media_id, language_id):
 
-    language_id = get_language_id(language)
-
-    add_subject(subject)
-    subject_id = get_subject_id(subject)
-
-    c.execute('''UPDATE video SET title = ?, duration_mins = ?,  subjectID = ?,  year = ?, 
-                    url = ?, comments = ?, mediaID = ?, languageID = ?
+    c.execute('''UPDATE video SET title = ?, duration = ?,  subjectID = ?,  producer = ?, year = ?, 
+                    url = ?, mediaID = ?, languageID = ?
                 WHERE ID = ?''',
-              (title, duration, subject_id,  year, url, comments, media_id, language_id, video_id))
+              (title, duration, subject_id, producer, year, url, media_id, language_id, video_id))
     db.commit()
 
 def delete_video(resource_id, author, media):
