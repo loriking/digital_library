@@ -1903,15 +1903,10 @@ class AddInteractiveMedia(AddMedia):
             document_name = document['values'][0]
 
             self.document_id = data.get_interactive_id(document_name)
-            print('Doc_id = ', self.document_id)
-
             interactive = data.get_interactive_info(self.document_id)
-            print(interactive)
 
             self.current_author = interactive[1]
             self.current_media = interactive[7]
-            print('Author =', self.current_author)
-            print('Current media= ', self.current_media)
 
             self.box1L.set(interactive[0])
             self.box2L.set(interactive[1])
@@ -1939,34 +1934,11 @@ class AddInteractiveMedia(AddMedia):
 
     def update(self):
 
-        media_name = self.get_media_name()
-        print('Media name = ', media_name)
+        data.delete_resource_author(self.document_id, self.current_author, self.current_media)
 
-        old_author_id = data.get_author_id(self.current_author)
-        print('Old author id= ', old_author_id)
-
-        old_media_id = data.get_resource_medium_id(self.current_media)
-        print('old media id', old_media_id)
-
-        author_name = self.box2L.get()
-
-        author_id = data.get_author_id(author_name)
-        print('Author ID', author_id)
-
-        media_id = data.get_resource_medium_id(media_name)
-        print('MediaID =', media_id)
-
-        if self.current_author != author_name or self.current_media != media_name:
-            print('Difference found!')
-            data.delete_resource_author(self.document_id, self.current_author, self.current_media)
-            print('Deleted resource author for ID', self.document_id)
-
-            data.add_author(author_name)
-
-            data.add_resource_author(self.document_id, author_id, media_id)
-
-        data.update_interactive(self.document_id, self.box1L.get(), self.box3L.get(), self.box1R.get(),
-                                self.box3R.get(), self.box4R.get(), self.box1R.get(), media_id, self.box4L.get())
+        lg.edit_interactive_media(self.document_id, self.box1L.get(), self.box2L.get(), self.box3L.get(),
+                                  self.box4L.get(), self.box1R.get(), self.box2R.get(), self.box3R.get(),
+                                  self.media_buttons.get())
 
         self.update_windows()
 

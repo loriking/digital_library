@@ -180,7 +180,22 @@ def add_interactive_media(title, author, year, subject, platform, engine, versio
 
     data.add_resource_author(resource_id, author_id, media_id)
 
+def edit_interactive_media(im_id,title, author, year, subject, platform, engine, version, medium ):
+    data.add_author(author)
+    data.add_subject(subject)
+    data.add_platform(platform)
+    data.add_engine(engine)
 
+    media_name = get_interactive_name(medium)
+
+    author_id = data.get_author_id(author)
+    subject_id = data.get_subject_id(subject)
+    platform_id = data.get_platform_id(platform)
+    engine_id = data.get_engine_id(engine)
+    media_id = data.get_resource_medium_id(media_name)
+
+    data.update_interactive(im_id, title, year, subject_id, platform_id, engine_id, version, media_id)
+    data.add_resource_author(im_id, author_id, media_id)
 # WEBSITES
 def add_website(title, author, subject, url, date_created, date_accessed, notes, medium):
 

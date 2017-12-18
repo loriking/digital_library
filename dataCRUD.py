@@ -703,19 +703,11 @@ def get_interactive_info(resourceID):
                 WHERE interactive_media.ID = ?''', (resourceID,))
     return c.fetchone()
 
-def update_interactive(interactiveID, title, year, platform, version, comments, engine, media_id, genre):
+def update_interactive(interactiveID, title, year, subject_id, platform_id, engine_id, version, media_id):
 
-    genre_id = get_subject_id(genre)
-    print("Genre ID= ", genre_id)
-
-    add_publisher(engine)
-
-    engine_id = get_publisher_id(engine)
-    print('EngineID = ', engine_id)
-
-    c.execute('''UPDATE interactive_media SET title = ?, year = ?, platform = ?, version = ?, comments = ?, 
-                    engineID = ?, typeID = ?, genreID = ?  WHERE interactive_media.ID =?''',
-              (title, year, platform, version, comments, engine_id, media_id, genre_id, interactiveID))
+    c.execute('''UPDATE interactive_media SET title = ?, year = ?, subjectID = ?, platformID = ?,  
+                    engineID = ?, version = ?, mediaID = ? WHERE interactive_media.ID =?''',
+              (title, year, subject_id, platform_id, engine_id, version, media_id, interactiveID))
 
     db.commit()
 
