@@ -349,30 +349,13 @@ def add_text_to_db(title, year, pages, level_id, publisher_id, language_id, subj
 
     db.commit()
 
-def update_text(textID, title, year, pages, level, publisher, language, subject, medium, notes):
-    levelID = get_level_id(level)
-    # print('Level ID is ', levelID)
-
-    add_publisher(publisher)
-    publisherID = get_publisher_id(publisher)
-    # print('Pub ID =', publisherID)
-
-    add_language(language)
-    languageID = get_language_id(language)
-    # print('Lang ID = ', languageID)
-
-    add_subject(subject)
-    subjectID = get_subject_id(subject)
-    # print('Subject ID =', subjectID)
-
-    mediaID = get_resource_medium_id(medium)
-    # print('Text media ID = ', mediaID)
+def update_text(text_id, title, year, pages, subject_id, publisher_id, language_id, media_id, level_id):
 
     c.execute('''UPDATE texts
-                            SET title = ?, year= ?, pages = ?,  levelID = ?, publisherID = ?, 
-                                languageID = ?, subjectID = ?, mediaID = ?,notes = ? 
+                            SET title = ?, year= ?, pages = ?, subjectID = ?, publisherID = ?, 
+                                languageID = ?,  mediaID = ?, levelID = ?
                      WHERE ID  = ?''',
-                  (title, year, pages, levelID, publisherID, languageID, subjectID, mediaID, notes, textID))
+                  ( title, year, pages, subject_id, publisher_id, language_id, media_id, level_id, text_id))
     db.commit()
 
 def list_text_resources():
@@ -1094,8 +1077,7 @@ def get_text(textID):
 def get_full_text(textID):
     c.execute('''SELECT texts.title, authors.name,  texts.year, texts.pages, 
                     levels.level, publishers.publisher, languages.language, subjects.subject, 
-                    resource_medium.medium, texts.notes
-
+                    resource_medium.medium
                 FROM texts JOIN levels JOIN publishers JOIN languages JOIN authors
                 JOIN subjects JOIN resource_medium JOIN resource_author
 

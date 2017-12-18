@@ -248,17 +248,17 @@ class AddText(tk.Frame):
         self.publisher_label = tk.Label(topcenterframe, text='Publisher')
         self.publisher_entry = tk.OptionMenu(topcenterframe, self.publisher,
                                                 *self.publisher_options)
-        self.publisher_entry.configure(width=15)
+        self.publisher_entry.configure(width=24)
 
-        self.add_publisher_entry = ttk.Entry(topcenterframe, width=30, textvariable =self.new_pub)
+        self.add_publisher_entry = ttk.Entry(topcenterframe, width=21, textvariable =self.new_pub)
 
         self.language_label = tk.Label(topcenterframe, text='Language')
         self.language_entry= tk.OptionMenu(topcenterframe, self.language,
                                                 *self.language_options)
 
-        self.language_entry.configure(width=15)
+        self.language_entry.configure(width=24)
 
-        self.add_language_entry=ttk.Entry(topcenterframe, width=30, textvariable =self.new_lang)
+        self.add_language_entry=ttk.Entry(topcenterframe, width=21, textvariable =self.new_lang)
 
         self.subject_label = tk.Label(topleftframe, text='Subject')
         self.subject_entry = ttk.Entry(topleftframe, width=61, textvariable=self.subject)
@@ -288,25 +288,25 @@ class AddText(tk.Frame):
         self.publisher_label.grid(column=0, row=3)
         self.publisher_entry.grid(columnspan=1, column=1, row=3, sticky=tk.W)
         self.add_pub_flag.grid(column=2, row=3,  sticky=tk.W)
-        self.add_publisher_entry.grid(column=3, row=3,  sticky=tk.E)
+        self.add_publisher_entry.grid(column=3, row=3, padx = 2, sticky=tk.W)
 
         self.language_label.grid(column=0, row=4, sticky=tk.W)
         self.language_entry.grid(columnspan=1, column=1, row=4, sticky=tk.W)
         self.add_lang_flag.grid(column=2, row=4, sticky=tk.W)
-        self.add_language_entry.grid(column=3, row=4, sticky=tk.N+tk.E)
+        self.add_language_entry.grid(column=3, row=4, padx = 2, sticky=tk.W)
 
-        self.updateextresource = tk.Button(middlerightframe, text='Update', command=lambda: self.update_text())
+        self.updateextresource = tk.Button(middlerightframe, text='Edit entry', command=lambda: self.update_text())
         self.updateextresource.config(width=12, cursor='hand2')
-        self.updateextresource.grid(column=3, row=0, padx=2, sticky=tk.W)
+        self.updateextresource.grid(column=3, row=0, padx=5, sticky=tk.W)
 
         self.addtextresource = tk.Button(middlerightframe, text='Save', command=lambda: self.save_text())
         self.addtextresource.config(width=12, cursor='hand2')
-        self.addtextresource.grid(column=4, row=0, padx=2, sticky=tk.E)
+        self.addtextresource.grid(column=4, row=0, padx=5, sticky=tk.E)
 
         self.level_label = tk.Label(topcenterframe, text='Level:')
         self.level_entry = tk.OptionMenu(topcenterframe, self.level,
                                          *self.level_options)
-        self.level_entry.configure(width=15)
+        self.level_entry.configure(width=24)
 
         self.level_label.grid(column=0, row=5, sticky=tk.W)
         self.level_entry.grid(column=1, row=5, sticky=tk.W)
@@ -350,8 +350,8 @@ class AddText(tk.Frame):
 
         self.resource_list.heading('0', text='Title', anchor='w')
         self.resource_list.heading('1', text='Author', anchor='w')
-        self.resource_list.heading('2', text='Pages')#, anchor='w')
-        self.resource_list.heading('3', text='Year')#, anchor='w')
+        self.resource_list.heading('2', text='Pages')
+        self.resource_list.heading('3', text='Year')
         self.resource_list.heading('4', text='Language', anchor='w')
         self.resource_list.heading('5', text='Type', anchor='w')
         self.resource_list.heading('6', text='Level', anchor='w')
@@ -361,9 +361,9 @@ class AddText(tk.Frame):
         self.list_resources()
         self.update_entry_widgets()
 
-        self.clear_button = tk.Button(topcenterframe, text='Clear', command=lambda: self.update_entry_widgets())
-        self.clear_button.config(width=15, cursor='hand2')
-        self.clear_button.grid(column=3, row=5, padx=10)#, sticky=tk.W)
+        self.clear_button = tk.Button(middlerightframe, text='Clear entry', command=lambda: self.update_entry_widgets())
+        self.clear_button.config(width=12, cursor='hand2')
+        self.clear_button.grid(column=1, row=0, padx=5) # 3,5
 
         self.home=tk.Button(buttonsframe, text='Home', command=lambda: controller.show_frame(HomePage))
         self.home.config(width=15, cursor='hand2')
@@ -404,7 +404,6 @@ class AddText(tk.Frame):
         for i in self.language_options:
             menu.add_command(label=i, command=lambda value=i: self.language.set(value))
         self.language.set('Select one:')
-
 
     def update_publisher_menu(self):
         menu = self.publisher_entry.children["menu"]
@@ -498,6 +497,7 @@ class AddText(tk.Frame):
                 self.update_windows()
 
     def select_text(self, event):
+        self.addtextresource.config(state = 'disabled')
 
         item = self.resource_list.focus()
 
@@ -516,14 +516,13 @@ class AddText(tk.Frame):
             self.author.set(text_info[0][1])
             self.year.set(text_info[0][2])
             self.pages.set(text_info[0][3])
+            self.level.set(text_info[0][4])
+            self.publisher.set(text_info[0][5])
+            self.language.set(text_info[0][6])
             self.subject.set(text_info[0][7])
 
-            self.publisher.set(text_info[0][5])
-
-            self.language.set(text_info[0][6])
             self.language_options = data.list_languages()
 
-            self.level.set(text_info[0][4])
             self.level_options = data.list_levels()
         except IndexError:
             pass
@@ -544,16 +543,6 @@ class AddText(tk.Frame):
 
     def update_text(self):
         media_name = self.get_media_name()
-        author_name = self.author.get()
-
-        if media_name != self.current_media or author_name != self.current_author:
-            data. delete_resource_author(self.text_id, self.current_author, self.current_media)
-
-            data.add_author(author_name)
-            author_id = data.get_author_id(author_name)
-            media_id = data.get_resource_medium_id(media_name)
-
-            data.add_resource_author(self.text_id, author_id, media_id)
 
         if self.new_pub_flag.get() == 1:
             self.thepublisher = self.new_pub.get()
@@ -565,13 +554,17 @@ class AddText(tk.Frame):
         else:
             self.thelanguage = self.language.get()
 
-        data.update_text(self.text_id, self.title.get(), self.year.get(),
-                          self.pages.get(), self.level.get(), self.thepublisher,
-                          self.thelanguage, self.subject.get(), media_name, self.notes.get() )
+        data.delete_resource_author(self.text_id, self.current_author, self.current_media)
+
+        lg.edit_text(self.text_id,self.title.get(), self.author.get(), self.year.get(),
+                        self.pages.get(), self.level.get(), self.thepublisher,
+                        self.thelanguage, self.subject.get(), media_name)
 
         self.update_entry_widgets()
         self.clear_texts()
         self.show_updated_resources()
+        self.addtextresource.config(state = 'normal')
+
 
     def clear_texts(self):
         for i in self.resource_list.get_children():
@@ -592,6 +585,7 @@ class AddText(tk.Frame):
             data.delete_text(self.text_id, self.current_author, self.current_media)
             self.update_windows()
             tkMessageBox.showinfo('Deleted', message2)
+        self.addtextresource.config(state='normal')
 
 class LinkResources(tk.Frame):
     def __init__(self, parent, controller):
@@ -1150,7 +1144,7 @@ class AddMedia(tk.Frame):
         self.clear_boxes.config(cursor='hand2')
         self.clear_boxes.grid(column=4, row=0,padx=10, sticky=tk.E)
 
-        self.update_resource = tk.Button(self.center_frame3, text='Update', bg='SlateGray1', width=8,
+        self.update_resource = tk.Button(self.center_frame3, text='Edit', bg='SlateGray1', width=8,
                                         command=lambda: self.update())
         self.update_resource.config(cursor='hand2')
         self.update_resource.grid(column=5, row=0, padx=10, sticky=tk.E)
@@ -1352,7 +1346,6 @@ class AddMedia(tk.Frame):
         self.media_buttons.set('?')
         self.save_resource.config(state="normal")
 
-
     def select_document(self, event):
         self.media_buttons.set('?')
         item = self.webdocs_list.focus()
@@ -1396,11 +1389,9 @@ class AddMedia(tk.Frame):
             pass
 
     def update(self):
-        # media_name = self.get_media_name()
-        #
-        # media_id = data.get_resource_medium_id(media_name)
+
         data.delete_resource_author(self.document_id, self.current_author, self.current_media)
-        # edit_website(website_id, title, author, subject, url, date_created, date_accessed, notes, medium)
+
         lg.edit_website(self.document_id, self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(),
                            self.box1R.get(), self.box2R.get(), self.box3R.get(), self.get_media_name())
 

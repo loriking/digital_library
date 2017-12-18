@@ -45,7 +45,7 @@ def delete_audio(audio_id, author, media):
     data.delete_resource_author(audio_id, author, media)
 
 # BOOKS
-def add_text(title, author, year, pages, level, publisher, language, subject, media):
+def add_text(title, author, year, pages, level, publisher, language, subject, medium):
 
     data.add_author(author)
     data.add_publisher(publisher)
@@ -55,7 +55,7 @@ def add_text(title, author, year, pages, level, publisher, language, subject, me
     level_id = data.get_level_id(level)
     publisher_id = data.get_publisher_id(publisher)
     language_id = data.get_language_id(language)
-    media_id = data.get_resource_medium_id(media)
+    media_id = data.get_resource_medium_id(medium)
     subject_id = data.get_subject_id(subject)
 
     data.add_text_to_db(title, year, pages, level_id, publisher_id, language_id, subject_id, media_id)
@@ -65,6 +65,22 @@ def add_text(title, author, year, pages, level, publisher, language, subject, me
 
     data.add_resource_author(resource_id, author_id, media_id)
 
+def edit_text(text_id, title, author, year, pages, level, publisher, language, subject, medium):
+
+    data.add_author(author)
+    data.add_publisher(publisher)
+    data.add_language(language)
+    data.add_subject(subject)
+
+    author_id = data.get_author_id(author)
+    publisher_id = data.get_publisher_id(publisher)
+    language_id = data.get_language_id(language)
+    subject_id = data.get_subject_id(subject)
+    level_id = data.get_level_id(level)
+    media_id = data.get_resource_medium_id(medium)
+
+    data.update_text(text_id, title, year, pages, subject_id, publisher_id, language_id, media_id, level_id)
+    data.add_resource_author(text_id, author_id, media_id)
 
 # COURSES
 
@@ -197,6 +213,39 @@ def edit_interactive_media(im_id,title, author, year, subject, platform, engine,
     data.update_interactive(im_id, title, year, subject_id, platform_id, engine_id, version, media_id)
     data.add_resource_author(im_id, author_id, media_id)
 
+
+# VIDEO
+
+def add_video(title, author, duration,  subject, producer, year, url, medium, language):
+
+    data.add_author(author)
+    data.add_subject(subject)
+    data.add_language(language)
+
+    language_id = data.get_language_id(language)
+    media_id = data.get_resource_medium_id(medium)
+    subject_id = data.get_subject_id(subject)
+    author_id = data.get_author_id(author)
+
+    data.add_video_to_db(title, duration, subject_id, producer, year, url, media_id, language_id)
+
+    video_id = data.get_video_id(title)
+
+    data.add_resource_author(video_id, author_id, media_id)
+
+
+def edit_video(video_id, title, author, duration, subject, producer, year, url, medium, language):
+    data.add_author(author)
+    data.add_subject(subject)
+
+    author_id = data.get_author_id(author)
+    subject_id = data.get_subject_id(subject)
+    media_id = data.get_resource_medium_id(medium)
+    language_id = data.get_language_id(language)
+
+    data.update_video(video_id, title, duration, subject_id,  producer, year, url, media_id, language_id)
+    data.add_resource_author(video_id, author_id, media_id)
+
 # WEBSITES
 def add_website(title, author, subject, url, date_created, date_accessed, notes, medium):
 
@@ -231,39 +280,6 @@ def remove_website(title):
 
     #data.delete_resource_author(resource_id, author, media)
     pass
-
-# VIDEO
-
-def add_video(title, author, duration,  subject, producer, year, url, medium, language):
-
-    data.add_author(author)
-    data.add_subject(subject)
-    data.add_language(language)
-
-    language_id = data.get_language_id(language)
-    media_id = data.get_resource_medium_id(medium)
-    subject_id = data.get_subject_id(subject)
-    author_id = data.get_author_id(author)
-
-    data.add_video_to_db(title, duration, subject_id, producer, year, url, media_id, language_id)
-
-    video_id = data.get_video_id(title)
-
-    data.add_resource_author(video_id, author_id, media_id)
-
-
-def edit_video(video_id, title, author, duration, subject, producer, year, url, medium, language):
-    data.add_author(author)
-    data.add_subject(subject)
-
-    author_id = data.get_author_id(author)
-    subject_id = data.get_subject_id(subject)
-    media_id = data.get_resource_medium_id(medium)
-    language_id = data.get_language_id(language)
-
-    data.update_video(video_id, title, duration, subject_id,  producer, year, url, media_id, language_id)
-    data.add_resource_author(video_id, author_id, media_id)
-
 
 
 
