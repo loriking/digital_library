@@ -1803,39 +1803,27 @@ class AddCourse(AddMedia):
 
     def save_data(self):
         media_name = self.get_media_name()
-        print('Media name = ', media_name)
 
         lg.add_course(self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(),
                       self.box1R.get(), self.box2R.get(), self.box3R.get(), media_name,
                       self.level.get())
-
-        print("Course Added")
 
         self.update_windows()
 
     def update(self):
 
         media_name = self.get_media_name()
-        print('Media name = ', media_name)
-
-        old_author_id = data.get_author_id(self.current_author)
-        print('Old author id= ', old_author_id)
-        old_media_id = data.get_resource_medium_id(self.current_media)
-        print('old media id', old_media_id)
 
         author_name = self.box2L.get()
 
         if self.current_author != author_name or self.current_media != media_name:
             data.delete_resource_author(self.document_id, self.current_author, self.current_media)
-            print('Deleted resource author for ID', self.document_id)
-
 
         lg.edit_course(self.document_id, self.box1L.get(),self.box2L.get(), self.box3L.get(), self.box4L.get(),
                        self.box1R.get(), self.box2R.get(), self.box3R.get(), self.get_media_name(),self.level.get())
 
         self.update_windows()
         self.save_resource.config(state='normal')
-
 
     def delete(self):
         media_name = self.box1L.get()
