@@ -2052,9 +2052,9 @@ class AddImages(AddMedia):
 
         AddMedia.c1 = 'Title'
         AddMedia.c2 = 'Creator'
-        AddMedia.c3 = 'Date'
-        AddMedia.c4 = 'Subject'
-        AddMedia.c5 = 'Type'
+        AddMedia.c3 = 'Subject'
+        AddMedia.c4 = 'Type'
+        AddMedia.c5 = 'Date'
         AddMedia.c6 = 'Copyright'
 
         AddMedia.media_choice1 = 'Photo'
@@ -2078,9 +2078,11 @@ class AddImages(AddMedia):
                         self.copyright.get(),self.media_buttons.get())
 
         self.update_windows()
+        self.copyright.set('?')
 
     def select_document(self, event):
         item = self.webdocs_list.focus()
+        self.save_resource.config(state='disabled')
 
         document = self.treeview_docs.item(item)
 
@@ -2088,20 +2090,12 @@ class AddImages(AddMedia):
 
             document_name = document['values'][0]
 
-            print('Document: ', document)
-            print('Doc name: ', document_name)
-
             self.document_id = data.get_image_id(document_name)
-            print('Doc_id = ', self.document_id)
 
             image = data.get_image_info(self.document_id)
-            print(image)
 
             self.current_author = image[1]
             self.current_media = image[7]
-            print('Author =', self.current_author)
-            print('Current media= ', self.current_media)
-
             self.box1L.set(image[0])
             self.box2L.set(image[1])
             self.box3L.set(image[2])
@@ -2142,14 +2136,6 @@ class AddImages(AddMedia):
     def update(self):
 
         media_name = self.get_media_name()
-        print('Media name = ', media_name)
-
-        old_author_id = data.get_author_id(self.current_author)
-        print('Old author id= ', old_author_id)
-
-        old_media_id = data.get_resource_medium_id(self.current_media)
-        print('old media id', old_media_id)
-
         author_name = self.box2L.get()
 
         if self.current_author != author_name or self.current_media != media_name:
@@ -2160,18 +2146,17 @@ class AddImages(AddMedia):
             data.add_author(author_name)
 
             author_id = data.get_author_id(author_name)
-            print('Author ID', author_id)
-
             media_id = data.get_resource_medium_id(media_name)
-            print('MediaID =', media_id)
 
             data.add_resource_author(self.document_id, author_id, media_id)
 
-        data.update_image(self.document_id, self.box1L.get(),  self.box3L.get(),
-                        self.box4L.get(), self.box2R.get(), self.box1R.get(),
-                        self.box3R.get(), self.box4R.get(), media_name)
+        lg.edit_image_entry(self.document_id, self.box1L.get(), self.box2L.get(), self.box3L.get(),
+                            self.box4L.get(), self.box1R.get(), self.box2R.get(), self.copyright.get(),
+                            self.media_buttons.get())
 
         self.update_windows()
+        self.save_resource.config(state='normal')
+        self.copyright.set('?')
 
     def delete(self):
         media_name = self.box1L.get()
@@ -2184,6 +2169,7 @@ class AddImages(AddMedia):
         if result == True:
             data.delete_image(self.document_id, self.current_author, self.current_media)
             self.update_windows()
+            self.copyright.set('?')
             tkMessageBox.showinfo('Deleted', message2, icon='info')
 
 class AddVideo(AddMedia):

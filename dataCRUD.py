@@ -178,6 +178,9 @@ def get_copyright_id(status):
     c.execute('SELECT ID FROM copyright WHERE status = ?', (status,))
     return c.fetchone()[0]
 
+def get_copyright_name(copyright_id):
+    c.execute('SELECT status FROM copyright WHERE ID = ?', (copyright_id))
+    return c.fetchone()[0]
 # PUBLISHER CRUD FUNCTIONS
 def add_publisher(publisher):
     """ Adds publisher to SQL database"""
@@ -739,8 +742,8 @@ def get_image_mediaID(resourceID):
     return c.fetchone()[0]
 
 def list_images():
-    c.execute('''SELECT images.title, authors.name,  images.date_created, subjects.subject, 
-                       resource_medium.medium, copyright.status
+    c.execute('''SELECT images.title, authors.name,  subjects.subject, 
+                       resource_medium.medium, images.date_created, copyright.status
                     FROM images JOIN  authors JOIN resource_author JOIN resource_medium 
                     JOIN copyright JOIN subjects
                     ON authors.ID = resource_author.authorID 
@@ -765,12 +768,11 @@ def get_image_info(resource_id):
                 WHERE images.ID = ?''', (resource_id,))
     return c.fetchone()
 
-def update_image(resource_id, title, date, copywrite, website, dimensions, url, comments, image_type):
-    imagetypeID = get_resource_medium_id(image_type)
+def update_image(resource_id, title, date_created, date_accessed, url, subject_id,  copyright_id, media_id):
 
-    c.execute('''UPDATE images SET title = ?, date  = ?, copywrite = ?, website_name = ?, dimensions = ?, 
-                    url = ?, comments = ?, imagetypeID = ? WHERE images.ID  = ?''',
-              (title, date, copywrite, website, dimensions, url, comments, imagetypeID, resource_id))
+    c.execute('''UPDATE images SET title = ?, date_created  = ?, date_accessed = ?, url = ?, subjectID = ?, 
+                    copyrightID = ?, mediaID = ? WHERE images.ID  = ?''',
+              (title, date_created, date_accessed,  url, subject_id, copyright_id, media_id, resource_id))
     db.commit()
 
 def delete_image(resource_id, author, media):

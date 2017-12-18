@@ -122,16 +122,14 @@ def get_image_name(media_button_value):
     return image_name
 
 
-def add_image(title, author, date_created, date_accessed, subject, url, copyright, media):
+def add_image(title, author, date_created, date_accessed, subject, url, copyright_id, media):
 
     data.add_author(author)
     data.add_subject(subject)
     image_name = get_image_name(media)
-    copyright_status = get_image_type(copyright)
 
     author_id = data.get_author_id(author)
     subject_id = data.get_subject_id(subject)
-    copyright_id = data.get_copyright_id(copyright_status)
     media_id = data.get_resource_medium_id(image_name)
 
     data.add_images_to_database(title, date_created, date_accessed, subject_id, url, copyright_id, media_id)
@@ -140,6 +138,17 @@ def add_image(title, author, date_created, date_accessed, subject, url, copyrigh
 
     data.add_resource_author(image_id, author_id, media_id)
 
+def edit_image_entry(image_id, title, author, date_created, date_accessed, subject, url, copyright_id, media):
+    data.add_author(author)
+    data.add_subject(subject)
+    image_name = get_image_name(media)
+
+    author_id = data.get_author_id(author)
+    subject_id = data.get_subject_id(subject)
+    media_id = data.get_resource_medium_id(image_name)
+
+    data.update_image(image_id, title, date_created, date_accessed, url,  subject_id, copyright_id, media_id)
+    data.add_resource_author(image_id, author_id, media_id)
 
 # INTERACTIVE
 def get_interactive_name(media_button_value):
