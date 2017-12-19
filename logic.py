@@ -315,23 +315,26 @@ def export_to_txt(project_id):
 
     with open(save_as, 'w') as out_file:
         for i in items:
-            i = ' '.join(i)
+            i = '\t'.join(i)
             out_file.write('\n')
             out_file.write(i)
 
 
 
-# def export_to_csv(project_id):
-#     project = data.get_project(project_id)
-#     print(project)
-#     items = view_project_references(project_id)
-#
-#     # myData = [[1, 2, 3], ['Good Morning', 'Good Evening', 'Good Afternoon']]
-#     myFile = open('references.txt', 'w')
-#     with myFile:
-#         writer = csv.writer(myFile)
-#         writer.writerows(items)
+def export_to_csv(project_id):
+    project = data.get_project(project_id)
+    save_as = project[0]
 
-    # with open('output.csv', 'wb') as f:
-    #     writer = csv.writer(f)
-    #     writer.writerows(items)
+    save_as = save_as + ' references' + '.csv'
+    items = view_project_references(project_id)
+
+    myFile = open(save_as, 'w')
+    with myFile:
+        writer = csv.writer(myFile)
+        writer.writerow(['Project Details'])
+        writer.writerow(['Project Title', 'Project Type', 'Description', 'Start Date', 'Deadline'])
+        writer.writerow(project)
+        writer.writerow('')
+        writer.writerow(['References'])
+        writer.writerow(['Type', 'Title', 'Author', 'Topic'])
+        writer.writerows(items)

@@ -2724,18 +2724,27 @@ class ViewProjectReferences(tk.Frame):
         self.home.config(width=10)
         self.home.grid(column=0, row=0, padx=10, sticky=tk.W)
 
-        self.export = tk.Button(self.buttonframe, text='Export', command=lambda: self.export_file())
-        self.export.config(width=10)
-        self.export.grid(column=1, row=0,  sticky=tk.E)
+        self.export_txt = tk.Button(self.buttonframe, text='Export as text', command=lambda: self.export_file_txt())
+        self.export_txt.config(width=10)
+        self.export_txt.grid(column=1, row=0,  sticky=tk.E)
+
+        self.export_csv = tk.Button(self.buttonframe, text='Export as csv', command=lambda: self.export_file_csv())
+        self.export_csv.config(width=10)
+        self.export_csv.grid(column=2, row=0,  sticky=tk.E)
 
         self.display_project()
         self.display_resources()
 
-    def export_file(self):
+    def export_file_txt(self):
         print(self.project_id)
         print(self.project_name.get())
         lg.export_to_txt(self.project_id)
-        # pass
+
+    def export_file_csv(self):
+        print(self.project_id)
+        print(self.project_name.get())
+        lg.export_to_csv(self.project_id)
+
 
     def clear_projects(self):
         for i in self.project_list.get_children():
