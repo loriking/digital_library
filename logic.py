@@ -1,5 +1,7 @@
 import operator
 import dataCRUD as data
+import sqlite3 as sql
+import csv
 
 
 # AUDIO
@@ -299,3 +301,37 @@ def view_project_references(project_id):
         items.append('None')
 
     return items
+
+
+
+def export_to_txt(project_id):
+    project = data.get_project(project_id)
+
+    save_as = project[0]
+
+    save_as = save_as + ' references' + '.txt'
+
+    items = view_project_references(project_id)
+
+    with open(save_as, 'w') as out_file:
+        for i in items:
+            i = ' '.join(i)
+            out_file.write('\n')
+            out_file.write(i)
+
+
+
+# def export_to_csv(project_id):
+#     project = data.get_project(project_id)
+#     print(project)
+#     items = view_project_references(project_id)
+#
+#     # myData = [[1, 2, 3], ['Good Morning', 'Good Evening', 'Good Afternoon']]
+#     myFile = open('references.txt', 'w')
+#     with myFile:
+#         writer = csv.writer(myFile)
+#         writer.writerows(items)
+
+    # with open('output.csv', 'wb') as f:
+    #     writer = csv.writer(f)
+    #     writer.writerows(items)

@@ -2716,12 +2716,26 @@ class ViewProjectReferences(tk.Frame):
         self.fourthframe = tk.LabelFrame(mainframe, text='Associated References', borderwidth=0)
         self.fourthframe.grid(column=0, row=4,  pady=5, sticky=tk.W + tk.E + tk.N + tk.S)
 
-        self.home = tk.Button(mainframe, text='Home', command=lambda: controller.show_frame(HomePage))
+        self.buttonframe = tk.LabelFrame(mainframe, text='', borderwidth=0)
+        self.buttonframe.grid(column= 0, row=5, columnspan=2, sticky=tk.W)
+
+
+        self.home = tk.Button(self.buttonframe, text='Home', command=lambda: controller.show_frame(HomePage))
         self.home.config(width=10)
-        self.home.grid(column=0, row=5, padx=10, sticky=tk.W)
+        self.home.grid(column=0, row=0, padx=10, sticky=tk.W)
+
+        self.export = tk.Button(self.buttonframe, text='Export', command=lambda: self.export_file())
+        self.export.config(width=10)
+        self.export.grid(column=1, row=0,  sticky=tk.E)
 
         self.display_project()
         self.display_resources()
+
+    def export_file(self):
+        print(self.project_id)
+        print(self.project_name.get())
+        lg.export_to_txt(self.project_id)
+        # pass
 
     def clear_projects(self):
         for i in self.project_list.get_children():
