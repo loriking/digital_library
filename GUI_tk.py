@@ -4,6 +4,7 @@ from tkinter import ttk
 import dataCRUD as data
 import logic as lg
 from blank_window import show_window
+import sqlite3
 
 
 class ProjectLibrary(tk.Tk):
@@ -76,8 +77,8 @@ class HomePage(tk.Frame):
         self.search_resources.pack(side=tk.LEFT, padx=10)
 
         self.settings = tk.Button(self.secondframe, text='About\n',
-                                  image=self.about, compound='top',
-                                  command=lambda: controller.show_frame(EditProject))
+                                  image=self.about, compound='top')#,
+                                 # command=lambda: controller.show_frame(About))
         self.settings.pack(side=tk.LEFT, padx=10)
 
 
@@ -144,8 +145,8 @@ class AddResource(tk.Frame):
         self.AddWebsitesbutton= tk.Button(self.firstframe, text='Websites', width=20,height=5,bg='gray85',
                                         command=lambda: controller.show_frame(AddMedia))
 
-        self.about = tk.Button(self.secondframe, text='About', width=20, height=5,bg='gray85',)#,
-                                        # command=lambda: controller.show_frame(About))
+        self.about = tk.Button(self.secondframe, text='Browse Data', width=20, height=5,bg='gray85',)#,
+                                        # command=lambda: controller.show_frame(Browse))
 
         self.go_home = tk.Button( self.thirdframe, text='Home', width=20, height=5,
                                          command=lambda: controller.show_frame(HomePage))
@@ -2651,7 +2652,6 @@ class EditProject(tk.Frame):
         project = data.get_project(self.project_id)
         self.treeview_projects.insert('', 'end', values=project)
 
-
     def list_projects(self):
         self.clear_projects()
         projects_list = data.list_projects()
@@ -2695,8 +2695,10 @@ class ViewProjectReferences(tk.Frame):
         self.search_bar = tk.StringVar()
         self.project_name = tk.StringVar()
         self.project_id = tk.IntVar()
+        self.please_select_project = 'No project selected.\nChoose a project to export resources'
+        self.exported = 'Project references exported'
 
-        # FRANES
+        # FRAMES
 
         mainframe = tk.LabelFrame(self, text='', borderwidth=4)
         mainframe.grid(column=0, row=0, columnspan=10, sticky=tk.W + tk.E + tk.N + tk.S)
@@ -2719,7 +2721,7 @@ class ViewProjectReferences(tk.Frame):
         self.buttonframe = tk.LabelFrame(mainframe, text='', borderwidth=0)
         self.buttonframe.grid(column= 0, row=5, columnspan=2, sticky=tk.W)
 
-
+        # Buttons
         self.home = tk.Button(self.buttonframe, text='Home', command=lambda: controller.show_frame(HomePage))
         self.home.config(width=10)
         self.home.grid(column=0, row=0, padx=10, sticky=tk.W)
@@ -2736,14 +2738,21 @@ class ViewProjectReferences(tk.Frame):
         self.display_resources()
 
     def export_file_txt(self):
-        print(self.project_id)
-        print(self.project_name.get())
-        lg.export_to_txt(self.project_id)
+        try:
+            lg.export_to_txt(self.project_id)
+            tkMessageBox.showinfo('Exported', self.exported)
+        except sqlite3.InterfaceError:
+            tkMessageBox.showinfo('Select', self.please_select_project, icon='warning')
+            pass
+
 
     def export_file_csv(self):
-        print(self.project_id)
-        print(self.project_name.get())
-        lg.export_to_csv(self.project_id)
+        try:
+            lg.export_to_csv(self.project_id)
+            tkMessageBox.showinfo('Exported', self.exported)
+        except sqlite3.InterfaceError:
+            tkMessageBox.showinfo('Select', self.please_select_project, icon='warning')
+            pass
 
 
     def clear_projects(self):
@@ -2753,7 +2762,6 @@ class ViewProjectReferences(tk.Frame):
     def clear_references(self):
         for i in self.references.get_children():
             self.references.delete(i)
-
 
     def search_projects(self):
         self.clear_projects()
@@ -2769,20 +2777,23 @@ class ViewProjectReferences(tk.Frame):
         self.clear_references()
         item = self.project_list.focus()
 
-        project = self.treeview_projects.item(item)
+        try:
+            project = self.treeview_projects.item(item)
 
-        self.project_id = data.get_projectID(project['values'][0])
-        self.project_name.set(project['values'][0])
+            self.project_id = data.get_projectID(project['values'][0])
+            self.project_name.set(project['values'][0])
 
-        self.project_id = self.project_id[0]
+            self.project_id = self.project_id[0]
 
-        resources = lg.view_project_references(self.project_id)
+            resources = lg.view_project_references(self.project_id)
+        except IndexError:
+            pass
 
-        for resource in resources:
-            self.treeview_references.insert('', 'end', values=resource)
+        else:
+            for resource in resources:
+                self.treeview_references.insert('', 'end', values=resource)
 
         return self.project_id
-
 
     def display_project(self):
         self.titlebox_label = tk.Label(self.firstframe, text='Enter search keyword')
@@ -2827,7 +2838,6 @@ class ViewProjectReferences(tk.Frame):
 
         self.projectname = tk.Label(self.thirdframe, textvariable = self.project_name)
         self.projectname.grid(column=1, row=1, sticky=tk.W)
-
 
     def display_resources(self):
         self.scollreferences = tk.Scrollbar(self.fourthframe)
