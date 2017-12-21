@@ -431,6 +431,7 @@ class AddText(tk.Frame):
         self.language.set('Select one:')
         self.level.set('Select one:')
         self.text_type.set('?')
+        self.addtextresource.config(state = 'normal')
 
     def get_media_name(self):
         try:
