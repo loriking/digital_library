@@ -306,27 +306,6 @@ def remove_project_reference(project_id, resource_name, media_name):
 
     data.delete_resources_reference(project_id, resource_id, media_id)
 
-
-def export_to_txt(project_id):
-    project = data.get_project(project_id)
-
-    save_as = project[0]
-
-    save_as = save_as + ' references' + '.txt'
-
-    items = view_project_references(project_id)
-
-    with open(save_as, 'w') as out_file:
-        out_file.write('Type'.ljust(10))
-        out_file.write('Title'.ljust(20))
-        out_file.write('Author'.ljust(20))
-        out_file.write('Subject'.ljust(10))
-        for i in items:
-            i = '\t'.join(i)
-            out_file.write('\n')
-            out_file.write(i)
-
-
 def export_to_csv(project_id):
     project = data.get_project(project_id)
     save_as = project[0]

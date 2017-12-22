@@ -2730,10 +2730,6 @@ class ViewProjectReferences(tk.Frame):
         self.home.config(width=12)
         self.home.grid(column=0, row=0, padx=10, sticky=tk.W)
 
-        self.export_txt = tk.Button(self.buttonframe, text='Export as text', command=lambda: self.export_file_txt())
-        self.export_txt.config(width=12)
-        self.export_txt.grid(column=1, row=0,  sticky=tk.E)
-
         self.export_csv = tk.Button(self.buttonframe, text='Export as csv', command=lambda: self.export_file_csv())
         self.export_csv.config(width=12)
         self.export_csv.grid(column=2, row=0,  sticky=tk.E)
@@ -2815,15 +2811,6 @@ class ViewProjectReferences(tk.Frame):
 
         self.treeview_references = self.references
         self.treeview_references.bind('<ButtonRelease-1>', self.select_reference)
-
-
-    def export_file_txt(self):
-        try:
-            lg.export_to_txt(self.project_id)
-            tkMessageBox.showinfo('Exported', self.exported)
-        except sqlite3.InterfaceError:
-            tkMessageBox.showinfo('Select', self.please_select_project, icon='warning')
-            pass
 
     def export_file_csv(self):
         try:
