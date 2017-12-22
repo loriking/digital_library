@@ -818,7 +818,7 @@ class LinkResources(tk.Frame):
             if self.media_type.get() == 1:
                 media_name = item_text['values'][2]
 
-                self.resource_id = data.get_id(self.resource_name, media_name)
+                self.resource_id = data.get_id(self.resource_name, media_name) # gets ID from all_resources table
                 self.media_id = data.get_resource_medium_id(media_name)
 
             elif self.media_type.get() == 2:
@@ -849,7 +849,7 @@ class LinkResources(tk.Frame):
                 self.resource_id = data.get_website_id(self.resource_name)
                 self.media_id = data.get_website_mediaID(self.resource_id)
 
-            return self.resource_id, self.media_id #, self.resource_name
+            return self.resource_id, self.media_id
 
     def select_project(self, event):
         """ Takes item selected from listbox and stores it as a global variable to be used in
@@ -870,7 +870,7 @@ class LinkResources(tk.Frame):
 
 
     def link_project_resources(self):
-        data.link_to_resources(self.project_id,  self.resource_id,self.media_id) # self.resource_name)
+        data.link_to_resources(self.project_id,  self.resource_id,self.media_id)
         tkMessageBox.showinfo('Confirm', "Added item to\nproject bibliography!")
 
     def search_projects(self):
@@ -2696,6 +2696,9 @@ class ViewProjectReferences(tk.Frame):
         self.search_bar = tk.StringVar()
         self.project_name = tk.StringVar()
         self.project_id = tk.IntVar()
+        self.media_name = tk.StringVar()
+        self.resource_name = tk.StringVar()
+
         self.please_select_project = 'No project selected.\nChoose a project to export resources'
         self.exported = 'Project references exported'
 
@@ -2724,77 +2727,23 @@ class ViewProjectReferences(tk.Frame):
 
         # Buttons
         self.home = tk.Button(self.buttonframe, text='Home', command=lambda: controller.show_frame(HomePage))
-        self.home.config(width=10)
+        self.home.config(width=12)
         self.home.grid(column=0, row=0, padx=10, sticky=tk.W)
 
         self.export_txt = tk.Button(self.buttonframe, text='Export as text', command=lambda: self.export_file_txt())
-        self.export_txt.config(width=10)
+        self.export_txt.config(width=12)
         self.export_txt.grid(column=1, row=0,  sticky=tk.E)
 
         self.export_csv = tk.Button(self.buttonframe, text='Export as csv', command=lambda: self.export_file_csv())
-        self.export_csv.config(width=10)
+        self.export_csv.config(width=12)
         self.export_csv.grid(column=2, row=0,  sticky=tk.E)
+
+        self.delete = tk.Button(self.buttonframe, text='Drop Reference', command=lambda: self.delete_reference())
+        self.delete.config(width=12)
+        self.delete.grid(column=3, row=0, padx=5, sticky=tk.E)
 
         self.display_project()
         self.display_resources()
-
-    def export_file_txt(self):
-        try:
-            lg.export_to_txt(self.project_id)
-            tkMessageBox.showinfo('Exported', self.exported)
-        except sqlite3.InterfaceError:
-            tkMessageBox.showinfo('Select', self.please_select_project, icon='warning')
-            pass
-
-
-    def export_file_csv(self):
-        try:
-            lg.export_to_csv(self.project_id)
-            tkMessageBox.showinfo('Exported', self.exported)
-        except sqlite3.InterfaceError:
-            tkMessageBox.showinfo('Select', self.please_select_project, icon='warning')
-            pass
-
-
-    def clear_projects(self):
-        for i in self.project_list.get_children():
-            self.project_list.delete(i)
-
-    def clear_references(self):
-        for i in self.references.get_children():
-            self.references.delete(i)
-
-    def search_projects(self):
-        self.clear_projects()
-        self.project_name.set('')
-
-        projects = data.find_project(self.search_bar.get())
-
-        for item in projects:
-            self.treeview_projects.insert('', 'end', values=item)
-        self.titlebox.delete(0, 'end')
-
-    def view_resources(self, event):
-        self.clear_references()
-        item = self.project_list.focus()
-
-        try:
-            project = self.treeview_projects.item(item)
-
-            self.project_id = data.get_projectID(project['values'][0])
-            self.project_name.set(project['values'][0])
-
-            self.project_id = self.project_id[0]
-
-            resources = lg.view_project_references(self.project_id)
-        except IndexError:
-            pass
-
-        else:
-            for resource in resources:
-                self.treeview_references.insert('', 'end', values=resource)
-
-        return self.project_id
 
     def display_project(self):
         self.titlebox_label = tk.Label(self.firstframe, text='Enter search keyword')
@@ -2835,9 +2784,9 @@ class ViewProjectReferences(tk.Frame):
         self.treeview_projects.bind('<ButtonRelease-1>', self.view_resources)
 
         self.projectlabel = tk.Label(self.thirdframe, text='Project Name: ')
-        self.projectlabel.grid(column = 0, row=1, sticky=tk.W)
+        self.projectlabel.grid(column=0, row=1, sticky=tk.W)
 
-        self.projectname = tk.Label(self.thirdframe, textvariable = self.project_name)
+        self.projectname = tk.Label(self.thirdframe, textvariable=self.project_name)
         self.projectname.grid(column=1, row=1, sticky=tk.W)
 
     def display_resources(self):
@@ -2845,14 +2794,14 @@ class ViewProjectReferences(tk.Frame):
         self.scollreferences.grid(column=1, row=0, pady=5, sticky=tk.N + tk.S)
 
         self.references = ttk.Treeview(self.fourthframe, height=10, selectmode='browse',
-                                         columns=('Resource Type', 'Title', 'Author', 'Topic'))
+                                       columns=('Resource Type', 'Title', 'Author', 'Topic'))
 
         self.scollreferences.configure(orient="vertical", command=self.references.yview)
         self.references.configure(yscrollcommand=self.scollreferences.set)
 
         self.references['columns'] = ('Resource Type', 'Title', 'Author', 'Topic')
         self.references.column('#0', minwidth=0, width=0)
-        self.references.grid(column=0, row=0,  pady=5, sticky=tk.E)
+        self.references.grid(column=0, row=0, pady=5, sticky=tk.E)
 
         self.references.heading('0', text='Resource Type', anchor='c')
         self.references.heading('1', text='Title', anchor='c')
@@ -2865,10 +2814,94 @@ class ViewProjectReferences(tk.Frame):
         self.references.column('3', width=150, anchor='w')
 
         self.treeview_references = self.references
-        # self.treeview_references.bind('<ButtonRelease-1>', self.select_reference)
+        self.treeview_references.bind('<ButtonRelease-1>', self.select_reference)
 
-    def select_reference(self):
-        pass
+
+    def export_file_txt(self):
+        try:
+            lg.export_to_txt(self.project_id)
+            tkMessageBox.showinfo('Exported', self.exported)
+        except sqlite3.InterfaceError:
+            tkMessageBox.showinfo('Select', self.please_select_project, icon='warning')
+            pass
+
+    def export_file_csv(self):
+        try:
+            lg.export_to_csv(self.project_id)
+            tkMessageBox.showinfo('Exported', self.exported)
+        except sqlite3.InterfaceError:
+            tkMessageBox.showinfo('Select', self.please_select_project, icon='warning')
+            pass
+
+    def clear_projects(self):
+        for i in self.project_list.get_children():
+            self.project_list.delete(i)
+
+    def clear_references(self):
+        for i in self.references.get_children():
+            self.references.delete(i)
+
+    def show_updated_resources(self):
+        '''Updates list of project's resources after resourse is deleted '''
+        self.clear_references()
+
+        references = lg.view_project_references(self.project_id)
+
+        for item in references:
+            self.treeview_references.insert('', 'end', values=item)
+
+    def search_projects(self):
+        self.clear_projects()
+        self.project_name.set('')
+
+        projects = data.find_project(self.search_bar.get())
+
+        for item in projects:
+            self.treeview_projects.insert('', 'end', values=item)
+        self.titlebox.delete(0, 'end')
+
+    def view_resources(self, event):
+        self.clear_references()
+        item = self.project_list.focus()
+
+        try:
+            project = self.treeview_projects.item(item)
+
+            self.project_id = data.get_projectID(project['values'][0])
+            self.project_name.set(project['values'][0])
+
+            self.project_id = self.project_id[0]
+
+            resources = lg.view_project_references(self.project_id)
+        except IndexError:
+            pass
+
+        else:
+            for resource in resources:
+                self.treeview_references.insert('', 'end', values=resource)
+
+        return self.project_id
+
+    def select_reference(self, event):
+        item = self.references.focus()
+
+        try:
+            reference = self.treeview_references.item(item)
+
+            self.resource_name.set(reference['values'][1])
+            self.media_name.set(reference['values'][0])
+
+        except IndexError:
+            pass
+
+        return self.resource_name, self.media_name
+
+
+    def delete_reference(self):
+        lg.remove_project_reference(self.project_id, self.resource_name.get(), self.media_name.get())
+        self.show_updated_resources()
+
+
 
 
 

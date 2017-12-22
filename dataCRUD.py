@@ -869,7 +869,7 @@ def delete_project(projectID):
     c.execute(''' DELETE from projects WHERE projects.ID = ?''', (projectID,))
     db.commit()
 
-def link_to_resources(projectID,  resourceID, mediaID,):
+def link_to_resources(projectID,  resourceID, mediaID):
     c.execute('''INSERT OR IGNORE INTO project_references(projectID, resourceID,  mediaID) 
                     VALUES(?,?,?)''',
               (projectID, resourceID, mediaID))
@@ -877,6 +877,10 @@ def link_to_resources(projectID,  resourceID, mediaID,):
     db.commit()
 
 
+def delete_resources_reference(projectID,  resourceID, mediaID):
+    c.execute('''DELETE FROM project_references WHERE projectID = ? AND resourceID = ? AND  mediaID = ?''',
+              (projectID, resourceID, mediaID))
+    db.commit()
 
 # SEARCHES
 def find_project(project_name):

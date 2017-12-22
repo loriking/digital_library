@@ -102,7 +102,6 @@ def add_course(title, instructor, subject, duration, provider, url, notes, mediu
 
     data.add_resource_author(resource_id, author_id, media_id)
 
-
 def edit_course(course_id, title, instructor, subject, duration_weeks, provider, url, notes, media, level):
     data.add_author(instructor)
     data.add_subject(subject)
@@ -283,7 +282,6 @@ def remove_website(title):
     pass
 
 
-
 # Project references
 def view_project_references(project_id):
     items = []
@@ -300,6 +298,13 @@ def view_project_references(project_id):
         items.append('None')
 
     return items
+
+
+def remove_project_reference(project_id, resource_name, media_name):
+    media_id = data.get_resource_medium_id(media_name)
+    resource_id = data.get_id(resource_name, media_name)
+
+    data.delete_resources_reference(project_id, resource_id, media_id)
 
 
 def export_to_txt(project_id):
