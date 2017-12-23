@@ -35,60 +35,61 @@ class HomePage(tk.Frame):
         tk.Frame.__init__(self, parent)
 
         self.addeditproject = tk.PhotoImage(file="project.png")
-        self.addmedia= tk.PhotoImage(file="addmedia.png")
+        self.addmedia= tk.PhotoImage(file="add.png")
         self.link = tk.PhotoImage(file="linkresources.png")
         self.list = tk.PhotoImage(file="listresources.png")
         self.search = tk.PhotoImage(file="search.png")
         self.about = tk.PhotoImage(file="about.png")
 
         self.topframe = tk.LabelFrame(self, text='', borderwidth=0)
-        self.topframe.pack(expand=tk.TRUE, fill=tk.BOTH)
+        self.topframe.pack(expand=tk.TRUE)#fill=tk.BOTH)
 
         self.firstframe =tk.LabelFrame(self.topframe, text='', borderwidth=0)
         self.secondframe = tk.LabelFrame(self.topframe, text='', borderwidth=0)
         self.middleframe = tk.LabelFrame(self.topframe, borderwidth=0, text='')
 
-        self.firstframe.pack(anchor=tk.CENTER,expand=tk.TRUE, ipadx=10,  padx=10,pady=10)
-        self.middleframe.pack(anchor=tk.CENTER,expand=tk.TRUE, ipadx=10, padx=10,pady=10)
-        self.secondframe.pack(anchor=tk.CENTER,expand=tk.TRUE, ipadx=10, padx=10,pady=10)
+        self.firstframe.pack(anchor=tk.CENTER,expand=tk.TRUE, ipadx=25,  padx=10,pady=10)
+        self.middleframe.pack(anchor=tk.CENTER,expand=tk.TRUE, ipadx=25, padx=10)
+        self.secondframe.pack(anchor=tk.CENTER,expand=tk.TRUE, ipadx=25, padx=10)
 
-        self.add_edit_project = tk.Button(self.firstframe, text='Add or Edit\nProject', image = self.addeditproject,
+        self.add_edit_project = tk.Button(self.firstframe, text='Add or Edit\nProject', relief='flat',
+                                          image = self.addeditproject,
                                       compound='top', command=lambda: controller.show_frame(AddEditProject))
-        self.add_edit_project.pack( side=tk.LEFT, padx=10)
+        self.add_edit_project.pack(side=tk.LEFT, padx=25)
 
         self.link_project_resources = tk.Button(self.firstframe, text='Link Resources\n to Projects',
-                                        image = self.link, compound='top',
+                                        image = self.link, compound='top', relief='flat',
                                       command=lambda: controller.show_frame(LinkResources))
-        self.link_project_resources.pack(side=tk.LEFT, padx=10)
+        self.link_project_resources.pack(side=tk.LEFT, padx=25)
 
         self.show_project_resources = tk.Button(self.firstframe, text="Show Project's\nResources",
-                                                image = self.list, compound='top',
+                                                relief='flat', image = self.list, compound='top',
                                                 command=lambda: controller.show_frame(ViewProjectReferences))
-        self.show_project_resources.pack(pady=10)
+        self.show_project_resources.pack(side=tk.LEFT, padx=25)
 
         self.add_resources = tk.Button(self.secondframe, text='Add or Edit\nResources',
-                                       image = self.addmedia, compound='top',
+                                   relief='flat',  image = self.addmedia, compound='top',
                                    command=lambda: controller.show_frame(AddResource))
-        self.add_resources.pack(side=tk.LEFT, padx=10)
+        self.add_resources.pack(side=tk.LEFT, padx=25)
 
-        self.search_resources = tk.Button(self.secondframe, text='Search\nResources',
+        self.search_resources = tk.Button(self.secondframe, text='Search\nResources', relief='flat',
                                           image=self.search, compound='top',
                                           command=lambda: controller.show_frame(SearchResource))
-        self.search_resources.pack(side=tk.LEFT, padx=10)
+        self.search_resources.pack(side=tk.LEFT, padx=25)
 
-        self.settings = tk.Button(self.secondframe, text='About\n',
+        self.settings = tk.Button(self.secondframe, text='About\n', relief='flat',
                                   image=self.about, compound='top')#,
                                  # command=lambda: controller.show_frame(About))
-        self.settings.pack(side=tk.LEFT, padx=10)
+        self.settings.pack(side=tk.LEFT, padx=25)
 
 
 class AddEditProject(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
-        self.project_img = tk.PhotoImage(file="project1.png")
-        self.home_img = tk.PhotoImage(file="home1.png")
-        self.edit_img = tk.PhotoImage(file="edit1.png")
+        self.add_img = tk.PhotoImage(file="add.png")
+        self.home_img = tk.PhotoImage(file="home.png")
+        self.edit_img = tk.PhotoImage(file="edit.png")
 
         self.frame = tk.LabelFrame(self, text='', borderwidth=0)
         self.frame.pack(expand=tk.TRUE, fill=tk.BOTH)
@@ -97,16 +98,16 @@ class AddEditProject(tk.Frame):
         self.buttons.pack(side=tk.LEFT, anchor=tk.CENTER,expand=tk.TRUE, ipadx=10, ipady=10, padx=10,pady=10)
 
         self.back = tk.Button(self.buttons, text='Home', image=self.home_img, compound="top",
-                              command=lambda: controller.show_frame(HomePage))
-        self.back.pack(side=tk.LEFT, padx=10)
+                              relief='flat', command=lambda: controller.show_frame(HomePage))
+        self.back.pack(side=tk.LEFT, padx=20)
 
-        self.add_project = tk.Button(self.buttons, text='Add Project', image=self.project_img, compound="top",
-                                     command=lambda: controller.show_frame(Projects))
-        self.add_project.pack(side=tk.LEFT, padx=10)
+        self.add_project = tk.Button(self.buttons, text='Add Project', image=self.add_img, compound="top",
+                                     relief='flat', command=lambda: controller.show_frame(Projects))
+        self.add_project.pack(side=tk.LEFT, padx=20)
 
         self.edit_project = tk.Button(self.buttons, text='Edit Projects', image = self.edit_img, compound="top",
-                                      command=lambda: controller.show_frame(EditProject))
-        self.edit_project.pack(side=tk.LEFT, padx=10)
+                                      relief='flat', command=lambda: controller.show_frame(EditProject))
+        self.edit_project.pack(side=tk.LEFT, padx=20)
 
 class AddResource(tk.Frame):
     def __init__(self, parent, controller):
