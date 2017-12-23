@@ -82,7 +82,6 @@ class HomePage(tk.Frame):
                                  # command=lambda: controller.show_frame(About))
         self.settings.pack(side=tk.LEFT, padx=25)
 
-
 class AddEditProject(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -112,52 +111,66 @@ class AddEditProject(tk.Frame):
 class AddResource(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
+        self.audio_img = tk.PhotoImage(file="headphones.png")
+        self.book_img = tk.PhotoImage(file="open-book.png")
+        self.course_img = tk.PhotoImage(file="online-course.png")
+        self.img_img = tk.PhotoImage(file="picture.png")
+        self.games_img = tk.PhotoImage(file="control.png")
+        self.video_img = tk.PhotoImage(file="video-camera.png")
+        self.web_img = tk.PhotoImage(file="internet.png")
+        self.home_img = tk.PhotoImage(file="home1.png")
+        self.browse_img = tk.PhotoImage(file="browse.png")
 
         self.topframe = tk.LabelFrame(self, text='', borderwidth=0)
         self.topframe.pack(expand=tk.TRUE, fill=tk.BOTH)
 
         self.firstframe = tk.LabelFrame(self.topframe, text='', borderwidth=0)
         self.secondframe = tk.LabelFrame(self.topframe, text='', borderwidth=0)
-        self.thirdframe = tk.LabelFrame(self.topframe, borderwidth=0, text='')
+        self.thirdframe = tk.LabelFrame(self.topframe,  text='', borderwidth=0)
 
-        self.firstframe.pack(side=tk.LEFT, anchor=tk.CENTER, expand=tk.TRUE)#, ipadx=10, ipady=10, padx=10, pady=10)
-        self.secondframe.pack(side=tk.LEFT, anchor=tk.CENTER, expand=tk.TRUE)#, ipadx=10, ipady=10, padx=10, pady=10)
-        self.thirdframe.pack(side=tk.LEFT, anchor=tk.CENTER, expand=tk.TRUE)#, ipadx=10, ipady=10, padx=10, pady=20)
+        self.firstframe.pack(side=tk.LEFT, anchor=tk.CENTER, expand=tk.TRUE)
+        self.secondframe.pack(side=tk.LEFT, anchor=tk.CENTER, expand=tk.TRUE)
+        self.thirdframe.pack(side=tk.LEFT, anchor=tk.CENTER, expand=tk.TRUE)
 
-        self.AddAudioButton = tk.Button(self.firstframe, text='Audio', width=20,height=5,bg='gray85',
+        self.AddAudioButton = tk.Button(self.firstframe, text='Audio',
+                                        relief='flat', image=self.audio_img, compound='top',
                                         command=lambda: controller.show_frame(AddAudio))
 
-        self.AddBooksButton = tk.Button(self.secondframe, text='Books\n and Texts', width=20, height=5,bg='gray85',
+        self.AddBooksButton = tk.Button(self.secondframe, text='Books and Texts',
+                                        relief='flat', image = self.book_img, compound='top',
                                         command=lambda: controller.show_frame(AddText))
 
-        self.AddCourseButton = tk.Button(self.thirdframe, text='Courses', width=20, height=5,bg='gray85',
+        self.AddCourseButton = tk.Button(self.thirdframe, text='Courses',
+                                         relief='flat', image=self.course_img, compound='top',
                                          command=lambda: controller.show_frame(AddCourse))
 
 
-        self.AddImagesButton= tk.Button(self.firstframe, text='Images', width=20,height=5,bg='gray85',
+        self.AddImagesButton= tk.Button(self.firstframe, text='Images',
+                                        relief='flat', image=self.img_img, compound='top',
                                         command=lambda: controller.show_frame(AddImages))
 
-        self.AddInteractiveMediaButton= tk.Button(self.secondframe, text='Interactive\n Media', width=20,height=5,
-                                          bg='gray85', command=lambda: controller.show_frame(AddInteractiveMedia))
+        self.AddInteractiveMediaButton= tk.Button(self.secondframe, text='Interactive Media',
+                                        relief='flat', image=self.games_img, compound='top',
+                                        command=lambda: controller.show_frame(AddInteractiveMedia))
 
-        self.AddVideoButton = tk.Button(self.thirdframe, text='Video', width=20, height=5,bg='gray85',
+        self.AddVideoButton = tk.Button(self.thirdframe, text='Video',
+                                        relief='flat', image=self.video_img, compound='top',
                                         command=lambda: controller.show_frame(AddVideo))
 
-        self.AddWebsitesbutton= tk.Button(self.firstframe, text='Websites', width=20,height=5,bg='gray85',
+        self.AddWebsitesbutton= tk.Button(self.firstframe, text='Websites',
+                                          relief='flat', image=self.web_img, compound='top',
                                         command=lambda: controller.show_frame(AddMedia))
 
-        self.about = tk.Button(self.secondframe, text='Browse Data', width=20, height=5,bg='gray85',)#,
+        self.about = tk.Button(self.secondframe, text='Browse Data', relief='flat', image=self.browse_img, compound='top')
                                         # command=lambda: controller.show_frame(Browse))
 
-        self.go_home = tk.Button( self.thirdframe, text='Home', width=20, height=5,
+        self.go_home = tk.Button( self.thirdframe, text='Home', relief='flat', image=self.home_img, compound='top',
                                          command=lambda: controller.show_frame(HomePage))
 
         self.AddAudioButton.pack()
         self.AddBooksButton.pack()
         self.AddCourseButton.pack()
         self.AddVideoButton.pack()
-
-
         self.AddImagesButton.pack()
         self.AddInteractiveMediaButton.pack()
         self.AddWebsitesbutton.pack()
