@@ -122,7 +122,7 @@ class AddResource(tk.Frame):
         self.browse_img = tk.PhotoImage(file="browse.png")
 
         self.topframe = tk.LabelFrame(self, text='', borderwidth=0)
-        self.topframe.pack(expand=tk.TRUE, fill=tk.BOTH)
+        self.topframe.pack(expand=tk.TRUE, fill=tk.X)#tk.BOTH)
 
         self.firstframe = tk.LabelFrame(self.topframe, text='', borderwidth=0)
         self.secondframe = tk.LabelFrame(self.topframe, text='', borderwidth=0)
