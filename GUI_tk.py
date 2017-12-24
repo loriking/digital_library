@@ -122,15 +122,17 @@ class AddResource(tk.Frame):
         self.browse_img = tk.PhotoImage(file="browse.png")
 
         self.topframe = tk.LabelFrame(self, text='', borderwidth=0)
-        self.topframe.pack(expand=tk.TRUE, fill=tk.X)#tk.BOTH)
+        self.topframe.pack(expand=tk.TRUE)
 
         self.firstframe = tk.LabelFrame(self.topframe, text='', borderwidth=0)
         self.secondframe = tk.LabelFrame(self.topframe, text='', borderwidth=0)
         self.thirdframe = tk.LabelFrame(self.topframe,  text='', borderwidth=0)
+        self.fourthframe = tk.LabelFrame(self.topframe, text='', borderwidth=0)
 
         self.firstframe.pack(side=tk.LEFT, anchor=tk.CENTER, expand=tk.TRUE)
         self.secondframe.pack(side=tk.LEFT, anchor=tk.CENTER, expand=tk.TRUE)
         self.thirdframe.pack(side=tk.LEFT, anchor=tk.CENTER, expand=tk.TRUE)
+        self.fourthframe.pack(side=tk.LEFT, anchor=tk.CENTER, expand=tk.TRUE)
 
         self.AddAudioButton = tk.Button(self.firstframe, text='Audio',
                                         relief='flat', image=self.audio_img, compound='top',
@@ -145,37 +147,35 @@ class AddResource(tk.Frame):
                                          command=lambda: controller.show_frame(AddCourse))
 
 
-        self.AddImagesButton= tk.Button(self.firstframe, text='Images',
+        self.AddImagesButton= tk.Button(self.fourthframe, text='Images',
                                         relief='flat', image=self.img_img, compound='top',
                                         command=lambda: controller.show_frame(AddImages))
 
-        self.AddInteractiveMediaButton= tk.Button(self.secondframe, text='Interactive Media',
+
+        self.AddInteractiveMediaButton= tk.Button(self.firstframe, text='Interactive Media',
                                         relief='flat', image=self.games_img, compound='top',
                                         command=lambda: controller.show_frame(AddInteractiveMedia))
 
-        self.AddVideoButton = tk.Button(self.thirdframe, text='Video',
+        self.AddVideoButton = tk.Button(self.secondframe, text='Video',
                                         relief='flat', image=self.video_img, compound='top',
                                         command=lambda: controller.show_frame(AddVideo))
 
-        self.AddWebsitesbutton= tk.Button(self.firstframe, text='Websites',
+        self.AddWebsitesbutton= tk.Button(self.thirdframe, text='Websites',
                                           relief='flat', image=self.web_img, compound='top',
                                         command=lambda: controller.show_frame(AddMedia))
 
-        self.about = tk.Button(self.secondframe, text='Browse Data', relief='flat', image=self.browse_img, compound='top')
-                                        # command=lambda: controller.show_frame(Browse))
-
-        self.go_home = tk.Button( self.thirdframe, text='Home', relief='flat', image=self.home_img, compound='top',
+        self.go_home = tk.Button( self.fourthframe, text='Home', relief='flat', image=self.home_img, compound='top',
                                          command=lambda: controller.show_frame(HomePage))
 
-        self.AddAudioButton.pack()
-        self.AddBooksButton.pack()
-        self.AddCourseButton.pack()
-        self.AddVideoButton.pack()
-        self.AddImagesButton.pack()
-        self.AddInteractiveMediaButton.pack()
-        self.AddWebsitesbutton.pack()
-        self.about.pack()
-        self.go_home.pack()
+        self.AddAudioButton.pack(ipadx=5, ipady=5)
+        self.AddBooksButton.pack(ipadx=5, ipady=5)
+        self.AddCourseButton.pack(ipadx=5, ipady=5)
+        self.AddImagesButton.pack(ipadx=5, ipady=5)
+
+        self.AddInteractiveMediaButton.pack(ipadx=5, ipady=5)
+        self.AddVideoButton.pack(ipadx=5, ipady=5)
+        self.AddWebsitesbutton.pack(ipadx=5, ipady=5)
+        self.go_home.pack(ipadx=5, ipady=5 )
 
 class AddText(tk.Frame):
     def __init__(self, parent, controller):
