@@ -48,9 +48,9 @@ class HomePage(tk.Frame):
         self.secondframe = tk.LabelFrame(self.topframe, text='', borderwidth=0)
         self.middleframe = tk.LabelFrame(self.topframe, borderwidth=0, text='')
 
-        self.firstframe.pack(anchor=tk.CENTER,expand=tk.TRUE, ipadx=25,  padx=10,pady=10)
-        self.middleframe.pack(anchor=tk.CENTER,expand=tk.TRUE, ipadx=25, padx=10)
-        self.secondframe.pack(anchor=tk.CENTER,expand=tk.TRUE, ipadx=25, padx=10)
+        self.firstframe.pack(anchor=tk.CENTER,expand=tk.TRUE, ipadx=25,  padx=20, ipady=10)
+        self.middleframe.pack(anchor=tk.CENTER,expand=tk.TRUE, ipadx=25, padx=20, ipady=10)
+        self.secondframe.pack(anchor=tk.CENTER,expand=tk.TRUE, ipadx=25,  padx=20, ipady=10)
 
         self.add_edit_project = tk.Button(self.firstframe, text='Add or Edit\nProject', relief='flat',
                                           image = self.addeditproject,
@@ -230,6 +230,7 @@ class AddText(tk.Frame):
 
         self.new_lang = tk.StringVar()
         self.new_pub = tk.StringVar()
+        self.old_publisher = ''
 
         self.new_lang_flag = tk.IntVar(self, value=0)
         self.new_pub_flag = tk.IntVar(self, value=0)
@@ -540,6 +541,9 @@ class AddText(tk.Frame):
             self.language_options = data.list_languages()
 
             self.level_options = data.list_levels()
+
+            self.old_publisher = self.publisher.get()
+
         except IndexError:
             pass
 
@@ -552,7 +556,7 @@ class AddText(tk.Frame):
             else:
                 self.text_type.set(3)
 
-            return self.text_id, self.current_author, self.current_media
+            return self.text_id, self.current_author, self.current_media, self.old_publisher
 
         except UnboundLocalError:
             pass
@@ -562,11 +566,15 @@ class AddText(tk.Frame):
 
         if self.new_pub_flag.get() == 1:
             self.thepublisher = self.new_pub.get()
+            data.add_publisher(self.new_pub.get())
+
         else:
             self.thepublisher = self.publisher.get()
 
         if self.new_lang_flag.get() == 1:
             self.thelanguage = self.new_lang.get()
+            data.add_language(self.new_lang.get())
+
         else:
             self.thelanguage = self.language.get()
 
@@ -575,9 +583,12 @@ class AddText(tk.Frame):
         lg.edit_text(self.text_id,self.title.get(), self.author.get(), self.year.get(),
                         self.pages.get(), self.level.get(), self.thepublisher,
                         self.thelanguage, self.subject.get(), media_name)
+        lg.update_publisher_list(self.old_publisher)
 
         self.update_entry_widgets()
         self.clear_texts()
+        self.update_language_menu()
+        self.update_publisher_menu()
         self.show_updated_resources()
         self.addtextresource.config(state = 'normal')
 

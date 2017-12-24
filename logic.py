@@ -66,6 +66,18 @@ def add_text(title, author, year, pages, level, publisher, language, subject, me
 
     data.add_resource_author(resource_id, author_id, media_id)
 
+def update_publisher_list(publisher):
+    books_by_publisher = []
+
+    publisher_id = data.get_publisher_id(publisher)
+
+    book_ids = data.find_books_by_publisher(publisher_id)
+    for book in book_ids:
+        books_by_publisher.append(book)
+
+    if len(books_by_publisher) < 1:
+        data.delete_publisher(publisher_id)
+
 def edit_text(text_id, title, author, year, pages, level, publisher, language, subject, medium):
 
     data.add_author(author)
@@ -84,7 +96,6 @@ def edit_text(text_id, title, author, year, pages, level, publisher, language, s
     data.add_resource_author(text_id, author_id, media_id)
 
 # COURSES
-
 def add_course(title, instructor, subject, duration, provider, url, notes, medium, level):
     data.add_author(instructor)
     data.add_subject(subject)
@@ -215,7 +226,6 @@ def edit_interactive_media(im_id,title, author, year, subject, platform, engine,
 
 
 # VIDEO
-
 def add_video(title, author, duration,  subject, producer, year, url, medium, language):
 
     data.add_author(author)
@@ -232,7 +242,6 @@ def add_video(title, author, duration,  subject, producer, year, url, medium, la
     video_id = data.get_video_id(title)
 
     data.add_resource_author(video_id, author_id, media_id)
-
 
 def edit_video(video_id, title, author, duration, subject, producer, year, url, medium, language):
     data.add_author(author)

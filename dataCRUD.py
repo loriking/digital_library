@@ -219,12 +219,13 @@ def update_publisher(publisher_entry, publisher_correction_entry):
     db.commit()
 
 
-def delete_publisher(publisher_entry):
-    publisher = publisher_entry.title()
-    publisherID = get_publisher_id(publisher)
-    c.execute('''DELETE FROM publishers WHERE ID = ?''', (publisherID,))
-
+def delete_publisher(publisher_id):
+    c.execute('''DELETE FROM publishers WHERE ID = ?''', (publisher_id,))
     db.commit()
+
+def find_books_by_publisher(publisher_id):
+    c.execute('SELECT ID FROM texts WHERE publisherID = ?', (publisher_id,))
+    return c.fetchall()
 
 
 # RESOURCE medium
