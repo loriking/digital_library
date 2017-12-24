@@ -42,15 +42,15 @@ class HomePage(tk.Frame):
         self.about = tk.PhotoImage(file="about.png")
 
         self.topframe = tk.LabelFrame(self, text='', borderwidth=0)
-        self.topframe.pack(expand=tk.TRUE)#fill=tk.BOTH)
+        self.topframe.pack(expand=tk.TRUE, fill=tk.X)
 
         self.firstframe =tk.LabelFrame(self.topframe, text='', borderwidth=0)
         self.secondframe = tk.LabelFrame(self.topframe, text='', borderwidth=0)
         self.middleframe = tk.LabelFrame(self.topframe, borderwidth=0, text='')
 
-        self.firstframe.pack(anchor=tk.CENTER,expand=tk.TRUE, ipadx=25,  padx=20, ipady=10)
-        self.middleframe.pack(anchor=tk.CENTER,expand=tk.TRUE, ipadx=25, padx=20, ipady=10)
-        self.secondframe.pack(anchor=tk.CENTER,expand=tk.TRUE, ipadx=25,  padx=20, ipady=10)
+        self.firstframe.pack(anchor=tk.CENTER,expand=tk.TRUE, ipadx=30,  padx=20, ipady=10)
+        self.middleframe.pack(anchor=tk.CENTER,expand=tk.TRUE, ipadx=30, padx=20, ipady=10)
+        self.secondframe.pack(anchor=tk.CENTER,expand=tk.TRUE, ipadx=30,  padx=20, ipady=10)
 
         self.add_edit_project = tk.Button(self.firstframe, text='Add or Edit\nProject', relief='flat',
                                           image = self.addeditproject,
@@ -1474,7 +1474,7 @@ class AddAudio(AddMedia):
         self.language_label = tk.Label(self.center_frame2, text='Language')
         self.language_entry = tk.OptionMenu(self.center_frame2, self.language,
                                             *self.language_options)
-        self.language_entry.configure(width=8)
+        self.language_entry.configure(width=15)
 
         self.language_label.grid(columnspan=1, column=0, row=0, sticky=tk.W)
 
