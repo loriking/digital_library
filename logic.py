@@ -291,6 +291,20 @@ def remove_website(title):
     pass
 
 
+# PROJECTS
+# update project categories
+def update_project_category_list(project_category):
+    projects_by_category = []
+
+    project_category_id = data.get_project_categoryID(project_category)
+
+    project_ids = data.find_projects_by_category(project_category_id)
+    for project in project_ids:
+        projects_by_category.append(project)
+
+    if len(projects_by_category) < 1:
+        data.delete_project_category(project_category_id)
+
 # Project references
 def view_project_references(project_id):
     items = []

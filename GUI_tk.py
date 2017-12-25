@@ -2522,8 +2522,9 @@ class EditProject(tk.Frame):
         self.start_date = tk.StringVar()
         self.end_date = tk.StringVar()
         self.new_type = tk.IntVar(self, value=0)
-        self.add_projecttype = tk.StringVar()
+        self.add_projecttype = ''
         self.choices = tk.StringVar()
+        self.old_project_type = tk.StringVar()
         self.project_category_options = data.list_project_category()
 
         self.project_id = tk.IntVar()
@@ -2659,15 +2660,20 @@ class EditProject(tk.Frame):
         self.end_date.set(project['values'][4])
         self.project_id = self.project_id[0]
 
-        return self.project_id
+        self.old_project_type = project['values'][1]
+        print(self.old_project_type)
+
+        return self.project_id, self.old_project_type
 
     def update(self):
 
         data.update_project(self.project_id, self.project_name.get(), self.choices.get(),
                             self.description.get(), self.start_date.get(), self.end_date.get())
 
+        lg.update_project_category_list(self.old_project_type)
+
         self.clear_projects()
-        self.show_updated_project()
+        self.list_projects()
         self.update_widgets()
 
     def clear_projects(self):

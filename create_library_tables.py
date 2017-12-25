@@ -168,7 +168,7 @@ def make_db():
     CREATE TABLE IF NOT EXISTS projects (
         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
         project_name TEXT NOT NULL,
-        project_category INTEGER REFERENCES project_category(ID),
+        project_category_id INTEGER REFERENCES project_category(ID),
         description TEXT,
         date_start TEXT, 
         date_end TEXT 

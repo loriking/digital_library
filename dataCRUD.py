@@ -778,7 +778,6 @@ def list_project_category():
 
 
 def get_project_categoryID(project_category):
-    project_category = project_category.title()
 
     try:
         c.execute('''SELECT ID FROM project_category WHERE category = ? ''', (project_category,))
@@ -808,13 +807,14 @@ def update_project_category(project_category, project_category_correction):
     db.commit()
 
 
-def delete_project_category(project_category):
-    project_categoryID = get_project_categoryID(project_category)
-    c.execute('''DELETE FROM project_category WHERE ID = ?''', (project_categoryID,))
+def delete_project_category(project_category_id):
+    c.execute('''DELETE FROM project_category WHERE ID = ?''', (project_category_id,))
 
     db.commit()
 
-
+def find_projects_by_category(project_category_id):
+    c.execute('SELECT ID FROM projects WHERE project_category_id = ?', (project_category_id,))
+    return c.fetchall()
 # Project CRUD functions
 
 def add_project(project_name, project_category, description, date_start, date_end):
@@ -822,7 +822,7 @@ def add_project(project_name, project_category, description, date_start, date_en
     project_categoryID = get_project_categoryID(project_category)
 
     c.execute(
-        '''INSERT INTO projects(project_name, project_category, description, date_start, date_end ) VALUES(?,?,?,?,?)''',
+        '''INSERT INTO projects(project_name, project_category_id, description, date_start, date_end ) VALUES(?,?,?,?,?)''',
         (project_name, project_categoryID, description, date_start, date_end))
     db.commit()
 
@@ -837,7 +837,7 @@ def list_projects():
     """ :return list of projects """
     c.execute('''SELECT project_name, category, description, date_start, date_end
             FROM projects JOIN project_category 
-            ON projects.project_category = project_category.ID 
+            ON projects.project_category_id = project_category.ID 
             ORDER BY projects.project_name          
             ''')
     return c.fetchall()
@@ -845,9 +845,9 @@ def list_projects():
 
 def get_project(projectID):
 
-    c.execute('''SELECT project_name, category, description, date_start, date_end
+    c.execute('''SELECT project_name, project_category_id, description, date_start, date_end
                 FROM projects JOIN project_category
-                ON projects.project_category = project_category.ID
+                ON projects.project_category_id = project_category.ID
                 WHERE projects.ID = ? ''', (projectID,))
     project =  c.fetchall()
     results = [x for t in project for x in t]
@@ -859,7 +859,7 @@ def update_project(projectID=None, project_name=None, project_category=None, des
 
     project_categoryID = get_project_categoryID(project_category)
 
-    c.execute(''' UPDATE projects SET project_name = ?, project_category = ?,  description = ?, 
+    c.execute(''' UPDATE projects SET project_name = ?, project_category_id = ?,  description = ?, 
                     date_start = ?, date_end = ?
                 WHERE ID = ? ''', (project_name, project_categoryID, description, date_start, date_end, projectID,))
 
@@ -889,7 +889,7 @@ def find_project(project_name):
     search = "%" + project_name + "%"
     c.execute('''SELECT project_name, category, description, date_start, date_end
                 FROM projects JOIN project_category 
-                ON projects.project_category = project_category.ID
+                ON projects.project_category_id = project_category.ID
                 WHERE project_name LIKE ? OR description LIKE ?''', (search, search))
     return c.fetchall()
 
