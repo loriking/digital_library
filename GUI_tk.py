@@ -995,8 +995,8 @@ class Projects(tk.Frame):
         self.finish_label.grid(column=0, row=2, sticky=tk.W)
         self.finish_entry.grid(column=1, row=2, columnspan=3, sticky=tk.W)
 
-        self.refresh = tk.Button(self.toprightframe, text='Update list', width=12,
-                                 command=lambda: self.update_project_type_list())
+        self.refresh = tk.Button(self.toprightframe, text='Edit project', width=12,
+                                 command=lambda: self.update())
         self.refresh.grid(column=1, row=6)
 
         self.add_project = tk.Button(self.toprightframe, text='Add Project',width=12,
@@ -1030,6 +1030,7 @@ class Projects(tk.Frame):
         self.project_list.column('3', width=100, anchor='w')
         self.project_list.column('4', width=100,anchor='w')
         self.treeview = self.project_list
+        self.treeview.bind('<ButtonRelease-1>', self.select_project)
 
         self.search_resources = tk.Button(self.button_frame, text='Search Resources',
                               command=lambda: controller.show_frame(SearchResource))
@@ -1086,6 +1087,41 @@ class Projects(tk.Frame):
         data.add_project(self.project_name.get(), self.category, self.description.get(),
                          self.start_date.get(), self.end_date.get())
 
+        self.list_projects()
+        self.update_widgets()
+        self.update_project_type_list()
+
+    def select_project(self,event):
+        item = self.project_list.focus()
+
+        project = self.treeview.item(item)
+
+        project_name = project['values'][0]
+        self.project_id = data.get_projectID(project_name)
+        self.project_name.set(project['values'][0])
+        self.choices.set(project['values'][1])
+        self.description.set(project['values'][2])
+        self.start_date.set(project['values'][3])
+        self.end_date.set(project['values'][4])
+        self.project_id = self.project_id[0]
+
+        self.old_project_type = project['values'][1]
+        print(self.old_project_type)
+
+        return self.project_id, self.old_project_type
+
+    def clear_projects(self):
+        for i in self.project_list.get_children():
+            self.project_list.delete(i)
+
+    def update(self):
+
+        data.update_project(self.project_id, self.project_name.get(), self.choices.get(),
+                            self.description.get(), self.start_date.get(), self.end_date.get())
+
+        lg.update_project_category_list(self.old_project_type)
+
+        self.clear_projects()
         self.list_projects()
         self.update_widgets()
         self.update_project_type_list()
