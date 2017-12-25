@@ -18,8 +18,8 @@ class ProjectLibrary(tk.Tk):
 
         self.frames = {}
 
-        for F in (HomePage, AddEditProject, Projects, LinkResources, AddResource, AddText, AddAudio, AddVideo, AddCourse,
-                  AddInteractiveMedia, AddMedia, AddImages, SearchResource, EditProject, ViewProjectReferences):
+        for F in (HomePage, Projects, LinkResources, AddResource, AddText, AddAudio, AddVideo, AddCourse,
+                  AddInteractiveMedia, AddMedia, AddImages, SearchResource, ViewProjectReferences):
             frame = F(main, self)
             self.frames[F] = frame
             frame.grid(row = 0, column = 0, sticky ='nsew')
@@ -34,12 +34,12 @@ class HomePage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
-        self.addeditproject = tk.PhotoImage(file="project.png")
-        self.addmedia= tk.PhotoImage(file="add.png")
-        self.link = tk.PhotoImage(file="linkresources.png")
-        self.list = tk.PhotoImage(file="listresources.png")
-        self.search = tk.PhotoImage(file="search.png")
-        self.about = tk.PhotoImage(file="about.png")
+        self.addeditproject_img = tk.PhotoImage(file="project.png")
+        self.addmedia_img= tk.PhotoImage(file="add.png")
+        self.link_img = tk.PhotoImage(file="linkresources.png")
+        self.list_img = tk.PhotoImage(file="listresources.png")
+        self.search_img = tk.PhotoImage(file="search.png")
+        self.about_img = tk.PhotoImage(file="about.png")
 
         self.topframe = tk.LabelFrame(self, text='', borderwidth=0)
         self.topframe.pack(expand=tk.TRUE, fill=tk.X)
@@ -53,60 +53,34 @@ class HomePage(tk.Frame):
         self.secondframe.pack(anchor=tk.CENTER,expand=tk.TRUE, ipadx=30,  padx=20, ipady=10)
 
         self.add_edit_project = tk.Button(self.firstframe, text='Add or Edit\nProject', relief='flat',
-                                          image = self.addeditproject,
-                                      compound='top', command=lambda: controller.show_frame(AddEditProject))
+                                          image = self.addeditproject_img,
+                                      compound='top', command=lambda: controller.show_frame(Projects))
         self.add_edit_project.pack(side=tk.LEFT, padx=25)
 
         self.link_project_resources = tk.Button(self.firstframe, text='Link Resources\n to Projects',
-                                        image = self.link, compound='top', relief='flat',
+                                        image = self.link_img, compound='top', relief='flat',
                                       command=lambda: controller.show_frame(LinkResources))
         self.link_project_resources.pack(side=tk.LEFT, padx=25)
 
         self.show_project_resources = tk.Button(self.firstframe, text="Show Project's\nResources",
-                                                relief='flat', image = self.list, compound='top',
+                                                relief='flat', image = self.list_img, compound='top',
                                                 command=lambda: controller.show_frame(ViewProjectReferences))
         self.show_project_resources.pack(side=tk.LEFT, padx=25)
 
         self.add_resources = tk.Button(self.secondframe, text='Add or Edit\nResources',
-                                   relief='flat',  image = self.addmedia, compound='top',
+                                   relief='flat',  image = self.addmedia_img, compound='top',
                                    command=lambda: controller.show_frame(AddResource))
         self.add_resources.pack(side=tk.LEFT, padx=25)
 
         self.search_resources = tk.Button(self.secondframe, text='Search\nResources', relief='flat',
-                                          image=self.search, compound='top',
+                                          image=self.search_img, compound='top',
                                           command=lambda: controller.show_frame(SearchResource))
         self.search_resources.pack(side=tk.LEFT, padx=25)
 
-        self.settings = tk.Button(self.secondframe, text='About\n', relief='flat',
-                                  image=self.about, compound='top')#,
+        self.about = tk.Button(self.secondframe, text='About\n', relief='flat',
+                                  image=self.about_img, compound='top')#,
                                  # command=lambda: controller.show_frame(About))
-        self.settings.pack(side=tk.LEFT, padx=25)
-
-class AddEditProject(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-
-        self.add_img = tk.PhotoImage(file="add.png")
-        self.home_img = tk.PhotoImage(file="home.png")
-        self.edit_img = tk.PhotoImage(file="edit.png")
-
-        self.frame = tk.LabelFrame(self, text='', borderwidth=0)
-        self.frame.pack(expand=tk.TRUE, fill=tk.BOTH)
-
-        self.buttons = tk.LabelFrame(self.frame, text='', borderwidth=0)
-        self.buttons.pack(side=tk.LEFT, anchor=tk.CENTER,expand=tk.TRUE, ipadx=10, ipady=10, padx=10,pady=10)
-
-        self.back = tk.Button(self.buttons, text='Home', image=self.home_img, compound="top",
-                              relief='flat', command=lambda: controller.show_frame(HomePage))
-        self.back.pack(side=tk.LEFT, padx=20)
-
-        self.add_project = tk.Button(self.buttons, text='Add Project', image=self.add_img, compound="top",
-                                     relief='flat', command=lambda: controller.show_frame(Projects))
-        self.add_project.pack(side=tk.LEFT, padx=20)
-
-        self.edit_project = tk.Button(self.buttons, text='Edit Projects', image = self.edit_img, compound="top",
-                                      relief='flat', command=lambda: controller.show_frame(EditProject))
-        self.edit_project.pack(side=tk.LEFT, padx=20)
+        self.about.pack(side=tk.LEFT, padx=25)
 
 class AddResource(tk.Frame):
     def __init__(self, parent, controller):
@@ -181,39 +155,6 @@ class AddText(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
-        mainframe = tk.LabelFrame(self, text='', borderwidth=0)
-        mainframe.grid(columnspan=20, column=0, row=0, sticky=tk.N+tk.S+tk.W+tk.E)
-
-        header_frame = tk.LabelFrame(mainframe, text='', borderwidth=0)
-        header_frame.grid(column=0, row=0, columnspan=20,padx=10)
-
-        topframe = tk.LabelFrame(mainframe, text='', borderwidth=2)
-        topframe.grid(columnspan=4, column = 0, row=1)
-
-        topleftframe = tk.LabelFrame(topframe, text="", borderwidth=0)
-        topleftframe.grid(columnspan=4, column=0, row=1)
-
-        topcenterframe = tk.LabelFrame(topframe, text="", borderwidth=0)
-        topcenterframe.grid(columnspan=4,column=5, row=1)
-
-        middleleftframe = tk.LabelFrame(mainframe, text="", borderwidth=4)
-        middleleftframe.grid(columnspan=5, column=0, row=2, sticky=tk.W)
-
-        middleframe = tk.LabelFrame(mainframe, text="", borderwidth=0)
-        middleframe.grid(columnspan=5, column=4, row=2, sticky=tk.W)
-
-        middlerightframe = tk.LabelFrame(mainframe, text='', borderwidth=0)
-        middlerightframe.grid(columnspan=3, column=2, row=2,  sticky=tk.E)
-
-        bottomframe = tk.LabelFrame(self, text="", borderwidth=4)
-        bottomframe.grid(column=0, row=3, pady=5)
-
-        buttonsframe = tk.LabelFrame(self, text="", borderwidth=0)
-        buttonsframe.grid(column=0, row=4)
-
-        self.label = tk.Label(header_frame, text='New Text')
-        self.label.grid(column=0, row=1)
-
         self.title = tk.StringVar()
         self.author = tk.StringVar()
         self.year = tk.StringVar()
@@ -245,6 +186,40 @@ class AddText(tk.Frame):
         self.text_id = None
         self.current_author = ''
         self.current_media = ''
+
+        mainframe = tk.LabelFrame(self, text='', borderwidth=0)
+        mainframe.grid(columnspan=20, column=0, row=0, sticky=tk.N+tk.S+tk.W+tk.E)
+
+        header_frame = tk.LabelFrame(mainframe, text='', borderwidth=0)
+        header_frame.grid(column=0, row=0, columnspan=20,padx=10)
+
+        self.label = tk.Label(header_frame, text='New Text')
+        self.label.grid(column=0, row=1)
+
+        topframe = tk.LabelFrame(mainframe, text='', borderwidth=2)
+        topframe.grid(columnspan=4, column = 0, row=1)
+
+        topleftframe = tk.LabelFrame(topframe, text="", borderwidth=0)
+        topleftframe.grid(columnspan=4, column=0, row=1)
+
+        topcenterframe = tk.LabelFrame(topframe, text="", borderwidth=0)
+        topcenterframe.grid(columnspan=4,column=5, row=1)
+
+        middleleftframe = tk.LabelFrame(mainframe, text="", borderwidth=4)
+        middleleftframe.grid(columnspan=5, column=0, row=2, sticky=tk.W)
+
+        middleframe = tk.LabelFrame(mainframe, text="", borderwidth=0)
+        middleframe.grid(columnspan=5, column=4, row=2, sticky=tk.W)
+
+        middlerightframe = tk.LabelFrame(mainframe, text='', borderwidth=0)
+        middlerightframe.grid(columnspan=3, column=2, row=2,  sticky=tk.E)
+
+        bottomframe = tk.LabelFrame(self, text="", borderwidth=4)
+        bottomframe.grid(column=0, row=3, pady=5)
+
+        buttonsframe = tk.LabelFrame(self, text="", borderwidth=0)
+        buttonsframe.grid(column=0, row=4)
+
 
         # Top left frame
 
@@ -320,8 +295,7 @@ class AddText(tk.Frame):
         self.addtextresource.grid(column=4, row=0, padx=5, sticky=tk.E)
 
         self.level_label = tk.Label(topcenterframe, text='Level:')
-        self.level_entry = tk.OptionMenu(topcenterframe, self.level,
-                                         *self.level_options)
+        self.level_entry = tk.OptionMenu(topcenterframe, self.level, *self.level_options)
         self.level_entry.configure(width=24)
 
         self.level_label.grid(column=0, row=5, sticky=tk.W)
@@ -919,26 +893,6 @@ class Projects(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
-        self.main_frame = tk.LabelFrame(self, text='',borderwidth=4)
-        self.main_frame.grid(column=0, row=0, columnspan=10, sticky=tk.W+tk.E+tk.N+tk.S)
-
-        self.label = tk.Label(self.main_frame, text='New Project')
-        self.label.grid(column=0, row=0, columnspan=10)
-
-        # FRAMES
-
-        self.topleftframe = tk.LabelFrame(self.main_frame, text='', borderwidth=4)
-        self.topleftframe.grid(column=0, row=1)
-
-        self.toprightframe = tk.LabelFrame(self.main_frame, text='', borderwidth=4)
-        self.toprightframe.grid(column=1, row=1)
-
-        self.bottomframe = tk.LabelFrame(self, text='', borderwidth=4)
-        self.bottomframe.grid(column=0, row=5, columnspan=4)
-
-        self.button_frame = tk.LabelFrame(self, text='', borderwidth=0)
-        self.button_frame.grid(column=0, row=6, columnspan=2, sticky=tk.W)
-
         # VARIABLES
 
         self.project_name = tk.StringVar()
@@ -951,6 +905,26 @@ class Projects(tk.Frame):
         self.choices = tk.StringVar()
         self.project_category_options = data.list_project_category()
         self.choices.set('Choose project type:')
+
+        # FRAMES
+
+        self.main_frame = tk.LabelFrame(self, text='',borderwidth=4)
+        self.main_frame.grid(column=0, row=0, columnspan=10, sticky=tk.W+tk.E+tk.N+tk.S)
+
+        self.label = tk.Label(self.main_frame, text='New Project')
+        self.label.grid(column=0, row=0, columnspan=10)
+
+        self.topleftframe = tk.LabelFrame(self.main_frame, text='', borderwidth=4)
+        self.topleftframe.grid(column=0, row=1)
+
+        self.toprightframe = tk.LabelFrame(self.main_frame, text='', borderwidth=4)
+        self.toprightframe.grid(column=1, row=1)
+
+        self.bottomframe = tk.LabelFrame(self, text='', borderwidth=4)
+        self.bottomframe.grid(column=0, row=5, columnspan=4)
+
+        self.button_frame = tk.LabelFrame(self, text='', borderwidth=0)
+        self.button_frame.grid(column=0, row=6, columnspan=2, sticky=tk.W)
 
         # Top Left frame
 
@@ -982,7 +956,6 @@ class Projects(tk.Frame):
         self.new_type_flag = tk.Checkbutton(self.topleftframe, text="Add type", variable=self.new_type)
         self.new_type_flag.grid(column=2, row=4, padx=6, sticky=tk.W)
 
-
         # Top right frame
         self.start_label = tk.Label(self.toprightframe, text='Start Date')
         self.start_entry = ttk.Entry(self.toprightframe, width=55, textvariable=self.start_date)
@@ -995,13 +968,17 @@ class Projects(tk.Frame):
         self.finish_label.grid(column=0, row=2, sticky=tk.W)
         self.finish_entry.grid(column=1, row=2, columnspan=3, sticky=tk.W)
 
-        self.refresh = tk.Button(self.toprightframe, text='Edit project', width=12,
+        self.clear_project = tk.Button(self.toprightframe, text='Clear Project', width=12,
+                                       command=lambda: self.update_widgets())
+        self.clear_project.grid(column=1, row=6, pady=12)
+
+        self.edit_project = tk.Button(self.toprightframe, text='Edit project', width=12,
                                  command=lambda: self.update())
-        self.refresh.grid(column=1, row=6)
+        self.edit_project.grid(column=2, row=6)
 
         self.add_project = tk.Button(self.toprightframe, text='Add Project',width=12,
                                      command=lambda: self.save_project())
-        self.add_project.grid(column=2, row=6, pady=12, sticky=tk.E)
+        self.add_project.grid(column=3, row=6, pady=12)
 
         # Bottom Frame
 
@@ -1032,19 +1009,25 @@ class Projects(tk.Frame):
         self.treeview = self.project_list
         self.treeview.bind('<ButtonRelease-1>', self.select_project)
 
+        self.home = tk.Button(self.button_frame, text='Home', command=lambda: controller.show_frame(HomePage))
+        self.home.config(width=13)
+        self.home.grid(column=0, row=1, padx=5, sticky=tk.W)
+
         self.search_resources = tk.Button(self.button_frame, text='Search Resources',
                               command=lambda: controller.show_frame(SearchResource))
         self.search_resources.config(width=13)
-        self.search_resources.grid(column=0, row=1, padx=20, pady=2, sticky=tk.W)
+        self.search_resources.grid(column=1, row=1, padx=5, pady=2, sticky=tk.W)
 
-        self.home = tk.Button(self.button_frame, text='Home', command=lambda: controller.show_frame(HomePage))
-        self.home.config(width=13)
-        self.home.grid(column=1, row=1,sticky=tk.W)
 
         self.link = tk.Button(self.button_frame, text='Link Resources',
                               command=lambda: controller.show_frame(LinkResources))
         self.link.config(width=13)
-        self.link.grid(column=2, row=1, sticky=tk.W)
+        self.link.grid(column=2, row=1, padx=5, sticky=tk.W)
+
+        self.delete_resource = tk.Button(self.button_frame, text='Delete Project',
+                                          command=lambda: self.delete())
+        self.delete_resource.config(width=13)
+        self.delete_resource.grid(column=3, row=1, padx=5, pady=2, sticky=tk.E)
 
         self.list_projects()
         self.update_widgets()
@@ -1064,6 +1047,8 @@ class Projects(tk.Frame):
         self.new_projecttype.delete(0, 'end')
         self.new_type.set(0)
         self.choices.set('Choose project type:')
+        self.add_project.config(state='normal')
+        self.list_projects()
 
     def update_project_type_list(self):
         menu = self.project_type_entry.children["menu"]
@@ -1083,8 +1068,7 @@ class Projects(tk.Frame):
         else:
             self.category = self.choices.get()
 
-
-        data.add_project(self.project_name.get(), self.category, self.description.get(),
+        lg.add_project(self.project_name.get(), self.category, self.description.get(),
                          self.start_date.get(), self.end_date.get())
 
         self.list_projects()
@@ -1092,6 +1076,7 @@ class Projects(tk.Frame):
         self.update_project_type_list()
 
     def select_project(self,event):
+        self.add_project.config(state='disable')
         item = self.project_list.focus()
 
         project = self.treeview.item(item)
@@ -1125,6 +1110,20 @@ class Projects(tk.Frame):
         self.list_projects()
         self.update_widgets()
         self.update_project_type_list()
+        self.add_project.config(state='normal')
+
+    def delete(self):
+
+        result =  tkMessageBox.askokcancel("Confirm", "Really?\nThis cannot be undone!", icon='warning')
+        if result == True:
+            data.delete_project(self.project_id)
+            lg.update_project_category_list(self.old_project_type)
+            self.update_widgets()
+            self.clear_projects()
+            self.list_projects()
+            self.update_project_type_list()
+            self.add_project.config(state='normal')
+            tkMessageBox.showinfo('Deleted', "Project deleted.")
 
 class AddMedia(tk.Frame):
     def __init__(self, parent, controller, *args):
@@ -2545,216 +2544,6 @@ class SearchResource(tk.Frame):
             self.treeview_resources.insert('', 'end', values=item)
         self.search_bar_entry.delete(0, 'end')
 
-class EditProject(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-
-        # VARIABLES
-        self.search_bar = tk.StringVar()
-
-        self.project_name = tk.StringVar()
-        self.project_type = tk.StringVar()
-        self.description = tk.StringVar()
-        self.start_date = tk.StringVar()
-        self.end_date = tk.StringVar()
-        self.new_type = tk.IntVar(self, value=0)
-        self.add_projecttype = ''
-        self.choices = tk.StringVar()
-        self.old_project_type = tk.StringVar()
-        self.project_category_options = data.list_project_category()
-
-        self.project_id = tk.IntVar()
-
-        self.choices.set('Choose project type:')
-
-        # FRAMES
-        self.main_frame = tk.LabelFrame(self, text='', borderwidth=4)
-        self.main_frame.grid(column=0, row=0, columnspan=10, sticky=tk.W + tk.E + tk.N + tk.S)
-
-        self.label = tk.Label(self.main_frame, text='Edit Project')
-        self.label.grid(column=0, row=0, columnspan=10)
-
-        self.topleftframe = tk.LabelFrame(self.main_frame, text='', borderwidth=4)
-        self.topleftframe.grid(column=0, row=2)
-
-        self.toprightframe = tk.LabelFrame(self.main_frame, text='', borderwidth=4)
-        self.toprightframe.grid(column=1, row=2)
-
-        self.bottomframe = tk.LabelFrame(self, text='', borderwidth=4)
-        self.bottomframe.grid(column=0, row=5, columnspan=4)
-
-        # SEARCH
-        self.projectframe = tk.LabelFrame(self.main_frame, text='', borderwidth=4)
-        self.projectframe.grid(column=0, row=1, columnspan=3, sticky=tk.N + tk.W + tk.E)
-
-        self.titlebox_label = tk.Label(self.projectframe, text='Enter search keyword')
-        self.titlebox_label.grid(column=0, row=0, sticky=tk.W)
-        self.titlebox = tk.Entry(self.projectframe, width=32, textvariable=self.search_bar)
-        self.titlebox.grid(column=1, row=0, sticky=tk.W)
-
-        self.searchbutton = ttk.Button(self.projectframe, text='Search', command=lambda: self.search_projects())
-        self.searchbutton.config(width=10, cursor='hand2')
-        self.searchbutton.grid(column=2, row=0, padx=5, pady=5, sticky=tk.E)
-
-        # Top Left frame
-
-        self.project_name_label = tk.Label(self.topleftframe, text='Project Name')
-        self.project_name_entry = ttk.Entry(self.topleftframe, width=61, textvariable=self.project_name)
-
-        self.description_label = tk.Label(self.topleftframe, text='Description')
-        self.description_entry = ttk.Entry(self.topleftframe, width=61, textvariable=self.description)
-
-        self.project_type_label = tk.Label(self.topleftframe, text='Project Type')
-        self.project_type_entry = tk.OptionMenu(self.topleftframe, self.choices,
-                                                *self.project_category_options)
-        self.project_type_entry.configure(width=20)
-
-        self.new_projecttype_label = tk.Label(self.topleftframe, text='New Project Type')
-        self.new_projecttype = ttk.Entry(self.topleftframe, width=61, textvariable=self.add_projecttype)
-
-        self.project_name_label.grid(column=0, row=1, sticky=tk.W)
-        self.project_name_entry.grid(column=1, row=1, columnspan=3, sticky=tk.W)
-
-        self.description_label.grid(column=0, row=2, sticky=tk.W)
-        self.description_entry.grid(column=1, row=2, columnspan=3, sticky=tk.W)
-
-        self.project_type_label.grid(column=0, row=4, sticky=tk.W)
-        self.project_type_entry.grid(column=1, row=4, sticky=tk.W)
-        self.new_projecttype_label.grid(column=0, row=5)
-        self.new_projecttype.grid(column=1, row=5, columnspan=3, sticky=tk.W)
-
-        self.new_type_flag = tk.Checkbutton(self.topleftframe, text="Add type", variable=self.new_type)
-        self.new_type_flag.grid(column=2, row=4, padx=6, sticky=tk.W)
-
-        # Top right frame
-        self.start_label = tk.Label(self.toprightframe, text='Start Date')
-        self.start_entry = ttk.Entry(self.toprightframe, width=55, textvariable=self.start_date)
-
-        self.finish_label = tk.Label(self.toprightframe, text='End Date')
-        self.finish_entry = ttk.Entry(self.toprightframe, width=55, textvariable=self.end_date)
-
-        self.start_label.grid(column=0, row=1, sticky=tk.W)
-        self.start_entry.grid(column=1, row=1, columnspan=2,sticky=tk.W)
-        self.finish_label.grid(column=0, row=2, sticky=tk.W)
-        self.finish_entry.grid(column=1, row=2, columnspan=2, sticky=tk.W)
-
-        self.update_project = tk.Button(self.toprightframe, width= 10, text='Update', command=lambda: self.update())
-        self.update_project.grid(column=1, row=6, pady=12)
-
-        self.delete_project = tk.Button(self.toprightframe, width= 10, text='Delete', bg='red',
-                                        command=lambda:self.delete())
-        self.delete_project.grid(column=2, row=6)
-
-        # Bottom Frame
-
-        self.scollprojects = tk.Scrollbar(self.bottomframe)
-        self.scollprojects.grid(column=1, row=0, sticky=tk.N + tk.S)
-
-        self.project_list = ttk.Treeview(self.bottomframe, height=10, selectmode='browse',
-                                         columns=('Name', 'Type', 'Description', 'Start date', 'End date'))
-
-        self.scollprojects.configure(orient="vertical", command=self.project_list.yview)
-        self.project_list.configure(yscrollcommand=self.scollprojects.set)
-
-        self.project_list['columns'] = ('Name', 'Type', 'Description', 'Start date', 'End date')
-        self.project_list.column('#0', minwidth=0, width=0)
-        self.project_list.grid(column=0, row=0, sticky=tk.E)
-
-        self.project_list.heading('0', text='Name', anchor='w')
-        self.project_list.heading('1', text='Type', anchor='w')
-        self.project_list.heading('2', text='Description', anchor='w')
-        self.project_list.heading('3', text='Start date', anchor='w')
-        self.project_list.heading('4', text='End date', anchor='w')
-
-        self.project_list.column('0', width=250, anchor='w')
-        self.project_list.column('1', width=165, anchor='w')
-        self.project_list.column('2', width=250, anchor='w')
-        self.project_list.column('3', width=98, anchor='w')
-        self.project_list.column('4', width=95, anchor='w')
-        self.treeview_projects = self.project_list
-        self.treeview_projects.bind('<ButtonRelease-1>', self.select_project)
-
-        self.home = tk.Button(self.bottomframe, text='Home', command=lambda: controller.show_frame(HomePage))
-        self.home.config(width=10)
-        self.home.grid(column=0, row=1, padx=10, sticky=tk.W)
-
-        self.list_projects()
-        self.update_widgets()
-
-
-    def select_project(self,event):
-        item = self.project_list.focus()
-
-        project = self.treeview_projects.item(item)
-
-        project_name = project['values'][0]
-        self.project_id = data.get_projectID(project_name)
-        self.project_name.set(project['values'][0])
-        self.choices.set(project['values'][1])
-        self.description.set(project['values'][2])
-        self.start_date.set(project['values'][3])
-        self.end_date.set(project['values'][4])
-        self.project_id = self.project_id[0]
-
-        self.old_project_type = project['values'][1]
-        print(self.old_project_type)
-
-        return self.project_id, self.old_project_type
-
-    def update(self):
-
-        data.update_project(self.project_id, self.project_name.get(), self.choices.get(),
-                            self.description.get(), self.start_date.get(), self.end_date.get())
-
-        lg.update_project_category_list(self.old_project_type)
-
-        self.clear_projects()
-        self.list_projects()
-        self.update_widgets()
-
-    def clear_projects(self):
-        for i in self.project_list.get_children():
-            self.project_list.delete(i)
-
-    def show_updated_project(self):
-        project = data.get_project(self.project_id)
-        self.treeview_projects.insert('', 'end', values=project)
-
-    def list_projects(self):
-        self.clear_projects()
-        projects_list = data.list_projects()
-
-        for item in projects_list:
-            self.treeview_projects.insert('', 'end', values=item)
-
-    def search_projects(self):
-        self.clear_projects()
-
-        projects = data.find_project(self.search_bar.get())
-
-        for item in projects:
-            self.treeview_projects.insert('', 'end', values=item)
-        self.titlebox.delete(0, 'end')
-
-    def update_widgets(self):
-        self.project_name_entry.delete(0, 'end')
-        self.description_entry.delete(0, 'end')
-        self.start_entry.delete(0, 'end')
-        self.finish_entry.delete(0, 'end')
-        self.new_projecttype.delete(0, 'end')
-        self.new_type.set(0)
-        self.choices.set('Choose project type:')
-        self.project_category_options = data.list_project_category()
-
-    def delete(self):
-
-        result =  tkMessageBox.askokcancel("Confirm", "Really?\nThis cannot be undone!", icon='warning')
-        if result == True:
-            data.delete_project(self.project_id)
-            self.update_widgets()
-            self.clear_projects()
-            tkMessageBox.showinfo('Deleted', "Project deleted.")
-
 class ViewProjectReferences(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -2954,11 +2743,6 @@ class ViewProjectReferences(tk.Frame):
     def delete_reference(self):
         lg.remove_project_reference(self.project_id, self.resource_name.get(), self.media_name.get())
         self.show_updated_resources()
-
-
-
-
-
 
 
 if __name__ == "__main__":

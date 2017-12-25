@@ -778,24 +778,14 @@ def list_project_category():
 
 
 def get_project_categoryID(project_category):
-
-    try:
-        c.execute('''SELECT ID FROM project_category WHERE category = ? ''', (project_category,))
-        project_categoryID = c.fetchone()[0]
-
-    except TypeError:
-        add_project_category(project_category)
-
-        c.execute('''SELECT ID FROM project_category WHERE category = ? ''', (project_category,))
-        project_categoryID = c.fetchone()[0]
-
-    return project_categoryID
+    c.execute('''SELECT ID FROM project_category WHERE category = ? ''', (project_category,))
+    return c.fetchone()[0]
 
 
 def get_project_category(project_categoryID):
     c.execute('''SELECT category FROM project_category WHERE ID = ?''', (project_categoryID,))
 
-    return c.fetchall()[0]
+    return c.fetchone()[0]
 
 
 def update_project_category(project_category, project_category_correction):
@@ -817,13 +807,11 @@ def find_projects_by_category(project_category_id):
     return c.fetchall()
 # Project CRUD functions
 
-def add_project(project_name, project_category, description, date_start, date_end):
-
-    project_categoryID = get_project_categoryID(project_category)
-
+def add_project_to_db(project_name, project_category_id, description, date_start, date_end):
     c.execute(
-        '''INSERT INTO projects(project_name, project_category_id, description, date_start, date_end ) VALUES(?,?,?,?,?)''',
-        (project_name, project_categoryID, description, date_start, date_end))
+        '''INSERT INTO projects(project_name, project_category_id, description, date_start, date_end ) 
+        VALUES(?,?,?,?,?)''',
+        (project_name,  project_category_id, description, date_start, date_end))
     db.commit()
 
 

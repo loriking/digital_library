@@ -292,6 +292,14 @@ def remove_website(title):
 
 
 # PROJECTS
+def add_project(project_name, project_category, description, date_start, date_end):
+
+    data.add_project_category(project_category)
+
+    project_category_id = data.get_project_categoryID(project_category)
+
+    data.add_project_to_db(project_name, project_category_id, description, date_start, date_end)
+
 # update project categories
 def update_project_category_list(project_category):
     projects_by_category = []
