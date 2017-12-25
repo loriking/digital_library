@@ -405,7 +405,7 @@ class AddText(tk.Frame):
             menu.add_command(label=i, command=lambda value=i: self.publisher.set(value))
         self.publisher.set('Select one:')
 
-    def update_entry_widgets(self): # clears entry widgete
+    def update_entry_widgets(self): # clears entry widgets
 
         self.title_entry.delete(0, 'end')
         self.author_entry.delete(0, 'end')
@@ -421,6 +421,7 @@ class AddText(tk.Frame):
         self.level.set('Select one:')
         self.text_type.set('?')
         self.addtextresource.config(state = 'normal')
+        self.list_resources()
 
     def get_media_name(self):
         try:
@@ -1151,6 +1152,7 @@ class AddMedia(tk.Frame):
         self.edit_resource = tk.IntVar()
 
         self.language = tk.StringVar()
+        self.level = tk.StringVar()
 
         # Frames
 
@@ -1202,7 +1204,7 @@ class AddMedia(tk.Frame):
         self.save_resource.grid(column=6, row=0,  sticky=tk.E)
 
         self.clear_boxes = tk.Button(self.center_frame3, text='Clear', width=8, bg='white',
-                                        command=lambda: self.update_entry_widgets())
+                                        command=lambda: self.reset())
         self.clear_boxes.config(cursor='hand2')
         self.clear_boxes.grid(column=4, row=0,padx=10, sticky=tk.E)
 
@@ -1219,7 +1221,7 @@ class AddMedia(tk.Frame):
         self.create_values()
 
         self.create_top_frame_widgets(self.window_header, self.b2L, self.b3L, self.b4L, self.b1R, self.b2R,
-                                      self.b3R)#, self.b4R)
+                                      self.b3R)
 
         self.add_radio_buttons(self.media_choice1, self.media_choice2, self.media_choice3)
 
@@ -1228,8 +1230,8 @@ class AddMedia(tk.Frame):
 
         self.display_resources(self.c1, self.c2, self.c3, self.c4, self.c5, self.c6)
 
-        self.list_resources(self.table)
         self.update_entry_widgets()
+        self.update_windows()
 
     def create_values(self):
         self.window_header = 'Websites'
@@ -1381,14 +1383,17 @@ class AddMedia(tk.Frame):
     def update_windows(self):
         search_table = data.list_websites()
         self.list_resources(search_table)
+
+    def reset(self):
         self.update_entry_widgets()
+        self.update_windows()
 
     def save_data(self):
 
         lg.add_website(self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(),
                           self.box1R.get(), self.box2R.get(), self.box3R.get(), self.get_media_name())
 
-        self.update_windows()
+        self.reset()
 
     def get_current_data(self):
         current_data = data.list_websites()
@@ -1459,8 +1464,10 @@ class AddMedia(tk.Frame):
 
         search_table = data.list_websites()
 
-        self.list_resources(search_table)
-        self.update_entry_widgets()
+        # self.list_resources(search_table)
+        # self.update_entry_widgets()
+        # self.update_windows()
+        self.reset()
 
     def clear_resource(self):
         for i in self.webdocs_list.get_children():
@@ -1489,6 +1496,7 @@ class AddMedia(tk.Frame):
         if result == True:
             data.delete_website(self.document_id)
             data.delete_resource_author(self.document_id, self.current_author, self.current_media)
+            self.update_entry_widgets()
             self.update_windows()
             tkMessageBox.showinfo('Deleted', message2, icon='info')
         self.save_resource.config(state='normal')
