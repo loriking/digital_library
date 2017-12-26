@@ -907,6 +907,10 @@ class Projects(tk.Frame):
         self.project_category_options = data.list_project_category()
         self.choices.set('Choose project type:')
 
+        self.project_id = None
+        self.old_project_type = ''
+
+
         # FRAMES
 
         self.main_frame = tk.LabelFrame(self, text='',borderwidth=4)
@@ -1082,17 +1086,20 @@ class Projects(tk.Frame):
 
         project = self.treeview.item(item)
 
-        project_name = project['values'][0]
-        self.project_id = data.get_projectID(project_name)
-        self.project_name.set(project['values'][0])
-        self.choices.set(project['values'][1])
-        self.description.set(project['values'][2])
-        self.start_date.set(project['values'][3])
-        self.end_date.set(project['values'][4])
-        self.project_id = self.project_id[0]
+        try:
 
-        self.old_project_type = project['values'][1]
-        print(self.old_project_type)
+            project_name = project['values'][0]
+            self.project_id = data.get_projectID(project_name)
+            self.project_name.set(project['values'][0])
+            self.choices.set(project['values'][1])
+            self.description.set(project['values'][2])
+            self.start_date.set(project['values'][3])
+            self.end_date.set(project['values'][4])
+            self.project_id = self.project_id[0]
+
+            self.old_project_type = project['values'][1]
+        except IndexError:
+            pass
 
         return self.project_id, self.old_project_type
 
@@ -1462,7 +1469,7 @@ class AddMedia(tk.Frame):
         lg.edit_website(self.document_id, self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(),
                            self.box1R.get(), self.box2R.get(), self.box3R.get(), self.get_media_name())
 
-        search_table = data.list_websites()
+        # search_table = data.list_websites()
 
         # self.list_resources(search_table)
         # self.update_entry_widgets()
