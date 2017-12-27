@@ -358,3 +358,17 @@ def export_to_csv(project_id):
 
 
 
+def export_to_txt(project_id):
+    output = '{:<10} {:<60} {:<30} {:<45}'
+
+    project = data.get_project(project_id)
+    save_as = project[0]
+    save_as = save_as + ' references' + '.txt'
+    items = view_project_references(project_id)
+    with open(save_as, 'w') as out_file:
+        out_file.write(output.format('Type', 'Title', 'Author', 'Topic'))
+        for i in items:
+            #print(output.format(i[0], i[1], i[2], i[3]))
+            out_file.write('\n')
+            out_file.write(output.format(i[0], i[1], i[2], i[3]))
+
