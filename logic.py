@@ -121,7 +121,7 @@ def delete_texts(resource_id, author, media):
 
     media_id = data.get_resource_medium_id(media)
 
-    project_id = data.get_project_id(resource_id, media_id)
+    project_id = data.get_project_id(media_id, resource_id)
 
     if len(project_id) > 0:
         for i in range(len(project_id)):
@@ -168,7 +168,7 @@ def remove_course(resource_id, author, media):
 
     # DELETES FROM PROJECT REFERENCES TABLE
     media_id = data.get_resource_medium_id(media)
-    project_id = data.get_project_id(resource_id, media_id)
+    project_id = data.get_project_id( media_id, resource_id)
 
     if len(project_id) > 0:
         for i in range(len(project_id)):
@@ -229,7 +229,7 @@ def remove_image(resource_id, author, media):
     # DELETES FROM PROJECT REFERENCES TABLE
 
     media_id = data.get_resource_medium_id(media)
-    project_id = data.get_project_id(resource_id, media_id)
+    project_id = data.get_project_id(media_id, resource_id)
 
     if len(project_id) > 0:
         for i in range(len(project_id)):
@@ -291,7 +291,7 @@ def remove_interactive(resource_id, author, media):
 
     media_id = data.get_resource_medium_id(media)
 
-    project_id = data.get_project_id(resource_id, media_id)
+    project_id = data.get_project_id(media_id, resource_id)
 
     if len(project_id) > 0:
         for i in range(len(project_id)):
@@ -374,7 +374,7 @@ def remove_website(resource_id,author, media ):
 
     # DELETES FROM PROJECT REFERENCES TABLE
     media_id = data.get_resource_medium_id(media)
-    project_id = data.get_project_id(resource_id, media_id)
+    project_id = data.get_project_id( media_id, resource_id)
 
     if len(project_id) > 0:
         for i in range(len(project_id)):
@@ -425,7 +425,7 @@ def remove_project_reference(project_id, resource_name, media_name):
     media_id = data.get_resource_medium_id(media_name)
     resource_id = data.get_id(resource_name, media_name)
 
-    data.delete_resources_reference(project_id, resource_id, media_id)
+    data.delete_resources_reference(project_id, media_id,  resource_id)
 
 def export_to_csv(project_id):
     project = data.get_project(project_id)
