@@ -2591,23 +2591,30 @@ class ViewProjectReferences(tk.Frame):
         self.thirdframe.grid(columnspan=10, column=0, row=3, pady=7, sticky=tk.W)
 
         self.fourthframe = tk.LabelFrame(mainframe, text='Associated References', borderwidth=0)
-        self.fourthframe.grid(column=0, row=4,  pady=5, sticky=tk.W + tk.E + tk.N + tk.S)
+        self.fourthframe.grid(column=0, row=4,  sticky=tk.W + tk.E + tk.N + tk.S)
 
         self.buttonframe = tk.LabelFrame(mainframe, text='', borderwidth=0)
-        self.buttonframe.grid(column= 0, row=5, columnspan=2, sticky=tk.W)
+        self.buttonframe.grid(column= 0, row=5, pady=5, columnspan=2, sticky=tk.W)
 
         # Buttons
         self.home = tk.Button(self.buttonframe, text='Home', command=lambda: controller.show_frame(HomePage))
-        self.home.config(width=12)
-        self.home.grid(column=0, row=0, padx=10, sticky=tk.W)
+        self.home.config(height=2, width=12)
+        self.home.grid(column=0, row=0)
 
-        self.export_csv = tk.Button(self.buttonframe, text='Export as csv', command=lambda: self.export_file_csv())
-        self.export_csv.config(width=12)
-        self.export_csv.grid(column=2, row=0,  sticky=tk.E)
+        self.export_csv = tk.Button(self.buttonframe, text='Export as\ncsv file',
+                                    command=lambda: self.export_file_csv())
+        self.export_csv.config(height=2,width=12)
+        self.export_csv.grid(column=2, row=0)
 
-        self.delete = tk.Button(self.buttonframe, text='Drop Reference', command=lambda: self.delete_reference())
-        self.delete.config(width=12)
-        self.delete.grid(column=3, row=0, padx=5, sticky=tk.E)
+        self.export_txt = tk.Button(self.buttonframe, text='Export as\ntext file',
+                                    command=lambda: self.export_file_txt())
+        self.export_txt.config(height=2,width=12)
+        self.export_txt.grid(column=3, row=0)
+
+        self.delete = tk.Button(self.buttonframe, text='Delete selected\nreference',
+                                command=lambda: self.delete_reference())
+        self.delete.config(height=2,width=12)
+        self.delete.grid(column=4, row=0)
 
         self.display_project()
         self.display_resources()
@@ -2683,6 +2690,14 @@ class ViewProjectReferences(tk.Frame):
         self.treeview_references = self.references
         self.treeview_references.bind('<ButtonRelease-1>', self.select_reference)
 
+    def export_file_txt(self):
+        try:
+            lg.export_to_txt(self.project_id)
+            tkMessageBox.showinfo('Exported', self.exported)
+        except sqlite3.InterfaceError:
+            tkMessageBox.showinfo('Select', self.please_select_project, icon='warning')
+            pass
+
     def export_file_csv(self):
         try:
             lg.export_to_csv(self.project_id)
@@ -2756,8 +2771,12 @@ class ViewProjectReferences(tk.Frame):
 
 
     def delete_reference(self):
-        lg.remove_project_reference(self.project_id, self.resource_name.get(), self.media_name.get())
-        self.show_updated_resources()
+        try:
+            lg.remove_project_reference(self.project_id, self.resource_name.get(), self.media_name.get())
+            self.show_updated_resources()
+        except TypeError:
+            tkMessageBox.showinfo('Select', 'No project selected', icon='warning')
+            pass
 
 
 if __name__ == "__main__":
