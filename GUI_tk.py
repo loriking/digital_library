@@ -218,7 +218,7 @@ class AddText(tk.Frame):
         bottomframe.grid(column=0, row=3, pady=5)
 
         buttonsframe = tk.LabelFrame(self, text="", borderwidth=0)
-        buttonsframe.grid(column=0, row=4)
+        buttonsframe.grid(column=0, row=4, sticky=tk.W)
 
 
         # Top left frame
@@ -356,21 +356,21 @@ class AddText(tk.Frame):
         self.clear_button.grid(column=1, row=0, padx=5) # 3,5
 
         self.home=tk.Button(buttonsframe, text='Home', command=lambda: controller.show_frame(HomePage))
-        self.home.config(width=15, cursor='hand2')
-        self.home.grid(column=1, row=0, padx=10, sticky=tk.W+tk.E)
+        self.home.config(height=2,width=15, cursor='hand2')
+        self.home.grid(column=1, row=0)#, padx=10)#, sticky=tk.W+tk.E)
 
         self.back_button = tk.Button(buttonsframe, text='Back', command=lambda: controller.show_frame(AddResource))
-        self.back_button.config(width=15, cursor='hand2')
-        self.back_button.grid(column=0, row=0, padx=10, sticky=tk.W)
+        self.back_button.config(height=2,width=15, cursor='hand2')
+        self.back_button.grid(column=0, row=0)#, padx=10)#, sticky=tk.W)
 
         self.searchresource = tk.Button(buttonsframe, text='Search Resources',
                                      command=lambda: controller.show_frame(SearchResource))
-        self.searchresource.config(width=15, cursor='hand2')
-        self.searchresource.grid(column=2, row=0, padx=10, sticky=tk.E)
+        self.searchresource.config(height=2,width=15, cursor='hand2')
+        self.searchresource.grid(column=2, row=0)#, padx=10, sticky=tk.E)
 
         self.delete_button = tk.Button(buttonsframe, text='Delete Text', bg='gray64', command=lambda: self.delete_text())
-        self.delete_button.config(width=15, cursor='hand2')
-        self.delete_button.grid(column=3, row=0, padx=10, sticky=tk.W)
+        self.delete_button.config(height=2,width=15, cursor='hand2')
+        self.delete_button.grid(column=3, row=0)#, padx=10, sticky=tk.W)
 
 
     def list_resources(self):
@@ -584,7 +584,7 @@ class AddText(tk.Frame):
         result = tkMessageBox.askokcancel("Delete?", message1, icon='warning')
 
         if result == True:
-            data.delete_text(self.text_id, self.current_author, self.current_media)
+            lg.delete_texts(self.text_id, self.current_author, self.current_media) #data.delete_text
             self.update_windows()
             tkMessageBox.showinfo('Deleted', message2)
         self.addtextresource.config(state='normal')
@@ -611,16 +611,29 @@ class LinkResources(tk.Frame):
         self.mainframe = tk.LabelFrame(self, text='', borderwidth=4)
         self.mainframe.grid(column=0, row=1)
 
-        self.home = ttk.Button(self.mainframe, text='Home', command=lambda: controller.show_frame(HomePage))
-        self.home.config(width=10, cursor='hand2')
-        self.home.grid(column=0, row=10, padx=20, sticky=tk.E)
-
-        # TOP LEFT FRAME
         self.projectframe = tk.LabelFrame(self.mainframe, text='', borderwidth=4)
         self.projectframe.grid(column=0, row=0, columnspan=3, sticky=tk.N+tk.W+tk.E)
 
+        self.resultsframe = tk.LabelFrame(self.mainframe, text='', borderwidth=4)
+        self.resultsframe.grid(column=0, row=2, sticky=tk.E)
+
+        self.middleframe = tk.LabelFrame(self.mainframe, text='', borderwidth=0)
+        self.middleframe.grid(column=0, row=3, columnspan=40, pady=5,)
+
+        self.searchresourceframe = tk.LabelFrame(self.mainframe, text='', borderwidth=4)
+        self.searchresourceframe.grid(column=0, row=4, columnspan=3, sticky=tk.N + tk.W + tk.E)
+
+        self.resourceresults = tk.LabelFrame(self.mainframe, text='', borderwidth=4)
+        self.resourceresults.grid(column=0, row=5, columnspan=40, sticky=tk.W)
+
+        self.bottombuttonframe = tk.LabelFrame(self.mainframe, text='', borderwidth=0)
+        self.bottombuttonframe.grid(column=0, row=6, columnspan=4, sticky=tk.E)
+
+        # TOP LEFT FRAME
+
         self.titlebox_label = tk.Label(self.projectframe, text='Enter search keyword')
         self.titlebox_label.grid(column=0, row=0, sticky=tk.W)
+
         self.titlebox = tk.Entry(self.projectframe, width=32, textvariable=self.project_title)
         self.titlebox.grid(column=1, row=0, sticky=tk.W)
 
@@ -629,9 +642,6 @@ class LinkResources(tk.Frame):
         self.searchbutton.grid(column=2, row=0, padx=5, pady=5, sticky=tk.E)
 
         # TOP RIGHT FRAME PROJECT SEARCH RESULTS:
-        self.resultsframe = tk.LabelFrame(self.mainframe, text='', borderwidth=4)
-        self.resultsframe.grid(column=0, row=2, sticky=tk.E)
-
         self.clearbutton = ttk.Button(self.resultsframe, text='Clear project', command=lambda: self.clear_selection())
         self.clearbutton.config( cursor='hand2')
         self.clearbutton.grid(column=0, row=10, pady=5, sticky=tk.E)
@@ -665,17 +675,11 @@ class LinkResources(tk.Frame):
         self.treeview_projects.bind('<ButtonRelease-1>', self.select_project)
 
         # MIDDLE FRAME
-        self.middleframe = tk.LabelFrame(self.mainframe, text='', borderwidth=0)
-        self.middleframe.grid(columnspan=40, pady=5, column=0, row=3)
 
         self.resourceresults_label = ttk.Label(self.middleframe, text='Available Resources')
         self.resourceresults_label.grid(columnspan=4, column=2, row=0, pady=5)
 
         # BOTTOM FRAME SORT FRAME
-
-        self.searchresourceframe = tk.LabelFrame(self.mainframe, text='', borderwidth=4)
-        self.searchresourceframe.grid( column=0, row=4, columnspan=3, sticky=tk.N+tk.W+tk.E)
-
         self.media_type_frame = tk.LabelFrame(self.searchresourceframe, text='', borderwidth=3)
         self.media_type_frame.grid(rowspan=2, column=4, row=0, padx=10, sticky=tk.E)
 
@@ -694,7 +698,6 @@ class LinkResources(tk.Frame):
 
         self.sort_label = tk.Label(self.searchresourceframe, text='Resource type:')
         self.sort_label.grid(column=3, row=0, padx=5, sticky=tk.W)
-
 
         self.all_rb = tk.Radiobutton(self.media_type_frame, text='Search All',
                                      variable=self.media_type, value=1)
@@ -722,12 +725,17 @@ class LinkResources(tk.Frame):
         self.video_rb.grid(column=2, row=1, sticky=tk.W)
         self.websites_rb.grid(column=3, row=1, sticky=tk.W)
 
-
         # BOTTOM RIGHT FRAME
-        self.resourceresults = tk.LabelFrame(self.mainframe, text='', borderwidth=4)
-        self.resourceresults.grid(column=0, row=5, columnspan=40, sticky=tk.W)
+        self.home = tk.Button(self.bottombuttonframe, text='Home', command=lambda: controller.show_frame(HomePage))
+        self.home.config(width=12, cursor='hand2')
+        self.home.grid(column=0, row=0)  # , padx=20, sticky=tk.E)
 
-        show_window(self.resourceresults, 4)
+        self.view_references = tk.Button(self.bottombuttonframe, text='References',
+                                          command=lambda: controller.show_frame(ViewProjectReferences))
+        self.view_references.config(width=12, cursor='hand2')
+        self.view_references.grid(column=1, row=0)
+
+        show_window(self.resourceresults, 5)
 
     def show_results(self):
         results = self.create_table_values()
@@ -870,7 +878,7 @@ class LinkResources(tk.Frame):
 
 
     def link_project_resources(self):
-        data.link_to_resources(self.project_id,  self.resource_id,self.media_id)
+        data.link_to_resources(self.project_id, self.media_id,  self.resource_id)
         tkMessageBox.showinfo('Confirm', "Added item to\nproject bibliography!")
 
     def search_projects(self):
@@ -910,9 +918,7 @@ class Projects(tk.Frame):
         self.project_id = None
         self.old_project_type = ''
 
-
         # FRAMES
-
         self.main_frame = tk.LabelFrame(self, text='',borderwidth=4)
         self.main_frame.grid(column=0, row=0, columnspan=10, sticky=tk.W+tk.E+tk.N+tk.S)
 
@@ -990,7 +996,7 @@ class Projects(tk.Frame):
         self.scollprojects = tk.Scrollbar(self.bottomframe)
         self.scollprojects.grid(column=2, row=0, sticky=tk.N + tk.S)
 
-        self.project_list = ttk.Treeview(self.bottomframe, height=12,
+        self.project_list = ttk.Treeview(self.bottomframe, height=13,
                                          columns=('Name', 'Type','Description', 'Start date', 'End date'))
 
         self.scollprojects.configure(orient="vertical", command=self.project_list.yview)
@@ -1015,24 +1021,24 @@ class Projects(tk.Frame):
         self.treeview.bind('<ButtonRelease-1>', self.select_project)
 
         self.home = tk.Button(self.button_frame, text='Home', command=lambda: controller.show_frame(HomePage))
-        self.home.config(width=13)
+        self.home.config(height=2, width=13)
         self.home.grid(column=0, row=1, padx=5, sticky=tk.W)
 
         self.search_resources = tk.Button(self.button_frame, text='Search Resources',
                               command=lambda: controller.show_frame(SearchResource))
-        self.search_resources.config(width=13)
+        self.search_resources.config(height=2, width=13)
         self.search_resources.grid(column=1, row=1, padx=5, pady=2, sticky=tk.W)
 
 
         self.link = tk.Button(self.button_frame, text='Link Resources',
                               command=lambda: controller.show_frame(LinkResources))
-        self.link.config(width=13)
+        self.link.config(height=2,width=13)
         self.link.grid(column=2, row=1, padx=5, sticky=tk.W)
 
         self.delete_resource = tk.Button(self.button_frame, text='Delete Project',
                                           command=lambda: self.delete())
-        self.delete_resource.config(width=13)
-        self.delete_resource.grid(column=3, row=1, padx=5, pady=2, sticky=tk.E)
+        self.delete_resource.config(height=2,width=13)
+        self.delete_resource.grid(column=3, row=1, padx=5, sticky=tk.E)
 
         self.list_projects()
         self.update_widgets()
@@ -1196,33 +1202,33 @@ class AddMedia(tk.Frame):
         self.bottom_middleframe = tk.LabelFrame(self.mainframe, text='', borderwidth=3)
         self.bottom_middleframe.grid(column=0, row=4, columnspan=2, sticky=tk.W + tk.E)
 
-        # Home button
-        self.home = tk.Button(self.bottomleft, text='Home', command=lambda: controller.show_frame(HomePage))
-        self.home.config(width=15, cursor='hand2')
-        self.home.grid(column=0, row=2, padx=10, sticky=tk.W)
-
-        self.back_button = tk.Button(self.bottomleft, text='Back', command=lambda:controller.show_frame(AddResource))
-        self.back_button.config(width=15, cursor='hand2')
-        self.back_button.grid(column=1, row=2, padx=10, sticky=tk.W)
-
         # Save resource button
-        self.save_resource = tk.Button(self.center_frame3, text='Save',width=8, command=lambda: self.save_data())
+        self.save_resource = tk.Button(self.center_frame3, text='Save', width=8, command=lambda: self.save_data())
         self.save_resource.config(cursor='hand2')
-        self.save_resource.grid(column=6, row=0,  sticky=tk.E)
+        self.save_resource.grid(column=6, row=0, sticky=tk.E)
 
         self.clear_boxes = tk.Button(self.center_frame3, text='Clear', width=8, bg='white',
-                                        command=lambda: self.reset())
+                                     command=lambda: self.reset())
         self.clear_boxes.config(cursor='hand2')
-        self.clear_boxes.grid(column=4, row=0,padx=10, sticky=tk.E)
+        self.clear_boxes.grid(column=4, row=0, padx=10, sticky=tk.E)
 
         self.update_resource = tk.Button(self.center_frame3, text='Edit', bg='SlateGray1', width=8,
-                                        command=lambda: self.update())
+                                         command=lambda: self.update())
         self.update_resource.config(cursor='hand2')
         self.update_resource.grid(column=5, row=0, padx=10, sticky=tk.E)
 
-        self.delete_resource = tk.Button(self.bottomright, text='Delete', bg='gray64',width=15,
+        # Home button
+        self.home = tk.Button(self.bottomleft, text='Home', command=lambda: controller.show_frame(HomePage))
+        self.home.config(height=2,width=15, cursor='hand2')
+        self.home.grid(column=0, row=2, padx=10, pady=2, sticky=tk.W)
+
+        self.back_button = tk.Button(self.bottomleft, text='Back', command=lambda:controller.show_frame(AddResource))
+        self.back_button.config(height=2, width=15, cursor='hand2')
+        self.back_button.grid(column=1, row=2, padx=10, sticky=tk.W)
+
+        self.delete_resource = tk.Button(self.bottomright, text='Delete selected\nresource', bg='gray64',
                                          command=lambda: self.delete())
-        self.delete_resource.config(cursor='hand2')
+        self.delete_resource.config(height=2, width=15, cursor='hand2')
         self.delete_resource.grid(column=6, row=1, sticky=tk.W)
 
         self.create_values()
@@ -1343,7 +1349,7 @@ class AddMedia(tk.Frame):
         scrollwebdocs = tk.Scrollbar(self.bottom_middleframe)
         scrollwebdocs.grid(column=1, row=1, sticky=tk.N + tk.S + tk.W)
 
-        self.webdocs_list = ttk.Treeview(self.bottom_middleframe, height=12,
+        self.webdocs_list = ttk.Treeview(self.bottom_middleframe, height=13,
                                          columns= (col1, col2, col3, col4, col5, col6))
 
         scrollwebdocs.configure(orient="vertical", command=self.webdocs_list.yview)
@@ -1494,15 +1500,14 @@ class AddMedia(tk.Frame):
 
     def delete(self):
         media_name = self.box1L.get()
-
         message1 = "Delete " + self.current_media + " '" + media_name + "'?\nThis cannot be undone!"
         message2 = "'" + media_name + "' deleted."
 
         result = tkMessageBox.askokcancel("Delete?", message1, icon='warning')
-
         if result == True:
-            data.delete_website(self.document_id)
-            data.delete_resource_author(self.document_id, self.current_author, self.current_media)
+            lg.remove_website(self.document_id, self.current_author, self.current_media)
+            # data.delete_website(self.document_id)
+            # data.delete_resource_author(self.document_id, self.current_author, self.current_media)
             self.update_entry_widgets()
             self.update_windows()
             tkMessageBox.showinfo('Deleted', message2, icon='info')
@@ -1898,7 +1903,7 @@ class AddCourse(AddMedia):
         result = tkMessageBox.askokcancel("Delete?", message1, icon='warning')
 
         if result == True:
-            data.delete_course(self.document_id, self.current_author, self.current_media)
+            lg.remove_course(self.document_id, self.current_author, self.current_media)
             self.update_windows()
             tkMessageBox.showinfo('Deleted', message2, icon='info')
 
@@ -2014,7 +2019,7 @@ class AddInteractiveMedia(AddMedia):
         result = tkMessageBox.askokcancel("Delete?", message1, icon='warning')
 
         if result == True:
-            data.delete_interactive(self.document_id, self.current_author, self.current_media)
+            lg.remove_interactive(self.document_id, self.current_author, self.current_media)
             self.update_windows()
             tkMessageBox.showinfo('Deleted', message2, icon='info')
 
@@ -2203,7 +2208,7 @@ class AddImages(AddMedia):
         result = tkMessageBox.askokcancel("Delete?", message1, icon='warning')
 
         if result == True:
-            data.delete_image(self.document_id, self.current_author, self.current_media)
+            lg.remove_image(self.document_id, self.current_author, self.current_media)
             self.update_windows()
             self.copyright.set('?')
             tkMessageBox.showinfo('Deleted', message2, icon='info')
@@ -2315,7 +2320,6 @@ class AddVideo(AddMedia):
         self.update_windows()
         self.language.set('Select one')
 
-
     def select_document(self, event):
 
         self.save_resource.config(state='disabled')
@@ -2364,7 +2368,6 @@ class AddVideo(AddMedia):
             pass
 
     def update(self):
-
         data.delete_resource_author(self.document_id, self.current_author, self.current_media)
 
         lg.edit_video(self.document_id, self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(),
@@ -2386,7 +2389,7 @@ class AddVideo(AddMedia):
         result = tkMessageBox.askokcancel("Delete?", message1, icon='warning')
 
         if result == True:
-            data.delete_video(self.document_id, self.current_author, self.current_media)
+            lg.remove_video(self.document_id, self.current_author, self.current_media)
             self.update_windows()
             self.language.set('Select one')
             tkMessageBox.showinfo('Deleted', message2, icon='info')
@@ -2611,10 +2614,15 @@ class ViewProjectReferences(tk.Frame):
         self.export_txt.config(height=2,width=12)
         self.export_txt.grid(column=3, row=0)
 
+        self.link_references_button = tk.Button(self.buttonframe, text='Add additional\nreferences',
+                                command=lambda: controller.show_frame(LinkResources))
+        self.link_references_button.config(height=2, width=12)
+        self.link_references_button.grid(column=4, row=0)
+
         self.delete = tk.Button(self.buttonframe, text='Delete selected\nreference',
                                 command=lambda: self.delete_reference())
         self.delete.config(height=2,width=12)
-        self.delete.grid(column=4, row=0)
+        self.delete.grid(column=5, row=0)
 
         self.display_project()
         self.display_resources()
@@ -2768,7 +2776,6 @@ class ViewProjectReferences(tk.Frame):
             pass
 
         return self.resource_name, self.media_name
-
 
     def delete_reference(self):
         try:

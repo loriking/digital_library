@@ -44,6 +44,22 @@ def edit_audio(audio_id, title, author, duration, subject, program, date, url, m
 def delete_audio(audio_id, author, media):
     data.delete_audio_from_db(audio_id)
     data.delete_resource_author(audio_id, author, media)
+    print('Media = ', media)
+    print('Author = ', author)
+
+    # DELETES FROM PROJECT REFERENCES TABLE
+
+    media_id = data.get_resource_medium_id(media)
+
+    project_id = data.get_project_id(media_id, audio_id)
+    print('project id = ', project_id)
+
+    if len(project_id) > 0:
+        for i in range(len(project_id)):
+            print(project_id[i],  media_id, audio_id,)
+            data.delete_resources_reference(project_id[i], media_id, audio_id,)
+
+
 
 # BOOKS
 def add_text(title, author, year, pages, level, publisher, language, subject, medium):
@@ -95,6 +111,23 @@ def edit_text(text_id, title, author, year, pages, level, publisher, language, s
     data.update_text(text_id, title, year, pages, subject_id, publisher_id, language_id, media_id, level_id)
     data.add_resource_author(text_id, author_id, media_id)
 
+def delete_texts(resource_id, author, media):
+
+    data.delete_text(resource_id)
+
+    data.delete_resource_author(resource_id, author, media)
+
+    # DELETES FROM PROJECT REFERENCES TABLE
+
+    media_id = data.get_resource_medium_id(media)
+
+    project_id = data.get_project_id(resource_id, media_id)
+
+    if len(project_id) > 0:
+        for i in range(len(project_id)):
+            data.delete_resources_reference(project_id[i], media_id, resource_id)
+
+
 # COURSES
 def add_course(title, instructor, subject, duration, provider, url, notes, medium, level):
     data.add_author(instructor)
@@ -128,6 +161,18 @@ def edit_course(course_id, title, instructor, subject, duration_weeks, provider,
     data.update_course(course_id, title, subject_id, duration_weeks, provider_id, url, notes, media_id, level_id)
 
     data.add_resource_author(course_id, author_id, media_id)
+
+def remove_course(resource_id, author, media):
+    data.delete_course(resource_id)
+    data.delete_resource_author(resource_id, author, media)
+
+    # DELETES FROM PROJECT REFERENCES TABLE
+    media_id = data.get_resource_medium_id(media)
+    project_id = data.get_project_id(resource_id, media_id)
+
+    if len(project_id) > 0:
+        for i in range(len(project_id)):
+            data.delete_resources_reference(project_id[i], media_id, resource_id)
 
 # IMAGES
 def get_image_type(status):
@@ -177,6 +222,20 @@ def edit_image_entry(image_id, title, author, date_created, date_accessed, subje
     data.update_image(image_id, title, date_created, date_accessed, url,  subject_id, copyright_id, media_id)
     data.add_resource_author(image_id, author_id, media_id)
 
+def remove_image(resource_id, author, media):
+    data.delete_image(resource_id)
+    data.delete_resource_author(resource_id, author, media)
+
+    # DELETES FROM PROJECT REFERENCES TABLE
+
+    media_id = data.get_resource_medium_id(media)
+    project_id = data.get_project_id(resource_id, media_id)
+
+    if len(project_id) > 0:
+        for i in range(len(project_id)):
+            data.delete_resources_reference(project_id[i], media_id, resource_id)
+
+
 # INTERACTIVE
 def get_interactive_name(media_button_value):
     if media_button_value == 1:
@@ -224,6 +283,19 @@ def edit_interactive_media(im_id,title, author, year, subject, platform, engine,
     data.update_interactive(im_id, title, year, subject_id, platform_id, engine_id, version, media_id)
     data.add_resource_author(im_id, author_id, media_id)
 
+def remove_interactive(resource_id, author, media):
+    data.delete_interactive(resource_id)
+
+    data.delete_resource_author(resource_id, author, media)
+    # DELETES FROM PROJECT REFERENCES TABLE
+
+    media_id = data.get_resource_medium_id(media)
+
+    project_id = data.get_project_id(resource_id, media_id)
+
+    if len(project_id) > 0:
+        for i in range(len(project_id)):
+            data.delete_resources_reference(project_id[i], media_id, resource_id)
 
 # VIDEO
 def add_video(title, author, duration,  subject, producer, year, url, medium, language):
@@ -255,6 +327,18 @@ def edit_video(video_id, title, author, duration, subject, producer, year, url, 
     data.update_video(video_id, title, duration, subject_id,  producer, year, url, media_id, language_id)
     data.add_resource_author(video_id, author_id, media_id)
 
+def remove_video(resource_id, author, media):
+    data.delete_video(resource_id)
+    data.delete_resource_author(resource_id, author, media)
+
+    # DELETES FROM PROJECT REFERENCES TABLE
+    media_id = data.get_resource_medium_id(media)
+    project_id = data.get_project_id(resource_id, media_id)
+
+    if len(project_id) > 0:
+        for i in range(len(project_id)):
+            data.delete_resources_reference(project_id[i], media_id, resource_id)
+
 # WEBSITES
 def add_website(title, author, subject, url, date_created, date_accessed, notes, medium):
 
@@ -282,13 +366,19 @@ def edit_website(website_id, title, author, subject, url, date_created, date_acc
     data.update_website(website_id, title, subject_id, url, date_created, date_accessed, notes, media_id)
     data.add_resource_author(website_id, author_id, media_id)
 
-def remove_website(title):
-    resource =  data.get_website_details(title)
-    resource_id = resource[0]
+def remove_website(resource_id,author, media ):
+    # resource =  data.get_website_details(title)
+    # resource_id = resource[0]
     data.delete_website(resource_id)
+    data.delete_resource_author(resource_id, author, media)
 
-    #data.delete_resource_author(resource_id, author, media)
-    pass
+    # DELETES FROM PROJECT REFERENCES TABLE
+    media_id = data.get_resource_medium_id(media)
+    project_id = data.get_project_id(resource_id, media_id)
+
+    if len(project_id) > 0:
+        for i in range(len(project_id)):
+            data.delete_resources_reference(project_id[i], media_id, resource_id)
 
 
 # PROJECTS
@@ -318,7 +408,7 @@ def view_project_references(project_id):
     items = []
     references = data.get_project_references(project_id)
     for item in references:
-        results = data.get_reference_details(item[0], item[1] )
+        results = data.get_reference_details(item[0],item[1] )
 
         for reference in results:
             items.append(reference)
@@ -355,11 +445,8 @@ def export_to_csv(project_id):
         writer.writerow(['Type', 'Title', 'Author', 'Topic'])
         writer.writerows(items)
 
-
-
-
 def export_to_txt(project_id):
-    output = '{:<10} {:<60} {:<30} {:<45}'
+    output = '{:<15} {:<60} {:<30} {:<45}'
 
     project = data.get_project(project_id)
     save_as = project[0]

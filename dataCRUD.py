@@ -399,10 +399,8 @@ def resources_by_language(language):
               WHERE language = ?''', (language,))
     return c. fetchall()
 
-def delete_text(resource_id, author, media):
+def delete_text(resource_id):
     c.execute('''DELETE FROM texts WHERE texts.ID = ?''', (resource_id,))
-
-    delete_resource_author(resource_id, author, media)
     db.commit()
 
 # Web doc
@@ -572,12 +570,8 @@ def update_video(video_id, title, duration, subject_id,  producer, year, url, me
               (title, duration, subject_id, producer, year, url, media_id, language_id, video_id))
     db.commit()
 
-def delete_video(resource_id, author, media):
-
+def delete_video(resource_id):
     c.execute('''DELETE FROM video WHERE video.ID = ?''', (resource_id,))
-
-    delete_resource_author(resource_id, author, media)
-
     db.commit()
 
 # courses
@@ -636,10 +630,8 @@ def update_course(course_id, title, subject_id, duration_weeks, provider_id, url
 
     db.commit()
 
-def delete_course(resource_id, author, media):
+def delete_course(resource_id):
     c.execute('''DELETE FROM courses WHERE courses.ID = ?''', (resource_id,))
-
-    delete_resource_author(resource_id, author, media)
     db.commit()
 
 # interactive media
@@ -697,10 +689,8 @@ def update_interactive(interactiveID, title, year, subject_id, platform_id, engi
 
     db.commit()
 
-def delete_interactive(resource_id, author, media):
+def delete_interactive(resource_id):
     c.execute('''DELETE FROM interactive_media WHERE interactive_media.ID = ?''', (resource_id,))
-
-    delete_resource_author(resource_id, author, media)
     db.commit()
 
 # images
@@ -753,10 +743,8 @@ def update_image(resource_id, title, date_created, date_accessed, url, subject_i
               (title, date_created, date_accessed,  url, subject_id, copyright_id, media_id, resource_id))
     db.commit()
 
-def delete_image(resource_id, author, media):
+def delete_image(resource_id):
     c.execute('''DELETE FROM images WHERE images.ID = ?''', (resource_id,))
-
-    delete_resource_author(resource_id, author, media)
     db.commit()
 
 # PROJECT Category CRUD
@@ -817,9 +805,9 @@ def add_project_to_db(project_name, project_category_id, description, date_start
 
 def get_projectID(project_name):
     """ Returns the ID of a given project """
-
     c.execute('''SELECT ID FROM projects WHERE project_name = ?''', (project_name,))
     return c.fetchone()
+
 
 def list_projects():
     """ :return list of projects """
@@ -832,8 +820,7 @@ def list_projects():
 
 
 def get_project(projectID):
-
-    c.execute('''SELECT project_name, project_category_id, description, date_start, date_end
+    c.execute('''SELECT project_name, project_category.category, description, date_start, date_end
                 FROM projects JOIN project_category
                 ON projects.project_category_id = project_category.ID
                 WHERE projects.ID = ? ''', (projectID,))
@@ -858,17 +845,17 @@ def delete_project(projectID):
     c.execute(''' DELETE from projects WHERE projects.ID = ?''', (projectID,))
     db.commit()
 
-def link_to_resources(projectID,  resourceID, mediaID):
-    c.execute('''INSERT OR IGNORE INTO project_references(projectID, resourceID,  mediaID) 
+def link_to_resources(projectID,  mediaID, resourceID):
+    c.execute('''INSERT OR IGNORE INTO project_references(projectID, mediaID, resourceID) 
                     VALUES(?,?,?)''',
-              (projectID, resourceID, mediaID))
+              (projectID, mediaID, resourceID))
 
     db.commit()
 
 
-def delete_resources_reference(projectID,  resourceID, mediaID):
-    c.execute('''DELETE FROM project_references WHERE projectID = ? AND resourceID = ? AND  mediaID = ?''',
-              (projectID, resourceID, mediaID))
+def delete_resources_reference(projectID,  mediaID, resourceID):
+    c.execute('''DELETE FROM project_references WHERE projectID = ? AND mediaID = ?  AND resourceID = ?''',
+              (projectID, mediaID, resourceID))
     db.commit()
 
 # SEARCHES
@@ -926,8 +913,6 @@ def find_courses(search_term):
 
 def find_audio(search_term):
     search_term = "%" + search_term + "%"
-    # RESULTS WANTED: 'Title', 'Artist', 'Year', 'Type', 'Program', 'Language'
-
     c.execute('''SELECT audio.title, authors.name, audio.date, resource_medium.medium, 
                         languages.language, audio.program
                     FROM audio JOIN  resource_medium JOIN authors 
@@ -941,14 +926,11 @@ def find_audio(search_term):
                     OR authors.name LIKE ?
                     ORDER BY resource_medium.medium''',
               (search_term, search_term))
-
     return c.fetchall()
 
 
 def find_video(search_term):
     search_term = "%" + search_term + "%"
-    # RESULTS WANTED: 'Title', 'Author', 'Date', 'Length', 'Type', 'Subject'
-
     c.execute('''SELECT video.title, authors.name, video.year, video.duration, resource_medium.medium, 
                         subjects.subject
                     FROM video JOIN resource_medium JOIN authors 
@@ -963,13 +945,11 @@ def find_video(search_term):
                     OR subjects.subject LIKE ?
                     ORDER BY resource_medium.medium''',
               (search_term, search_term,  search_term))
-
     return c.fetchall()
 
 
 def find_interactive(search_term):
     search_term = "%" + search_term + "%"
-
     c.execute('''SELECT interactive_media.title, authors.name, year, 
                         platform.name, game_engine.name, resource_medium.medium
                         
@@ -981,20 +961,16 @@ def find_interactive(search_term):
                         AND interactive_media.mediaID = resource_author.mediaID
                         AND interactive_media.engineID =game_engine.ID
                         AND interactive_media.platformID = platform.ID
-    
                         WHERE interactive_media.title LIKE ?
                         OR authors.name LIKE ?
                         OR game_engine.name LIKE ?
                         OR platform.name LIKE ?
                         ORDER BY resource_medium.medium''',
-
               (search_term, search_term, search_term, search_term))
-
     return c.fetchall()
 
 
 def find_images(search_term):
-    #'Title', 'Author', 'Date', 'Dimensions', 'Type', 'Copywrite'
     search_term = "%" + search_term + "%"
     c.execute('''SELECT images.title, authors.name, images.date_created,  images.date_accessed, resource_medium.medium,
                          copyright.status
@@ -1011,8 +987,8 @@ def find_images(search_term):
               (search_term, search_term, search_term))
     return c.fetchall()
 
+
 def find_web(search_term):
-    # RESULTS DESIRED 'Title', 'Author', 'Created', 'Accessed', 'Type', 'Subject'
     search_term = "%" + search_term + "%"
     c.execute('''SELECT websites.title, authors.name, websites.date_created,
                             websites.date_accessed, resource_medium.medium, subjects.subject
@@ -1028,7 +1004,6 @@ def find_web(search_term):
                     OR subjects.subject LIKE ?
                     OR websites.notes LIKE ?''',
               (search_term, search_term, search_term, search_term))
-
     return c.fetchall()
 
 
@@ -1064,8 +1039,8 @@ def get_text(textID):
                 AND texts.mediaID = resource_author.mediaID
                 AND texts.subjectID = subjects.ID
                 WHERE texts.ID = ?''',(textID,))
-
     return c.fetchall()
+
 
 def get_full_text(textID):
     c.execute('''SELECT texts.title, authors.name,  texts.year, texts.pages, 
@@ -1083,7 +1058,6 @@ def get_full_text(textID):
                 AND texts.mediaID = resource_author.mediaID
                 AND authors.ID = resource_author.authorID
                 WHERE texts.ID = ?''',(textID,))
-
     return c.fetchall()
 
 def get_course(courseID):
@@ -1097,8 +1071,8 @@ def get_course(courseID):
                 AND courses.subjectID = subjects.ID
                 AND courses.platformID = publishers.ID
                 WHERE courses.ID = ?''',(courseID,))
-
     return c.fetchall()
+
 
 def get_audio(audio_id):
     c.execute('''SELECT audio.title, authors.name, audio.year, resource_medium.medium, 
@@ -1112,8 +1086,8 @@ def get_audio(audio_id):
                     AND audio.publisherID = publishers.ID
                     AND audio.languageID = languages.ID
                     WHERE audio.ID = ?''', (audio_id,))
-
     return c.fetchall()
+
 
 def get_video(video_id):
     c.execute('''SELECT video.title, authors.name, video.year, resource_medium.medium, 
@@ -1127,8 +1101,8 @@ def get_video(video_id):
                     AND video.publisherID = publishers.ID
                     AND video.languageID = languages.ID
                     WHERE video.ID = ?''', (video_id,))
-
     return c.fetchall()
+
 
 def get_interactive(interactiveID):
     c.execute('''SELECT interactive_media.title, authors.name, subjects.subject,
@@ -1143,8 +1117,8 @@ def get_interactive(interactiveID):
                         AND interactive_media.engineID = publishers.ID
                         AND interactive_media.genreID = subjects.ID
                         WHERE interactive_media.ID = ?''', (interactiveID,))
-
     return c.fetchall()
+
 
 def get_image(imageID):
     c.execute('''SELECT images.title, authors.name, resource_medium.medium,
@@ -1157,8 +1131,8 @@ def get_image(imageID):
                     WHERE images.ID = ?''', (imageID,))
     return c.fetchall()
 
-def get_website(websiteID):
 
+def get_website(websiteID):
     c.execute('''SELECT websites.title, authors.name, subjects.subject,  websites.url, websites.date_created,  
                         websites.date_accessed, websites.notes,  resource_medium.medium
                     FROM websites JOIN resource_medium JOIN authors JOIN resource_author JOIN subjects
@@ -1169,6 +1143,7 @@ def get_website(websiteID):
                     AND websites.subjectID = subjects.ID
                     WHERE websites.ID = ?''', (websiteID,))
     return c.fetchone()
+
 
 def update_media(websiteID = None, title=None, creation_date=None, subject=None, website_name=None,
                  url=None, access_date=None,notes=None, medium=None):
@@ -1184,6 +1159,7 @@ def update_media(websiteID = None, title=None, creation_date=None, subject=None,
                                   notes, medium, subjectID, websiteID,))
     db.commit()
 
+
 def get_project_references(project_id):
     c.execute('SELECT resourceID, mediaID FROM project_references WHERE projectID = ?', (project_id,))
     return  c.fetchall()
@@ -1194,7 +1170,11 @@ def get_reference_details(resource_id, media_id ):
                         WHERE ID = ? AND mediaID = ?''', (resource_id, media_id))
     return c.fetchall()
 
+def get_project_id(media_id, resource_id):
+    c.execute('SELECT projectID FROM project_references WHERE mediaID = ? AND resourceID = ?', (media_id, resource_id))
 
+    project_ids = [i[0] for i in c.fetchall()]
+    return project_ids
 
 """
 def init_db(filename=None):
