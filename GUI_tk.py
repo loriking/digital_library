@@ -34,12 +34,12 @@ class HomePage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
-        self.addeditproject_img = tk.PhotoImage(file="project.png")
-        self.addmedia_img= tk.PhotoImage(file="add.png")
-        self.link_img = tk.PhotoImage(file="linkresources.png")
-        self.list_img = tk.PhotoImage(file="listresources.png")
-        self.search_img = tk.PhotoImage(file="search.png")
-        self.about_img = tk.PhotoImage(file="about.png")
+        self.addeditproject_img = tk.PhotoImage(file='./images/project.png')
+        self.addmedia_img= tk.PhotoImage(file='./images/add.png')
+        self.link_img = tk.PhotoImage(file='./images/linkresources.png')
+        self.list_img = tk.PhotoImage(file='./images/listresources.png')
+        self.search_img = tk.PhotoImage(file='./images/search.png')
+        self.about_img = tk.PhotoImage(file='./images/about.png')
 
         self.topframe = tk.LabelFrame(self, text='', borderwidth=0)
         self.topframe.pack(expand=tk.TRUE, fill=tk.X)
@@ -85,15 +85,17 @@ class HomePage(tk.Frame):
 class AddResource(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        self.audio_img = tk.PhotoImage(file="headphones.png")
-        self.book_img = tk.PhotoImage(file="open-book.png")
-        self.course_img = tk.PhotoImage(file="online-course.png")
-        self.img_img = tk.PhotoImage(file="picture.png")
-        self.games_img = tk.PhotoImage(file="control.png")
-        self.video_img = tk.PhotoImage(file="video-camera.png")
-        self.web_img = tk.PhotoImage(file="internet.png")
-        self.home_img = tk.PhotoImage(file="home1.png")
-        self.browse_img = tk.PhotoImage(file="browse.png")
+        self.controller = controller
+
+        self.audio_img = tk.PhotoImage(file='./images/headphones.png')
+        self.book_img = tk.PhotoImage(file='./images/open-book.png')
+        self.course_img = tk.PhotoImage(file='./images/online-course.png')
+        self.img_img = tk.PhotoImage(file='./images/picture.png')
+        self.games_img = tk.PhotoImage(file='./images/control.png')
+        self.video_img = tk.PhotoImage(file='./images/video-camera.png')
+        self.web_img = tk.PhotoImage(file='./images/internet.png')
+        self.home_img = tk.PhotoImage(file='./images/home1.png')
+        self.browse_img = tk.PhotoImage(file='./images/browse.png')
 
         self.topframe = tk.LabelFrame(self, text='', borderwidth=0)
         self.topframe.pack(expand=tk.TRUE)
@@ -154,6 +156,8 @@ class AddResource(tk.Frame):
 class AddText(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
+
+        self.controller = controller
 
         self.title = tk.StringVar()
         self.author = tk.StringVar()
@@ -218,11 +222,9 @@ class AddText(tk.Frame):
         bottomframe.grid(column=0, row=3, pady=5)
 
         buttonsframe = tk.LabelFrame(self, text="", borderwidth=0)
-        buttonsframe.grid(column=0, row=4, sticky=tk.W)
-
+        buttonsframe.grid(column=0, row=4)#, sticky=tk.W)
 
         # Top left frame
-
         self.title_label=tk.Label(topleftframe, text='Title')
         self.title_entry=ttk.Entry(topleftframe, width=61, textvariable =self.title)
 
@@ -318,7 +320,7 @@ class AddText(tk.Frame):
         self.scrollresources = tk.Scrollbar(bottomframe)
         self.scrollresources.grid(column=1,row=1, sticky=tk.N+tk.S+tk.W)
 
-        self.resource_list = ttk.Treeview(bottomframe, height=12,
+        self.resource_list = ttk.Treeview(bottomframe, height=14,
                                          columns=('Title', 'Author','Pages',
                                                   'Year','Publisher',
                                                   'Language', 'Notes'))
@@ -355,23 +357,25 @@ class AddText(tk.Frame):
         self.clear_button.config(width=12, cursor='hand2')
         self.clear_button.grid(column=1, row=0, padx=5) # 3,5
 
-        self.home=tk.Button(buttonsframe, text='Home', command=lambda: controller.show_frame(HomePage))
-        self.home.config(height=2,width=15, cursor='hand2')
-        self.home.grid(column=1, row=0)#, padx=10)#, sticky=tk.W+tk.E)
+        self.home=tk.Button(buttonsframe, text='Home',
+                            command=lambda: controller.show_frame(HomePage))
+        self.home.config(height=2, width=13, cursor='hand2')
+        self.home.grid(column=1, row=0, padx=10)#, sticky=tk.W+tk.E)
 
-        self.back_button = tk.Button(buttonsframe, text='Back', command=lambda: controller.show_frame(AddResource))
-        self.back_button.config(height=2,width=15, cursor='hand2')
-        self.back_button.grid(column=0, row=0)#, padx=10)#, sticky=tk.W)
+        self.back_button = tk.Button(buttonsframe, text='Back',
+                                     command=lambda: controller.show_frame(AddResource))
+        self.back_button.config(height=2, width=13, cursor='hand2')
+        self.back_button.grid(column=0, row=0, padx=10)
 
-        self.searchresource = tk.Button(buttonsframe, text='Search Resources',
-                                     command=lambda: controller.show_frame(SearchResource))
-        self.searchresource.config(height=2,width=15, cursor='hand2')
-        self.searchresource.grid(column=2, row=0)#, padx=10, sticky=tk.E)
+        self.searchresource = tk.Button(buttonsframe, text='Browse\nResources',
+                                        command=lambda: controller.show_frame(SearchResource))
+        self.searchresource.config(height=2, width=13, cursor='hand2')
+        self.searchresource.grid(column=2, row=0, padx=10)
 
-        self.delete_button = tk.Button(buttonsframe, text='Delete Text', bg='gray64', command=lambda: self.delete_text())
-        self.delete_button.config(height=2,width=15, cursor='hand2')
-        self.delete_button.grid(column=3, row=0)#, padx=10, sticky=tk.W)
-
+        self.delete_button = tk.Button(buttonsframe, text='Delete\nSelection',
+                                       command=lambda: self.delete_text())
+        self.delete_button.config(height=2, width=13, cursor='hand2')
+        self.delete_button.grid(column=3, row=0, padx=10)
 
     def list_resources(self):
         for i in self.resource_list.get_children():
@@ -593,6 +597,8 @@ class LinkResources(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
+        self.controller = controller
+
         self.project_id = None
         self.resource_id = None
         self.media_id = None
@@ -627,30 +633,30 @@ class LinkResources(tk.Frame):
         self.resourceresults.grid(column=0, row=5, columnspan=40, sticky=tk.W)
 
         self.bottombuttonframe = tk.LabelFrame(self.mainframe, text='', borderwidth=0)
-        self.bottombuttonframe.grid(column=0, row=6, columnspan=4, sticky=tk.E)
+        self.bottombuttonframe.grid(column=0, row=6, columnspan=3, sticky=tk.W)
 
         # TOP LEFT FRAME
 
-        self.titlebox_label = tk.Label(self.projectframe, text='Enter search keyword')
+        self.titlebox_label = tk.Label(self.projectframe, text='Enter keyword or press "Search" to list all')
         self.titlebox_label.grid(column=0, row=0, sticky=tk.W)
 
-        self.titlebox = tk.Entry(self.projectframe, width=32, textvariable=self.project_title)
-        self.titlebox.grid(column=1, row=0, sticky=tk.W)
+        self.titlebox = tk.Entry(self.projectframe, width=50, textvariable=self.project_title)
+        self.titlebox.grid(rowspan=2, column=1, row=0, sticky=tk.W)
 
         self.searchbutton = ttk.Button(self.projectframe, text='Search', command=lambda: self.search_projects())
         self.searchbutton.config(width=10, cursor='hand2')
         self.searchbutton.grid(column=2, row=0, padx=5, pady=5, sticky=tk.E)
 
-        # TOP RIGHT FRAME PROJECT SEARCH RESULTS:
-        self.clearbutton = ttk.Button(self.resultsframe, text='Clear project', command=lambda: self.clear_selection())
-        self.clearbutton.config( cursor='hand2')
-        self.clearbutton.grid(column=0, row=10, pady=5, sticky=tk.E)
+        self.clearbutton = ttk.Button(self.projectframe, text='Clear projects', command=lambda: self.clear_selection())
+        self.clearbutton.config(cursor='hand2')
+        self.clearbutton.grid(column=3, row=0, padx=5, pady=5, sticky=tk.E)
 
-        # Project results
+        # TOP RIGHT FRAME PROJECT SEARCH RESULTS:
+
         self.scrollresults = tk.Scrollbar(self.resultsframe)
         self.scrollresults.grid(column=1, row=4, sticky=tk.N +tk.S + tk.W)
 
-        self.project_list = ttk.Treeview(self.resultsframe, height=2, selectmode='browse',
+        self.project_list = ttk.Treeview(self.resultsframe, height=4, selectmode='browse',
                                          columns=('Name', 'Type', 'Description', 'Start date', 'End date'))
 
         self.scrollresults.configure(orient="vertical", command=self.project_list.yview)
@@ -688,7 +694,7 @@ class LinkResources(tk.Frame):
 
         self.subjectbox_label = tk.Label(self.searchresourceframe, text='Enter search keyword')
         self.subjectbox_label.grid(column=0, row=0, sticky=tk.W)
-        self.subjectbox = tk.Entry(self.searchresourceframe, width=32, textvariable=self.resource_subject)
+        self.subjectbox = tk.Entry(self.searchresourceframe, width=40, textvariable=self.resource_subject)
         self.subjectbox.grid(column=1, row=0, sticky=tk.W)
 
         self.searchbutton = ttk.Button(self.media_button_frame, text='Search',
@@ -727,15 +733,20 @@ class LinkResources(tk.Frame):
 
         # BOTTOM RIGHT FRAME
         self.home = tk.Button(self.bottombuttonframe, text='Home', command=lambda: controller.show_frame(HomePage))
-        self.home.config(width=12, cursor='hand2')
-        self.home.grid(column=0, row=0)  # , padx=20, sticky=tk.E)
+        self.home.config(height=2, width=12, cursor='hand2')
+        self.home.grid(column=0, row=0)
 
         self.view_references = tk.Button(self.bottombuttonframe, text='References',
                                           command=lambda: controller.show_frame(ViewProjectReferences))
-        self.view_references.config(width=12, cursor='hand2')
+        self.view_references.config(height=2, width=12, cursor='hand2')
         self.view_references.grid(column=1, row=0)
 
-        show_window(self.resourceresults, 5)
+        self.go_to_resources = tk.Button(self.bottombuttonframe, text='Add to project\nreference',
+                                          command=lambda: self.link_project_resources())
+        self.go_to_resources.config(height=2, width=12, cursor='hand2')
+        self.go_to_resources.grid(column=2, row=0, padx=20, sticky=tk.E)
+
+        show_window(self.resourceresults, 8)
 
     def show_results(self):
         results = self.create_table_values()
@@ -745,7 +756,7 @@ class LinkResources(tk.Frame):
         self.scollresources = ttk.Scrollbar(self.resourceresults)
         self.scollresources.grid(column=2, row=2, sticky=tk.N + tk.S + tk.W)
 
-        self.resource_list = ttk.Treeview(self.resourceresults, height=4, selectmode='browse',
+        self.resource_list = ttk.Treeview(self.resourceresults, height=8, selectmode='browse',
                                           columns=column_names )
 
         self.scollresources.configure(orient="vertical", command=self.resource_list.yview)
@@ -770,11 +781,6 @@ class LinkResources(tk.Frame):
         self.resource_list.heading('5', anchor='w', text=column_names[5])
         self.treeview_resources = self.resource_list
         self.treeview_resources.bind('<ButtonRelease-1>', self.select_resources)
-
-        self.go_to_resources = ttk.Button(self.resourceresults, text='Link resource(s)',
-                                          command=lambda: self.link_project_resources())
-        self.go_to_resources.config(cursor='hand2')
-        self.go_to_resources.grid(column=0, row=4, sticky=tk.E)
 
         self.search_resources(resources)
 
@@ -818,10 +824,8 @@ class LinkResources(tk.Frame):
 
         for item in self.treeview_resources.selection():
             item_text = self.treeview_resources.item(item)
-            print('Item =', item_text)
 
             self.resource_name = item_text['values'][0]
-            print(self.resource_name)
 
             if self.media_type.get() == 1:
                 media_name = item_text['values'][2]
@@ -902,6 +906,8 @@ class Projects(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
+        self.controller = controller
+
         # VARIABLES
 
         self.project_name = tk.StringVar()
@@ -935,7 +941,7 @@ class Projects(tk.Frame):
         self.bottomframe.grid(column=0, row=5, columnspan=4)
 
         self.button_frame = tk.LabelFrame(self, text='', borderwidth=0)
-        self.button_frame.grid(column=0, row=6, columnspan=2, sticky=tk.W)
+        self.button_frame.grid(column=0, row=6, columnspan=2)#, sticky=tk.W+tk.E)
 
         # Top Left frame
 
@@ -996,7 +1002,7 @@ class Projects(tk.Frame):
         self.scollprojects = tk.Scrollbar(self.bottomframe)
         self.scollprojects.grid(column=2, row=0, sticky=tk.N + tk.S)
 
-        self.project_list = ttk.Treeview(self.bottomframe, height=13,
+        self.project_list = ttk.Treeview(self.bottomframe, height=16,
                                          columns=('Name', 'Type','Description', 'Start date', 'End date'))
 
         self.scollprojects.configure(orient="vertical", command=self.project_list.yview)
@@ -1020,25 +1026,26 @@ class Projects(tk.Frame):
         self.treeview = self.project_list
         self.treeview.bind('<ButtonRelease-1>', self.select_project)
 
-        self.home = tk.Button(self.button_frame, text='Home', command=lambda: controller.show_frame(HomePage))
-        self.home.config(height=2, width=13)
-        self.home.grid(column=0, row=1, padx=5, sticky=tk.W)
+        self.home = tk.Button(self.button_frame, text='Home',
+                              command=lambda: controller.show_frame(HomePage))
+        self.home.config(height=2, width=13, cursor='hand2')
+        self.home.grid(column=0, row=1, padx=5)#, sticky=tk.W)
 
-        self.search_resources = tk.Button(self.button_frame, text='Search Resources',
-                              command=lambda: controller.show_frame(SearchResource))
-        self.search_resources.config(height=2, width=13)
-        self.search_resources.grid(column=1, row=1, padx=5, pady=2, sticky=tk.W)
+        self.search_resources = tk.Button(self.button_frame, text='Browse\nResources',
+                                          command=lambda: controller.show_frame(SearchResource))
+        self.search_resources.config(height=2, width=13, cursor='hand2')
+        self.search_resources.grid(column=1, row=1, padx=5, pady=2)#, sticky=tk.W)
 
 
-        self.link = tk.Button(self.button_frame, text='Link Resources',
+        self.link = tk.Button(self.button_frame, text='Connect\nResources',
                               command=lambda: controller.show_frame(LinkResources))
-        self.link.config(height=2,width=13)
-        self.link.grid(column=2, row=1, padx=5, sticky=tk.W)
+        self.link.config(height=2, width=13, cursor='hand2')
+        self.link.grid(column=2, row=1, padx=5)#, sticky=tk.W)
 
         self.delete_resource = tk.Button(self.button_frame, text='Delete Project',
                                           command=lambda: self.delete())
-        self.delete_resource.config(height=2,width=13)
-        self.delete_resource.grid(column=3, row=1, padx=5, sticky=tk.E)
+        self.delete_resource.config(height=2, width=13, cursor='hand2')
+        self.delete_resource.grid(column=3, row=1, padx=5)#, sticky=tk.E)
 
         self.list_projects()
         self.update_widgets()
@@ -1143,6 +1150,8 @@ class AddMedia(tk.Frame):
     def __init__(self, parent, controller, *args):
         tk.Frame.__init__(self, parent)
 
+        self.controller = controller
+
         self.table = data.list_websites()
 
         self.box1L = tk.StringVar()
@@ -1218,18 +1227,25 @@ class AddMedia(tk.Frame):
         self.update_resource.grid(column=5, row=0, padx=10, sticky=tk.E)
 
         # Home button
-        self.home = tk.Button(self.bottomleft, text='Home', command=lambda: controller.show_frame(HomePage))
-        self.home.config(height=2,width=15, cursor='hand2')
-        self.home.grid(column=0, row=2, padx=10, pady=2, sticky=tk.W)
+        self.back_button = tk.Button(self.bottomleft, text='Back',
+                                     command=lambda:controller.show_frame(AddResource))
+        self.back_button.config(height=2, width=13, cursor='hand2')
+        self.back_button.grid(column=0, row=2, padx=10)#, sticky=tk.W)
 
-        self.back_button = tk.Button(self.bottomleft, text='Back', command=lambda:controller.show_frame(AddResource))
-        self.back_button.config(height=2, width=15, cursor='hand2')
-        self.back_button.grid(column=1, row=2, padx=10, sticky=tk.W)
+        self.home = tk.Button(self.bottomleft, text='Home',
+                              command=lambda: controller.show_frame(HomePage))
+        self.home.config(height=2, width=13,cursor='hand2')
+        self.home.grid(column=1, row=2, padx=10)
 
-        self.delete_resource = tk.Button(self.bottomright, text='Delete selected\nresource', bg='gray64',
-                                         command=lambda: self.delete())
-        self.delete_resource.config(height=2, width=15, cursor='hand2')
-        self.delete_resource.grid(column=6, row=1, sticky=tk.W)
+        self.search_resources = tk.Button(self.bottomleft, text='Browse\nResources',
+                              command=lambda: controller.show_frame(SearchResource))
+        self.search_resources.config(height=2, width=13, cursor='hand2')
+        self.search_resources.grid(column=2, row=2, padx=10)
+
+
+        self.delete_resource = tk.Button(self.bottomright, text='Delete\nSelected', command=lambda: self.delete())
+        self.delete_resource.config(height=2, width=13, cursor='hand2')
+        self.delete_resource.grid(column=6, row=1, padx=10)
 
         self.create_values()
 
@@ -1349,7 +1365,7 @@ class AddMedia(tk.Frame):
         scrollwebdocs = tk.Scrollbar(self.bottom_middleframe)
         scrollwebdocs.grid(column=1, row=1, sticky=tk.N + tk.S + tk.W)
 
-        self.webdocs_list = ttk.Treeview(self.bottom_middleframe, height=13,
+        self.webdocs_list = ttk.Treeview(self.bottom_middleframe, height=14,
                                          columns= (col1, col2, col3, col4, col5, col6))
 
         scrollwebdocs.configure(orient="vertical", command=self.webdocs_list.yview)
@@ -1516,6 +1532,8 @@ class AddMedia(tk.Frame):
 class AddAudio(AddMedia):
     def __init__(self, parent, controller):
         AddMedia.__init__(self, parent, controller)
+
+        self.controller = controller
 
         self.table = data.list_audio()
         self.document_id = None
@@ -1750,6 +1768,8 @@ class AddCourse(AddMedia):
     def __init__(self, parent, controller):
         AddMedia.__init__(self, parent, controller)
 
+        self.controller = controller
+
         self.level = tk.StringVar()
         self.level_options = data.list_levels()
         self.level.set('Select one')
@@ -1911,6 +1931,8 @@ class AddInteractiveMedia(AddMedia):
     def __init__(self, parent, controller):
         AddMedia.__init__(self, parent, controller)
 
+        self.controller = controller
+
         self.table = data.list_interactive()
         self.document_id = None
         self.current_author = ''
@@ -2026,6 +2048,8 @@ class AddInteractiveMedia(AddMedia):
 class AddImages(AddMedia):
     def __init__(self, parent, controller):
         AddMedia.__init__(self, parent, controller)
+
+        self.controller = controller
 
         self.search_table = data.list_images()
         self.document_id = None
@@ -2217,6 +2241,8 @@ class AddVideo(AddMedia):
     def __init__(self, parent, controller):
         AddMedia.__init__(self, parent, controller)
 
+        self.controller = controller
+
         self.table = data.list_video()
         self.document_id = None
         self.current_author = ''
@@ -2398,27 +2424,29 @@ class SearchResource(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
+        self.controller = controller
+
         self.search_bar = tk.StringVar()
         self.media_type = tk.IntVar()
         self.media_type.set(8)
         self.column_names = ()
         self.resources = None
 
-        self.mainframe = tk.LabelFrame(self, text='', borderwidth=4)
+        self.mainframe = tk.LabelFrame(self, text='', borderwidth=3)
         self.mainframe.grid(column=0, row=1)
 
         self.top = tk.LabelFrame(self.mainframe, text="", borderwidth=0)
-        self.topmiddle = tk.LabelFrame(self.mainframe, text="", borderwidth=3)
+        self.topmiddle = tk.LabelFrame(self.mainframe, text="", borderwidth=1)
         self.topright = tk.LabelFrame(self.mainframe, text='', borderwidth=0)
 
-        self.top.grid(column=0, row=2, sticky=tk.N + tk.S + tk.W + tk.E)
-        self.topmiddle.grid(column=1, row=2)
-        self.topright.grid(column=2, row=2, sticky=tk.E)
+        self.top.grid(column=0, row=2,  pady=2, sticky=tk.N + tk.S + tk.W + tk.E)
+        self.topmiddle.grid(column=1, row=2, pady=2)
+        self.topright.grid(column=2, row=2,  pady=2, sticky=tk.E)
 
-        self.bottom = tk.LabelFrame(self.mainframe, text='', borderwidth=1)
-        self.bottom.grid(column=0, row=5, columnspan=20)
+        self.bottom = tk.LabelFrame(self.mainframe, text='', borderwidth=0)
+        self.bottom.grid(column=0, row=5, pady=2, columnspan=20)
 
-        self.buttons_frame = tk.LabelFrame(self.mainframe, text='')
+        self.buttons_frame = tk.LabelFrame(self.mainframe, text='',  borderwidth=0)
         self.buttons_frame.grid(column=0, row=6, columnspan=40 )
 
         self.title = tk.Label(self, text='Find Resources')
@@ -2459,26 +2487,26 @@ class SearchResource(tk.Frame):
 
         self.search_button.grid(column=4, row=1, sticky=tk.W)
 
-        self.home = ttk.Button(self.buttons_frame, text='Home', command=lambda: controller.show_frame(HomePage))
-        self.home.config(width=13, cursor='hand2')
+        self.home = tk.Button(self.buttons_frame, text='Home', command=lambda: controller.show_frame(HomePage))
+        self.home.config(height=2, width=13, cursor='hand2')
         self.home.grid(column=0, row=0, padx=20, sticky=tk.E)
 
-        self.go_to_resources = ttk.Button(self.buttons_frame, text='Add Resource',
+        self.go_to_resources = tk.Button(self.buttons_frame, text='Add Resource',
                                          command=lambda: controller.show_frame(AddResource))
-        self.go_to_resources.config(width=13, cursor='hand2')
+        self.go_to_resources.config(height=2, width=13, cursor='hand2')
         self.go_to_resources.grid(column=1, row=0, padx=20, sticky=tk.E)
 
-        self.view_projects = ttk.Button(self.buttons_frame, text='View Projects',
+        self.view_projects = tk.Button(self.buttons_frame, text='View Projects',
                                               command=lambda: controller.show_frame(Projects))
-        self.view_projects.config(width=13, cursor='hand2')
+        self.view_projects.config(height=2, width=13, cursor='hand2')
         self.view_projects.grid(column=2, row=0, padx=20, sticky=tk.E)
 
-        self.go_to_link_projects = ttk.Button(self.bottom, text='Link Projects',
+        self.go_to_link_projects = tk.Button(self.buttons_frame, text='Link Projects',
                                           command=lambda: controller.show_frame(LinkResources))
-        self.go_to_link_projects.config(width=13, cursor='hand2')
-        self.go_to_link_projects.grid(column=0, row=13, padx=20, sticky=tk.E)
+        self.go_to_link_projects.config(height=2, width=13, cursor='hand2')
+        self.go_to_link_projects.grid(column=3, row=0, padx=20, sticky=tk.E)
 
-        show_window(self.bottom, 15) # opens an empty window as a placeholder
+        show_window(self.bottom, 18) # opens an empty window as a placeholder
 
     def show_results(self):
         results = self.create_table_values()
@@ -2488,7 +2516,7 @@ class SearchResource(tk.Frame):
         self.scollresources = ttk.Scrollbar(self.bottom)
         self.scollresources.grid(column=2, row=2, sticky=tk.N + tk.S + tk.W)
 
-        self.resource_list = ttk.Treeview(self.bottom, height=15, selectmode='extended',
+        self.resource_list = ttk.Treeview(self.bottom, height=18, selectmode='extended',
                                               columns=column_names)
         self.resource_list.bind()
 
@@ -2566,6 +2594,8 @@ class ViewProjectReferences(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
+        self.controller = controller
+
         # VARIABLES
         self.search_bar = tk.StringVar()
         self.project_name = tk.StringVar()
@@ -2581,7 +2611,7 @@ class ViewProjectReferences(tk.Frame):
         mainframe = tk.LabelFrame(self, text='', borderwidth=4)
         mainframe.grid(column=0, row=0, columnspan=10, sticky=tk.W + tk.E + tk.N + tk.S)
 
-        self.label = tk.Label(mainframe, text='Project References')
+        self.label = tk.Label(mainframe, text='View Project References')
         self.label.grid(column=0, row=0, columnspan=10)
 
         self.firstframe = tk.LabelFrame(mainframe, text='', borderwidth=0)
@@ -2601,27 +2631,27 @@ class ViewProjectReferences(tk.Frame):
 
         # Buttons
         self.home = tk.Button(self.buttonframe, text='Home', command=lambda: controller.show_frame(HomePage))
-        self.home.config(height=2, width=12)
+        self.home.config(height=2, width=13, cursor='hand2')
         self.home.grid(column=0, row=0)
 
         self.export_csv = tk.Button(self.buttonframe, text='Export as\ncsv file',
-                                    command=lambda: self.export_file_csv())
-        self.export_csv.config(height=2,width=12)
+                                    command=lambda: self.export_file_csv()) #
+        self.export_csv.config(height=2, width=13,cursor='hand2')
         self.export_csv.grid(column=2, row=0)
 
         self.export_txt = tk.Button(self.buttonframe, text='Export as\ntext file',
                                     command=lambda: self.export_file_txt())
-        self.export_txt.config(height=2,width=12)
+        self.export_txt.config(height=2, width=13,cursor='hand2')
         self.export_txt.grid(column=3, row=0)
 
-        self.link_references_button = tk.Button(self.buttonframe, text='Add additional\nreferences',
+        self.link_references_button = tk.Button(self.buttonframe, text='Connect to\nreferences',
                                 command=lambda: controller.show_frame(LinkResources))
-        self.link_references_button.config(height=2, width=12)
+        self.link_references_button.config(height=2, width=13, cursor='hand2')
         self.link_references_button.grid(column=4, row=0)
 
         self.delete = tk.Button(self.buttonframe, text='Delete selected\nreference',
-                                command=lambda: self.delete_reference())
-        self.delete.config(height=2,width=12)
+                                command=lambda: self.delete_reference()) #
+        self.delete.config(height=2, width=13,  cursor='hand2')
         self.delete.grid(column=5, row=0)
 
         self.display_project()
@@ -2641,7 +2671,7 @@ class ViewProjectReferences(tk.Frame):
         self.scrollresults = tk.Scrollbar(self.secondframe)
         self.scrollresults.grid(column=1, row=4, sticky=tk.N + tk.S + tk.W)
 
-        self.project_list = ttk.Treeview(self.secondframe, height=2, selectmode='browse',
+        self.project_list = ttk.Treeview(self.secondframe, height=5, selectmode='browse',
                                          columns=('Name', 'Type', 'Description', 'Start date', 'End date'))
 
         self.scrollresults.configure(orient="vertical", command=self.project_list.yview)
@@ -2789,7 +2819,7 @@ class ViewProjectReferences(tk.Frame):
 if __name__ == "__main__":
     app = ProjectLibrary()
     app.title('Project Library')
-    app.iconbitmap('project.ico')
+    app.iconbitmap('./images/project.ico')
     app.maxsize(890,745)
     app.mainloop()
 
