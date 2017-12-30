@@ -8,8 +8,10 @@ Created on Sep 15, 2017
 """
 
 import sqlite3 as sql
+import create_library_tables as clt
 
-db = sql.connect('test.db')
+
+db = sql.connect('projects.db')
 c = db.cursor()
 
 # level
@@ -1176,29 +1178,3 @@ def get_project_id(media_id, resource_id):
     project_ids = [i[0] for i in c.fetchall()]
     return project_ids
 
-"""
-def init_db(filename=None):
-    global db, c
-    if not filename:
-        filename = 'small_data.db'
-    try: 
-        db = sql.connect(filename)
-        c = db.cursor()
-        #c.execute('PRAGMA Foreign_Keys=True')
-    except:
-        print('Error connecting to', filename)
-        c = None
-        raise
-
-def close_db():
-    try:
-        c.close()
-        db.commit()
-        db.close()
-    except:
-        print('Problem closing database')
-        raise
-
-if __name__ == '__main__':
-    init_db()
-"""

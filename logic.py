@@ -6,14 +6,6 @@ import csv
 # AUDIO
 def add_audio(title, author, duration, subject,  program, url, date, media_id, language):
 
-    # if language != 'Select one':
-    #     data.add_language(language)
-    # else:
-    #     language = 'Unknown'
-    #     data.add_language(language)
-    # if new_lang:
-    #     data.add_language(language)
-
     language_id = data.get_language_id(language)
 
     data.add_subject(subject)
@@ -58,8 +50,6 @@ def delete_audio(audio_id, author, media):
         for i in range(len(project_id)):
             print(project_id[i],  media_id, audio_id,)
             data.delete_resources_reference(project_id[i], media_id, audio_id,)
-
-
 
 # BOOKS
 def add_text(title, author, year, pages, level, publisher, language, subject, medium):
@@ -367,8 +357,7 @@ def edit_website(website_id, title, author, subject, url, date_created, date_acc
     data.add_resource_author(website_id, author_id, media_id)
 
 def remove_website(resource_id,author, media ):
-    # resource =  data.get_website_details(title)
-    # resource_id = resource[0]
+
     data.delete_website(resource_id)
     data.delete_resource_author(resource_id, author, media)
 

@@ -5,10 +5,10 @@ Created on Sun Jan 1 15:38:30 2017
 author: lak
 """
 
-import sqlite3 
+import sqlite3 as sql
 
 def make_db():
-    db = sqlite3.connect('test.db')
+    db = sql.connect('projects.db')
     c = db.cursor()
 
     c.executescript('''
@@ -181,7 +181,7 @@ def make_db():
         PRIMARY KEY (projectID, resourceID, mediaID) 
         );
     
-    CREATE VIEW all_resources AS 
+    CREATE VIEW IF NOT EXISTS all_resources AS 
         SELECT texts.ID, texts.title, authors.name, subjects.subject, resource_medium.medium, 
             texts.mediaID
         FROM texts, authors, resource_author, resource_medium, subjects
