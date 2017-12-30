@@ -647,7 +647,7 @@ class LinkResources(tk.Frame):
         self.resourceresults.grid(column=0, row=5, columnspan=40, sticky=tk.W)
 
         self.bottombuttonframe = tk.LabelFrame(self.mainframe, text='', borderwidth=0)
-        self.bottombuttonframe.grid(column=0, row=6, columnspan=3)#, sticky=tk.W)
+        self.bottombuttonframe.grid(column=0, row=6, columnspan=3)
 
         # TOP LEFT FRAME
 
@@ -895,8 +895,13 @@ class LinkResources(tk.Frame):
             self.treeview_projects.delete(i)
 
     def link_project_resources(self):
-        data.link_to_resources(self.project_id, self.media_id,  self.resource_id)
-        tkMessageBox.showinfo('Confirm', "Added item to\nproject bibliography!")
+        if (self.project_id == None):
+            tkMessageBox.showinfo('Warning', "Please select project!", icon ='warning')
+        elif (self.media_id == None) or (self.resource_id == None):
+            tkMessageBox.showinfo('Warning', "No resources selected!",icon ='warning')
+        else:
+            data.link_to_resources(self.project_id, self.media_id,  self.resource_id)
+            tkMessageBox.showinfo('Confirm', "Added item to\nproject bibliography!")
 
     def search_projects(self):
         for i in self.project_list.get_children():
