@@ -36,7 +36,7 @@ def make_db():
         
     CREATE TABLE IF NOT EXISTS levels (
         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-        level TEXT NOT NULL
+        level TEXT UNIQUE NOT NULL
         );
 
     CREATE TABLE IF NOT EXISTS resource_medium (
