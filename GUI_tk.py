@@ -585,7 +585,6 @@ class AddText(tk.Frame):
         self.show_updated_resources()
         self.addtextresource.config(state = 'normal')
 
-
     def clear_texts(self):
         for i in self.resource_list.get_children():
             self.resource_list.delete(i)
@@ -1906,13 +1905,24 @@ class AddCourse(AddMedia):
         self.level.set('Select one')
 
     def save_data(self):
-        media_name = self.get_media_name()
 
-        lg.add_course(self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(),
-                      self.box1R.get(), self.box2R.get(), self.box3R.get(), media_name,
-                      self.level.get())
+        try:
+            media_name = self.get_media_name()
 
-        self.update_windows()
+        except ValueError:
+            tkMessageBox.showinfo('Alert', 'Please Choose Media Type', icon='warning')
+
+        else:
+            if self.level.get() == 'Select one':
+                tkMessageBox.showinfo('Alert', 'Please Choose Level', icon='warning')
+
+            elif self.level.get() != 'Select one':
+
+                lg.add_course(self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(),
+                          self.box1R.get(), self.box2R.get(), self.box3R.get(), media_name,
+                          self.level.get())
+
+                self.update_windows()
 
     def update(self):
 
@@ -1994,10 +2004,16 @@ class AddInteractiveMedia(AddMedia):
         self.update_entry_widgets()
 
     def save_data(self):
-        lg.add_interactive_media(self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(),
-                                self.box1R.get(), self.box2R.get(), self.box3R.get(), self.media_buttons.get())
+        try:
+            self.media_buttons.get()
+        except ValueError:
+            tkMessageBox.showerror('Alert', 'Please choose media type', icon='warning')
 
-        self.update_windows()
+        else:
+            lg.add_interactive_media(self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(),
+                                    self.box1R.get(), self.box2R.get(), self.box3R.get(), self.media_buttons.get())
+
+            self.update_windows()
 
     def select_document(self, event):
         item = self.webdocs_list.focus()
@@ -2154,13 +2170,24 @@ class AddImages(AddMedia):
         self.list_resources(search_table)
 
     def save_data(self):
+        try:
+            self.copyright.get()
+        except ValueError:
+            tkMessageBox.showinfo('Alert', 'Please choose Copyright', icon='warning')
 
-        lg.add_image(  self.box1L.get(), self.box2L.get(), self.box3L.get(),
-                        self.box4L.get(), self.box1R.get(), self.box2R.get(),
-                        self.copyright.get(),self.media_buttons.get())
+        else:
+            try:
+                self.media_buttons.get()
+            except ValueError:
+                tkMessageBox.showinfo('Alert', 'Please choose media type', icon='warning')
 
-        self.update_windows()
-        self.copyright.set('?')
+            else:
+                lg.add_image(  self.box1L.get(), self.box2L.get(), self.box3L.get(),
+                                self.box4L.get(), self.box1R.get(), self.box2R.get(),
+                                self.copyright.get(),self.media_buttons.get())
+
+                self.update_windows()
+                self.copyright.set('?')
 
     def select_document(self, event):
         item = self.webdocs_list.focus()
@@ -2273,7 +2300,7 @@ class AddVideo(AddMedia):
         self.language_label = tk.Label(self.center_frame2, text='Language:')
         self.language_entry = tk.OptionMenu(self.center_frame2, self.language,
                                             *self.language_options)
-        self.language_entry.configure(width=8)
+        self.language_entry.configure(width=15)
         self.language_label.grid(column=0, row=0, sticky=tk.W)
         self.language_entry.grid(column=1, row=0,padx=5, sticky=tk.W)
 
@@ -2351,18 +2378,23 @@ class AddVideo(AddMedia):
     def save_data(self):
 
         try:
-            media_name = self.get_media_name()
+            self.get_media_name()
 
         except ValueError:
             tkMessageBox.showinfo('Alert', 'Please choose media type', icon='warning')
 
         else:
-            lg.add_video(self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(),
-                         self.box1R.get(), self.box2R.get(), self.box3R.get(), self.get_media_name(),
-                         self.language.get())
+            if self.language.get() == 'Select one' and self.new_lang_flag.get() == 0:
+                tkMessageBox.showinfo('Alert', 'Please choose language', icon='warning')
 
-        self.update_windows()
-        self.language.set('Select one')
+            elif self.language.get() != 'Select one' or self.new_lang_flag.get() == 1:
+
+                lg.add_video(self.box1L.get(), self.box2L.get(), self.box3L.get(), self.box4L.get(),
+                             self.box1R.get(), self.box2R.get(), self.box3R.get(), self.get_media_name(),
+                             self.language.get())
+
+                self.update_windows()
+                self.language.set('Select one')
 
     def select_document(self, event):
 
