@@ -53,11 +53,6 @@ def make_db():
         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
         name TEXT UNIQUE  NOT NULL
         );
-        
-    CREATE TABLE IF NOT EXISTS website_name (
-        ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-        name TEXT UNIQUE NOT NULL
-        );
                 
     CREATE TABLE IF NOT EXISTS provider(
         ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
@@ -258,7 +253,7 @@ def make_db():
     default_media_types = ['Book', 'Short story', 'Other text',
                            'Music', 'Sound', 'Podcast',
                            'Video Clip', 'Documentary', 'Other Video',
-                           'Blended', 'Lectures', 'MOOC',
+                           'Audio', 'Lectures', 'MOOC',
                            'Photo', 'Clipart/Sprite','Other image',
                            'Interactive Fiction', 'Video game', 'Other interactive',
                            'Website', 'Documentation', 'Q&A Site']
