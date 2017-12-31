@@ -2622,6 +2622,7 @@ class ViewProjectReferences(tk.Frame):
         self.project_id = tk.IntVar()
         self.media_name = tk.StringVar()
         self.resource_name = tk.StringVar()
+        self.no_references = tk.StringVar()
 
         self.please_select_project = 'No project selected.\nChoose a project to export resources'
         self.exported = 'Project references exported'
@@ -2641,9 +2642,9 @@ class ViewProjectReferences(tk.Frame):
         self.secondframe.grid(columnspan=10, column=0, row=2,sticky=tk.W + tk.E + tk.N + tk.S)
 
         self.thirdframe = tk.LabelFrame(mainframe, text='', borderwidth=0)
-        self.thirdframe.grid(columnspan=10, column=0, row=3, pady=7, sticky=tk.W)
+        self.thirdframe.grid(column=0, row=3, columnspan=10,   sticky=tk.W)
 
-        self.fourthframe = tk.LabelFrame(mainframe, text='Associated References', borderwidth=0)
+        self.fourthframe = tk.LabelFrame(mainframe, text='', borderwidth=0)
         self.fourthframe.grid(column=0, row=4,  sticky=tk.W + tk.E + tk.N + tk.S)
 
         self.buttonframe = tk.LabelFrame(mainframe, text='', borderwidth=0)
@@ -2670,7 +2671,7 @@ class ViewProjectReferences(tk.Frame):
         self.link_references_button.grid(column=4, row=0)
 
         self.delete = tk.Button(self.buttonframe, text='Delete selected\nreference',
-                                command=lambda: self.delete_reference()) #
+                                command=lambda: self.delete_reference())
         self.delete.config(height=2, width=13,  cursor='hand2')
         self.delete.grid(column=5, row=0)
 
@@ -2716,10 +2717,16 @@ class ViewProjectReferences(tk.Frame):
         self.treeview_projects.bind('<ButtonRelease-1>', self.view_resources)
 
         self.projectlabel = tk.Label(self.thirdframe, text='Project Name: ')
-        self.projectlabel.grid(column=0, row=1, sticky=tk.W)
+        self.projectlabel.grid(column=0, row=1, pady=7,sticky=tk.W)
 
         self.projectname = tk.Label(self.thirdframe, textvariable=self.project_name)
         self.projectname.grid(column=1, row=1, sticky=tk.W)
+
+        self.references_label = tk.Label(self.thirdframe, text='Associated References:')
+        self.references_label.grid(column=0, row=2, sticky=tk.W)
+
+        self.empty_references = tk.Label(self.thirdframe, textvariable=self.no_references)
+        self.empty_references.grid(column=1, row=2,  sticky=tk.W)
 
     def display_resources(self):
         self.scollreferences = tk.Scrollbar(self.fourthframe)
@@ -2773,9 +2780,9 @@ class ViewProjectReferences(tk.Frame):
             self.references.delete(i)
 
     def show_updated_resources(self):
-        '''Updates list of project's resources after resourse is deleted '''
+        '''Updates list of project's resources after a resource is deleted '''
         self.clear_references()
-
+        self.no_references.set('')
         references = lg.view_project_references(self.project_id)
 
         for item in references:
@@ -2784,6 +2791,7 @@ class ViewProjectReferences(tk.Frame):
     def search_projects(self):
         self.clear_projects()
         self.project_name.set('')
+        self.no_references.set('')
 
         projects = data.find_project(self.search_bar.get())
 
@@ -2793,6 +2801,7 @@ class ViewProjectReferences(tk.Frame):
 
     def view_resources(self, event):
         self.clear_references()
+        self.no_references.set('')
         item = self.project_list.focus()
 
         try:
@@ -2804,6 +2813,9 @@ class ViewProjectReferences(tk.Frame):
             self.project_id = self.project_id[0]
 
             resources = lg.view_project_references(self.project_id)
+
+            if resources == []:
+                self.no_references.set('No references have been saved for this project.')
         except IndexError:
             pass
 

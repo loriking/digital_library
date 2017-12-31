@@ -404,9 +404,6 @@ def view_project_references(project_id):
 
     items = sorted(items, key=operator.itemgetter(0))
 
-    if len(items) == 0:
-        items.append('None')
-
     return items
 
 
