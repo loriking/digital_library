@@ -8,8 +8,6 @@ Created on Sep 15, 2017
 """
 
 import sqlite3 as sql
-import create_library_tables as clt
-
 
 db = sql.connect('projects.db')
 c = db.cursor()
@@ -165,16 +163,6 @@ def get_provider_id(name):
     c.execute('SELECT ID FROM provider WHERE name = ?', (name,))
     return c.fetchone()[0]
 
-# WEBSITE NAME
-def add_website_name(website):
-    c.execute('INSERT OR IGNORE INTO website_name(name) VALUES(?)', (website,))
-    db.commit()
-
-def get_website_name_id(website_name):
-    c.execute('SELECT ID FROM website_name WHERE name = ?', (website_name,))
-    return c.fetchone()[0]
-
-
 # COPYRIGHT
 def get_copyright_id(status):
     c.execute('SELECT ID FROM copyright WHERE status = ?', (status,))
@@ -183,6 +171,7 @@ def get_copyright_id(status):
 def get_copyright_name(copyright_id):
     c.execute('SELECT status FROM copyright WHERE ID = ?', (copyright_id))
     return c.fetchone()[0]
+
 # PUBLISHER CRUD FUNCTIONS
 def add_publisher(publisher):
     """ Adds publisher to SQL database"""
@@ -795,6 +784,8 @@ def delete_project_category(project_category_id):
 def find_projects_by_category(project_category_id):
     c.execute('SELECT ID FROM projects WHERE project_category_id = ?', (project_category_id,))
     return c.fetchall()
+
+
 # Project CRUD functions
 
 def add_project_to_db(project_name, project_category_id, description, date_start, date_end):

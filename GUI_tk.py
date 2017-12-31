@@ -1807,7 +1807,7 @@ class AddCourse(AddMedia):
 
         self.update_entry_widgets()
 
-        self.create_top_frame_widgets(AddMedia.window_header, AddMedia.b2L, AddMedia.b3L, AddMedia.b4L, \
+        self.create_top_frame_widgets(AddMedia.window_header, AddMedia.b2L, AddMedia.b3L, AddMedia.b4L,
                                       AddMedia.b1R, AddMedia.b2R, AddMedia.b3R)
 
         self.list_resources(self.table)
@@ -1829,7 +1829,7 @@ class AddCourse(AddMedia):
         AddMedia.c5 = 'Type'
         AddMedia.c6 = 'Level'
 
-        AddMedia.media_choice1 = 'Blended or Flipped'
+        AddMedia.media_choice1 = 'Audio'
         AddMedia.media_choice2 = 'Lecture notes'
         AddMedia.media_choice3 = 'MOOC'
 
@@ -1840,12 +1840,11 @@ class AddCourse(AddMedia):
 
     def get_media_name(self):
         if self.media_buttons.get() == 1:
-            media_name = 'Blended'
+            media_name = 'Audio'
         elif self.media_buttons.get() == 2:
             media_name = 'Lectures'
         elif self.media_buttons.get() == 3:
             media_name = 'MOOC'
-        print('Media name = ', media_name)
         return media_name
 
     def get_current_data(self):
