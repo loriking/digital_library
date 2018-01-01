@@ -507,9 +507,13 @@ class AddText(tk.Frame):
                 self.update_windows()
 
     def select_text(self, event):
-        self.addtextresource.config(state = 'disabled')
 
         item = self.resource_list.focus()
+
+        if item != '':
+            self.addtextresource.config(state='disabled')
+        else:
+            self.addtextresource.config(state='normal')
 
         text = self.treeview.item(item)
 
@@ -1108,8 +1112,13 @@ class Projects(tk.Frame):
 
 
     def select_project(self,event):
-        self.add_project.config(state='disable')
+
         item = self.project_list.focus()
+
+        if item != '':
+            self.add_project.config(state='disable')
+        else:
+            self.add_project.config(state='normal')
 
         project = self.treeview.item(item)
 
@@ -1457,7 +1466,11 @@ class AddMedia(tk.Frame):
     def select_document(self, event):
         self.media_buttons.set('?')
         item = self.webdocs_list.focus()
-        self.save_resource.config(state='disabled')
+
+        if item != '':
+            self.save_resource.config(state='disabled')
+        else:
+            self.save_resource.config(state='normal')
 
         document = self.treeview_docs.item(item)
 
@@ -1687,9 +1700,13 @@ class AddAudio(AddMedia):
 
     def select_document(self, event):
         self.media_buttons.set('?')
-        self.save_resource.config(state='disabled')
 
         item = self.webdocs_list.focus()
+
+        if item != '':
+            self.save_resource.config(state='disabled')
+        else:
+            self.save_resource.config(state='normal')
 
         try:
 
@@ -1853,8 +1870,13 @@ class AddCourse(AddMedia):
 
     def select_document(self, event):
         self.media_buttons.set('?')
-        self.save_resource.config(state='disabled')
+
         item = self.webdocs_list.focus()
+
+        if item != '':
+            self.save_resource.config(state='disabled')
+        else:
+            self.save_resource.config(state='normal')
 
         document = self.treeview_docs.item(item)
 
@@ -2016,9 +2038,13 @@ class AddInteractiveMedia(AddMedia):
 
     def select_document(self, event):
         item = self.webdocs_list.focus()
-        self.save_resource.config(state='disabled')
 
         document = self.treeview_docs.item(item)
+
+        if item != '':
+            self.save_resource.config(state='disabled')
+        else:
+            self.save_resource.config(state='normal')
 
         try:
 
@@ -2190,7 +2216,11 @@ class AddImages(AddMedia):
 
     def select_document(self, event):
         item = self.webdocs_list.focus()
-        self.save_resource.config(state='disabled')
+
+        if item != '':
+            self.save_resource.config(state='disabled')
+        else:
+            self.save_resource.config(state='normal')
 
         document = self.treeview_docs.item(item)
 
@@ -2397,9 +2427,12 @@ class AddVideo(AddMedia):
 
     def select_document(self, event):
 
-        self.save_resource.config(state='disabled')
-
         item = self.webdocs_list.focus()
+
+        if item != '':
+            self.save_resource.config(state='disabled')
+        else:
+            self.save_resource.config(state='normal')
 
         document = self.treeview_docs.item(item)
 
