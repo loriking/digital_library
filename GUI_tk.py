@@ -1170,7 +1170,6 @@ class Projects(tk.Frame):
             self.add_project.config(state='normal')
             tkMessageBox.showinfo('Deleted', "Project deleted.")
 
-
 class AddMedia(tk.Frame):
     def __init__(self, parent, controller, *args):
         tk.Frame.__init__(self, parent)
@@ -1307,7 +1306,7 @@ class AddMedia(tk.Frame):
                self.c1, self.c2, self.c3, self.c4, self.c5, self.c6, self.media_choice1, \
                self.media_choice2, self.media_choice3
 
-    def create_top_frame_widgets(self, window_header, box2L, box3L, box4L, box1R, box2R, box3R):#, box4R):
+    def create_top_frame_widgets(self, window_header, box2L, box3L, box4L, box1R, box2R, box3R):
 
         # Title Frame
         self.window_title = tk.Label(self.mainframe, text=window_header)
@@ -1752,22 +1751,14 @@ class AddAudio(AddMedia):
     def update(self):
 
         media_name = self.get_media_name()
-        print('Media name = ', media_name)
-
         old_author_id = data.get_author_id(self.current_author)
-        print('Old author id= ', old_author_id)
-
         old_media_id = data.get_resource_medium_id(self.current_media)
-        print('old media id', old_media_id)
 
         author_name = self.box2L.get()
-        print('Author name:',  author_name)
 
         if self.current_author != author_name or self.current_media != media_name:
-            print('Difference found!')
-            data.delete_resource_author(self.document_id, self.current_author, self.current_media)
-            print('Deleted resource author for ID', self.document_id)
 
+            data.delete_resource_author(self.document_id, self.current_author, self.current_media)
 
         lg.edit_audio(self.document_id, self.box1L.get(), self.box2L.get(), self.box3L.get(),
                             self.box4L.get(), self.box1R.get(), self.box2R.get(), self.box3R.get(),
