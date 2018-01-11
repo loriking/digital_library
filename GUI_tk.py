@@ -39,7 +39,7 @@ class ProjectLibrary(tk.Tk):
     def init_db(self):
         try:
             db = sqlite3.connect('file:projects.db?mode=rw', uri=True)
-    
+
         except sqlite3.OperationalError:
             pass
 
