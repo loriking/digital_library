@@ -12,12 +12,13 @@ class ProjectLibrary(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
 
-        self.init_db()
+        main = tk.Frame(self)
 
-        main=tk.Frame(self)
         main.pack(side='top', fill='both', expand=True)
         main.grid_rowconfigure(0, weight=1)
         main.grid_columnconfigure(0, weight=1)
+
+        self.init_db()
 
         self.frames = {}
 
@@ -28,6 +29,8 @@ class ProjectLibrary(tk.Tk):
             frame.grid(row = 0, column = 0, sticky ='nsew')
 
         self.show_frame(HomePage)
+
+
         
     def show_frame(self, cont):
         frame = self.frames[cont]
@@ -36,12 +39,16 @@ class ProjectLibrary(tk.Tk):
     def init_db(self):
         try:
             db = sqlite3.connect('file:projects.db?mode=rw', uri=True)
-            # c = db.cursor()
+    
         except sqlite3.OperationalError:
             pass
 
         else:
-            clt.make_db()  # handle missing database case
+            result = tkMessageBox.askokcancel("Initialize database?", "Database doesn't exist\nCreate a new one?")
+
+            if result == True:
+                db = clt.make_db()  # handle missing database case
+
         return db
 
 class HomePage(tk.Frame):
@@ -1553,7 +1560,6 @@ class AddMedia(tk.Frame):
             tkMessageBox.showinfo('Deleted', message2, icon='info')
         self.save_resource.config(state='normal')
 
-
 class AddAudio(AddMedia):
     def __init__(self, parent, controller):
         AddMedia.__init__(self, parent, controller)
@@ -1751,8 +1757,8 @@ class AddAudio(AddMedia):
     def update(self):
 
         media_name = self.get_media_name()
-        old_author_id = data.get_author_id(self.current_author)
-        old_media_id = data.get_resource_medium_id(self.current_media)
+        # old_author_id = data.get_author_id(self.current_author)
+        # old_media_id = data.get_resource_medium_id(self.current_media)
 
         author_name = self.box2L.get()
 
@@ -1784,7 +1790,6 @@ class AddAudio(AddMedia):
             lg.delete_audio(self.document_id, self.current_author, self.current_media)
             self.update_windows()
             tkMessageBox.showinfo('Deleted', message2, icon='info')
-
 
 class AddCourse(AddMedia):
     def __init__(self, parent, controller):
@@ -1964,7 +1969,6 @@ class AddCourse(AddMedia):
             self.update_windows()
             tkMessageBox.showinfo('Deleted', message2, icon='info')
 
-
 class AddInteractiveMedia(AddMedia):
     def __init__(self, parent, controller):
         AddMedia.__init__(self, parent, controller)
@@ -2092,7 +2096,6 @@ class AddInteractiveMedia(AddMedia):
             lg.remove_interactive(self.document_id, self.current_author, self.current_media)
             self.update_windows()
             tkMessageBox.showinfo('Deleted', message2, icon='info')
-
 
 class AddImages(AddMedia):
     def __init__(self, parent, controller):
@@ -2301,7 +2304,6 @@ class AddImages(AddMedia):
             self.copyright.set('?')
             tkMessageBox.showinfo('Deleted', message2, icon='info')
 
-
 class AddVideo(AddMedia):
     def __init__(self, parent, controller):
         AddMedia.__init__(self, parent, controller)
@@ -2493,7 +2495,6 @@ class AddVideo(AddMedia):
             self.language.set('Select one')
             tkMessageBox.showinfo('Deleted', message2, icon='info')
 
-
 class SearchResource(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -2663,7 +2664,6 @@ class SearchResource(tk.Frame):
         for item in resources:
             self.treeview_resources.insert('', 'end', values=item)
         self.search_bar_entry.delete(0, 'end')
-
 
 class ViewProjectReferences(tk.Frame):
     def __init__(self, parent, controller):
