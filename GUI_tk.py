@@ -6,19 +6,19 @@ import logic as lg
 from blank_window import show_window
 import sqlite3
 import create_library_tables as clt
-
+import start_db
 
 class ProjectLibrary(tk.Tk):
+    clt.make_db()
+    start_db.add_data()
+
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
 
         main = tk.Frame(self)
-
         main.pack(side='top', fill='both', expand=True)
         main.grid_rowconfigure(0, weight=1)
         main.grid_columnconfigure(0, weight=1)
-
-        self.init_db()
 
         self.frames = {}
 
@@ -30,26 +30,11 @@ class ProjectLibrary(tk.Tk):
 
         self.show_frame(HomePage)
 
-
         
     def show_frame(self, cont):
         frame = self.frames[cont]
         frame.tkraise()
 
-    def init_db(self):
-        try:
-            db = sqlite3.connect('file:projects.db?mode=rw', uri=True)
-
-        except sqlite3.OperationalError:
-            pass
-
-        else:
-            result = tkMessageBox.askokcancel("Initialize database?", "Database doesn't exist\nCreate a new one?")
-
-            if result == True:
-                db = clt.make_db()  # handle missing database case
-
-        return db
 
 class HomePage(tk.Frame):
     def __init__(self, parent, controller):
@@ -69,16 +54,16 @@ class HomePage(tk.Frame):
         self.secondframe = tk.LabelFrame(self.topframe, text='', borderwidth=0)
         self.middleframe = tk.LabelFrame(self.topframe, borderwidth=0, text='')
 
-        self.firstframe.pack(anchor=tk.CENTER,expand=tk.TRUE, ipadx=30,  padx=20, ipady=10)
-        self.middleframe.pack(anchor=tk.CENTER,expand=tk.TRUE, ipadx=30, padx=20, ipady=10)
-        self.secondframe.pack(anchor=tk.CENTER,expand=tk.TRUE, ipadx=30,  padx=20, ipady=10)
+        self.firstframe.pack(anchor=tk.CENTER,expand=tk.TRUE, ipadx=30,  padx=20, ipady=2)
+        self.middleframe.pack(anchor=tk.CENTER,expand=tk.TRUE, ipadx=30, padx=20, ipady=2)
+        self.secondframe.pack(anchor=tk.CENTER,expand=tk.TRUE, ipadx=30,  padx=20, ipady=2)
 
-        self.add_edit_project = tk.Button(self.firstframe, text='Add or Edit\nProject', relief='flat',
+        self.add_edit_project = tk.Button(self.firstframe, text='Add or Edit\nProjects', relief='flat',
                                           image = self.addeditproject_img,
                                       compound='top', command=lambda: controller.show_frame(Projects))
         self.add_edit_project.pack(side=tk.LEFT, padx=25)
 
-        self.link_project_resources = tk.Button(self.firstframe, text='Link Resources\n to Projects',
+        self.link_project_resources = tk.Button(self.firstframe, text='Link Project\n to Resources',
                                         image = self.link_img, compound='top', relief='flat',
                                       command=lambda: controller.show_frame(LinkResources))
         self.link_project_resources.pack(side=tk.LEFT, padx=25)
@@ -98,7 +83,7 @@ class HomePage(tk.Frame):
                                           command=lambda: controller.show_frame(SearchResource))
         self.search_resources.pack(side=tk.LEFT, padx=25)
 
-        self.about = tk.Button(self.secondframe, text='About\n', relief='flat',
+        self.about = tk.Button(self.secondframe, text='About\nthis App', relief='flat',
                                   image=self.about_img, compound='top')#,
                                  # command=lambda: controller.show_frame(About))
         self.about.pack(side=tk.LEFT, padx=25)
@@ -108,15 +93,14 @@ class AddResource(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
 
-        self.audio_img = tk.PhotoImage(file='./images/headphones.png')
-        self.book_img = tk.PhotoImage(file='./images/open-book.png')
-        self.course_img = tk.PhotoImage(file='./images/online-course.png')
-        self.img_img = tk.PhotoImage(file='./images/picture.png')
-        self.games_img = tk.PhotoImage(file='./images/control.png')
-        self.video_img = tk.PhotoImage(file='./images/video-camera.png')
-        self.web_img = tk.PhotoImage(file='./images/internet.png')
-        self.home_img = tk.PhotoImage(file='./images/home1.png')
-        self.browse_img = tk.PhotoImage(file='./images/browse.png')
+        self.audio_img = tk.PhotoImage(file='./images/audio-ico-3.png')
+        self.book_img = tk.PhotoImage(file='./images/books-ico-3.png')
+        self.course_img = tk.PhotoImage(file='./images/classes-ico-3.png')
+        self.img_img = tk.PhotoImage(file='./images/images-ico-3.png')
+        self.games_img = tk.PhotoImage(file='./images/interactions-ico-3.png')
+        self.video_img = tk.PhotoImage(file='./images/videos-ico-3.png')
+        self.web_img = tk.PhotoImage(file='./images/webs-ico-3.png')
+        self.home_img = tk.PhotoImage(file='./images/home-ico-3.png')
 
         self.topframe = tk.LabelFrame(self, text='', borderwidth=0)
         self.topframe.pack(expand=tk.TRUE)
@@ -149,7 +133,7 @@ class AddResource(tk.Frame):
                                         command=lambda: controller.show_frame(AddImages))
 
 
-        self.AddInteractiveMediaButton= tk.Button(self.firstframe, text='Interactive Media',
+        self.AddInteractiveMediaButton= tk.Button(self.firstframe, text='Interactive',
                                         relief='flat', image=self.games_img, compound='top',
                                         command=lambda: controller.show_frame(AddInteractiveMedia))
 
@@ -968,7 +952,7 @@ class Projects(tk.Frame):
         self.bottomframe.grid(column=0, row=5, columnspan=4)
 
         self.button_frame = tk.LabelFrame(self, text='', borderwidth=0)
-        self.button_frame.grid(column=0, row=6, columnspan=4)#, sticky=tk.W+tk.E)
+        self.button_frame.grid(column=0, row=6, columnspan=4)
 
         # Top Left frame
 
