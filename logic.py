@@ -55,8 +55,8 @@ def delete_audio(audio_id, author, media):
 def add_text(title, author, year, pages, level, publisher, language, subject, medium):
 
     data.add_author(author)
-    data.add_publisher(publisher)
-    data.add_language(language)
+    data.add_publisher(publisher) #make function that add then returns id
+    data.add_language(language)  #make function that add then returns id
     data.add_subject(subject)
 
     level_id = data.get_level_id(level)

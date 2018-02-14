@@ -5,13 +5,8 @@ import dataCRUD as data
 import logic as lg
 from blank_window import show_window
 import sqlite3
-import create_library_tables as clt
-import start_db
 
 class ProjectLibrary(tk.Tk):
-    clt.make_db()
-    start_db.add_data()
-
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
 
@@ -494,7 +489,7 @@ class AddText(tk.Frame):
                 lg.add_text(self.title.get(), self.author.get(), self.year.get(),
                         self.pages.get(), self.level.get(), self.thepublisher,
                         self.thelanguage, self.subject.get(), media_name)
-
+                
                 self.update_windows()
 
     def select_text(self, event):

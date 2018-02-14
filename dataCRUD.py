@@ -8,6 +8,8 @@ Created on Sep 15, 2017
 """
 
 import sqlite3 as sql
+import create_library_tables as clt
+
 
 db = sql.connect('projects.db')
 c = db.cursor()
@@ -31,7 +33,7 @@ def list_levels():
 
 # Languages C.R.U.D.
 def add_language(language):
-    language = language.title()
+    # language = language.title()
 
     c.execute('''INSERT OR IGNORE INTO languages(language) VALUES(?)''', (language,))
     db.commit()
@@ -164,6 +166,10 @@ def get_provider_id(name):
     return c.fetchone()[0]
 
 # COPYRIGHT
+def add_copyright(status):
+    c.execute('INSERT OR IGNORE INTO copyright(status) VALUES(?)', (status,))
+    db.commit()
+
 def get_copyright_id(status):
     c.execute('SELECT ID FROM copyright WHERE status = ?', (status,))
     return c.fetchone()[0]
@@ -1169,3 +1175,22 @@ def get_project_id(media_id, resource_id):
     project_ids = [i[0] for i in c.fetchall()]
     return project_ids
 
+# def init_db():
+#     global db, c
+#     try:
+#         db = sql.connect('file:projects.db?mode=rw', uri=True)
+#         c = db.cursor()
+#         print('Got it')
+#
+#     except sql.OperationalError:
+#         print('OperationalError')
+#     #     pass
+#     #
+#     # else:
+#         clt.make_db()  # handle missing database case
+#         db = sql.connect('projects.db')
+#         c = db.cursor()
+#         init.add_data()
+#         print('Made db')
+#     print(type(db), db, c)
+#     return db, c
