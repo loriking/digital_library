@@ -2694,10 +2694,15 @@ class ViewProjectReferences(tk.Frame):
         self.export_csv.config(height=2, width=13,cursor='hand2')
         self.export_csv.grid(column=2, row=0)
 
-        self.export_txt = tk.Button(self.buttonframe, text='Export as\ntext file',
-                                    command=lambda: self.export_file_txt())
-        self.export_txt.config(height=2, width=13,cursor='hand2')
-        self.export_txt.grid(column=3, row=0)
+        # self.export_txt = tk.Button(self.buttonframe, text='Export as\ntext file',
+        #                             command=lambda: self.export_file_txt())
+        # self.export_txt.config(height=2, width=13,cursor='hand2')
+        # self.export_txt.grid(column=3, row=0)
+
+        self.import_csv = tk.Button(self.buttonframe, text='Import\nreferences',
+                                    command=lambda: self.import_references())
+        self.import_csv.config(height=2, width=13,cursor='hand2')
+        self.import_csv.grid(column=3, row=0)
 
         self.link_references_button = tk.Button(self.buttonframe, text='Connect to\nreferences',
                                 command=lambda: controller.show_frame(LinkResources))
@@ -2805,6 +2810,9 @@ class ViewProjectReferences(tk.Frame):
             tkMessageBox.showinfo('Select', self.please_select_project, icon='warning')
             pass
 
+    def import_references(self):
+        pass
+
     def clear_projects(self):
         for i in self.project_list.get_children():
             self.project_list.delete(i)
@@ -2815,6 +2823,7 @@ class ViewProjectReferences(tk.Frame):
 
     def show_updated_resources(self):
         '''Updates list of project's resources after a resource is deleted '''
+
         self.clear_references()
         self.no_references.set('')
         references = lg.view_project_references(self.project_id)
