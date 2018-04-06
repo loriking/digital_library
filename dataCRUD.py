@@ -8,8 +8,6 @@ Created on Sep 15, 2017
 """
 
 import sqlite3 as sql
-import create_library_tables as clt
-
 
 db = sql.connect('projects.db')
 c = db.cursor()
