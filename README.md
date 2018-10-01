@@ -1,9 +1,9 @@
-# digital_library
-A small program to keep track of projects and resources (books, websites, videos, tutorials, etc.)
+# learning_library
+
+This is a simple program. It's goal is humble. It aims to help me (and anyone else who is interested) keep track of resources (books, websites, videos, tutorials, etc.) I've used to learn something or build something. It's a type of project bibliograpy. 
 
 Implemented in python.
 
-
-A work in progress.  
+It is a work in progress.  
 
 Motivated by a desire to become better organized and to develop code skills.
